@@ -22,7 +22,7 @@ steps:
     npm install
     npm run build
     mkdir apply-ui
-    tar -czvf apply-ui-$(Build.BuildId).tar.gz .next public next.config.js package.json src .env
+    tar -czvf apply-ui-$(Build.BuildId).tar.gz .next public next.config.js package.json
   displayName: 'npm install and build'
 # - task: CopyFiles@2
 #   inputs:
