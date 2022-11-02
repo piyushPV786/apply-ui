@@ -1,0 +1,58 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- develop
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  mydate: $(Get-Date -Format yyyyMMddhhmmss)
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    npm run build
+    mkdir apply-ui
+    tar -czvf apply-ui-$(Build.BuildId).tar.gz .next public next.config.js package.json src .env
+  displayName: 'npm install and build'
+# - task: CopyFiles@2
+#   inputs:
+#     sourceFolder: '$(system.defaultworkingdirectory)' 
+#     targetFolder: '$(Build.ArtifactStagingDirectory)/.next'
+#   displayName: 'Copy npm package'
+
+# - task: ArchiveFiles@2
+#   inputs:
+#     rootFolderFile: '$(system.defaultworkingdirectory)/.next'
+#     includeRootFolder: true
+#     archiveType: tar
+#     replaceExistingArchive: true
+#     archiveFile: '$(system.defaultworkingdirectory)/.next/.next.tar.gz'
+# - task: ArchiveFiles@2
+#   inputs:
+#     rootFolderOrFile: '.next'
+#     includeRootFolder: true
+#     archiveType: 'tar'
+#     archiveFile: '$(Build.ArtifactStagingDirectory)/rbs-Ip-$(Build.BuildId).tar.gz'
+#     replaceExistingArchive: true
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: |
+      **/*tar.gz
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: '
+  inputs:
+       PathtoPublish: '$(Build.ArtifactStagingDirectory)/apply-ui-$(Build.BuildId).tar.gz'
+       condition: succeededOrFailed()
