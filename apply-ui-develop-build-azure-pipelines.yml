@@ -19,7 +19,7 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install
+    npm install --force
     npm run build
     mkdir apply-ui
     tar -czvf apply-ui-$(Build.BuildId).tar.gz .next public next.config.js package.json
