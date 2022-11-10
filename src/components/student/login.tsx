@@ -4,28 +4,80 @@ import styled from "styled-components";
 import StyledButton from "../button/button";
 import { GreenText } from "../common/common";
 import { useRouter } from "next/router";
-import OtpInput from "../Form/Inputs/otpInput";
+import OtpInput from "../Input/otpInput";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
-import Link from "next/link";
+import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import axios from "./../../service/Api";
+import { AnyCnameRecord } from "dns";
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
+  const [countryCode, setCountryCode] = useState<any>("SA");
   const [otp, setOtp] = useState<string>("");
   const [isProceed, setProceed] = useState<boolean>(false);
   const [showToast, setToast] = useState<boolean>(false);
+  const [toastMsg, setToastMsg] = useState<any>({
+    message: "",
+    success: true,
+  });
   const router = useRouter();
-
   useEffect(() => {
     const isAuthenticate =
       JSON.parse(sessionStorage?.getItem("studentMobile") as any)?.mobileNumber
         ?.length === 10 || null;
-    console.log({ isAuthenticate });
     // if (isAuthenticate) {
     //   router.push("test");
     // }
   }, []);
+  const isNumberValid =
+    mobileNumber &&
+    mobileNumber?.length > 0 &&
+    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length === 10;
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = () => {
     setProceed(true);
+    const number = parsePhoneNumber(mobileNumber, countryCode);
+    axios
+      .post("/register", {
+        mobileNumber: number?.nationalNumber,
+        mobileCountryCode: number?.countryCallingCode,
+      })
+      .then(({ data }) => {
+        sessionStorage.setItem(
+          "studentMobile",
+          JSON.stringify({
+            mobileNumber: number?.nationalNumber,
+            countryCodeNumber: number?.countryCallingCode,
+            countryCode: countryCode,
+          })
+        );
+        sessionStorage.setItem(
+          "studentId",
+          JSON.stringify({ id: data?.data?.id })
+        );
+        setProceed(true);
+        setToast(true);
+        setToastMsg((prevState: any) => ({
+          ...prevState,
+          message: "OTP number sent successfully",
+        }));
+      })
+      .catch(({ response }) => {
+        setToastMsg(() => ({
+          success: false,
+          message: response?.data?.message,
+        }));
+
+        setToast(false);
+      });
+  };
+  const onCountryChange = (value: string | any) => {
+    if (value) {
+      setCountryCode(value);
+    }
+  };
+  const setMobileNumberValue = (value: string) => {
+    setMobileNumber(value);
   };
   const EnterMobNumber = () => {
     return (
@@ -47,16 +99,19 @@ const StudentLogin = () => {
           <Grid item xs={12}>
             <Item>
               {" "}
-              <CountryBtn>Test</CountryBtn>{" "}
-              <StyledInput
-                error={mobileNumber.length > 10}
-                id="mobile-number"
-                autoFocus
+              <PhoneInput
+                id="login1"
+                international
+                countryCallingCodeEditable={false}
+                defaultCountry={countryCode}
+                placeholder="Select Country Code*"
+                onCountryChange={(countryCode: any) =>
+                  onCountryChange(countryCode)
+                }
                 value={mobileNumber}
-                onChange={(e: any) => {
-                  const result = e.target.value.replace(/\D/g, "");
-                  if (result.length > 10) return;
-                  setMobileNumber(result);
+                autoFocus={true}
+                onChange={(value: string) => {
+                  setMobileNumberValue(value);
                 }}
               />
             </Item>
@@ -65,7 +120,7 @@ const StudentLogin = () => {
             <Item>
               {" "}
               <StyledButton
-                disabled={mobileNumber.length > 10}
+                disabled={!isNumberValid}
                 onClick={() => {
                   onProceed();
                 }}
@@ -108,7 +163,7 @@ const StudentLogin = () => {
           <Grid item xs={12}>
             <Item>
               <StyledButton
-                disabled={mobileNumber.length > 10}
+                disabled={otp.length < 4}
                 onClick={() => {
                   verifyNumber();
                 }}
@@ -127,62 +182,78 @@ const StudentLogin = () => {
   };
 
   const verifyNumber = () => {
-    sessionStorage.setItem("studentMobile", JSON.stringify({ mobileNumber }));
-    setProceed(false);
-    setToast(!showToast);
+    const mobileNumber = JSON.parse(
+      sessionStorage.getItem("studentMobile") as any
+    )?.mobileNumber!;
+    axios
+      .post("/verify-otp", { mobileNumber, otp: +otp })
+      .then(({ data }) => {
+        sessionStorage.setItem("authenticate", JSON.stringify("true"));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setTimeout(() => {
+      setProceed(false);
+      router.push("/student-registration-form/application-form");
+    }, 1000);
   };
+
+  const { message, success } = toastMsg;
   return (
     <>
       <ImageContainer>
-        <Heading>
-          <div>
-            <img src={"/assets/images/RBS_logo_1_white.svg"} />
-          </div>
-          Regenesys Application Form
-        </Heading>
-        <ApplicationFormContainer>
-          {!isProceed && <EnterMobNumber />}
-          {isProceed && <EnterOtp />}
-        </ApplicationFormContainer>
-        <StyleFooter>
-          <span>
-            Copyright @ 2015 - 2022{" "}
-            <a href="https://www.regenesys.net/">Regenesys Business School</a>
-          </span>
-        </StyleFooter>
-        <Snackbar
-          autoHideDuration={2000}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          open={showToast}
-          onClose={() => {
-            setToast(!showToast);
-          }}
-          key={"bottom"}
-        >
-          <ToasterContainer>
-            <CheckCircleRoundedIcon
-              style={{ color: "#0eb276", fontSize: "30px" }}
-            />
-            <SuccessMsgContainer>
-              <StyledLink>
-                Success
-                <br />
-                <span
-                  style={{
-                    color: "black",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                  }}
-                >
-                  OTP number reset successfully
-                </span>
-              </StyledLink>
-            </SuccessMsgContainer>
-          </ToasterContainer>
-        </Snackbar>
+        <>
+          <Heading>
+            <div>
+              <img src={"/assets/images/RBS_logo_1_white.svg"} />
+            </div>
+            Regenesys Application Form
+          </Heading>
+          <ApplicationFormContainer isProceed={isProceed}>
+            {!isProceed && <EnterMobNumber />}
+            {isProceed && <EnterOtp />}
+          </ApplicationFormContainer>
+          <StyleFooter>
+            <span>
+              Copyright @ 2015 - 2022{" "}
+              <a href="https://www.regenesys.net/">Regenesys Business School</a>
+            </span>
+          </StyleFooter>
+          <Snackbar
+            autoHideDuration={1000}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            open={showToast}
+            onClose={() => {
+              setToast(!showToast);
+            }}
+            key={"bottom"}
+          >
+            <ToasterContainer success={success}>
+              <CheckCircleRoundedIcon
+                style={{ color: "#0eb276", fontSize: "30px" }}
+              />
+              <SuccessMsgContainer>
+                <StyledLink>
+                  {success ? "Success" : "Error"}
+                  <br />
+                  <span
+                    style={{
+                      color: "black",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {message}
+                  </span>
+                </StyledLink>
+              </SuccessMsgContainer>
+            </ToasterContainer>
+          </Snackbar>
+        </>
       </ImageContainer>
     </>
   );
@@ -192,12 +263,12 @@ export default StudentLogin;
 const SuccessMsgContainer = styled.div`
   display: flex;
 `;
-const ToasterContainer = styled.div`
+const ToasterContainer = styled.div<any>`
   display: flex;
   column-gap: 10px;
   width: 310px;
-  background: #e6f4e7;
-  height: 35px;
+  background: ${({ success }) => (success ? "#e6f4e7" : "#d9534f")};
+  height: 75px;
   color: white;
   padding: 1rem;
   display: flex;
@@ -212,10 +283,21 @@ const StyleFooter = styled.div`
   a:hover {
     color: #fcd400;
   }
+  @media screen and (min-width: 410px) and (max-width: 450px) {
+    bottom: 260px;
+    font-size: 14px;
+  }
+  @media screen and (min-width: 380px) and (max-width: 395px) {
+    bottom: 160px;
+    font-size: 14px;
+  }
+  @media screen and (min-width: 320px) and (max-width: 380px) {
+    bottom: 60px;
+    font-size: 12px;
+  }
 `;
-const ApplicationFormContainer = styled.div`
+const ApplicationFormContainer = styled.div<any>`
   position: absolute;
-  // width: 300px;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -224,7 +306,7 @@ const ApplicationFormContainer = styled.div`
   padding: 0.8rem;
   border-radius: 3px;
   @media (max-width: 400px) {
-    top: 55%;
+    top: ${({ isProceed }) => (isProceed ? "62%" : "55%")};
   }
 `;
 
@@ -239,9 +321,6 @@ const Item = styled.div`
 
 const Title = styled(GreenText)``;
 
-const CountryBtn = styled.span`
-  background: grey;
-`;
 const Heading = styled.span`
   color: #fcd400;
   font-size: 18px;
@@ -252,14 +331,13 @@ const Heading = styled.span`
   top: 5%;
 `;
 
-const StyledLink = styled.span`
+export const StyledLink = styled.span`
   color: #008554;
   cursor: pointer;
 `;
 
-const StyledInput = styled(Input)<any>``;
 const url = "/assets/images/bg.jpg";
-
+const MainContainer = styled.div``;
 const ImageContainer = styled.div`
   width: 100%;
   height: 100vh;
@@ -270,4 +348,5 @@ const ImageContainer = styled.div`
   background-size: cover;
   display: flex;
   justify-content: center;
+  overflow-y: scroll;
 `;

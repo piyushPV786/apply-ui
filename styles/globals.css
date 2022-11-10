@@ -1,14 +1,36 @@
 body {
   margin: 0 auto;
+  font-family: roboto;
+  font-size: 14px;
 }
-
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: block;
+  background: url("/assets/images/date-svgrepo-com.png") no-repeat;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  border-width: thin;
+}
+.PhoneInputCountry {
+  padding: 5px;
+  background: #dde1e3;
+}
+.form-check .form-check-input {
+  float: none !important;
+}
+.form-check-input:checked {
+  background-color: #008554 !important;
+  border-color: #008554 !important;
+}
 .otp-group {
   display: inline-flex;
   width: 100%;
   max-width: 260px;
   column-gap: 10px;
 }
-
+.MuiAccordion-rounded {
+  margin: 1rem 0 !important;
+}
 .otp-input {
   width: 100%;
   height: 50px;
@@ -19,4 +41,7 @@ body {
   font-size: 20px;
   font-weight: bold;
   line-height: 1;
+}
+.PhoneInputCountry {
+  margin-right: 0 !important;
 }
