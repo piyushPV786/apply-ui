@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: `https://development-api-apply.regenesys.net/api/v1/auth`,
+  baseURL: `${process.env.auth_Url}`,
 });
 
 export const AuthApi = axios.create({
-  baseURL: `https://development-api-apply.regenesys.net/api/v1/`,
+  baseURL: `${process.env.base_Url}`,
 });
