@@ -22,6 +22,7 @@ export const GreenFormHeading = styled.p`
 `;
 
 export const Green = "#008554";
+export const DefaultGrey = "#dde1e3";
 export const StyledLabel = (props: any) => {
   const {
     required = false,

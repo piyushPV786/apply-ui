@@ -99,14 +99,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                     <select
                       className="form-select"
                       aria-label="Default select example"
-                      value={employmentStatusVal}
-                      defaultValue={employmentStatusVal}
                       {...register(`${employmentStatus}`, { required: true })}
                     >
                       {employmentStatusArr &&
                         employmentStatusArr.map(({ id, status }) => (
                           <option
-                            selected={employmentStatusVal}
+                            selected={id === employmentStatusVal}
                             key={id}
                             value={Number(id)}
                           >
@@ -129,7 +127,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                       {employerArr &&
                         employerArr.map(({ id, employer }) => (
                           <option
-                            selected={employmentStatusVal}
+                            selected={id === employerVal}
                             key={id}
                             value={Number(id)}
                           >
@@ -159,13 +157,15 @@ export const EmployedForm = (props: IEmployeProps) => {
                     <select
                       className="form-select"
                       aria-label="Default select example"
-                      value={industryVal}
-                      defaultValue={industryVal}
                       {...register(`${industry}`, { required: true })}
                     >
                       {employmentIndustries &&
                         employmentIndustries.map(({ id, industry }) => (
-                          <option selected={industryVal} key={id} value={Number(id)}>
+                          <option
+                            selected={id === industryVal}
+                            key={id}
+                            value={Number(id)}
+                          >
                             {industry}
                           </option>
                         ))}

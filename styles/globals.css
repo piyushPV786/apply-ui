@@ -11,6 +11,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   height: 20px;
   border-width: thin;
 }
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none!important;
+}
+.invalid-feedback {
+  display: block!important;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #dc3545;
+}
 .PhoneInputCountry {
   padding: 5px;
   background: #dde1e3;

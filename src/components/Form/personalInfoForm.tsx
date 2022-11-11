@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {
@@ -12,6 +12,7 @@ import PhoneInput, {
   parsePhoneNumber,
 } from "react-phone-number-input";
 import { Gender, Language, Nationality, Race } from "../common/types";
+import { isValidEmail } from "../../Util/Util";
 interface IPersonalInfoProps {
   genders: Gender[];
   nationalities: Nationality[];
@@ -20,19 +21,22 @@ interface IPersonalInfoProps {
 }
 const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const { genders, nationalities, homeLanguage, race } = { ...props };
-  const { control, setValue, register, watch } = useFormContext();
+  const {
+    setValue,
+    register,
+    watch,
+    formState: { errors, touchedFields },
+  } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>();
   const [mobNum, setMobile] = useState<any>("");
   useEffect(() => {
     const userNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
-    console.log({userNumberDetail})
     setMobile(userNumberDetail?.mobileNumber);
     setCountryCode(userNumberDetail?.countryCode);
     // setValue("mobileNumber", userNumber);
   }, []);
-  console.log({countryCodeRef})
   const {
     firstName,
     middleName,
@@ -81,6 +85,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="firstName"
                     placeholder="e.g Robert"
                   />
+                  {touchedFields?.firstName && errors?.firstName && (
+                    <div className="invalid-feedback">
+                      Please enter First Name
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -109,6 +118,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="lastName"
                     placeholder=""
                   />
+                  {touchedFields?.lastName && errors?.lastName && (
+                    <div className="invalid-feedback">
+                      Please enter Last Name
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -119,17 +133,22 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <select
                     className="form-select"
                     aria-label="Default select example"
-                    value={genderId}
-                    defaultValue={genderId}
-                    {...register("gender", { required: true })}
+                    {...register("genderId", { required: true })}
                   >
                     {genders &&
                       genders.map(({ id, gender }) => (
-                        <option key={id} value={Number(id)}>
+                        <option
+                          selected={id === genderId}
+                          key={id}
+                          value={Number(id)}
+                        >
                           {gender}
                         </option>
                       ))}
                   </select>
+                  {touchedFields?.gender && errors?.gender && (
+                    <div className="invalid-feedback">Please enter Gender</div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -144,6 +163,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="exampleFormControlInput1"
                     placeholder=""
                   />
+                  {touchedFields?.dateOfBirth && errors?.dateOfBirth && (
+                    <div className="invalid-feedback">
+                      Please enter Date of Birth
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -152,12 +176,22 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <input
                     value={email}
                     defaultValue={email}
-                    {...register("email", { required: true })}
+                    {...register("email", {
+                      required: true,
+                      validate: isValidEmail,
+                    })}
                     type="email"
                     className="form-control"
                     id="email"
                     placeholder=""
                   />
+                  {touchedFields?.email && errors?.email && (
+                    <div className="invalid-feedback">
+                      {errors?.email?.type == "validate"
+                        ? "you have entered an invalid email address. Please try again"
+                        : "Please enter Email"}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -204,6 +238,12 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="identificationPassportNumber"
                     placeholder=""
                   />
+                  {touchedFields?.identificationPassportNumber &&
+                    errors?.identificationPassportNumber && (
+                      <div className="invalid-feedback">
+                        Please enter Identification / Passport Number
+                      </div>
+                    )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -212,17 +252,24 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <select
                     className="form-select"
                     aria-label="Default select example"
-                    value={nationalityId}
-                    defaultValue={nationalityId}
                     {...register("nationalityId", { required: true })}
                   >
                     {nationalities &&
                       nationalities.map(({ id, nationality }) => (
-                        <option key={id} value={Number(id)}>
+                        <option
+                          selected={id === nationalityId}
+                          key={id}
+                          value={Number(id)}
+                        >
                           {nationality}
                         </option>
                       ))}
                   </select>
+                  {touchedFields?.nationalityId && errors?.nationalityId && (
+                    <div className="invalid-feedback">
+                      Please enter Nationality
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -233,8 +280,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <select
                     className="form-select"
                     aria-label="Default select example"
-                    value={homeLanguageId}
-                    defaultValue={homeLanguageId}
                     {...register("homeLanguageId", { required: true })}
                   >
                     <option selected disabled>
@@ -242,11 +287,20 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     </option>
                     {homeLanguage &&
                       homeLanguage.map(({ id, language }) => (
-                        <option key={id} value={Number(id)}>
+                        <option
+                          selected={id === homeLanguageId}
+                          key={id}
+                          value={Number(id)}
+                        >
                           {language}
                         </option>
                       ))}
                   </select>
+                  {touchedFields?.homeLanguageId && errors?.homeLanguageId && (
+                    <div className="invalid-feedback">
+                      Please enter Home Language
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -255,17 +309,22 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <select
                     className="form-select"
                     aria-label="Default select example"
-                    value={raceId}
-                    defaultValue={raceId}
                     {...register("raceId", { required: true })}
                   >
                     {race &&
                       race.map(({ id, race }) => (
-                        <option key={id} value={Number(id)}>
+                        <option
+                          selected={id === raceId}
+                          key={id}
+                          value={Number(id)}
+                        >
                           {race}
                         </option>
                       ))}
                   </select>
+                  {touchedFields?.raceId && errors?.raceId && (
+                    <div className="invalid-feedback">Please enter Race</div>
+                  )}
                 </div>
               </div>
             </div>

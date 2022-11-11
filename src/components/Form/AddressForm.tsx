@@ -7,29 +7,40 @@ import {
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
-const RESEDENTIALADDRESS = "address";
-const resPostalAddress = `${RESEDENTIALADDRESS}.residentialAddress`;
-const resCountry = `${RESEDENTIALADDRESS}.residentialCountry`;
-const resPostalCode = `${RESEDENTIALADDRESS}.residentialZipCode`;
-const resCity = `${RESEDENTIALADDRESS}.residentialCity`;
-const resState = `${RESEDENTIALADDRESS}.residentialState`;
+const Address = "address";
+const resPostalAddress = `${Address}.residentialAddress`;
+const resCountry = `${Address}.residentialCountry`;
+const resPostalCode = `${Address}.residentialZipCode`;
+const resCity = `${Address}.residentialCity`;
+const resState = `${Address}.residentialState`;
+const postalAddress = `${Address}.postalAddress`;
+const postalCountry = `${Address}.postalCountry`;
+const postalZipCode = `${Address}.postalZipCode`;
+const postalCity = `${Address}.postalCity`;
+const postalState = `${Address}.postalState`;
+const isSameAsPostalAddress = `${Address}.isSameAsPostalAddress`;
 export const AddressForm = () => {
-  const { setValue, register, watch, getValues } = useFormContext();
-
   const {
-    postalAddress,
-    postalCountry,
-    postalZipCode,
-    postalCity,
-    postalState,
-    isSameAsPostalAddress = false,
-  } = watch();
+    setValue,
+    register,
+    watch,
+    formState: { errors, touchedFields },
+  } = useFormContext();
+  const error = errors as any;
+  const touchedField = touchedFields as any;
 
   const resPostalAddressVal: string = watch(resPostalAddress);
   const resCountryVal: string = watch(resCountry);
   const resPostalCodeVal: string = watch(resPostalCode);
   const resCityVal: string = watch(resCity);
   const resStateVal: string = watch(resState);
+  const isSameAsPostalAddressVal = watch(isSameAsPostalAddress,false);
+
+  const postalAddressVal: string = watch(postalAddress);
+  const postalCountryVal: string = watch(postalCountry);
+  const postalZipCodeVal: string = watch(postalZipCode);
+  const postalCityVal: string = watch(postalCity);
+  const postalStateVal: string = watch(postalState);
   return (
     <>
       <StyledAccordion>
@@ -54,14 +65,19 @@ export const AddressForm = () => {
                 <div className="mb-4">
                   <StyledLabel required>Postal Address</StyledLabel>
                   <input
-                    value={postalAddress}
-                    defaultValue={postalAddress}
+                    value={postalAddressVal}
+                    defaultValue={postalAddressVal}
                     type="text"
-                    {...register("postalAddress", { required: true })}
+                    {...register(`${postalAddress}`, { required: true })}
                     className="form-control"
                     id="postalAddress"
                     placeholder="e.g 10 church street"
                   />
+                  {touchedField?.postalAddress && error?.postalAddress && (
+                    <div className="invalid-feedback">
+                      Please enter Postal Address
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -70,28 +86,42 @@ export const AddressForm = () => {
                 <div className="mb-4">
                   <select
                     className="form-select"
-                    value={postalCountry}
-                    defaultValue={postalCountry}
-                    {...register("postalCountry", { required: true })}
+                    {...register(`${postalCity}`, { required: true })}
+                    value={postalCityVal}
                   >
-                    <option selected>Select Country</option>
+                    <option selected={postalCityVal?.length > 0}>Select Country</option>
                     <option value="India">India</option>
                     <option value="USA">USA</option>
                   </select>
+                  {touchedField?.postalCountry && error?.postalCountry && (
+                    <div className="invalid-feedback">
+                      Please enter Postal Country
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel hideLabel={true}></StyledLabel>
                   <input
-                    value={+postalZipCode}
-                    defaultValue={+postalZipCode}
-                    {...register("postalZipCode", { required: true })}
-                    type="text"
+                    value={postalZipCodeVal}
+                    {...register(`${postalZipCode}`, {
+                      required: true,
+                      maxLength: 5,
+                    })}
+                    type="number"
+                    maxLength={5}
                     className="form-control"
                     id="postalZipCode"
                     placeholder="Enter Zip/Postal Code"
                   />
+                  {touchedField?.postalZipCode && error?.postalZipCode && (
+                    <div className="invalid-feedback">
+                      {error.postalZipCode.type === "maxLength"
+                        ? "Max length exceeded"
+                        : "Please enter Zip/Postal Code"}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -100,29 +130,37 @@ export const AddressForm = () => {
                 <div className="mb-4">
                   <select
                     className="form-select"
-                    value={postalCity}
-                    defaultValue={postalCity}
-                    {...register("postalCity", { required: true })}
+                    value={postalCityVal}
+                    {...register(`${postalCity}`, { required: true })}
                   >
-                    <option selected>Select City</option>
+                    <option disabled>Select City</option>
                     <option value="Mumbai">Mumbai</option>
                     <option value="Delhi">Delhi</option>
                   </select>
+                  {touchedField?.postalCity && error?.postalCity && (
+                    <div className="invalid-feedback">Please enter City</div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
                   <select
                     className="form-select"
-                    value={postalState}
-                    defaultValue={postalState}
-                    {...register("postalState", { required: true })}
+                    value={postalStateVal}
+                    {...register(`${postalState}`, { required: true })}
                   >
-                    <option selected>Select State/ Province</option>
+                    <option disabled selected>
+                      Select State/ Province
+                    </option>
                     <option value="MP">MP</option>
                     <option value="UP">UP</option>
                     <option value="Other">Other</option>
                   </select>
+                  {touchedField?.postalState && error?.postalState && (
+                    <div className="invalid-feedback">
+                      Please enter Postal State
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -133,17 +171,23 @@ export const AddressForm = () => {
                     className="form-check-input me-2"
                     type="checkbox"
                     id="flexCheckDefault"
+                    checked={isSameAsPostalAddressVal}
+                    {...register(`${isSameAsPostalAddress}`, {
+                      required: false,
+                    })}
                     onClick={(e) => {
                       setValue(
-                        "isSameAsPostalAddress",
+                        `${isSameAsPostalAddress}`,
                         e?.currentTarget?.checked
                       );
                       if (e?.currentTarget?.checked) {
-                        setValue(`${resPostalAddress}`, postalAddress);
-                        setValue(`${resPostalCode}`, postalZipCode);
+                        setValue(`${resPostalAddress}`, postalAddressVal);
+                        setValue(`${resPostalCode}`, postalZipCodeVal);
+                        setValue(`${resCity}`, postalCityVal);
+                        setValue(`${resState}`, postalStateVal);
+                        setValue(`${resCountry}`, postalCountryVal);
                       }
                     }}
-                    {...register("isSameAsPostalAddress", {})}
                   />
                   <label className="form-check-label ms-2">
                     Select if same with Postal Address
@@ -164,6 +208,12 @@ export const AddressForm = () => {
                       id="postalAddress"
                       placeholder="e.g 10 church street"
                     />
+                    {touchedField?.address?.resPostalAddress &&
+                      error?.address?.resPostalAddress && (
+                        <div className="invalid-feedback">
+                          Please enter Residential Address
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -172,33 +222,50 @@ export const AddressForm = () => {
                   <div className="mb-4">
                     <select
                       className="form-select"
-                      value={
-                        isSameAsPostalAddress ? postalCountry : resCountryVal
-                      }
-                      defaultValue={
-                        isSameAsPostalAddress ? postalCountry : resCountryVal
-                      }
                       {...register(`${resCountry}`, { required: true })}
                     >
-                      <option selected>Select Country</option>
+                      <option
+                        value={resCountryVal}
+                        selected={resCountryVal?.length > 0}
+                      >
+                        Select Country
+                      </option>
                       <option value="India">India</option>
-                      <option value="UAE">UAE</option>
-                      <option value="Other">Other</option>
+                      {/* <option value="UAE">UAE</option>
+                      <option value="Other">Other</option> */}
                     </select>
+                    {touchedField?.address?.resCountry &&
+                      error?.address?.resCountry && (
+                        <div className="invalid-feedback">
+                          Please enter Residential Country
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
                     <StyledLabel hideLabel={true}></StyledLabel>
                     <input
-                      value={+resPostalCodeVal}
-                      defaultValue={+resPostalCodeVal}
-                      {...register(`${resPostalCode}`, { required: true })}
-                      type="text"
+                      value={resPostalCodeVal}
+                      defaultValue={resPostalCodeVal}
+                      {...register(`${resPostalCode}`, {
+                        required: true,
+                        maxLength: 5,
+                      })}
+                      type="number"
                       className="form-control"
                       id="postalCode"
                       placeholder="Enter Zip/Postal Code"
                     />
+                    {touchedField?.address?.residentialZipCode &&
+                      error?.address?.residentialZipCode && (
+                        <div className="invalid-feedback">
+                          {error?.address.residentialZipCode.type ===
+                          "maxLength"
+                            ? "Max length exceeded"
+                            : "Please enter Zip/Postal Code"}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -207,32 +274,46 @@ export const AddressForm = () => {
                   <div className="mb-4">
                     <select
                       className="form-select"
-                      value={isSameAsPostalAddress ? postalCity : resCityVal}
-                      defaultValue={
-                        isSameAsPostalAddress ? postalCity : resCityVal
-                      }
                       {...register(`${resCity}`, { required: true })}
                     >
-                      <option selected>Select City</option>
+                      <option
+                        value={resCityVal}
+                        selected={resCityVal?.length > 0}
+                      >
+                        Select City
+                      </option>
                       <option value="Mumbai">Mumbai</option>
                     </select>
+                    {touchedField?.address?.resCity &&
+                      error?.address?.resCity && (
+                        <div className="invalid-feedback">
+                          Please enter Residential City
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
                     <select
                       className="form-select"
-                      value={isSameAsPostalAddress ? postalState : resStateVal}
-                      defaultValue={
-                        isSameAsPostalAddress ? postalState : resStateVal
-                      }
                       {...register(`${resState}`, { required: true })}
                     >
-                      <option selected>Select State/ Province</option>
+                      <option
+                        value={resStateVal}
+                        selected={resStateVal?.length > 0}
+                      >
+                        Select State/ Province
+                      </option>
                       <option value="MP">MP</option>
                       <option value="UP">UP</option>
                       <option value="Other">Other</option>
                     </select>
+                    {touchedField?.address?.resState &&
+                      error?.address?.resState && (
+                        <div className="invalid-feedback">
+                          Please enter Residential State
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>

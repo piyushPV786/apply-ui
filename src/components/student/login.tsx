@@ -22,12 +22,15 @@ const StudentLogin = () => {
   });
   const router = useRouter();
   useEffect(() => {
-    const isAuthenticate =
-      JSON.parse(sessionStorage?.getItem("studentMobile") as any)?.mobileNumber
-        ?.length === 10 || null;
-    // if (isAuthenticate) {
-    //   router.push("test");
-    // }
+    const isAuthenticate = JSON.parse(
+      sessionStorage?.getItem("authenticate") as any
+    );
+    const studentId = JSON.parse(
+      sessionStorage?.getItem("studentId") as any
+    )?.id;
+    if (studentId && isAuthenticate) {
+      router.push("/student-registration-form/application-form");
+    }
   }, []);
   const isNumberValid =
     mobileNumber &&
@@ -51,24 +54,20 @@ const StudentLogin = () => {
             countryCode: countryCode,
           })
         );
-        sessionStorage.setItem(
-          "studentId",
-          JSON.stringify({ id: data?.data?.id })
-        );
+
         setProceed(true);
-        setToast(true);
         setToastMsg((prevState: any) => ({
           ...prevState,
           message: "OTP number sent successfully",
         }));
+        setToast(true);
       })
       .catch(({ response }) => {
         setToastMsg(() => ({
           success: false,
           message: response?.data?.message,
         }));
-
-        setToast(false);
+        setToast(true);
       });
   };
   const onCountryChange = (value: string | any) => {
@@ -188,15 +187,23 @@ const StudentLogin = () => {
     axios
       .post("/verify-otp", { mobileNumber, otp: +otp })
       .then(({ data }) => {
+        sessionStorage.setItem(
+          "studentId",
+          JSON.stringify({ id: data?.data?.id })
+        );
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
+        setTimeout(() => {
+          router.push("/student-registration-form/application-form");
+        }, 1000);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(({ response }) => {
+        console.log(response);
+        setToastMsg(() => ({
+          success: false,
+          message: response?.data?.message,
+        }));
+        setToast(true);
       });
-    setTimeout(() => {
-      setProceed(false);
-      router.push("/student-registration-form/application-form");
-    }, 1000);
   };
 
   const { message, success } = toastMsg;

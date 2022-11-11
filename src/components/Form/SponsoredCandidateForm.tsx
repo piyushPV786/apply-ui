@@ -7,9 +7,7 @@ import {
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
-import PhoneInput, {
-  getCountryCallingCode,
-} from "react-phone-number-input";
+import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { Mode } from "../common/types";
 
 const SponsorCandidateDetail = "sponsor";
@@ -86,13 +84,16 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     <select
                       className="form-select"
                       aria-label="Default select example"
-                      value={sponsorModeVal}
-                      defaultValue={sponsorModeVal}
                       {...register(`${sponsorMode}`, { required: true })}
                     >
                       {sponsorModeArr &&
                         sponsorModeArr.map(({ id, mode }) => (
-                          <option value={Number(id)}>{mode}</option>
+                          <option
+                            selected={id === sponsorModeVal}
+                            value={Number(id)}
+                          >
+                            {mode}
+                          </option>
                         ))}
                     </select>
                   </div>
