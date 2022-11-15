@@ -46,3 +46,15 @@ export const isValidEmail = (email: string) =>
   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
     email
   );
+
+export const isInvalidFileType = (type: string) => {
+  switch (type) {
+    case "image/png":
+      return false;
+    case "application/pdf":
+      return false;
+    default:
+      "text/xml";
+      return true;
+  }
+};

@@ -31,6 +31,8 @@ import {
 import { mapFormData } from "../../Util/Util";
 import { useRouter } from "next/router";
 import Payment from "../../components/payment/payment";
+import PaymentOption from "../../components/payment/payment-options";
+import Header from "../../components/common/header";
 
 const ApplicationForm = (props: any) => {
   const router = useRouter();
@@ -59,7 +61,19 @@ const ApplicationForm = (props: any) => {
   } = methods;
   const allFields = watch();
 
-  // console.log({allFields})
+  useEffect(() => {
+    if (window && router.query?.isFormSubmittedAlready) {
+      const isFormSubmittedAlready = JSON.parse(
+        router?.query?.isFormSubmittedAlready as any
+      );
+      const isPaymentFail = JSON.parse(router?.query?.isPaymentFail as any);
+      if (isFormSubmittedAlready && isPaymentFail) {
+        setActiveStep(1);
+        setSubmitted(true);
+      }
+    }
+  }, [router.query]);
+
   useEffect(() => {
     if (studentData) {
       mapFormDefaultValue();
@@ -110,15 +124,12 @@ const ApplicationForm = (props: any) => {
       },
       isDrafSave
     );
-    console.log({ request });
 
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
     )?.id;
     AuthApi.put(`/user/${studentId}`, request)
-      .then(({ data }) => {
-        console.log({ data });
-      })
+      .then(({ data }) => {})
       .catch((err) => console.log(err));
   };
   const onSubmit = (data: any, isDrafSave?: boolean) => {
@@ -185,55 +196,22 @@ const ApplicationForm = (props: any) => {
   const employmentStatus = masterData?.employmentStatus as EmploymentStatus[];
   const employmentIndustries =
     masterData?.employmentIndustries as EmploymentIndustry[];
+
+  const onSkipForNowOnPayment = () => {};
+
   return (
     <MainContainer>
-      <Grid>
-        <CommonHeader>
-          <Container>
-            <div className="row">
-              <div className="col-md-6">
-                <LogoContainer>
-                  <div
-                    style={{
-                      borderRight: "3px solid white",
-                      color: "white",
-                      paddingRight: "0.5rem",
-                    }}
-                  >
-                    <img
-                      src={"/assets/images/RBS_logo_2_white.png"}
-                      width="180px"
-                    />
-                  </div>
-                  <div>
-                    <CustomStyledLink>
-                      Regenesys Application Form
-                    </CustomStyledLink>
-                  </div>
-                </LogoContainer>
-              </div>
-              <div className="col-md-6">
-                <UserInfoConatiner>
-                  <div className="mobNum" style={{ color: "white" }}>
-                    Hi {allFields && allFields?.mobileNumber}
-                  </div>
-                  <div>
-                    <CustomStyledLink className="mobNum">
-                      Regenesys Application Form
-                    </CustomStyledLink>
-                  </div>
-                </UserInfoConatiner>
-              </div>
-            </div>
-          </Container>
-        </CommonHeader>
-      </Grid>
+      <Header />
       <StepperContainer>
-        <StepperComponent isFormSubmitted={isFormSubmitted} isPaymentDone={isPaymentDone}  active={activeStep} />
+        <StepperComponent
+          isFormSubmitted={isFormSubmitted}
+          isPaymentDone={isPaymentDone}
+          active={activeStep}
+        />
       </StepperContainer>
       <>
-        <FormContainer>
-          <FormProvider {...methods}>
+        <FormProvider {...methods}>
+          <FormContainer>
             {" "}
             {!isFormSubmitted && (
               <Container>
@@ -266,18 +244,20 @@ const ApplicationForm = (props: any) => {
                 </div>
               </Container>
             )}
+          </FormContainer>
+          <FormContainer>
             {isFormSubmitted && (
               <>
                 <Payment
                   qualifications={qualifications}
                   studyMode={studyModes}
-                  // navigateBack={navigateBack}
                   navigateNext={navigateNext}
+                  onSkipForNowOnPayment={onSkipForNowOnPayment}
                 />
               </>
             )}
-          </FormProvider>
-        </FormContainer>
+          </FormContainer>
+        </FormProvider>
         <FooterConatiner className="container-fluid d-flex justify-content-center mt-1">
           <div className="row">
             <div className="col-md-12">
@@ -328,7 +308,7 @@ const ApplicationForm = (props: any) => {
                 </>
               )}
               {isFormSubmitted && activeStep === 1 && (
-                <div className="mt-4 text-center">
+                <div className="mt-5 text-center">
                   <StyledButton
                     onClick={navigateBack}
                     type="button"
@@ -347,6 +327,9 @@ const ApplicationForm = (props: any) => {
 };
 
 export default ApplicationForm;
+const PaymentContainer = styled.div`
+  margin: 1rem 5rem;
+`;
 export const MainContainer = styled.div`
   background: #dde1e3;
   width: 100%;
@@ -371,49 +354,14 @@ const FooterConatiner = styled.div`
     height: 100%;
   }
 `;
-const CustomStyledLink = styled(StyledLink)`
-  font-size: 24px;
-  font-weight: 700px;
-  color: #ffd600 !important;
-  @media (max-width: 510px) {
-    font-size: 15px;
-  }
-`;
+
 export const FormContainer = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
+  flex-wrap: wrap;
 `;
 
-const CommonHeader = styled.div`
-  width: 100%;
-  padding: 0.5rem;
-  background: #008554;
-`;
-
-const LogoContainer = styled.div`
-  display: flex;
-  column-gap: 10px;
-  width: 100%;
-  @media (max-width: 510px) {
-    width: 100%;
-    img {
-      width: 142px;
-    }
-  }
-`;
-
-const UserInfoConatiner = styled.div`
-  text-align: right;
-  .mobNum {
-    font-size: 16px;
-  }
-  @media (max-width: 510px) {
-    .mobNum {
-      font-size: 14px;
-    }
-  }
-`;
 const StyleFooter = styled.div`
   osition: relative;
   color: white;
