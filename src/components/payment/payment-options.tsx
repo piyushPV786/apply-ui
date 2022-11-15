@@ -24,7 +24,6 @@ const PaymentCard = (props: any) => {
 const PaymentOption = (props: any) => {
   const { watch, register } = useFormContext();
   const allFields = watch();
-  console.log({ allFields });
 
   return (
     <>

@@ -26,15 +26,14 @@ export const AddressForm = () => {
     watch,
     formState: { errors, touchedFields },
   } = useFormContext();
-  const error = errors as any;
-  const touchedField = touchedFields as any;
-
+  const error = errors[Address] as any;
+  const touchedField = touchedFields[Address] as any;
   const resPostalAddressVal: string = watch(resPostalAddress);
   const resCountryVal: string = watch(resCountry);
   const resPostalCodeVal: string = watch(resPostalCode);
   const resCityVal: string = watch(resCity);
   const resStateVal: string = watch(resState);
-  const isSameAsPostalAddressVal = watch(isSameAsPostalAddress,false);
+  const isSameAsPostalAddressVal = watch(isSameAsPostalAddress, false);
 
   const postalAddressVal: string = watch(postalAddress);
   const postalCountryVal: string = watch(postalCountry);
@@ -89,7 +88,9 @@ export const AddressForm = () => {
                     {...register(`${postalCity}`, { required: true })}
                     value={postalCityVal}
                   >
-                    <option selected={postalCityVal?.length > 0}>Select Country</option>
+                    <option selected={postalCityVal?.length > 0}>
+                      Select Country
+                    </option>
                     <option value="India">India</option>
                     <option value="USA">USA</option>
                   </select>
@@ -208,8 +209,8 @@ export const AddressForm = () => {
                       id="postalAddress"
                       placeholder="e.g 10 church street"
                     />
-                    {touchedField?.address?.resPostalAddress &&
-                      error?.address?.resPostalAddress && (
+                    {touchedField.residentialAddress &&
+                      error.residentialAddress && (
                         <div className="invalid-feedback">
                           Please enter Residential Address
                         </div>
@@ -234,12 +235,11 @@ export const AddressForm = () => {
                       {/* <option value="UAE">UAE</option>
                       <option value="Other">Other</option> */}
                     </select>
-                    {touchedField?.address?.resCountry &&
-                      error?.address?.resCountry && (
-                        <div className="invalid-feedback">
-                          Please enter Residential Country
-                        </div>
-                      )}
+                    {touchedField.resCountry && error.resCountry && (
+                      <div className="invalid-feedback">
+                        Please enter Residential Country
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -257,11 +257,10 @@ export const AddressForm = () => {
                       id="postalCode"
                       placeholder="Enter Zip/Postal Code"
                     />
-                    {touchedField?.address?.residentialZipCode &&
-                      error?.address?.residentialZipCode && (
+                    {touchedField.residentialZipCode &&
+                      error.residentialZipCode && (
                         <div className="invalid-feedback">
-                          {error?.address.residentialZipCode.type ===
-                          "maxLength"
+                          {error?.residentialZipCode.type === "maxLength"
                             ? "Max length exceeded"
                             : "Please enter Zip/Postal Code"}
                         </div>
@@ -284,12 +283,11 @@ export const AddressForm = () => {
                       </option>
                       <option value="Mumbai">Mumbai</option>
                     </select>
-                    {touchedField?.address?.resCity &&
-                      error?.address?.resCity && (
-                        <div className="invalid-feedback">
-                          Please enter Residential City
-                        </div>
-                      )}
+                    {touchedField.resCity && error.resCity && (
+                      <div className="invalid-feedback">
+                        Please enter Residential City
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -308,12 +306,11 @@ export const AddressForm = () => {
                       <option value="UP">UP</option>
                       <option value="Other">Other</option>
                     </select>
-                    {touchedField?.address?.resState &&
-                      error?.address?.resState && (
-                        <div className="invalid-feedback">
-                          Please enter Residential State
-                        </div>
-                      )}
+                    {touchedField.resState && error.resState && (
+                      <div className="invalid-feedback">
+                        Please enter Residential State
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
