@@ -209,8 +209,8 @@ export const AddressForm = () => {
                       id="postalAddress"
                       placeholder="e.g 10 church street"
                     />
-                    {touchedField.residentialAddress &&
-                      error.residentialAddress && (
+                    {touchedField?.residentialAddress &&
+                      error?.residentialAddress && (
                         <div className="invalid-feedback">
                           Please enter Residential Address
                         </div>
@@ -235,7 +235,7 @@ export const AddressForm = () => {
                       {/* <option value="UAE">UAE</option>
                       <option value="Other">Other</option> */}
                     </select>
-                    {touchedField.resCountry && error.resCountry && (
+                    {touchedField?.resCountry && error?.resCountry && (
                       <div className="invalid-feedback">
                         Please enter Residential Country
                       </div>
@@ -257,8 +257,8 @@ export const AddressForm = () => {
                       id="postalCode"
                       placeholder="Enter Zip/Postal Code"
                     />
-                    {touchedField.residentialZipCode &&
-                      error.residentialZipCode && (
+                    {touchedField?.residentialZipCode &&
+                      error?.residentialZipCode && (
                         <div className="invalid-feedback">
                           {error?.residentialZipCode.type === "maxLength"
                             ? "Max length exceeded"
@@ -283,7 +283,7 @@ export const AddressForm = () => {
                       </option>
                       <option value="Mumbai">Mumbai</option>
                     </select>
-                    {touchedField.resCity && error.resCity && (
+                    {touchedField?.resCity && error?.resCity && (
                       <div className="invalid-feedback">
                         Please enter Residential City
                       </div>
@@ -306,7 +306,7 @@ export const AddressForm = () => {
                       <option value="UP">UP</option>
                       <option value="Other">Other</option>
                     </select>
-                    {touchedField.resState && error.resState && (
+                    {touchedField?.resState && error?.resState && (
                       <div className="invalid-feedback">
                         Please enter Residential State
                       </div>
