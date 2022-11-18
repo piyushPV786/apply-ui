@@ -11,6 +11,7 @@ interface IButoonProps {
   isGreenWhiteCombination?: boolean;
   style?: any;
   type?: string;
+  roundBtn?:boolean
 }
 const StyledButton = ({
   title = "",
@@ -19,10 +20,24 @@ const StyledButton = ({
   isGreenWhiteCombination = false,
   style,
   type,
+  roundBtn = false,
+  disabled,
   ...rest
 }: IButoonProps) => {
+
+  if(title === 'Save & Next') {
+    console.log({disabled})
+  }
   return (
-    <MyButton {...rest} isGreenWhiteCombination={isGreenWhiteCombination} style={style} className={className} onClick={onClick}>
+    <MyButton
+      {...rest}
+      disabled={disabled}
+      roundBtn={roundBtn}
+      isGreenWhiteCombination={isGreenWhiteCombination}
+      style={style}
+      className={className}
+      onClick={onClick}
+    >
       {title}
     </MyButton>
   );
@@ -31,7 +46,7 @@ const StyledButton = ({
 export default StyledButton;
 
 const MyButton = styled(Button)<any>`
-  
+  border-radius: ${({ roundBtn }) => (roundBtn ? "20px" : "")}!important;
   background: ${({ isGreenWhiteCombination }) =>
     isGreenWhiteCombination ? "white!important" : "#008554 !important"};
   border: 1px solid #008554 !important;
@@ -40,7 +55,7 @@ const MyButton = styled(Button)<any>`
     color: ${({ isGreenWhiteCombination }) =>
       isGreenWhiteCombination ? Green : "white"};
   }
-  opacity: ${({ disabled }) => (disabled ? 0.7 : 1)}!important;
+  opacity: ${({ disabled }) => (disabled ? 0.3 : 1)}!important;
   cursor: pointer;
   @media (max-width: 510px) {
     background: ${({ isGreenWhiteCombination }) =>

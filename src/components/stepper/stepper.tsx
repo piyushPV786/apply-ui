@@ -22,7 +22,6 @@ function StepperComponent(props: IStepperProps) {
       activeStep={active}
       alternativeLabel
     >
-      {/* {steps.map((label, idx) => ( */}
       <Step key={"12"}>
         <StepLabel
           icon={

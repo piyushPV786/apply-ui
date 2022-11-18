@@ -9,6 +9,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { Mode } from "../common/types";
+import { onlyAlphabets } from "../../Util/Util";
 
 const SponsorCandidateDetail = "sponsor";
 
@@ -23,7 +24,12 @@ interface ISponsorProps {
 }
 export const SponsoredForm = (props: ISponsorProps) => {
   const { sponsorModeArr } = { ...props };
-  const { setValue, register, watch } = useFormContext();
+  const {
+    setValue,
+    register,
+    watch,
+    formState: { errors, touchedFields },
+  } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
 
   const isSponsoredVal = watch(isSponsored, "no");
@@ -35,7 +41,8 @@ export const SponsoredForm = (props: ISponsorProps) => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${sponsorMobileCode}`, `+${countryCode}`);
   };
-
+  const error = errors[SponsorCandidateDetail] as any;
+  const touchedField = touchedFields[SponsorCandidateDetail] as any;
   return (
     <>
       <StyledAccordion>
@@ -82,10 +89,13 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   <div className="mb-4">
                     <StyledLabel required>Sponsor Mode</StyledLabel>
                     <select
+                      value={sponsorModeVal}
                       className="form-select"
                       aria-label="Default select example"
                       {...register(`${sponsorMode}`, { required: true })}
                     >
+                      <option value={""}>Select sonsor mode</option>
+
                       {sponsorModeArr &&
                         sponsorModeArr.map(({ id, mode }) => (
                           <option
@@ -107,7 +117,23 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       value={sponsorNameVal}
                       defaultValue={sponsorNameVal}
                       {...register(`${sponsorName}`, { required: true })}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
                     />
+                    {touchedField?.name && error?.name && (
+                      <div className="invalid-feedback">
+                        Please enter sponsor name
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">

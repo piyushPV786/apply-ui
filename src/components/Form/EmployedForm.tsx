@@ -12,6 +12,7 @@ import PhoneInput, {
   parsePhoneNumber,
 } from "react-phone-number-input";
 import { EmploymentIndustry, EmploymentStatus } from "../common/types";
+import { onlyAlphabets } from "../../Util/Util";
 
 const EmployementDetails = "employment";
 const employmentStatus = `${EmployementDetails}.employmentStatusId`;
@@ -97,10 +98,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                   <div className="mb-4">
                     <StyledLabel required>Employment Status</StyledLabel>
                     <select
+                      value={employmentStatusVal}
                       className="form-select"
                       aria-label="Default select example"
                       {...register(`${employmentStatus}`, { required: true })}
                     >
+                      <option value={""}>Select employment status</option>
                       {employmentStatusArr &&
                         employmentStatusArr.map(({ id, status }) => (
                           <option
@@ -121,9 +124,10 @@ export const EmployedForm = (props: IEmployeProps) => {
                       className="form-select"
                       aria-label="Default select example"
                       value={employerVal}
-                      defaultValue={employerVal}
                       {...register(`${employer}`, { required: true })}
                     >
+                      <option value={""}>Select Employer</option>
+
                       {employerArr &&
                         employerArr.map(({ id, employer }) => (
                           <option
@@ -159,6 +163,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                       aria-label="Default select example"
                       {...register(`${industry}`, { required: true })}
                     >
+                      <option value={""}>Select Industry</option>
                       {employmentIndustries &&
                         employmentIndustries.map(({ id, industry }) => (
                           <option
@@ -180,6 +185,13 @@ export const EmployedForm = (props: IEmployeProps) => {
                       value={managerNameVal}
                       defaultValue={managerNameVal}
                       {...register(`${managerName}`)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value,{shouldDirty:true,shouldTouch:true,shouldValidate:true});
+                        }
+                      }}
                     />
                   </div>
                 </div>

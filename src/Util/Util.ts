@@ -58,3 +58,9 @@ export const isInvalidFileType = (type: string) => {
       return true;
   }
 };
+
+export const uniqueArrayOfObject = (array: any[], key: string) => [
+  ...(new Map(array.map((item) => [item[key], item])).values() as any),
+];
+
+export const onlyAlphabets = (value:string) => /^[a-zA-Z ]*$/.test(value);

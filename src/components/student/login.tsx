@@ -34,8 +34,9 @@ const StudentLogin = () => {
   }, []);
   const isNumberValid =
     mobileNumber &&
-    mobileNumber?.length > 0 &&
-    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length === 10;
+    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 8 &&
+    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! <= 14;
+
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = () => {
     setProceed(true);
@@ -110,7 +111,7 @@ const StudentLogin = () => {
                 value={mobileNumber}
                 autoFocus={true}
                 onChange={(value: string) => {
-                  setMobileNumberValue(value);
+                  setMobileNumberValue(!value ? "" : value);
                 }}
               />
             </Item>
@@ -168,7 +169,7 @@ const StudentLogin = () => {
                 }}
                 title="Verify"
               />
-              <StyledLink>Resent OTP</StyledLink>
+              <StyledLink onClick={resendOtp}>Resend OTP</StyledLink>
               <br />
               <StyledLink onClick={() => setProceed(!isProceed)}>
                 Change Mobile Number
@@ -197,13 +198,22 @@ const StudentLogin = () => {
         }, 1000);
       })
       .catch(({ response }) => {
-        console.log(response);
         setToastMsg(() => ({
           success: false,
           message: response?.data?.message,
         }));
         setToast(true);
       });
+  };
+
+  const resendOtp = () => {
+    setToastMsg(() => ({
+      success: true,
+      message: "OTP re-sent successfully",
+    }));
+    setToast(true);
+    setOtp('')
+
   };
 
   const { message, success } = toastMsg;
@@ -267,10 +277,10 @@ const StudentLogin = () => {
 };
 
 export default StudentLogin;
-const SuccessMsgContainer = styled.div`
+export const SuccessMsgContainer = styled.div`
   display: flex;
 `;
-const ToasterContainer = styled.div<any>`
+export const ToasterContainer = styled.div<any>`
   display: flex;
   column-gap: 10px;
   width: 310px;

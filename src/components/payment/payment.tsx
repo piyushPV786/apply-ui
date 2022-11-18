@@ -38,10 +38,11 @@ const Payment = (props: any) => {
     fileElement.click() as any;
   };
   const submitPaymentDocs = () => {
-    router.push({
-      pathname: "/student-registration-form/student-payment-docs-success",
-      query: { success: false },
-    });
+    // router.push({
+    //   pathname: "/student-registration-form/student-payment-docs-success",
+    //   query: { success: false },
+    // });
+    props?.navigateNext();
   };
 
   return (

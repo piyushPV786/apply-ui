@@ -111,6 +111,7 @@ export const EducationForm = (props: IEducationProps) => {
   const educationFormError = errors as any;
   const touchFields = touchedFields;
   const { studyIdx, parentIdx } = selectedStudyMode;
+
   return (
     <>
       <StyledAccordion>
@@ -136,6 +137,9 @@ export const EducationForm = (props: IEducationProps) => {
                     className="form-select"
                     {...register(`${qualification}`, { required: true })}
                   >
+                    <option value={""}>Select Interested Qualification</option>
+                    <option value={"12"}>Test Qualification</option>
+
                     {qualificationArr &&
                       qualificationArr.map(({ id, qualification }) => (
                         <option
@@ -223,6 +227,7 @@ export const EducationForm = (props: IEducationProps) => {
                     defaultValue={highestQualificationVal}
                     {...register(`${highestQualification}`, { required: true })}
                   >
+                    <option value={""}>Select Highest Qualification</option>
                     {highestQualifications &&
                       highestQualifications.map(({ id, qualification }) => (
                         <option
@@ -276,6 +281,15 @@ export const EducationForm = (props: IEducationProps) => {
                     value={referredByeVal}
                     defaultValue={referredByeVal}
                     {...register(`${referredBy}`, { required: true })}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      setValue(name, value, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                        shouldValidate: true,
+                      });
+                    }}
                     onBlur={() => {
                       setTimeout(() => {
                         if (
@@ -283,18 +297,28 @@ export const EducationForm = (props: IEducationProps) => {
                             (item) => item?.id == +referredByeVal
                           )?.referredBy === "Agent"
                         ) {
-                          setValue(`${socialMediaId}`, null);
+                          setValue(`${socialMediaId}`, null, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
                         }
                         if (
                           referredByArr?.find(
                             (item) => item?.id == +referredByeVal
                           )?.referredBy === "Socail Media"
                         ) {
-                          setValue(`${agentName}`, null);
+                          setValue(`${agentName}`, null, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
                         }
                       }, 2000);
                     }}
                   >
+                    <option value={""}></option>
+
                     {referredByArr &&
                       referredByArr.map(({ id, referredBy }) => (
                         <option
@@ -306,8 +330,8 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchFields?.referredBy &&
-                    educationFormError?.referredBy && (
+                  {touchFields[referredBy] &&
+                    educationFormError[referredBy] && (
                       <div className="invalid-feedback">
                         Please enter Referred by
                       </div>
@@ -322,9 +346,11 @@ export const EducationForm = (props: IEducationProps) => {
                       <select
                         className="form-select"
                         {...register(`${agentName}`, {
-                          required: referredByeVal === "Agent",
+                          required: true,
                         })}
+                        value={agentNameVal}
                       >
+                        <option value={""}>Select Agent</option>
                         {agentArr &&
                           agentArr.map(({ id, name }) => (
                             <option
@@ -336,6 +362,12 @@ export const EducationForm = (props: IEducationProps) => {
                             </option>
                           ))}
                       </select>
+                      {touchFields[agentName] &&
+                        educationFormError[agentName] && (
+                          <div className="invalid-feedback">
+                            Please select agent
+                          </div>
+                        )}
                     </div>
                   </div>
                 )}
@@ -347,11 +379,12 @@ export const EducationForm = (props: IEducationProps) => {
                       <select
                         className="form-select"
                         value={socialMediaVal}
-                        defaultValue={socialMediaVal}
                         {...register(`${socialMediaId}`, {
-                          required: referredByeVal === "SocialMedia",
+                          required: true,
                         })}
                       >
+                        <option value={""}>Select Social Media</option>
+
                         {socialMedias &&
                           socialMedias.map(({ id, socialMedia }) => (
                             <option
@@ -363,6 +396,12 @@ export const EducationForm = (props: IEducationProps) => {
                             </option>
                           ))}
                       </select>
+                      {touchFields[socialMediaId] &&
+                        educationFormError[socialMediaId] && (
+                          <div className="invalid-feedback">
+                            Please select social media
+                          </div>
+                        )}
                     </div>
                   </div>
                 )}
