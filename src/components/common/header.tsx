@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Grid, Container } from "@material-ui/core";
 import { StyledLink } from "../student/login";
+import { useRouter } from "next/router";
 
 const Header = (props: any) => {
   const [studentMob, setStudentMob] = useState<string>("");
+  const router = useRouter();
+
   useEffect(() => {
     if (window) {
       const studentMobileNumber =
@@ -15,7 +18,10 @@ const Header = (props: any) => {
       setStudentMob(studentMobileNumber);
     }
   }, [props]);
-
+  const exitApp = () => {
+    sessionStorage.clear();
+    router.push("/");
+  };
   return (
     <>
       <Grid>
@@ -48,10 +54,11 @@ const Header = (props: any) => {
                   <div className="mobNum" style={{ color: "white" }}>
                     Hi {studentMob}
                   </div>
-                  <div>
-                    <CustomStyledLink className="mobNum">
-                      Regenesys Application Form
+                  <div  onClick={exitApp}>
+                    <CustomStyledLink  className="mobNum">
+                      Logout
                     </CustomStyledLink>
+                  
                   </div>
                 </UserInfoConatiner>
               </div>

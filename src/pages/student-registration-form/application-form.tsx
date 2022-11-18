@@ -2,8 +2,12 @@ import React, { useEffect, useState, useMemo } from "react";
 import PersonalInfoForm from "../../components/Form/personalInfoForm";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import styled from "styled-components";
-import { Grid, Container, Box } from "@material-ui/core";
-import { StyledLink } from "../../components/student/login";
+import { Grid, Container, Box, Snackbar } from "@material-ui/core";
+import {
+  StyledLink,
+  SuccessMsgContainer,
+  ToasterContainer,
+} from "../../components/student/login";
 import StepperComponent from "../../components/stepper/stepper";
 import { Green, StyledLabel } from "../../components/common/common";
 import DoneOutlinedIcon from "@material-ui/icons/DoneOutline";
@@ -33,13 +37,22 @@ import { useRouter } from "next/router";
 import Payment from "../../components/payment/payment";
 import PaymentOption from "../../components/payment/payment-options";
 import Header from "../../components/common/header";
-
+import DocumentUploadForm from "../../components/Form/DocumentUploadForm";
+import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
+const isValidFileType = (files: any[]) => {
+  return (files || []).filter((file) => file?.error === true);
+};
 const ApplicationForm = (props: any) => {
   const router = useRouter();
 
   const [studentData, setStudentData] = useState<any>(null);
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
+  const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
+    message: "",
+    success: false,
+    show: false,
+  });
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isDocumentUploadDone, setDocumentUploadDone] =
     useState<boolean>(false);
@@ -54,13 +67,14 @@ const ApplicationForm = (props: any) => {
   });
   const {
     register,
-    formState: { isValid, isDirty },
+    formState: { isValid, isDirty,errors },
     watch,
     setValue,
     getValues,
   } = methods;
   const allFields = watch();
-
+  const isValidDocument =
+    isValidFileType(allFields?.document?.uploadedDocs).length === 0;
   useEffect(() => {
     if (window && router.query?.isFormSubmittedAlready) {
       const isFormSubmittedAlready = JSON.parse(
@@ -95,8 +109,6 @@ const ApplicationForm = (props: any) => {
   };
 
   const submitFormData = (data: object, isDrafSave?: boolean) => {
-    setSubmitted(true);
-    setActiveStep(activeStep + 1);
     const formData = { ...data };
 
     const {
@@ -129,11 +141,25 @@ const ApplicationForm = (props: any) => {
       sessionStorage?.getItem("studentId") as any
     )?.id;
     AuthApi.put(`/user/${studentId}`, request)
-      .then(({ data }) => {})
-      .catch((err) => console.log(err));
+      .then(({ data }) => {
+        setShowDraftSaveToast({
+          success: true,
+          message: "Data has been successfully saved.",
+          show: true,
+        });
+        setSubmitted(true);
+        setActiveStep(activeStep + 1);
+      })
+      .catch((err) => {
+        setShowDraftSaveToast({
+          success: false,
+          message: "Some thing went wrong please try again.",
+          show: true,
+        });
+        console.log(err);
+      });
   };
   const onSubmit = (data: any, isDrafSave?: boolean) => {
-    // console.log(data);
     submitFormData(data, isDrafSave);
   };
   const getMasterData = () => {
@@ -180,7 +206,6 @@ const ApplicationForm = (props: any) => {
     getMasterData();
     getAgentDetail();
   }, []);
-
   const language = masterData?.languages as Language[];
   const nationalities = masterData?.nationalities as Nationality[];
   const highestQualifications =
@@ -198,7 +223,11 @@ const ApplicationForm = (props: any) => {
     masterData?.employmentIndustries as EmploymentIndustry[];
 
   const onSkipForNowOnPayment = () => {};
-
+  const onSkipForNowOnDocument = () => {
+    setActiveStep(0);
+  };
+  const { message, success, show } = showDraftSavedToast;
+  
   return (
     <MainContainer>
       <Header />
@@ -213,7 +242,7 @@ const ApplicationForm = (props: any) => {
         <FormProvider {...methods}>
           <FormContainer>
             {" "}
-            {!isFormSubmitted && (
+            {activeStep === 0 && (
               <Container>
                 <div className="row">
                   <form onSubmit={(data) => onSubmit(data)}>
@@ -246,7 +275,7 @@ const ApplicationForm = (props: any) => {
             )}
           </FormContainer>
           <FormContainer>
-            {isFormSubmitted && (
+            {activeStep === 1 && (
               <>
                 <Payment
                   qualifications={qualifications}
@@ -256,14 +285,22 @@ const ApplicationForm = (props: any) => {
                 />
               </>
             )}
+            {activeStep === 2 && (
+              <>
+                <DocumentUploadForm
+                  allFields={allFields}
+                  isValidDocument={isValidDocument}
+                />
+              </>
+            )}
           </FormContainer>
         </FormProvider>
         <FooterConatiner className="container-fluid d-flex justify-content-center mt-1">
           <div className="row">
             <div className="col-md-12">
-              {!isFormSubmitted && (
-                <>
-                  <div className="form-check">
+              <>
+                {activeStep === 0 && (
+                  <div className="form-check text-center">
                     <input
                       className="form-check-input me-2"
                       type="checkbox"
@@ -280,20 +317,37 @@ const ApplicationForm = (props: any) => {
                       </a>
                     </label>
                   </div>
+                )}
+
+                {(activeStep === 0 || activeStep === 2) && (
                   <div className="mt-4 text-center">
+                    <>
+                      {activeStep == 2 && (
+                        <StyledButton
+                          onClick={onSkipForNowOnDocument}
+                          type="button"
+                          className="me-2 mb-1"
+                          isGreenWhiteCombination={true}
+                          title={"Skip for Now"}
+                        />
+                      )}
+                    </>
                     <StyledButton
                       onClick={() => onSubmit(getValues(), true)}
                       type="button"
-                      disabled={!isDirty}
+                      disabled={
+                        (!isDirty && !isValidDocument) || !isValidDocument
+                      }
                       isGreenWhiteCombination={true}
                       title={"Save as Draft"}
                     />
                     &nbsp;&nbsp;&nbsp;
                     <StyledButton
-                      onClick={methods.handleSubmit(
-                        (data) => onSubmit(data) as any
-                      )}
-                      disabled={!isValid}
+                      onClick={methods.handleSubmit(onSubmit as any)}
+                      disabled={
+                        !isValid &&
+                        !isValidDocument
+                      }
                       title={"Save & Next"}
                     />
                     <StyleFooter>
@@ -305,9 +359,9 @@ const ApplicationForm = (props: any) => {
                       </span>
                     </StyleFooter>
                   </div>
-                </>
-              )}
-              {isFormSubmitted && activeStep === 1 && (
+                )}
+              </>
+              {activeStep === 1 && (
                 <div className="mt-5 text-center">
                   <StyledButton
                     onClick={navigateBack}
@@ -322,14 +376,47 @@ const ApplicationForm = (props: any) => {
           </div>
         </FooterConatiner>
       </>
+      {show && (
+        <Snackbar
+          autoHideDuration={1000}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          open={show}
+          onClose={() => {
+            setShowDraftSaveToast(!showDraftSavedToast);
+          }}
+          key={"bottom"}
+        >
+          <ToasterContainer success={success}>
+            <CheckCircleRoundedIcon
+              style={{ color: "#0eb276", fontSize: "30px" }}
+            />
+            <SuccessMsgContainer>
+              <StyledLink>
+                {success ? "Success" : "Error"}
+                <br />
+                <span
+                  style={{
+                    color: "black",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                  }}
+                >
+                  {message}
+                </span>
+              </StyledLink>
+            </SuccessMsgContainer>
+          </ToasterContainer>
+        </Snackbar>
+      )}
     </MainContainer>
   );
 };
 
 export default ApplicationForm;
-const PaymentContainer = styled.div`
-  margin: 1rem 5rem;
-`;
+
 export const MainContainer = styled.div`
   background: #dde1e3;
   width: 100%;

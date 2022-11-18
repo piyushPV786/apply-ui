@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -84,13 +84,12 @@ export const AddressForm = () => {
 
                 <div className="mb-4">
                   <select
+                    placeholder="trest"
+                    value={postalCountryVal}
                     className="form-select"
-                    {...register(`${postalCity}`, { required: true })}
-                    value={postalCityVal}
+                    {...register(`${postalCountry}`, { required: true })}
                   >
-                    <option selected={postalCityVal?.length > 0}>
-                      Select Country
-                    </option>
+                    <option value={""}>Select Country</option>
                     <option value="India">India</option>
                     <option value="USA">USA</option>
                   </select>
@@ -134,7 +133,7 @@ export const AddressForm = () => {
                     value={postalCityVal}
                     {...register(`${postalCity}`, { required: true })}
                   >
-                    <option disabled>Select City</option>
+                    <option value={""}>Select City</option>
                     <option value="Mumbai">Mumbai</option>
                     <option value="Delhi">Delhi</option>
                   </select>
@@ -150,9 +149,7 @@ export const AddressForm = () => {
                     value={postalStateVal}
                     {...register(`${postalState}`, { required: true })}
                   >
-                    <option disabled selected>
-                      Select State/ Province
-                    </option>
+                    <option value={""}>Select State</option>
                     <option value="MP">MP</option>
                     <option value="UP">UP</option>
                     <option value="Other">Other</option>
@@ -179,14 +176,39 @@ export const AddressForm = () => {
                     onClick={(e) => {
                       setValue(
                         `${isSameAsPostalAddress}`,
-                        e?.currentTarget?.checked
+                        e?.currentTarget?.checked,
+                        {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        }
                       );
                       if (e?.currentTarget?.checked) {
-                        setValue(`${resPostalAddress}`, postalAddressVal);
-                        setValue(`${resPostalCode}`, postalZipCodeVal);
-                        setValue(`${resCity}`, postalCityVal);
-                        setValue(`${resState}`, postalStateVal);
-                        setValue(`${resCountry}`, postalCountryVal);
+                        setValue(`${resPostalAddress}`, postalAddressVal, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
+                        setValue(`${resPostalCode}`, postalZipCodeVal, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
+                        setValue(`${resCity}`, postalCityVal, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
+                        setValue(`${resState}`, postalStateVal, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
+                        setValue(`${resCountry}`, postalCountryVal, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
                       }
                     }}
                   />
@@ -222,18 +244,13 @@ export const AddressForm = () => {
 
                   <div className="mb-4">
                     <select
+                      value={resCountryVal}
                       className="form-select"
                       {...register(`${resCountry}`, { required: true })}
                     >
-                      <option
-                        value={resCountryVal}
-                        selected={resCountryVal?.length > 0}
-                      >
-                        Select Country
-                      </option>
+                      <option value={""}>Select Country</option>
                       <option value="India">India</option>
-                      {/* <option value="UAE">UAE</option>
-                      <option value="Other">Other</option> */}
+                      <option value="China">China</option>
                     </select>
                     {touchedField?.resCountry && error?.resCountry && (
                       <div className="invalid-feedback">
@@ -272,15 +289,11 @@ export const AddressForm = () => {
                 <div className="col-md-4">
                   <div className="mb-4">
                     <select
+                      value={resCityVal}
                       className="form-select"
                       {...register(`${resCity}`, { required: true })}
                     >
-                      <option
-                        value={resCityVal}
-                        selected={resCityVal?.length > 0}
-                      >
-                        Select City
-                      </option>
+                      <option value={""}>Select City</option>
                       <option value="Mumbai">Mumbai</option>
                     </select>
                     {touchedField?.resCity && error?.resCity && (
@@ -293,15 +306,11 @@ export const AddressForm = () => {
                 <div className="col-md-4">
                   <div className="mb-4">
                     <select
+                      value={resStateVal}
                       className="form-select"
                       {...register(`${resState}`, { required: true })}
                     >
-                      <option
-                        value={resStateVal}
-                        selected={resStateVal?.length > 0}
-                      >
-                        Select State/ Province
-                      </option>
+                      <option value={""}>Select State</option>
                       <option value="MP">MP</option>
                       <option value="UP">UP</option>
                       <option value="Other">Other</option>
