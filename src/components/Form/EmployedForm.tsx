@@ -36,7 +36,12 @@ export const EmployedForm = (props: IEmployeProps) => {
 
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
 
-  const { setValue, register, watch } = useFormContext();
+  const {
+    setValue,
+    register,
+    watch,
+    formState: { errors, touchedFields },
+  } = useFormContext();
 
   const employmentStatusVal = watch(employmentStatus);
   const isEmployedVal = watch(isEmployed, "no");
@@ -51,7 +56,8 @@ export const EmployedForm = (props: IEmployeProps) => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${officePhoneCode}`, `+${countryCode}`);
   };
-
+  const touchField = touchedFields[EmployementDetails] as any;
+  const error = errors[EmployementDetails] as any;
   return (
     <>
       <StyledAccordion>
@@ -115,6 +121,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                           </option>
                         ))}
                     </select>
+                    {touchField?.employmentStatusId &&
+                      error?.employmentStatusId && (
+                        <div className="invalid-feedback">
+                          Please select employment status
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -140,6 +152,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                         ))}
                       <option value={123}>Test</option>
                     </select>
+                    {touchField?.employer && error?.employer && (
+                      <div className="invalid-feedback">
+                        Please select employer
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -175,6 +192,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                           </option>
                         ))}
                     </select>
+                    {touchField?.industryId && error?.industryId && (
+                      <div className="invalid-feedback">
+                        Please select industry
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -189,15 +211,24 @@ export const EmployedForm = (props: IEmployeProps) => {
                         const value = e.target.value;
                         const name = e.target.name;
                         if (onlyAlphabets(value)) {
-                          setValue(name, value,{shouldDirty:true,shouldTouch:true,shouldValidate:true});
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
                         }
                       }}
                     />
+                    {touchField?.manager && error?.manager && (
+                      <div className="invalid-feedback">
+                        Please enter manager name
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Office Address</StyledLabel>
+                    <StyledLabel>Office Address</StyledLabel>
                     <input
                       className="form-control"
                       value={officeAddressVal}
@@ -230,6 +261,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                       }}
                       value={officeNumberVal}
                     />
+                    {touchField?.officePhoneNumber &&
+                      error?.officePhoneNumber && (
+                        <div className="invalid-feedback">
+                          Please enter office number
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>

@@ -26,7 +26,7 @@ const Header = (props: any) => {
     <>
       <Grid>
         <CommonHeader>
-          <Container>
+          <>
             <div className="row">
               <div className="col-md-6">
                 <LogoContainer>
@@ -63,7 +63,7 @@ const Header = (props: any) => {
                 </UserInfoConatiner>
               </div>
             </div>
-          </Container>
+          </>
         </CommonHeader>
       </Grid>
     </>

@@ -58,7 +58,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   
   return (
     <>
-      <StyledAccordion>
+      <StyledAccordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"

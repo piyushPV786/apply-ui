@@ -211,7 +211,7 @@ const DocumentUploadForm = ({
                   <div className="col-md-7 col-lg-7">
                     <div className="d-flex justify-content-around">
                       <div>
-                        <p>Document should be in good condition</p>
+                        <p>Document should be in good condition</p><br/>
                         <p>Face must clear visible</p>
                       </div>
                       <ImageContainer>

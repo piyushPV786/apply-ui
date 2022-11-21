@@ -172,6 +172,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       }}
                       value={sponsorPhoneNumberVal}
                     />
+                      {touchedField?.sponsorMobileNumber && error?.sponsorMobileNumber && (
+                      <div className="invalid-feedback">
+                        Please enter phone number
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
