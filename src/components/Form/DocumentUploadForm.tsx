@@ -5,8 +5,8 @@ import DoneIcon from "@material-ui/icons/Done";
 import styled from "styled-components";
 import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
 import StyledButton from "../button/button";
-import { useRouter } from "next/router";
 import { isInvalidFileType, uniqueArrayOfObject } from "../../Util/Util";
+import Link from "next/link";
 interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
@@ -51,9 +51,18 @@ const DocumentUploadForm = ({
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
     });
-    setUploadDocs(uploadedFiles);
+    setUploadDocs(uploadedFiles as any);
     setValue("document.uploadedDocs", uploadedFiles);
   };
+
+  const showPdf = (index: number) => {
+    const { lastModifiedDate, ...rest } = uploadDocs[index] as any;
+    const file = rest;
+    // console.log({ file })
+    //     sessionStorage.setItem("viewDoc", JSON.stringify(file));
+    // window.open(`${location.origin}/student-registration-form/document-view`);
+  };
+
   return (
     <>
       <div className="row w-100">
@@ -142,21 +151,23 @@ const DocumentUploadForm = ({
                                     />{" "}
                                     {item?.name}{" "}
                                     {item?.error && "( Invalid file format )"}
-                                    <a
-                                      href={item?.name}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="cursor-pointer"
-                                    ></a>
                                   </div>
                                   <div>
                                     {" "}
                                     {!item.error && (
-                                      <img
-                                        className="me-2 ms-2 "
-                                        src={`${imgUrl}/view-svgrepo-com.svg`}
-                                        width="25px"
-                                      />
+                                      <Link
+                                        passHref
+                                        onClick={() => showPdf(index)}
+                                        rel="noopener noreferrer"
+                                        target="_blank"
+                                        href={""}
+                                      >
+                                        <img
+                                          className="me-2 ms-2 "
+                                          src={`${imgUrl}/view-svgrepo-com.svg`}
+                                          width="25px"
+                                        />
+                                      </Link>
                                     )}
                                     <span
                                       onClick={() => deleteDocs(index)}
@@ -211,7 +222,8 @@ const DocumentUploadForm = ({
                   <div className="col-md-7 col-lg-7">
                     <div className="d-flex justify-content-around">
                       <div>
-                        <p>Document should be in good condition</p><br/>
+                        <p>Document should be in good condition</p>
+                        <br />
                         <p>Face must clear visible</p>
                       </div>
                       <ImageContainer>
