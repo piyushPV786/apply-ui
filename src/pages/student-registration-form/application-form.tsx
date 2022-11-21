@@ -151,6 +151,13 @@ const ApplicationForm = (props: any) => {
           setSubmitted(true);
           setActiveStep(activeStep + 1);
         }
+        if(activeStep === 2) {
+          setActiveStep(2);
+          setDocumentUploadDone(true)
+          setPaymentDone(true)
+          router.push('/student-payment-docs-success')
+        }
+
       })
       .catch((err) => {
         setShowDraftSaveToast({
