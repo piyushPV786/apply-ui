@@ -67,7 +67,7 @@ const ApplicationForm = (props: any) => {
   });
   const {
     register,
-    formState: { isValid, isDirty,errors },
+    formState: { isValid, isDirty, errors },
     watch,
     setValue,
     getValues,
@@ -147,8 +147,10 @@ const ApplicationForm = (props: any) => {
           message: "Data has been successfully saved.",
           show: true,
         });
-        setSubmitted(true);
-        setActiveStep(activeStep + 1);
+        if (!isDrafSave) {
+          setSubmitted(true);
+          setActiveStep(activeStep + 1);
+        }
       })
       .catch((err) => {
         setShowDraftSaveToast({
@@ -227,7 +229,7 @@ const ApplicationForm = (props: any) => {
     setActiveStep(0);
   };
   const { message, success, show } = showDraftSavedToast;
-  
+
   return (
     <MainContainer>
       <Header />
@@ -243,8 +245,8 @@ const ApplicationForm = (props: any) => {
           <FormContainer>
             {" "}
             {activeStep === 0 && (
-              <Container>
-                <div className="row">
+              <>
+                <div className="row w-100">
                   <form onSubmit={(data) => onSubmit(data)}>
                     <PersonalInfoForm
                       genders={genders}
@@ -271,7 +273,7 @@ const ApplicationForm = (props: any) => {
                     <SponsoredForm sponsorModeArr={sponsorModes} />
                   </form>
                 </div>
-              </Container>
+              </>
             )}
           </FormContainer>
           <FormContainer>
@@ -344,11 +346,8 @@ const ApplicationForm = (props: any) => {
                     &nbsp;&nbsp;&nbsp;
                     <StyledButton
                       onClick={methods.handleSubmit(onSubmit as any)}
-                      disabled={
-                        !isValid &&
-                        !isValidDocument
-                      }
-                      title={"Save & Next"}
+                      disabled={!isValid && !isValidDocument}
+                      title={activeStep < 2 ? "Save & Next" : "Submit"}
                     />
                     <StyleFooter>
                       <span style={{ color: "#131718" }}>
