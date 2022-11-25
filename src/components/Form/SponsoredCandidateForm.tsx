@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -172,11 +172,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       }}
                       value={sponsorPhoneNumberVal}
                     />
-                      {touchedField?.sponsorMobileNumber && error?.sponsorMobileNumber && (
-                      <div className="invalid-feedback">
-                        Please enter phone number
-                      </div>
-                    )}
+                    {touchedField?.sponsorMobileNumber &&
+                      error?.sponsorMobileNumber && (
+                        <div className="invalid-feedback">
+                          Please enter phone number
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
