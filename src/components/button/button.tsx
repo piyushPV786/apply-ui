@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@material-ui/core";
 import styled from "styled-components";
 import { Green } from "../common/common";
+const imgUrl = "/assets/images";
 interface IButoonProps {
   title?: string;
   onClick?: (...args: any) => void;
@@ -11,7 +12,10 @@ interface IButoonProps {
   isGreenWhiteCombination?: boolean;
   style?: any;
   type?: string;
-  roundBtn?:boolean
+  roundBtn?: boolean;
+  isEditBtn?: boolean;
+  isPayBtn?: boolean;
+  isUploadBtn?: boolean;
 }
 const StyledButton = ({
   title = "",
@@ -22,12 +26,11 @@ const StyledButton = ({
   type,
   roundBtn = false,
   disabled,
+  isEditBtn = false,
+  isPayBtn = false,
+  isUploadBtn = false,
   ...rest
 }: IButoonProps) => {
-
-  if(title === 'Save & Next') {
-    console.log({disabled})
-  }
   return (
     <MyButton
       {...rest}
@@ -38,6 +41,21 @@ const StyledButton = ({
       className={className}
       onClick={onClick}
     >
+      {isEditBtn && (
+        <span className="me-3">
+          <img width="20px" src={`${imgUrl}/edit-icon.svg`} />
+        </span>
+      )}
+      {isPayBtn && (
+        <span className="me-3">
+          <img src={`${imgUrl}/pay-pay.svg`} />
+        </span>
+      )}
+      {isUploadBtn && (
+        <span className="me-3">
+          <img src={`${imgUrl}/upload.svg`} />
+        </span>
+      )}
       {title}
     </MyButton>
   );

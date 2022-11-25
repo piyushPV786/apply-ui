@@ -51,6 +51,10 @@ export const isInvalidFileType = (type: string) => {
   switch (type) {
     case "image/png":
       return false;
+    case "image/jpeg":
+      return false;
+    case "image/jpg":
+      return false;
     case "application/pdf":
       return false;
     default:

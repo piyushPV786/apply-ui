@@ -1,16 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
 import PersonalInfoForm from "../../components/Form/personalInfoForm";
-import { useForm, FormProvider, useFormContext } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import styled from "styled-components";
-import { Grid, Container, Box, Snackbar } from "@material-ui/core";
+import { Container, Snackbar } from "@material-ui/core";
 import {
   StyledLink,
   SuccessMsgContainer,
   ToasterContainer,
 } from "../../components/student/login";
 import StepperComponent from "../../components/stepper/stepper";
-import { Green, StyledLabel } from "../../components/common/common";
-import DoneOutlinedIcon from "@material-ui/icons/DoneOutline";
+import { Green } from "../../components/common/common";
 import StyledButton from "../../components/button/button";
 import { AddressForm } from "../../components/Form/AddressForm";
 import { EducationForm } from "../../components/Form/EducationForm";
@@ -35,7 +34,6 @@ import {
 import { mapFormData } from "../../Util/Util";
 import { useRouter } from "next/router";
 import Payment from "../../components/payment/payment";
-import PaymentOption from "../../components/payment/payment-options";
 import Header from "../../components/common/header";
 import DocumentUploadForm from "../../components/Form/DocumentUploadForm";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
@@ -151,13 +149,12 @@ const ApplicationForm = (props: any) => {
           setSubmitted(true);
           setActiveStep(activeStep + 1);
         }
-        if(activeStep === 2) {
+        if (activeStep === 2) {
           setActiveStep(2);
-          setDocumentUploadDone(true)
-          setPaymentDone(true)
-          router.push('/student-payment-docs-success')
+          setDocumentUploadDone(true);
+          setPaymentDone(true);
+          router.push("/student-payment-docs-success");
         }
-
       })
       .catch((err) => {
         setShowDraftSaveToast({

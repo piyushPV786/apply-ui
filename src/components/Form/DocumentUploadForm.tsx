@@ -55,14 +55,13 @@ const DocumentUploadForm = ({
     setValue("document.uploadedDocs", uploadedFiles);
   };
 
-  const showPdf = (index: number) => {
-    const { lastModifiedDate, ...rest } = uploadDocs[index] as any;
-    const file = rest;
-    // console.log({ file })
-    //     sessionStorage.setItem("viewDoc", JSON.stringify(file));
-    // window.open(`${location.origin}/student-registration-form/document-view`);
+  const showPdf = (item: File) => {
+    const file = new Blob([item], {
+      type: item?.type.includes("pdf") ? "application/pdf" : "image/jpeg",
+    });
+    const fileURL = URL.createObjectURL(file);
+    window.open(fileURL);
   };
-
   return (
     <>
       <div className="row w-100">
@@ -157,7 +156,7 @@ const DocumentUploadForm = ({
                                     {!item.error && (
                                       <Link
                                         passHref
-                                        onClick={() => showPdf(index)}
+                                        onClick={() => showPdf(item)}
                                         rel="noopener noreferrer"
                                         target="_blank"
                                         href={""}

@@ -7,10 +7,7 @@ import {
   StyledLabel,
 } from "../common/common";
 import { useFormContext } from "react-hook-form";
-import PhoneInput, {
-  getCountryCallingCode,
-  parsePhoneNumber,
-} from "react-phone-number-input";
+import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { Gender, Language, Nationality, Race } from "../common/types";
 import { isValidEmail, onlyAlphabets } from "../../Util/Util";
 interface IPersonalInfoProps {
@@ -55,7 +52,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     setValue(`${countryCode}`, `+${countryCode}`);
   };
 
-  
   return (
     <>
       <StyledAccordion defaultExpanded={true}>
@@ -88,7 +84,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value,{shouldDirty:true,shouldTouch:true,shouldValidate:true});
+                        setValue(name, value, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
                       }
                     }}
                     className="form-control"
@@ -117,7 +117,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value,{shouldDirty:true,shouldTouch:true,shouldValidate:true});
+                        setValue(name, value, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
                       }
                     }}
                     id="middleName"
@@ -138,7 +142,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value,{shouldDirty:true,shouldTouch:true,shouldValidate:true});
+                        setValue(name, value, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
                       }
                     }}
                     id="lastName"
@@ -245,7 +253,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       uppdateMobNumber();
                     }}
                     onChange={(value) => {
-                      return
+                      return;
                       setValue("mobileNumber", value);
                     }}
                     value={mobNum as any}

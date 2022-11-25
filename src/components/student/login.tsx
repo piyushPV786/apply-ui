@@ -29,7 +29,7 @@ const StudentLogin = () => {
       sessionStorage?.getItem("studentId") as any
     )?.id;
     if (studentId && isAuthenticate) {
-      router.push("/student-registration-form/application-form");
+      router.push("/student-registration-form/dashboard");
     }
   }, []);
   const isNumberValid =
@@ -194,7 +194,7 @@ const StudentLogin = () => {
         );
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
         setTimeout(() => {
-          router.push("/student-registration-form/application-form");
+          router.push("/student-registration-form/dashboard");
         }, 1000);
       })
       .catch(({ response }) => {

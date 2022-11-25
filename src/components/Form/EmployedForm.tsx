@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -7,10 +7,7 @@ import {
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
-import PhoneInput, {
-  getCountryCallingCode,
-  parsePhoneNumber,
-} from "react-phone-number-input";
+import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { EmploymentIndustry, EmploymentStatus } from "../common/types";
 import { onlyAlphabets } from "../../Util/Util";
 

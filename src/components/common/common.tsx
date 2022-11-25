@@ -48,3 +48,19 @@ export const StyledAccordion = styled(Accordion)`
     }
   }
 `;
+
+// export const ApplicationLogo = ({ fill = "#61DAFB", style }:any) => {
+//   return (
+//     <svg
+//       style={style}
+//       xmlns={`/assets/images/application-icon.svg`}
+//       viewBox="0 0 841.9 595.3"
+//     >
+//       <g fill="#61DAFB">
+//         <path d="M666.3 ... 50.6zM320.8 78.4z" />
+//         <circle cx="420.9" cy="296.5" r="45.7" />
+//         <path d="M520.5 78.1z" />
+//       </g>
+//     </svg>
+//   );
+// };
