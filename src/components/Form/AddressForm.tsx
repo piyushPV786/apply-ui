@@ -107,10 +107,10 @@ export const AddressForm = () => {
                     value={postalZipCodeVal}
                     {...register(`${postalZipCode}`, {
                       required: true,
-                      maxLength: 5,
+                      maxLength: 6,
                     })}
                     type="number"
-                    maxLength={5}
+                    maxLength={6}
                     className="form-control"
                     id="postalZipCode"
                     placeholder="Enter Zip/Postal Code"
@@ -267,7 +267,7 @@ export const AddressForm = () => {
                       defaultValue={resPostalCodeVal}
                       {...register(`${resPostalCode}`, {
                         required: true,
-                        maxLength: 5,
+                        maxLength: 6,
                       })}
                       type="number"
                       className="form-control"

@@ -55,6 +55,8 @@ export const EmployedForm = (props: IEmployeProps) => {
   };
   const touchField = touchedFields[EmployementDetails] as any;
   const error = errors[EmployementDetails] as any;
+  const isOtherFieldRequired = employmentStatusArr && employmentStatusArr.find((item) => item?.id == employmentStatusVal)?.status === 'Employed'
+  
   return (
     <>
       <StyledAccordion>
@@ -76,7 +78,7 @@ export const EmployedForm = (props: IEmployeProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isEmployed}`, { required: true })}
+              {...register(`${isEmployed}`, { required: isOtherFieldRequired })}
               value="yes"
               checked={isEmployedVal === "yes"}
             />
@@ -86,7 +88,7 @@ export const EmployedForm = (props: IEmployeProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isEmployed}`, { required: true })}
+              {...register(`${isEmployed}`, { required: isOtherFieldRequired })}
               value="no"
               checked={isEmployedVal === "no"}
             />
@@ -127,13 +129,13 @@ export const EmployedForm = (props: IEmployeProps) => {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <StyledLabel required>Employer</StyledLabel>
+                  <StyledLabel required={isOtherFieldRequired}>Employer</StyledLabel>
                   <div className="mb-4">
                     <select
                       className="form-select"
                       aria-label="Default select example"
                       value={employerVal}
-                      {...register(`${employer}`, { required: true })}
+                      {...register(`${employer}`, { required: isOtherFieldRequired })}
                     >
                       <option value={""}>Select Employer</option>
 
@@ -171,11 +173,11 @@ export const EmployedForm = (props: IEmployeProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Industry</StyledLabel>
+                    <StyledLabel required={isOtherFieldRequired}>Industry</StyledLabel>
                     <select
                       className="form-select"
                       aria-label="Default select example"
-                      {...register(`${industry}`, { required: true })}
+                      {...register(`${industry}`, { required: isOtherFieldRequired })}
                     >
                       <option value={""}>Select Industry</option>
                       {employmentIndustries &&
@@ -198,7 +200,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Manager Name</StyledLabel>
+                    <StyledLabel required={isOtherFieldRequired}>Manager Name</StyledLabel>
                     <input
                       className="form-control"
                       value={managerNameVal}
@@ -238,13 +240,13 @@ export const EmployedForm = (props: IEmployeProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Office Number</StyledLabel>
+                    <StyledLabel required={isOtherFieldRequired}>Office Number</StyledLabel>
                     <PhoneInput
                       international
                       countryCallingCodeEditable={false}
                       defaultCountry={countryCodeRef}
                       placeholder="Select Country Code*"
-                      {...register(`${officeNumber}`, { required: true })}
+                      {...register(`${officeNumber}`, { required: isOtherFieldRequired })}
                       onCountryChange={(value: any) => {
                         setCountryCode(value);
                       }}

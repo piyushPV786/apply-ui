@@ -94,7 +94,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       aria-label="Default select example"
                       {...register(`${sponsorMode}`, { required: true })}
                     >
-                      <option value={""}>Select sonsor mode</option>
+                      <option value={""}>Select Sponsor mode</option>
 
                       {sponsorModeArr &&
                         sponsorModeArr.map(({ id, mode }) => (

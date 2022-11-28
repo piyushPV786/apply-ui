@@ -149,9 +149,8 @@ export const KinDetailsForm = (props: any) => {
                     />
                     {touchedField?.email && error?.email && (
                       <div className="invalid-feedback">
-                        {error?.email?.type == "validate"
-                          ? "you have entered an invalid email address. Please try again"
-                          : "Please enter email"}
+                        {error?.email?.type == "validate" &&
+                          "you have entered an invalid email address. Please try again"}
                       </div>
                     )}
                   </div>

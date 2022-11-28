@@ -30,9 +30,10 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     const userNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
-    setMobile(userNumberDetail?.mobileNumber);
+    setMobile('+'+userNumberDetail?.countryCodeNumber + userNumberDetail?.mobileNumber);
     setCountryCode(userNumberDetail?.countryCode);
   }, []);
+  console.log({countryCodeRef})
   const {
     firstName,
     middleName,
@@ -232,10 +233,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
             </div>
             <div className="row">
               <div className="col-md-4">
-                <div className="mb-4">
+                <div className="mb-4 pe-none">
                   <StyledLabel required>Mobile Number</StyledLabel>
                   <PhoneInput
-                    disabled={true}
                     id="1"
                     international
                     countryCallingCodeEditable={false}
@@ -271,7 +271,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     {...register("identificationPassportNumber", {
                       required: true,
                     })}
-                    type="number"
+                    type="text"
                     className="form-control"
                     id="identificationPassportNumber"
                     placeholder=""
