@@ -30,10 +30,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     const userNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
-    setMobile('+'+userNumberDetail?.countryCodeNumber + userNumberDetail?.mobileNumber);
+    setMobile(
+      "+" + userNumberDetail?.countryCodeNumber + userNumberDetail?.mobileNumber
+    );
     setCountryCode(userNumberDetail?.countryCode);
   }, []);
-  console.log({countryCodeRef})
   const {
     firstName,
     middleName,
