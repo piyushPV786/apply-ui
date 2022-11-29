@@ -38,7 +38,6 @@ export const KinDetailsForm = (props: any) => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${mobileCountryCode}`, `+${countryCode}`);
   };
-
   return (
     <>
       <StyledAccordion>
@@ -180,6 +179,12 @@ export const KinDetailsForm = (props: any) => {
                       }}
                       value={phoneNumberVal}
                     />
+                    {touchedField?.mobileNumber && error?.mobileNumber && (
+                      <div className="invalid-feedback">
+                        {error?.mobileNumber &&
+                          "you have entered an invalid number"}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
