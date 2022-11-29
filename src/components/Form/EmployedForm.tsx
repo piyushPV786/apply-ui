@@ -9,7 +9,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { EmploymentIndustry, EmploymentStatus } from "../common/types";
-import { onlyAlphabets } from "../../Util/Util";
+import { onlyAlphabets, onlyAlphaNumeric } from "../../Util/Util";
 
 const EmployementDetails = "employment";
 const employmentStatus = `${EmployementDetails}.employmentStatusId`;
@@ -166,6 +166,17 @@ export const EmployedForm = (props: IEmployeProps) => {
                       value={jobTitleVal}
                       defaultValue={jobTitleVal}
                       {...register(`${jobTitle}`)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphaNumeric(value) || !value) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
                     />
                   </div>
                 </div>

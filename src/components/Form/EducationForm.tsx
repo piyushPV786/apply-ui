@@ -17,6 +17,7 @@ import {
   SocialMedia,
 } from "../common/types";
 import styled from "styled-components";
+import { onlyAlphaNumeric } from "../../Util/Util";
 const qualification = `interestedQualificationId`;
 const studyMode = `studyMode`;
 const highestQualification = `highestQualificationId`;
@@ -261,6 +262,17 @@ export const EducationForm = (props: IEducationProps) => {
                     className="form-control"
                     id="highSchoolName"
                     placeholder=""
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphaNumeric(value) || !value) {
+                        setValue(name, value, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
                   />
                   {touchFields?.highSchoolName &&
                     educationFormError?.highSchoolName && (
