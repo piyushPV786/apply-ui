@@ -1,9 +1,10 @@
 import React from "react";
-import { Green, GreenFormHeading } from "../common/common";
+import { GreenFormHeading } from "../common/common";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer, MainContainer } from "../payment/payment";
 import Header from "../common/header";
-const imgUrl = "/assets/images";
+import Image from "next/image";
+import PayIcon from "../../../public/assets/images/PayIcon.svg";
 
 export const DocumentSuccess = (props: any) => {
   return (
@@ -16,10 +17,11 @@ export const DocumentSuccess = (props: any) => {
               <div className="row">
                 <div className="col-sm-12">
                   <div className="text-center mb-2">
-                    <img
-                      width="190px"
-                      height="170px"
-                      src={`${imgUrl}/pay.png`}
+                    <Image
+                      width="190"
+                      height="170"
+                      src={PayIcon}
+                      alt={"PayIcon"}
                     />
                   </div>
                   <div className="text-center w-100">

@@ -7,6 +7,9 @@ import {
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
+import Image from "next/image";
+import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
+
 const Address = "address";
 const resPostalAddress = `${Address}.residentialAddress`;
 const resCountry = `${Address}.residentialCountry`;
@@ -50,8 +53,9 @@ export const AddressForm = () => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <img
-                src={"/assets/images/address-card-outlined-svgrepo-com.svg"}
+              <Image
+                src={AddressImg}
+                alt="address card"
               />
             </span>
             Address

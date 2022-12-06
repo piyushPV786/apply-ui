@@ -145,7 +145,7 @@ const ApplicationForm = (props: any) => {
           message: "Data has been successfully saved.",
           show: true,
         });
-        if (!isDrafSave) {
+        if (true || !isDrafSave) {
           setSubmitted(true);
           setActiveStep(activeStep + 1);
         }

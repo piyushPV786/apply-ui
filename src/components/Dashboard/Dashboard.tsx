@@ -1,12 +1,13 @@
 import React from "react";
-import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
+import { Green, GreenFormHeading } from "../common/common";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer } from "../payment/payment";
 import Header from "../common/header";
 import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-const imgUrl = "/assets/images";
+import Image from "next/image";
+import ApplicationIcon from "../../../public/assets/images/application-icon.svg";
 
 export const ApplicationDashboard = (props: any) => {
   const router = useRouter();
@@ -73,10 +74,11 @@ export const ApplicationDashboard = (props: any) => {
                           padding: "1.5rem",
                         }}
                       >
-                        <img
-                          width="85px"
-                          height="85px"
-                          src={`${imgUrl}/application-icon.svg`}
+                        <Image
+                          width="85"
+                          height="85"
+                          src={ApplicationIcon}
+                          alt="application-icon.svg"
                         />
                       </div>
                     </div>

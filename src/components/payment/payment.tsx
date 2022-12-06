@@ -4,21 +4,25 @@ import {
   DefaultGrey,
   Green,
   GreenFormHeading,
+  GreenText,
   StyledLabel,
 } from "../common/common";
+import CloseIcon from "@material-ui/icons/CloseOutlined";
 import { useFormContext } from "react-hook-form";
 import { HighestQualificationElement, Mode } from "../common/types";
 import PaymentOption from "./payment-options";
 import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import { isInvalidFileType } from "../../Util/Util";
-const imgUrl = "/assets/images";
+import FIleUploadImg from '../../../public/assets/images/file-upload-svgrepo-com.svg';
+import Image from "next/image";
 
 const Payment = (props: any) => {
-  const router = useRouter();
   const fileUploadRef = useRef<any>(null);
   const { watch, register, setValue } = useFormContext();
   const [paymentDocs, setPaymentDocs] = useState<File>();
+  const [promoCode, setPromoCode] = useState<string>("");
+  const [showPromoCode, setShowPromoCOde] = useState<boolean>(false);
   const [fileError, setFileError] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
@@ -62,57 +66,123 @@ const Payment = (props: any) => {
             </PaymentHeading>
             <PaymentContainer>
               <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-4">
-                    <StyledLabel style={{ fontSize: "16px" }}>
-                      Proposal Qualification
-                    </StyledLabel>
-                    <div>
-                      <strong>{selectedQualification}</strong>
+                <div className="col-md-7">
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="mb-4">
+                        <StyledLabel style={{ fontSize: "16px" }}>
+                          Proposal Qualification
+                        </StyledLabel>
+                        <div>
+                          <strong>{selectedQualification}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-4">
+                        <StyledLabel style={{ fontSize: "16px" }}>
+                          Study Mode
+                        </StyledLabel>
+                        <div>
+                          <strong>{selectedStudyMode}</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="mb-4 w-75">
+                        <StyledLabel required style={{ fontSize: "16px" }}>
+                          Currency Selection
+                        </StyledLabel>
+                        <select
+                          className="form-select"
+                          {...register(`payment.currency`, { required: true })}
+                        >
+                          {[] &&
+                            [{ id: 21, currency: "Rs" }].map(
+                              ({ id, currency }) => (
+                                <option
+                                  selected={id === allFields?.payment?.currency}
+                                  key={id}
+                                  value={Number(id)}
+                                >
+                                  {currency}
+                                </option>
+                              )
+                            )}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-4">
+                        <StyledLabel style={{ fontSize: "16px" }}>
+                          Application Fee
+                        </StyledLabel>
+                        <div>
+                          <strong>INR 2100.00</strong>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6">
-                  <div className="mb-4">
-                    <StyledLabel style={{ fontSize: "16px" }}>
-                      Study Mode
-                    </StyledLabel>
-                    <div>
-                      <strong>{selectedStudyMode}</strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-4 w-75">
-                    <StyledLabel required style={{ fontSize: "16px" }}>
-                      Currency Selection
-                    </StyledLabel>
-                    <select
-                      className="form-select"
-                      {...register(`payment.currency`, { required: true })}
+                <div className="col-md-5">
+                  <div className="">
+                    <div
+                      style={{ background: "#f5f5f5", minHeight: "110px" }}
+                      className="w-100 p-2"
                     >
-                      {[] &&
-                        [{ id: 21, currency: "Rs" }].map(({ id, currency }) => (
-                          <option
-                            selected={id === allFields?.payment?.currency}
-                            key={id}
-                            value={Number(id)}
-                          >
-                            {currency}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-4">
-                    <StyledLabel style={{ fontSize: "16px" }}>
-                      Application Fee
-                    </StyledLabel>
-                    <div>
-                      <strong>INR 2100.00</strong>
+                      <div className="mb-4 d-flex justify-content-between">
+                        <div>
+                          <h6>Subtotal (INR)</h6>
+                        </div>
+                        <div>
+                          {" "}
+                          <h6>INR 2100.00</h6>
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <a
+                          onClick={() => setShowPromoCOde(!showPromoCode)}
+                          href="#"
+                          className="w-100 text-dark"
+                        >
+                          Have a promo code?
+                        </a>
+                      </div>
+                      {showPromoCode && (
+                        <div className="w-100 text-center ps-4 pe-4">
+                          <div className="input-group mb-2 mt-4">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Enter promo code"
+                              onChange={(e) => setPromoCode(e?.target?.value)}
+                            />
+                            <div className="input-group-append cursor-pointer">
+                              <span
+                                style={{
+                                  background:
+                                    !promoCode || promoCode?.length === 0
+                                      ? `${DefaultGrey}`
+                                      : `${Green}`,
+                                  padding: "0.47rem 0.75rem",
+                                }}
+                                className="input-group-text"
+                                id="basic-addon2"
+                              >
+                                Apply
+                              </span>
+                            </div>
+                            <GreenText
+                              onClick={() => setShowPromoCOde(!showPromoCode)}
+                              className="ms-2 fs-6 d-flex align-items-center justify-content-center"
+                            >
+                              <CloseIcon />
+                            </GreenText>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -142,9 +212,10 @@ const Payment = (props: any) => {
                 <div className="">
                   <UploadPaymentDocsContainer onClick={onDocUploadClick}>
                     <div ref={fileUploadRef} className="text-center">
-                      <img
-                        src={`${imgUrl}/file-upload-svgrepo-com.svg`}
-                        width="35px"
+                      <Image
+                        src={FIleUploadImg}
+                        width="35"
+                        alt="file-upload-svgrepo"
                       />
                       <input
                         className="d-none"

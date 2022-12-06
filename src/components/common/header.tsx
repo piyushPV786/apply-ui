@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Grid, Container } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { StyledLink } from "../student/login";
 import { useRouter } from "next/router";
+import RbsLogo from '../../../public/assets/images/RBS_logo_2_white.png';
+import Image from "next/image";
 
 const Header = (props: any) => {
   const [studentMob, setStudentMob] = useState<string>("");
@@ -37,9 +39,10 @@ const Header = (props: any) => {
                       paddingRight: "0.5rem",
                     }}
                   >
-                    <img
-                      src={"/assets/images/RBS_logo_2_white.png"}
-                      width="180px"
+                    <Image
+                      src={RbsLogo}
+                      width="180"
+                      alt={'RbsLogo'}
                     />
                   </div>
                   <div>

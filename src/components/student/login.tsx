@@ -9,7 +9,9 @@ import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import axios from "./../../service/Api";
-import { AnyCnameRecord } from "dns";
+import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.svg";
+import Image from "next/image";
+
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState<any>("SA");
@@ -223,7 +225,7 @@ const StudentLogin = () => {
         <>
           <Heading>
             <div>
-              <img src={"/assets/images/RBS_logo_1_white.svg"} />
+              <Image src={RBSLogo} alt="rbsLogo" />
             </div>
             Regenesys Application Form
           </Heading>

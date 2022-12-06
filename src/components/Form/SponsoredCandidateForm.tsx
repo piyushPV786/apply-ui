@@ -10,6 +10,8 @@ import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { Mode } from "../common/types";
 import { onlyAlphabets } from "../../Util/Util";
+import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
+import Image from "next/image";
 
 const SponsorCandidateDetail = "sponsor";
 
@@ -53,7 +55,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <img src={"/assets/images/dollar-symbol-svgrepo-com.svg"} />
+              <Image alt="Dollar" src={DollarIcon} />
             </span>
             Are you Sponsored Candidate?
             <span className="me-2 ms-1" style={{ color: "red" }}>

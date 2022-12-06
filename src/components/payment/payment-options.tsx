@@ -1,12 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import { Grid, Container, Box } from "@material-ui/core";
-import {
-  DefaultGrey,
-  Green,
-  GreenFormHeading,
-  StyledLabel,
-} from "../common/common";
+import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
 import { useFormContext } from "react-hook-form";
 import StyledButton from "../button/button";
 const imgUrl = "/assets/images";

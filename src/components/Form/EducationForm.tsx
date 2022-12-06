@@ -18,6 +18,9 @@ import {
 } from "../common/types";
 import styled from "styled-components";
 import { onlyAlphaNumeric } from "../../Util/Util";
+import EducationImg from "../../../public/assets/images/education-svgrepo-com.svg";
+import Image from "next/image";
+
 const qualification = `interestedQualificationId`;
 const studyMode = `studyMode`;
 const highestQualification = `highestQualificationId`;
@@ -123,7 +126,7 @@ export const EducationForm = (props: IEducationProps) => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <img src={"/assets/images/education-svgrepo-com.svg"} />
+              <Image src={EducationImg} alt="EducationImg" />
             </span>
             Education and Course details
           </GreenFormHeading>

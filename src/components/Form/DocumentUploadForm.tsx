@@ -7,6 +7,12 @@ import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
 import StyledButton from "../button/button";
 import { isInvalidFileType, uniqueArrayOfObject } from "../../Util/Util";
 import Link from "next/link";
+import Image from "next/image";
+import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
+import ViewIcon from "../../../public/assets/images/view-svgrepo-com.svg";
+import TrashIcon from "../../../public/assets/images/trash-svgrepo-com.svg";
+import FileUpload from "../../../public/assets/images/file-upload-svgrepo-com.svg";
+
 interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
@@ -83,9 +89,10 @@ const DocumentUploadForm = ({
                   <CustomContainer>
                     <StyledUploadDocumentContainer ref={fileUploadRef}>
                       <div className="mt-1">
-                        <img
-                          width="100px"
-                          src={`${imgUrl}/upload-svgrepo-com.svg`}
+                        <Image
+                          width="100"
+                          src={UploadImg}
+                          alt="uplopad-svg"
                         />
                       </div>
                       <input
@@ -161,10 +168,11 @@ const DocumentUploadForm = ({
                                         target="_blank"
                                         href={""}
                                       >
-                                        <img
+                                        <Image
                                           className="me-2 ms-2 "
-                                          src={`${imgUrl}/view-svgrepo-com.svg`}
-                                          width="25px"
+                                          src={ViewIcon}
+                                          alt={'ViewIcon'}
+                                          width="25"
                                         />
                                       </Link>
                                     )}
@@ -172,10 +180,11 @@ const DocumentUploadForm = ({
                                       onClick={() => deleteDocs(index)}
                                       className="cursor-pointer"
                                     >
-                                      <img
+                                      <Image
                                         className="me-2 ms-2 "
-                                        src={`${imgUrl}/trash-svgrepo-com.svg`}
-                                        width="25px"
+                                        src={TrashIcon}
+                                        alt={'TrashIcon'}
+                                        width="25"
                                       />
                                     </span>
                                   </div>
@@ -227,10 +236,11 @@ const DocumentUploadForm = ({
                       </div>
                       <ImageContainer>
                         <div className="w-100">
-                          <img
+                          <Image
                             className="mb-2"
-                            width={"40px"}
-                            src={`${imgUrl}/file-upload-svgrepo-com.svg`}
+                            width={"40"}
+                            src={FileUpload}
+                            alt={'file-upload'}
                           />
                           <p className="">Sample Document</p>
                           <GreenFormHeading>

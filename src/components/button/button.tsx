@@ -2,7 +2,10 @@ import React from "react";
 import { Button } from "@material-ui/core";
 import styled from "styled-components";
 import { Green } from "../common/common";
-const imgUrl = "/assets/images";
+import Image from "next/image";
+import EditIcon from '../../../public/assets/images/edit-icon.svg';
+import UploadIcon from '../../../public/assets/images/upload.svg';
+import PayIcon from '../../../public/assets/images/pay-pay.svg';
 interface IButoonProps {
   title?: string;
   onClick?: (...args: any) => void;
@@ -43,17 +46,17 @@ const StyledButton = ({
     >
       {isEditBtn && (
         <span className="me-3">
-          <img width="20px" src={`${imgUrl}/edit-icon.svg`} />
+          <Image alt="edit" width="20"  src={EditIcon} />
         </span>
       )}
       {isPayBtn && (
         <span className="me-3">
-          <img src={`${imgUrl}/pay-pay.svg`} />
+          <Image alt="pay" src={PayIcon} />
         </span>
       )}
       {isUploadBtn && (
         <span className="me-3">
-          <img src={`${imgUrl}/upload.svg`} />
+          <Image alt="upload" src={UploadIcon} />
         </span>
       )}
       {title}

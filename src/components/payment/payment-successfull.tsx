@@ -5,7 +5,9 @@ import { MainContainer, PaymentContainer } from "./payment";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { useRouter } from "next/router";
 import Header from "../common/header";
-const imgUrl = "/assets/images";
+import WarningIcon from "../../../public/assets/images/warning-svgrepo-com.png";
+import PayIcon from "../../../public/assets/images/pay.png";
+import Image from "next/image";
 
 const PaymentSuccessFull = (props: any) => {
   const [isSuccess, setSuccess] = useState<boolean>(false);
@@ -34,10 +36,11 @@ const PaymentSuccessFull = (props: any) => {
               <div className="row">
                 <div className="col-sm-12">
                   <div className="text-center mb-2">
-                    <img
-                      width="100px"
-                      height="100px"
-                      src={`${imgUrl}/warning-svgrepo-com.png`}
+                    <Image
+                      width="100"
+                      height="100"
+                      src={WarningIcon}
+                      alt="warning" 
                     />
                   </div>
                   <div className="text-center w-100">
@@ -64,10 +67,11 @@ const PaymentSuccessFull = (props: any) => {
               <div className="row">
                 <div className="col-sm-12">
                   <div className="text-center mb-2">
-                    <img
-                      width="190px"
-                      height="170px"
-                      src={`${imgUrl}/pay.png`}
+                    <Image
+                      width="190"
+                      height="170"
+                      src={PayIcon}
+                      alt="payIcon"
                     />
                   </div>
                   <div className="text-center w-100">

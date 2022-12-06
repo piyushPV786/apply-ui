@@ -6,6 +6,8 @@ import {
   StyledAccordion,
   StyledLabel,
 } from "../common/common";
+import Image from "next/image";
+import UserCircleIcon from "../../../public/assets/images/user-circle-svgrepo-com.svg";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { Gender, Language, Nationality, Race } from "../common/types";
@@ -64,7 +66,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <img src={"/assets/images/user-circle-svgrepo-com.svg"} />
+              <Image src={UserCircleIcon} alt="user" />
             </span>
             Personal Information
           </GreenFormHeading>

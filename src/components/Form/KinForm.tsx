@@ -9,6 +9,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { isValidEmail, onlyAlphabets } from "../../Util/Util";
+import Image from "next/image";
+import KinImg from "../../../public/assets/images/kin.svg";
 
 const KinDetails = "kinDetails";
 const isKin = `${KinDetails}.isKin`;
@@ -48,7 +50,7 @@ export const KinDetailsForm = (props: any) => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <img src={"/assets/images/kin.svg"} />
+              <Image src={KinImg} alt="kin" />
             </span>
             Next of Kin{" "}
             <span className="me-2 ms-1" style={{ color: "red" }}>

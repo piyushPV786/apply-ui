@@ -10,6 +10,8 @@ import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { EmploymentIndustry, EmploymentStatus } from "../common/types";
 import { onlyAlphabets, onlyAlphaNumeric } from "../../Util/Util";
+import Image from "next/image";
+import EmployeeImg from "../../../public/assets/images/employeee.svg";
 
 const EmployementDetails = "employment";
 const employmentStatus = `${EmployementDetails}.employmentStatusId`;
@@ -67,7 +69,7 @@ export const EmployedForm = (props: IEmployeProps) => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <img src={"/assets/images/employeee.svg"} />
+              <Image src={EmployeeImg} alt="employee" />
             </span>
             Are you Employed?
             <span className="me-2 ms-1" style={{ color: "red" }}>
