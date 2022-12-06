@@ -3,11 +3,6 @@ import PersonalInfoForm from "../../components/Form/personalInfoForm";
 import { useForm, FormProvider } from "react-hook-form";
 import styled from "styled-components";
 import { Container, Snackbar } from "@material-ui/core";
-import {
-  StyledLink,
-  SuccessMsgContainer,
-  ToasterContainer,
-} from "../../components/student/login";
 import StepperComponent from "../../components/stepper/stepper";
 import { Green } from "../../components/common/common";
 import StyledButton from "../../components/button/button";
@@ -37,6 +32,11 @@ import Payment from "../../components/payment/payment";
 import Header from "../../components/common/header";
 import DocumentUploadForm from "../../components/Form/DocumentUploadForm";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
+import {
+  StyledLink,
+  SuccessMsgContainer,
+  ToasterContainer,
+} from "../../components/student/style";
 const isValidFileType = (files: any[]) => {
   return (files || []).filter((file) => file?.error === true);
 };

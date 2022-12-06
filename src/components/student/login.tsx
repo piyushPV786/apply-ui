@@ -15,11 +15,11 @@ import {
   Heading,
   Item,
   StyleFooter,
-  StyledLink,
   SuccessMsgContainer,
   Title,
   ToasterContainer,
 } from "./style";
+import styled from "styled-components";
 
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
@@ -287,3 +287,7 @@ const StudentLogin = () => {
 };
 
 export default StudentLogin;
+export const StyledLink = styled.span`
+  color: #008554;
+  cursor: pointer;
+`;

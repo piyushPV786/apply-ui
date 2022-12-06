@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import {
   DefaultGrey,
@@ -12,7 +12,6 @@ import { useFormContext } from "react-hook-form";
 import { HighestQualificationElement, Mode } from "../common/types";
 import PaymentOption from "./payment-options";
 import StyledButton from "../button/button";
-import { useRouter } from "next/router";
 import { isInvalidFileType } from "../../Util/Util";
 import FIleUploadImg from '../../../public/assets/images/file-upload-svgrepo-com.svg';
 import Image from "next/image";
