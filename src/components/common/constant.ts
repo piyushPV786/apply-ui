@@ -1,6 +1,6 @@
 export enum AddressEnums {
   ADDRESSTYPE1 = 1,
-  ADDRESSTYPE2 = 1,
+  ADDRESSTYPE2 = 2,
   STATE = "state",
   COUNTRY = "country",
 }
