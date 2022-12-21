@@ -81,10 +81,10 @@ interface ICountry {
   currency: string;
   latitude: string;
   longitude: string;
-  timezones: Timezone[];
+  timezones: ITimezone[];
 }
 
-interface Timezone {
+interface ITimezone {
   zoneName: string;
   gmtOffset: number;
   gmtOffsetName: string;

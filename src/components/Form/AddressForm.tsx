@@ -11,6 +11,7 @@ import Image from "next/image";
 import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import { AuthApi } from "../../service/Axios";
 import { IAddressDetailType } from "../common/types";
+import { AddressApi, AddressEnums } from "../common/constant";
 const Address = "address";
 const resPostalAddress = `${Address}.residentialAddress`;
 const resCountry = `${Address}.residentialCountry`;
@@ -66,16 +67,16 @@ export const AddressForm = () => {
           !allApiExecuted
         ) {
           if (postalCountryVal && postalCountryVal.length > 0) {
-            onDropDownChange(postalCountryVal, "country", 1);
+            onDropDownChange(postalCountryVal, AddressEnums.COUNTRY, 1);
           }
           if (postalStateVal && postalStateVal.length > 0) {
-            onDropDownChange(postalStateVal, "state", 1);
+            onDropDownChange(postalStateVal, AddressEnums.STATE, 1);
           }
           if (resCountryVal && resCountryVal.length > 0) {
-            onDropDownChange(resCountryVal, "country", 2);
+            onDropDownChange(resCountryVal, AddressEnums.COUNTRY, 2);
           }
           if (resStateVal && resStateVal.length > 0) {
-            onDropDownChange(resStateVal, "state", 2);
+            onDropDownChange(resStateVal, AddressEnums.STATE, 2);
           }
           setApiExecuted(true);
         }
@@ -84,7 +85,7 @@ export const AddressForm = () => {
   }, [allFields?.address]);
 
   const getCountry = async () => {
-    await AuthApi.get("global/getCountries")
+    await AuthApi.get(AddressApi.GETCOUNTRIES)
       .then(async ({ data: res }) => {
         setAddressDetail((prevState) => ({ ...prevState, country: res.data }));
         setAddressDetailTwo((prevState) => ({
@@ -102,16 +103,16 @@ export const AddressForm = () => {
     country: string = "IN",
     addressType?: number | null
   ) => {
-    await AuthApi.get(`global/getStatesOfCountry/${country}`)
+    await AuthApi.get(`${AddressApi.GETSTATES}/${country}`)
       .then(({ data: res }) => {
-        if (addressType === 1) {
+        if (addressType === AddressEnums.ADDRESSTYPE1) {
           setAddressDetail((prevState) => ({
             ...prevState,
             state: res.data,
           }));
           return;
         }
-        if (addressType === 2) {
+        if (addressType === AddressEnums.ADDRESSTYPE2) {
           setAddressDetailTwo((prevState) => ({
             ...prevState,
             state: res.data,
@@ -136,13 +137,13 @@ export const AddressForm = () => {
     state: string = "AN",
     addressType?: number | null
   ) => {
-    await AuthApi.get(`global/getCitiesOfState/${country}/${state}`)
+    await AuthApi.get(`${AddressApi.GETCITY}/${country}/${state}`)
       .then(({ data: res }) => {
-        if (addressType === 1) {
+        if (addressType === AddressEnums.ADDRESSTYPE1) {
           setAddressDetail((prevState) => ({ ...prevState, city: res.data }));
           return;
         }
-        if (addressType === 2) {
+        if (addressType === AddressEnums.ADDRESSTYPE2) {
           setAddressDetailTwo((prevState) => ({
             ...prevState,
             city: res.data,
@@ -170,19 +171,31 @@ export const AddressForm = () => {
 
   const onDropDownChange = (
     value: string,
-    type: string,
+    dropdownType: string,
     addressType: number
   ) => {
-    if (type === "country" && addressType === 1) {
+    if (
+      dropdownType === AddressEnums.COUNTRY &&
+      addressType === AddressEnums.ADDRESSTYPE1
+    ) {
       getStates(value, addressType);
     }
-    if (type === "state" && addressType === 1) {
+    if (
+      dropdownType === AddressEnums.STATE &&
+      addressType === AddressEnums.ADDRESSTYPE1
+    ) {
       getCity(postalCountryVal, value, addressType);
     }
-    if (type === "country" && addressType === 2) {
+    if (
+      dropdownType === AddressEnums.COUNTRY &&
+      addressType === AddressEnums.ADDRESSTYPE2
+    ) {
       getStates(value, addressType);
     }
-    if (type === "state" && addressType === 2) {
+    if (
+      dropdownType === AddressEnums.STATE &&
+      addressType === AddressEnums.ADDRESSTYPE2
+    ) {
       getCity(resCountryVal, value, addressType);
     }
   };
@@ -236,7 +249,7 @@ export const AddressForm = () => {
                     onChange={(e: any) => {
                       const value = e.target.value;
                       setValue(postalCountry, value);
-                      onDropDownChange(value, "country", 1);
+                      onDropDownChange(value, AddressEnums.COUNTRY, 1);
                     }}
                   >
                     <option value={""}>Select Country</option>
@@ -315,7 +328,7 @@ export const AddressForm = () => {
                     onChange={(e: any) => {
                       const value = e.target.value;
                       setValue(postalState, value);
-                      onDropDownChange(value, "state", 1);
+                      onDropDownChange(value, AddressEnums.STATE, 1);
                     }}
                   >
                     <option value={""}>Select State</option>
@@ -426,7 +439,7 @@ export const AddressForm = () => {
                       onChange={(e: any) => {
                         const value = e.target.value;
                         setValue(resCountry, value);
-                        onDropDownChange(value, "country", 2);
+                        onDropDownChange(value, AddressEnums.COUNTRY, 2);
                       }}
                     >
                       <option value={""}>Select Country</option>
@@ -508,7 +521,7 @@ export const AddressForm = () => {
                       onChange={(e: any) => {
                         const value = e.target.value;
                         setValue(resState, value);
-                        onDropDownChange(value, "state", 2);
+                        onDropDownChange(value, AddressEnums.STATE, 2);
                       }}
                     >
                       <option value={""}>Select State</option>
