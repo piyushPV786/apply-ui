@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -9,7 +9,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
-
+import { AuthApi } from "../../service/Axios";
+import { IAddressDetailType } from "../common/types";
 const Address = "address";
 const resPostalAddress = `${Address}.residentialAddress`;
 const resCountry = `${Address}.residentialCountry`;
@@ -23,6 +24,19 @@ const postalCity = `${Address}.postalCity`;
 const postalState = `${Address}.postalState`;
 const isSameAsPostalAddress = `${Address}.isSameAsPostalAddress`;
 export const AddressForm = () => {
+  const [addressDetails, setAddressDetail] = useState<IAddressDetailType>({
+    state: [],
+    country: [],
+    city: [],
+  });
+  const [addressDetailsTwo, setAddressDetailTwo] = useState<IAddressDetailType>(
+    {
+      state: [],
+      country: [],
+      city: [],
+    }
+  );
+  const [allApiExecuted, setApiExecuted] = useState<boolean>(false);
   const {
     setValue,
     register,
@@ -43,6 +57,136 @@ export const AddressForm = () => {
   const postalZipCodeVal: string = watch(postalZipCode);
   const postalCityVal: string = watch(postalCity);
   const postalStateVal: string = watch(postalState);
+  const allFields = watch();
+  useEffect(() => {
+    if (allFields && allFields?.address && !allApiExecuted) {
+      Promise.allSettled([getCountry(), getStates(), getCity()]).then((res) => {
+        if (
+          res.every((item) => item.status.includes("fulfilled")) &&
+          !allApiExecuted
+        ) {
+          if (postalCountryVal && postalCountryVal.length > 0) {
+            onDropDownChange(postalCountryVal, "country", 1);
+          }
+          if (postalStateVal && postalStateVal.length > 0) {
+            onDropDownChange(postalStateVal, "state", 1);
+          }
+          if (resCountryVal && resCountryVal.length > 0) {
+            onDropDownChange(resCountryVal, "country", 2);
+          }
+          if (resStateVal && resStateVal.length > 0) {
+            onDropDownChange(resStateVal, "state", 2);
+          }
+          setApiExecuted(true);
+        }
+      });
+    }
+  }, [allFields?.address]);
+
+  const getCountry = async () => {
+    await AuthApi.get("global/getCountries")
+      .then(async ({ data: res }) => {
+        setAddressDetail((prevState) => ({ ...prevState, country: res.data }));
+        setAddressDetailTwo((prevState) => ({
+          ...prevState,
+          country: res.data,
+        }));
+        return new Promise((resolve) => resolve(true));
+      })
+      .catch((err) => {
+        console.log(err);
+        return new Promise((resolve) => resolve(false));
+      });
+  };
+  const getStates = async (
+    country: string = "IN",
+    addressType?: number | null
+  ) => {
+    await AuthApi.get(`global/getStatesOfCountry/${country}`)
+      .then(({ data: res }) => {
+        if (addressType === 1) {
+          setAddressDetail((prevState) => ({
+            ...prevState,
+            state: res.data,
+          }));
+          return;
+        }
+        if (addressType === 2) {
+          setAddressDetailTwo((prevState) => ({
+            ...prevState,
+            state: res.data,
+          }));
+          return;
+        }
+        if (!addressType) {
+          setAddressDetail((prevState) => ({ ...prevState, state: res.data }));
+          setAddressDetailTwo((prevState) => ({
+            ...prevState,
+            state: res.data,
+          }));
+          return;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const getCity = async (
+    country: string = "IN",
+    state: string = "AN",
+    addressType?: number | null
+  ) => {
+    await AuthApi.get(`global/getCitiesOfState/${country}/${state}`)
+      .then(({ data: res }) => {
+        if (addressType === 1) {
+          setAddressDetail((prevState) => ({ ...prevState, city: res.data }));
+          return;
+        }
+        if (addressType === 2) {
+          setAddressDetailTwo((prevState) => ({
+            ...prevState,
+            city: res.data,
+          }));
+          return;
+        }
+        if (!addressType) {
+          setAddressDetail((prevState) => ({ ...prevState, city: res.data }));
+          setAddressDetailTwo((prevState) => ({
+            ...prevState,
+            city: res.data,
+          }));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const { city, state, country } = addressDetails;
+  const {
+    city: cityTwo,
+    state: stateTwo,
+    country: countryTwo,
+  } = addressDetailsTwo;
+
+  const onDropDownChange = (
+    value: string,
+    type: string,
+    addressType: number
+  ) => {
+    if (type === "country" && addressType === 1) {
+      getStates(value, addressType);
+    }
+    if (type === "state" && addressType === 1) {
+      getCity(postalCountryVal, value, addressType);
+    }
+    if (type === "country" && addressType === 2) {
+      getStates(value, addressType);
+    }
+    if (type === "state" && addressType === 2) {
+      getCity(resCountryVal, value, addressType);
+    }
+  };
+
   return (
     <>
       <StyledAccordion>
@@ -53,10 +197,7 @@ export const AddressForm = () => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <Image
-                src={AddressImg}
-                alt="address card"
-              />
+              <Image src={AddressImg} alt="address card" />
             </span>
             Address
           </GreenFormHeading>
@@ -92,10 +233,22 @@ export const AddressForm = () => {
                     value={postalCountryVal}
                     className="form-select"
                     {...register(`${postalCountry}`, { required: true })}
+                    onChange={(e: any) => {
+                      const value = e.target.value;
+                      setValue(postalCountry, value);
+                      onDropDownChange(value, "country", 1);
+                    }}
                   >
                     <option value={""}>Select Country</option>
-                    <option value="India">India</option>
-                    <option value="USA">USA</option>
+                    {country.map((item, idx) => (
+                      <option
+                        selected={postalCountryVal === item?.isoCode}
+                        key={idx}
+                        value={item?.isoCode}
+                      >
+                        {item?.name}
+                      </option>
+                    ))}
                   </select>
                   {touchedField?.postalCountry && error?.postalCountry && (
                     <div className="invalid-feedback">
@@ -138,8 +291,15 @@ export const AddressForm = () => {
                     {...register(`${postalCity}`, { required: true })}
                   >
                     <option value={""}>Select City</option>
-                    <option value="Mumbai">Mumbai</option>
-                    <option value="Delhi">Delhi</option>
+                    {city.map((item, idx) => (
+                      <option
+                        selected={postalCityVal === item?.isoCode}
+                        key={idx}
+                        value={item?.isoCode}
+                      >
+                        {item?.name}
+                      </option>
+                    ))}
                   </select>
                   {touchedField?.postalCity && error?.postalCity && (
                     <div className="invalid-feedback">Please enter City</div>
@@ -152,11 +312,22 @@ export const AddressForm = () => {
                     className="form-select"
                     value={postalStateVal}
                     {...register(`${postalState}`, { required: true })}
+                    onChange={(e: any) => {
+                      const value = e.target.value;
+                      setValue(postalState, value);
+                      onDropDownChange(value, "state", 1);
+                    }}
                   >
                     <option value={""}>Select State</option>
-                    <option value="MP">MP</option>
-                    <option value="UP">UP</option>
-                    <option value="Other">Other</option>
+                    {state.map((item, idx) => (
+                      <option
+                        selected={postalStateVal === item?.isoCode}
+                        key={idx}
+                        value={item?.isoCode}
+                      >
+                        {item?.name}
+                      </option>
+                    ))}
                   </select>
                   {touchedField?.postalState && error?.postalState && (
                     <div className="invalid-feedback">
@@ -213,6 +384,7 @@ export const AddressForm = () => {
                           shouldTouch: true,
                           shouldValidate: true,
                         });
+                        setAddressDetailTwo(addressDetails);
                       }
                     }}
                   />
@@ -251,10 +423,22 @@ export const AddressForm = () => {
                       value={resCountryVal}
                       className="form-select"
                       {...register(`${resCountry}`, { required: true })}
+                      onChange={(e: any) => {
+                        const value = e.target.value;
+                        setValue(resCountry, value);
+                        onDropDownChange(value, "country", 2);
+                      }}
                     >
                       <option value={""}>Select Country</option>
-                      <option value="India">India</option>
-                      <option value="China">China</option>
+                      {countryTwo.map((item, idx) => (
+                        <option
+                          selected={resCountryVal === item?.isoCode}
+                          key={idx}
+                          value={item?.isoCode}
+                        >
+                          {item?.name}
+                        </option>
+                      ))}
                     </select>
                     {touchedField?.resCountry && error?.resCountry && (
                       <div className="invalid-feedback">
@@ -298,7 +482,15 @@ export const AddressForm = () => {
                       {...register(`${resCity}`, { required: true })}
                     >
                       <option value={""}>Select City</option>
-                      <option value="Mumbai">Mumbai</option>
+                      {cityTwo.map((item, idx) => (
+                        <option
+                          selected={resCityVal === item.isoCode}
+                          key={idx}
+                          value={item?.isoCode}
+                        >
+                          {item?.name}
+                        </option>
+                      ))}
                     </select>
                     {touchedField?.resCity && error?.resCity && (
                       <div className="invalid-feedback">
@@ -313,11 +505,22 @@ export const AddressForm = () => {
                       value={resStateVal}
                       className="form-select"
                       {...register(`${resState}`, { required: true })}
+                      onChange={(e: any) => {
+                        const value = e.target.value;
+                        setValue(resState, value);
+                        onDropDownChange(value, "state", 2);
+                      }}
                     >
                       <option value={""}>Select State</option>
-                      <option value="MP">MP</option>
-                      <option value="UP">UP</option>
-                      <option value="Other">Other</option>
+                      {stateTwo.map((item, idx) => (
+                        <option
+                          selected={resStateVal === item?.isoCode}
+                          key={idx}
+                          value={item?.isoCode}
+                        >
+                          {item?.name}
+                        </option>
+                      ))}
                     </select>
                     {touchedField?.resState && error?.resState && (
                       <div className="invalid-feedback">
