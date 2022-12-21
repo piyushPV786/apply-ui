@@ -11,7 +11,7 @@ import { EducationForm } from "../../components/Form/EducationForm";
 import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
-import { AuthApi } from "../../service/Api";
+import { AuthApi } from "../../service/Axios";
 import {
   Agent,
   EmploymentIndustry,

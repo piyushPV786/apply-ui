@@ -6,7 +6,7 @@ import OtpInput from "../Input/otpInput";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import axios from "./../../service/Api";
+import axios from "../../service/Axios";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.svg";
 import Image from "next/image";
 import {
