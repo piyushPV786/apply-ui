@@ -1,15 +1,26 @@
-import { Grid, Input, Snackbar } from "@material-ui/core";
+import { Grid, Snackbar } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import StyledButton from "../button/button";
-import { GreenText } from "../common/common";
 import { useRouter } from "next/router";
 import OtpInput from "../Input/otpInput";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import axios from "./../../service/Api";
-import { AnyCnameRecord } from "dns";
+import axios from "../../service/Axios";
+import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.svg";
+import Image from "next/image";
+import {
+  ImageContainer,
+  ApplicationFormContainer,
+  Heading,
+  Item,
+  StyleFooter,
+  SuccessMsgContainer,
+  Title,
+  ToasterContainer,
+} from "./style";
+import styled from "styled-components";
+
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState<any>("SA");
@@ -22,17 +33,21 @@ const StudentLogin = () => {
   });
   const router = useRouter();
   useEffect(() => {
-    const isAuthenticate =
-      JSON.parse(sessionStorage?.getItem("studentMobile") as any)?.mobileNumber
-        ?.length === 10 || null;
-    // if (isAuthenticate) {
-    //   router.push("test");
-    // }
+    const isAuthenticate = JSON.parse(
+      sessionStorage?.getItem("authenticate") as any
+    );
+    const studentId = JSON.parse(
+      sessionStorage?.getItem("studentId") as any
+    )?.id;
+    if (studentId && isAuthenticate) {
+      router.push("/student-registration-form/dashboard");
+    }
   }, []);
   const isNumberValid =
     mobileNumber &&
-    mobileNumber?.length > 0 &&
-    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length === 10;
+    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 8 &&
+    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! <= 14;
+
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = () => {
     setProceed(true);
@@ -51,24 +66,20 @@ const StudentLogin = () => {
             countryCode: countryCode,
           })
         );
-        sessionStorage.setItem(
-          "studentId",
-          JSON.stringify({ id: data?.data?.id })
-        );
+
         setProceed(true);
-        setToast(true);
         setToastMsg((prevState: any) => ({
           ...prevState,
           message: "OTP number sent successfully",
         }));
+        setToast(true);
       })
       .catch(({ response }) => {
         setToastMsg(() => ({
           success: false,
           message: response?.data?.message,
         }));
-
-        setToast(false);
+        setToast(true);
       });
   };
   const onCountryChange = (value: string | any) => {
@@ -111,7 +122,7 @@ const StudentLogin = () => {
                 value={mobileNumber}
                 autoFocus={true}
                 onChange={(value: string) => {
-                  setMobileNumberValue(value);
+                  setMobileNumberValue(!value ? "" : value);
                 }}
               />
             </Item>
@@ -169,7 +180,7 @@ const StudentLogin = () => {
                 }}
                 title="Verify"
               />
-              <StyledLink>Resent OTP</StyledLink>
+              <StyledLink onClick={resendOtp}>Resend OTP</StyledLink>
               <br />
               <StyledLink onClick={() => setProceed(!isProceed)}>
                 Change Mobile Number
@@ -188,15 +199,31 @@ const StudentLogin = () => {
     axios
       .post("/verify-otp", { mobileNumber, otp: +otp })
       .then(({ data }) => {
+        sessionStorage.setItem(
+          "studentId",
+          JSON.stringify({ id: data?.data?.id })
+        );
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
+        setTimeout(() => {
+          router.push("/student-registration-form/dashboard");
+        }, 1000);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(({ response }) => {
+        setToastMsg(() => ({
+          success: false,
+          message: response?.data?.message,
+        }));
+        setToast(true);
       });
-    setTimeout(() => {
-      setProceed(false);
-      router.push("/student-registration-form/application-form");
-    }, 1000);
+  };
+
+  const resendOtp = () => {
+    setToastMsg(() => ({
+      success: true,
+      message: "OTP re-sent successfully",
+    }));
+    setToast(true);
+    setOtp("");
   };
 
   const { message, success } = toastMsg;
@@ -206,7 +233,7 @@ const StudentLogin = () => {
         <>
           <Heading>
             <div>
-              <img src={"/assets/images/RBS_logo_1_white.svg"} />
+              <Image src={RBSLogo} alt="rbsLogo" />
             </div>
             Regenesys Application Form
           </Heading>
@@ -260,93 +287,7 @@ const StudentLogin = () => {
 };
 
 export default StudentLogin;
-const SuccessMsgContainer = styled.div`
-  display: flex;
-`;
-const ToasterContainer = styled.div<any>`
-  display: flex;
-  column-gap: 10px;
-  width: 310px;
-  background: ${({ success }) => (success ? "#e6f4e7" : "#d9534f")};
-  height: 75px;
-  color: white;
-  padding: 1rem;
-  display: flex;
-  border-radius: 5px;
-  align-items: center;
-`;
-const StyleFooter = styled.div`
-  position: absolute;
-  bottom: 10px;
-  color: white;
-  a,
-  a:hover {
-    color: #fcd400;
-  }
-  @media screen and (min-width: 410px) and (max-width: 450px) {
-    bottom: 260px;
-    font-size: 14px;
-  }
-  @media screen and (min-width: 380px) and (max-width: 395px) {
-    bottom: 160px;
-    font-size: 14px;
-  }
-  @media screen and (min-width: 320px) and (max-width: 380px) {
-    bottom: 60px;
-    font-size: 12px;
-  }
-`;
-const ApplicationFormContainer = styled.div<any>`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  background: white;
-  padding: 0.8rem;
-  border-radius: 3px;
-  @media (max-width: 400px) {
-    top: ${({ isProceed }) => (isProceed ? "62%" : "55%")};
-  }
-`;
-
-const Item = styled.div`
-  text-align: center;
-  button {
-    text-align: center;
-    width: 100%;
-    margin-bottom: 0.7rem;
-  }
-`;
-
-const Title = styled(GreenText)``;
-
-const Heading = styled.span`
-  color: #fcd400;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 1rem 0;
-  position: relative;
-  text-align: center;
-  top: 5%;
-`;
-
 export const StyledLink = styled.span`
   color: #008554;
   cursor: pointer;
-`;
-
-const url = "/assets/images/bg.jpg";
-const MainContainer = styled.div``;
-const ImageContainer = styled.div`
-  width: 100%;
-  height: 100vh;
-  position: fixed;
-  background-image: url(${url});
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  display: flex;
-  justify-content: center;
-  overflow-y: scroll;
 `;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -7,10 +7,11 @@ import {
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
-import PhoneInput, {
-  getCountryCallingCode,
-} from "react-phone-number-input";
+import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { Mode } from "../common/types";
+import { onlyAlphabets } from "../../Util/Util";
+import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
+import Image from "next/image";
 
 const SponsorCandidateDetail = "sponsor";
 
@@ -25,7 +26,12 @@ interface ISponsorProps {
 }
 export const SponsoredForm = (props: ISponsorProps) => {
   const { sponsorModeArr } = { ...props };
-  const { setValue, register, watch } = useFormContext();
+  const {
+    setValue,
+    register,
+    watch,
+    formState: { errors, touchedFields },
+  } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
 
   const isSponsoredVal = watch(isSponsored, "no");
@@ -37,7 +43,8 @@ export const SponsoredForm = (props: ISponsorProps) => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${sponsorMobileCode}`, `+${countryCode}`);
   };
-
+  const error = errors[SponsorCandidateDetail] as any;
+  const touchedField = touchedFields[SponsorCandidateDetail] as any;
   return (
     <>
       <StyledAccordion>
@@ -48,7 +55,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <img src={"/assets/images/dollar-symbol-svgrepo-com.svg"} />
+              <Image alt="Dollar" src={DollarIcon} />
             </span>
             Are you Sponsored Candidate?
             <span className="me-2 ms-1" style={{ color: "red" }}>
@@ -84,15 +91,21 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   <div className="mb-4">
                     <StyledLabel required>Sponsor Mode</StyledLabel>
                     <select
+                      value={sponsorModeVal}
                       className="form-select"
                       aria-label="Default select example"
-                      value={sponsorModeVal}
-                      defaultValue={sponsorModeVal}
                       {...register(`${sponsorMode}`, { required: true })}
                     >
+                      <option value={""}>Select Sponsor mode</option>
+
                       {sponsorModeArr &&
                         sponsorModeArr.map(({ id, mode }) => (
-                          <option value={Number(id)}>{mode}</option>
+                          <option
+                            selected={id === sponsorModeVal}
+                            value={Number(id)}
+                          >
+                            {mode}
+                          </option>
                         ))}
                     </select>
                   </div>
@@ -106,7 +119,23 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       value={sponsorNameVal}
                       defaultValue={sponsorNameVal}
                       {...register(`${sponsorName}`, { required: true })}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
                     />
+                    {touchedField?.name && error?.name && (
+                      <div className="invalid-feedback">
+                        Please enter sponsor name
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -145,6 +174,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       }}
                       value={sponsorPhoneNumberVal}
                     />
+                    {touchedField?.sponsorMobileNumber &&
+                      error?.sponsorMobileNumber && (
+                        <div className="invalid-feedback">
+                          Please enter phone number
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {
@@ -6,12 +6,12 @@ import {
   StyledAccordion,
   StyledLabel,
 } from "../common/common";
+import Image from "next/image";
+import UserCircleIcon from "../../../public/assets/images/user-circle-svgrepo-com.svg";
 import { useFormContext } from "react-hook-form";
-import PhoneInput, {
-  getCountryCallingCode,
-  parsePhoneNumber,
-} from "react-phone-number-input";
+import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { Gender, Language, Nationality, Race } from "../common/types";
+import { isValidEmail, onlyAlphabets } from "../../Util/Util";
 interface IPersonalInfoProps {
   genders: Gender[];
   nationalities: Nationality[];
@@ -20,19 +20,23 @@ interface IPersonalInfoProps {
 }
 const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const { genders, nationalities, homeLanguage, race } = { ...props };
-  const { control, setValue, register, watch } = useFormContext();
+  const {
+    setValue,
+    register,
+    watch,
+    formState: { errors, touchedFields },
+  } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>();
   const [mobNum, setMobile] = useState<any>("");
   useEffect(() => {
     const userNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
-    console.log({userNumberDetail})
-    setMobile(userNumberDetail?.mobileNumber);
+    setMobile(
+      "+" + userNumberDetail?.countryCodeNumber + userNumberDetail?.mobileNumber
+    );
     setCountryCode(userNumberDetail?.countryCode);
-    // setValue("mobileNumber", userNumber);
   }, []);
-  console.log({countryCodeRef})
   const {
     firstName,
     middleName,
@@ -51,9 +55,10 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${countryCode}`, `+${countryCode}`);
   };
+
   return (
     <>
-      <StyledAccordion>
+      <StyledAccordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -61,7 +66,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <img src={"/assets/images/user-circle-svgrepo-com.svg"} />
+              <Image src={UserCircleIcon} alt="user" />
             </span>
             Personal Information
           </GreenFormHeading>
@@ -76,11 +81,31 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     value={firstName}
                     defaultValue={firstName}
                     type="text"
-                    {...register("firstName", { required: true })}
+                    {...register("firstName", {
+                      required: true,
+                    })}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphabets(value)) {
+                        setValue(name, value, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
                     className="form-control"
                     id="firstName"
                     placeholder="e.g Robert"
                   />
+                  {touchedFields?.firstName && errors?.firstName && (
+                    <>
+                      <div className="invalid-feedback">
+                        Please enter First Name
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -92,6 +117,17 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     {...register("middleName")}
                     type="text"
                     className="form-control"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphabets(value)) {
+                        setValue(name, value, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
                     id="middleName"
                     placeholder=""
                   />
@@ -106,9 +142,25 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     {...register("lastName", { required: true })}
                     type="text"
                     className="form-control"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphabets(value)) {
+                        setValue(name, value, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
                     id="lastName"
                     placeholder=""
                   />
+                  {touchedFields?.lastName && errors?.lastName && (
+                    <div className="invalid-feedback">
+                      Please enter Last Name
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -119,17 +171,23 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <select
                     className="form-select"
                     aria-label="Default select example"
-                    value={genderId}
-                    defaultValue={genderId}
-                    {...register("gender", { required: true })}
+                    {...register("genderId", { required: true })}
                   >
+                    <option value={""}>Select Gender</option>
                     {genders &&
                       genders.map(({ id, gender }) => (
-                        <option key={id} value={Number(id)}>
+                        <option
+                          selected={id === genderId}
+                          key={id}
+                          value={Number(id)}
+                        >
                           {gender}
                         </option>
                       ))}
                   </select>
+                  {touchedFields?.gender && errors?.gender && (
+                    <div className="invalid-feedback">Please enter Gender</div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -144,6 +202,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="exampleFormControlInput1"
                     placeholder=""
                   />
+                  {touchedFields?.dateOfBirth && errors?.dateOfBirth && (
+                    <div className="invalid-feedback">
+                      Please enter Date of Birth
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -152,21 +215,30 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <input
                     value={email}
                     defaultValue={email}
-                    {...register("email", { required: true })}
+                    {...register("email", {
+                      required: true,
+                      validate: isValidEmail,
+                    })}
                     type="email"
                     className="form-control"
                     id="email"
                     placeholder=""
                   />
+                  {touchedFields?.email && errors?.email && (
+                    <div className="invalid-feedback">
+                      {errors?.email?.type == "validate"
+                        ? "you have entered an invalid email address. Please try again"
+                        : "Please enter Email"}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
             <div className="row">
               <div className="col-md-4">
-                <div className="mb-4">
+                <div className="mb-4 pe-none">
                   <StyledLabel required>Mobile Number</StyledLabel>
                   <PhoneInput
-                    disabled={true}
                     id="1"
                     international
                     countryCallingCodeEditable={false}
@@ -174,14 +246,17 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     placeholder="Select Country Code*"
                     {...register("mobileNumber", { required: false })}
                     onCountryChange={(value: any) => {
+                      return;
                       setCountryCode(value);
                     }}
                     onBlur={(e) => {
+                      return;
                       e.stopPropagation();
                       e.preventDefault();
                       uppdateMobNumber();
                     }}
                     onChange={(value) => {
+                      return;
                       setValue("mobileNumber", value);
                     }}
                     value={mobNum as any}
@@ -204,6 +279,12 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="identificationPassportNumber"
                     placeholder=""
                   />
+                  {touchedFields?.identificationPassportNumber &&
+                    errors?.identificationPassportNumber && (
+                      <div className="invalid-feedback">
+                        Please enter Identification / Passport Number
+                      </div>
+                    )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -212,17 +293,26 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <select
                     className="form-select"
                     aria-label="Default select example"
-                    value={nationalityId}
-                    defaultValue={nationalityId}
                     {...register("nationalityId", { required: true })}
                   >
+                    <option value={""}>Select Nationalty</option>
+
                     {nationalities &&
                       nationalities.map(({ id, nationality }) => (
-                        <option key={id} value={Number(id)}>
+                        <option
+                          selected={id === nationalityId}
+                          key={id}
+                          value={Number(id)}
+                        >
                           {nationality}
                         </option>
                       ))}
                   </select>
+                  {touchedFields?.nationalityId && errors?.nationalityId && (
+                    <div className="invalid-feedback">
+                      Please enter Nationality
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -233,20 +323,25 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <select
                     className="form-select"
                     aria-label="Default select example"
-                    value={homeLanguageId}
-                    defaultValue={homeLanguageId}
                     {...register("homeLanguageId", { required: true })}
                   >
-                    <option selected disabled>
-                      Home Language
-                    </option>
+                    <option value={""}>Home Language</option>
                     {homeLanguage &&
                       homeLanguage.map(({ id, language }) => (
-                        <option key={id} value={Number(id)}>
+                        <option
+                          selected={id === homeLanguageId}
+                          key={id}
+                          value={Number(id)}
+                        >
                           {language}
                         </option>
                       ))}
                   </select>
+                  {touchedFields?.homeLanguageId && errors?.homeLanguageId && (
+                    <div className="invalid-feedback">
+                      Please enter Home Language
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -255,17 +350,24 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <select
                     className="form-select"
                     aria-label="Default select example"
-                    value={raceId}
-                    defaultValue={raceId}
                     {...register("raceId", { required: true })}
                   >
+                    <option value={""}>Select Race</option>
+
                     {race &&
                       race.map(({ id, race }) => (
-                        <option key={id} value={Number(id)}>
+                        <option
+                          selected={id === raceId}
+                          key={id}
+                          value={Number(id)}
+                        >
                           {race}
                         </option>
                       ))}
                   </select>
+                  {touchedFields?.raceId && errors?.raceId && (
+                    <div className="invalid-feedback">Please enter Race</div>
+                  )}
                 </div>
               </div>
             </div>

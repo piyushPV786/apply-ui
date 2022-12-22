@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -7,10 +7,10 @@ import {
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
-import PhoneInput, {
-  getCountryCallingCode,
-  parsePhoneNumber,
-} from "react-phone-number-input";
+import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
+import { isValidEmail, onlyAlphabets } from "../../Util/Util";
+import Image from "next/image";
+import KinImg from "../../../public/assets/images/kin.svg";
 
 const KinDetails = "kinDetails";
 const isKin = `${KinDetails}.isKin`;
@@ -21,9 +21,15 @@ const phoneNumber = `${KinDetails}.mobileNumber`;
 const mobileCountryCode = `${KinDetails}.mobileCountryCode`;
 
 export const KinDetailsForm = (props: any) => {
-  const { setValue, register, watch } = useFormContext();
+  const {
+    setValue,
+    register,
+    watch,
+    formState: { errors, touchedFields },
+  } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
-
+  const error = errors[KinDetails] as any;
+  const touchedField = touchedFields[KinDetails] as any;
   const isNextKinVal = watch(isKin, "no");
   const fullNameVal = watch(fullName);
   const relationShipVal = watch(relationShip);
@@ -34,7 +40,6 @@ export const KinDetailsForm = (props: any) => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${mobileCountryCode}`, `+${countryCode}`);
   };
-
   return (
     <>
       <StyledAccordion>
@@ -45,7 +50,7 @@ export const KinDetailsForm = (props: any) => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <img src={"/assets/images/kin.svg"} />
+              <Image src={KinImg} alt="kin" />
             </span>
             Next of Kin{" "}
             <span className="me-2 ms-1" style={{ color: "red" }}>
@@ -79,13 +84,29 @@ export const KinDetailsForm = (props: any) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>FullName</StyledLabel>
+                    <StyledLabel required>Full Name</StyledLabel>
                     <input
                       className="form-control"
                       value={fullNameVal}
                       defaultValue={fullNameVal}
                       {...register(`${fullName}`, { required: true })}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
                     />
+                    {touchedField?.name && error?.name && (
+                      <div className="invalid-feedback">
+                        Please enter full name
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -96,7 +117,23 @@ export const KinDetailsForm = (props: any) => {
                       value={relationShipVal}
                       defaultValue={relationShipVal}
                       {...register(`${relationShip}`, { required: true })}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
                     />
+                    {touchedField?.relation && error?.relation && (
+                      <div className="invalid-feedback">
+                        Please enter relationship
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -106,8 +143,17 @@ export const KinDetailsForm = (props: any) => {
                       className="form-control"
                       value={EmailVal}
                       defaultValue={EmailVal}
-                      {...register(`${Email}`)}
+                      {...register(`${Email}`, {
+                        required: true,
+                        validate: isValidEmail,
+                      })}
                     />
+                    {touchedField?.email && error?.email && (
+                      <div className="invalid-feedback">
+                        {error?.email?.type == "validate" &&
+                          "you have entered an invalid email address. Please try again"}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -135,6 +181,12 @@ export const KinDetailsForm = (props: any) => {
                       }}
                       value={phoneNumberVal}
                     />
+                    {touchedField?.mobileNumber && error?.mobileNumber && (
+                      <div className="invalid-feedback">
+                        {error?.mobileNumber &&
+                          "you have entered an invalid number"}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

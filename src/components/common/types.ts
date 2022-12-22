@@ -14,10 +14,9 @@ export interface IMasterData {
 }
 
 export interface Agent {
-  id:   number;
+  id: number;
   name: string;
 }
-
 
 export interface EmploymentIndustry {
   id: number;
@@ -72,4 +71,55 @@ export interface SocialMedia {
 export interface Mode {
   id: number;
   mode: string;
+}
+
+interface ICountry {
+  name: string;
+  isoCode: string;
+  flag: string;
+  phonecode: string;
+  currency: string;
+  latitude: string;
+  longitude: string;
+  timezones: ITimezone[];
+}
+
+interface ITimezone {
+  zoneName: string;
+  gmtOffset: number;
+  gmtOffsetName: string;
+  abbreviation: string;
+  tzName: string;
+}
+
+interface IState {
+  name: string;
+  isoCode: string;
+  countryCode: string;
+  latitude: string;
+  longitude: string;
+}
+
+export interface IAddressDetailType {
+  country: ICountry[];
+  state: IState[];
+  city: IState[];
+}
+
+export interface IStudyModeQualification {
+  id: number;
+  qualification: string;
+  StudyModes: IStudyMode[];
+}
+
+export interface IStudyMode {
+  id: number;
+  mode: string;
+  fees: IFee[];
+}
+
+export interface IFee {
+  id: number;
+  fees: number;
+  feesPeriod: string;
 }

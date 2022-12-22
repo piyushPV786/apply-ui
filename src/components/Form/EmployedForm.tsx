@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -7,11 +7,11 @@ import {
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
-import PhoneInput, {
-  getCountryCallingCode,
-  parsePhoneNumber,
-} from "react-phone-number-input";
+import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { EmploymentIndustry, EmploymentStatus } from "../common/types";
+import { onlyAlphabets, onlyAlphaNumeric } from "../../Util/Util";
+import Image from "next/image";
+import EmployeeImg from "../../../public/assets/images/employeee.svg";
 
 const EmployementDetails = "employment";
 const employmentStatus = `${EmployementDetails}.employmentStatusId`;
@@ -35,7 +35,12 @@ export const EmployedForm = (props: IEmployeProps) => {
 
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
 
-  const { setValue, register, watch } = useFormContext();
+  const {
+    setValue,
+    register,
+    watch,
+    formState: { errors, touchedFields },
+  } = useFormContext();
 
   const employmentStatusVal = watch(employmentStatus);
   const isEmployedVal = watch(isEmployed, "no");
@@ -50,7 +55,10 @@ export const EmployedForm = (props: IEmployeProps) => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${officePhoneCode}`, `+${countryCode}`);
   };
-
+  const touchField = touchedFields[EmployementDetails] as any;
+  const error = errors[EmployementDetails] as any;
+  const isOtherFieldRequired = employmentStatusArr && employmentStatusArr.find((item) => item?.id == employmentStatusVal)?.status === 'Employed'
+  
   return (
     <>
       <StyledAccordion>
@@ -61,7 +69,7 @@ export const EmployedForm = (props: IEmployeProps) => {
         >
           <GreenFormHeading>
             <span className="me-2">
-              <img src={"/assets/images/employeee.svg"} />
+              <Image src={EmployeeImg} alt="employee" />
             </span>
             Are you Employed?
             <span className="me-2 ms-1" style={{ color: "red" }}>
@@ -72,7 +80,7 @@ export const EmployedForm = (props: IEmployeProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isEmployed}`, { required: true })}
+              {...register(`${isEmployed}`, { required: isOtherFieldRequired })}
               value="yes"
               checked={isEmployedVal === "yes"}
             />
@@ -82,7 +90,7 @@ export const EmployedForm = (props: IEmployeProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isEmployed}`, { required: true })}
+              {...register(`${isEmployed}`, { required: isOtherFieldRequired })}
               value="no"
               checked={isEmployedVal === "no"}
             />
@@ -97,16 +105,16 @@ export const EmployedForm = (props: IEmployeProps) => {
                   <div className="mb-4">
                     <StyledLabel required>Employment Status</StyledLabel>
                     <select
+                      value={employmentStatusVal}
                       className="form-select"
                       aria-label="Default select example"
-                      value={employmentStatusVal}
-                      defaultValue={employmentStatusVal}
                       {...register(`${employmentStatus}`, { required: true })}
                     >
+                      <option value={""}>Select employment status</option>
                       {employmentStatusArr &&
                         employmentStatusArr.map(({ id, status }) => (
                           <option
-                            selected={employmentStatusVal}
+                            selected={id === employmentStatusVal}
                             key={id}
                             value={Number(id)}
                           >
@@ -114,22 +122,29 @@ export const EmployedForm = (props: IEmployeProps) => {
                           </option>
                         ))}
                     </select>
+                    {touchField?.employmentStatusId &&
+                      error?.employmentStatusId && (
+                        <div className="invalid-feedback">
+                          Please select employment status
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <StyledLabel required>Employer</StyledLabel>
+                  <StyledLabel required={isOtherFieldRequired}>Employer</StyledLabel>
                   <div className="mb-4">
                     <select
                       className="form-select"
                       aria-label="Default select example"
                       value={employerVal}
-                      defaultValue={employerVal}
-                      {...register(`${employer}`, { required: true })}
+                      {...register(`${employer}`, { required: isOtherFieldRequired })}
                     >
+                      <option value={""}>Select Employer</option>
+
                       {employerArr &&
                         employerArr.map(({ id, employer }) => (
                           <option
-                            selected={employmentStatusVal}
+                            selected={id === employerVal}
                             key={id}
                             value={Number(id)}
                           >
@@ -138,6 +153,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                         ))}
                       <option value={123}>Test</option>
                     </select>
+                    {touchField?.employer && error?.employer && (
+                      <div className="invalid-feedback">
+                        Please select employer
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -148,6 +168,17 @@ export const EmployedForm = (props: IEmployeProps) => {
                       value={jobTitleVal}
                       defaultValue={jobTitleVal}
                       {...register(`${jobTitle}`)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphaNumeric(value) || !value) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -155,37 +186,61 @@ export const EmployedForm = (props: IEmployeProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Industry</StyledLabel>
+                    <StyledLabel required={isOtherFieldRequired}>Industry</StyledLabel>
                     <select
                       className="form-select"
                       aria-label="Default select example"
-                      value={industryVal}
-                      defaultValue={industryVal}
-                      {...register(`${industry}`, { required: true })}
+                      {...register(`${industry}`, { required: isOtherFieldRequired })}
                     >
+                      <option value={""}>Select Industry</option>
                       {employmentIndustries &&
                         employmentIndustries.map(({ id, industry }) => (
-                          <option selected={industryVal} key={id} value={Number(id)}>
+                          <option
+                            selected={id === industryVal}
+                            key={id}
+                            value={Number(id)}
+                          >
                             {industry}
                           </option>
                         ))}
                     </select>
+                    {touchField?.industryId && error?.industryId && (
+                      <div className="invalid-feedback">
+                        Please select industry
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Manager Name</StyledLabel>
+                    <StyledLabel required={isOtherFieldRequired}>Manager Name</StyledLabel>
                     <input
                       className="form-control"
                       value={managerNameVal}
                       defaultValue={managerNameVal}
                       {...register(`${managerName}`)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
                     />
+                    {touchField?.manager && error?.manager && (
+                      <div className="invalid-feedback">
+                        Please enter manager name
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Office Address</StyledLabel>
+                    <StyledLabel>Office Address</StyledLabel>
                     <input
                       className="form-control"
                       value={officeAddressVal}
@@ -198,13 +253,13 @@ export const EmployedForm = (props: IEmployeProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Office Number</StyledLabel>
+                    <StyledLabel required={isOtherFieldRequired}>Office Number</StyledLabel>
                     <PhoneInput
                       international
                       countryCallingCodeEditable={false}
                       defaultCountry={countryCodeRef}
                       placeholder="Select Country Code*"
-                      {...register(`${officeNumber}`, { required: true })}
+                      {...register(`${officeNumber}`, { required: isOtherFieldRequired })}
                       onCountryChange={(value: any) => {
                         setCountryCode(value);
                       }}
@@ -218,6 +273,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                       }}
                       value={officeNumberVal}
                     />
+                    {touchField?.officePhoneNumber &&
+                      error?.officePhoneNumber && (
+                        <div className="invalid-feedback">
+                          Please enter office number
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
