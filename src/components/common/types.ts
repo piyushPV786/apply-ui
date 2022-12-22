@@ -105,3 +105,21 @@ export interface IAddressDetailType {
   state: IState[];
   city: IState[];
 }
+
+export interface IStudyModeQualification {
+  id: number;
+  qualification: string;
+  StudyModes: IStudyMode[];
+}
+
+export interface IStudyMode {
+  id: number;
+  mode: string;
+  fees: IFee[];
+}
+
+export interface IFee {
+  id: number;
+  fees: number;
+  feesPeriod: string;
+}

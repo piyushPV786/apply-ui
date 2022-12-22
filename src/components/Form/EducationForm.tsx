@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DefaultGrey,
   Green,
@@ -12,7 +12,8 @@ import { useFormContext } from "react-hook-form";
 import {
   Agent,
   HighestQualificationElement,
-  Mode,
+  IFee,
+  IStudyModeQualification,
   ReferredBy,
   SocialMedia,
 } from "../common/types";
@@ -20,6 +21,8 @@ import styled from "styled-components";
 import { onlyAlphaNumeric } from "../../Util/Util";
 import EducationImg from "../../../public/assets/images/education-svgrepo-com.svg";
 import Image from "next/image";
+import { AuthApi } from "../../service/Axios";
+import { CommonApi } from "../common/constant";
 
 const qualification = `interestedQualificationId`;
 const studyMode = `studyMode`;
@@ -28,19 +31,27 @@ const highSchoolName = `highSchoolName`;
 const referredBy = `referredById`;
 const agentName = `agentId`;
 const socialMediaId = `socialMediaId`;
+const studyModeDetail = `studyModeDetail`;
 interface IEducationProps {
   highestQualifications: HighestQualificationElement[];
   qualificationArr: HighestQualificationElement[];
-  studyModes: Mode[];
   referredByArr: ReferredBy[];
   socialMedias: SocialMedia[];
   agentArr: Agent[];
 }
 
 const FeeCard = (props: any) => {
+  const { setSelectedMode = () => {}, ...rest } = { ...props };
+  const selectedData = { ...rest };
   return (
     <>
-      <StyleFeeCards>
+      <StyleFeeCards
+        style={{
+          border:
+            props?.selected === props?.uniqueId ? "1.5px solid green" : "0",
+        }}
+        onClick={() => props.setSelectedMode(selectedData)}
+      >
         <span>{props?.fee}</span>
         <br />
         <span style={{ color: `${Green}` }}>{props?.feePeriod}</span>
@@ -48,42 +59,7 @@ const FeeCard = (props: any) => {
     </>
   );
 };
-const mockQualification = {
-  qualifications: [
-    {
-      id: 1,
-      qualification: "M.T.B",
-      StudyModes: [
-        {
-          id: 1,
-          mode: "Full-time",
-          fees: [
-            {
-              id: 1,
-              fees: 25000,
-              feesPeriod: "Semeter",
-            },
-            {
-              id: 2,
-              fees: 500000,
-              feesPeriod: "Monthly",
-            },
-            {
-              id: 3,
-              fees: 100000,
-              feesPeriod: "Anually",
-            },
-          ],
-        },
-        {
-          id: 2,
-          mode: "Part-time",
-          fees: [],
-        },
-      ],
-    },
-  ],
-};
+
 export const EducationForm = (props: IEducationProps) => {
   const {
     setValue,
@@ -91,17 +67,20 @@ export const EducationForm = (props: IEducationProps) => {
     watch,
     formState: { errors, touchedFields },
   } = useFormContext();
-  const [agentType, setAgent] = useState<string>();
-  const [selectedStudyMode, setSelectedStudyMode] = useState<any>({
+  const [selectedStudyMode, setSelectedStudyMode] = useState<
+    number | null | any
+  >({
     studyIdx: null,
     studyId: null,
     parentIdx: null,
   });
+  const [studyModeQualification, setStudyModeQualification] = useState<
+    IStudyModeQualification[]
+  >([]);
   const {
     agentArr,
     highestQualifications,
     qualificationArr,
-    studyModes,
     referredByArr,
     socialMedias,
   } = props;
@@ -112,9 +91,38 @@ export const EducationForm = (props: IEducationProps) => {
   const referredByeVal = watch(referredBy);
   const agentNameVal = watch(agentName);
   const socialMediaVal = watch(socialMediaId);
+  const selectedStudyModeDetail = watch(studyModeDetail);
   const educationFormError = errors as any;
   const touchFields = touchedFields;
   const { studyIdx, parentIdx } = selectedStudyMode;
+
+  useEffect(() => {
+    register(`${studyModeDetail}`, {
+      required: true,
+    });
+    getQualificationStudyModeData();
+  }, []);
+
+  const getQualificationStudyModeData = () => {
+    AuthApi.get(CommonApi.GETSTUDYMODEQUALIFICATION)
+      .then((res) => {
+        setStudyModeQualification(res?.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const setSelectedMode = (props: IFee | any) => {
+    const selectedStudyModeData = studyModeQualification[parentIdx].StudyModes[
+      studyIdx
+    ].fees.find((item) => item.id === props.uniqueId);
+
+    setValue("studyModeDetail", selectedStudyModeData, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
 
   return (
     <>
@@ -155,69 +163,78 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchFields?.qualification &&
-                    educationFormError?.qualification && (
-                      <div className="invalid-feedback">
-                        Please enter Interested Qualification
-                      </div>
-                    )}
+                  {educationFormError?.qualification && (
+                    <div className="invalid-feedback">
+                      Please enter Interested Qualification
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
                 <StyledLabel required>Study Mode</StyledLabel>
 
                 <div className="mb-4">
-                  {mockQualification.qualifications.map(
-                    (
-                      { StudyModes, id: parentId, qualification },
-                      parentIndex
-                    ) => {
-                      {
-                        return (
-                          StudyModes &&
-                          StudyModes.map(({ fees, id, mode }, studyIdx) => {
-                            return (
-                              <>
-                                <div className="form-check form-check-inline">
-                                  <input
-                                    key={id}
-                                    className="form-check-input me-2"
-                                    type="radio"
-                                    {...register(`${studyMode}`, {
-                                      required: true,
-                                    })}
-                                    onClick={() => {
-                                      setSelectedStudyMode({
-                                        studyIdx: studyIdx,
-                                        studyId: id,
-                                        parentIdx: parentIndex,
-                                      });
-                                    }}
-                                    value={id}
-                                    checked={studyModeVal == id}
-                                  />
-                                  <label className="form-check-label">
-                                    {mode}
-                                  </label>
-                                </div>
-                              </>
-                            );
-                          })
-                        );
-                      }
+                  {studyModeQualification.map(({ StudyModes }, parentIndex) => {
+                    {
+                      return (
+                        StudyModes &&
+                        StudyModes.map(({ id, mode }, studyIdx) => {
+                          return (
+                            <>
+                              <div className="form-check form-check-inline">
+                                <input
+                                  key={id}
+                                  className="form-check-input me-2"
+                                  type="radio"
+                                  {...register(`${studyMode}`, {
+                                    required: true,
+                                  })}
+                                  onClick={(e: any) => {
+                                    setValue("studyMode", e.target.value);
+                                    setValue("studyModeDetail", null);
+                                    setSelectedStudyMode({
+                                      studyIdx: studyIdx,
+                                      studyId: id,
+                                      parentIdx: parentIndex,
+                                    });
+                                  }}
+                                  value={id}
+                                  checked={+studyModeVal == id}
+                                />
+                                <label className="form-check-label">
+                                  {mode}
+                                </label>
+                              </div>
+                            </>
+                          );
+                        })
+                      );
                     }
-                  )}
+                  })}
                   <StyleContainer>
-                    {mockQualification &&
-                      mockQualification.qualifications[parentIdx]?.StudyModes[
+                    {studyModeQualification &&
+                      studyModeQualification[parentIdx]?.StudyModes[
                         studyIdx
-                      ]?.fees?.map(({ fees, id, feesPeriod }) => (
-                        <FeeCard key={id} fee={fees} feePeriod={feesPeriod} />
+                      ]?.fees?.map(({ fees, id, feesPeriod }: IFee) => (
+                        <FeeCard
+                          setSelectedMode={setSelectedMode}
+                          key={id}
+                          fee={fees}
+                          feePeriod={feesPeriod}
+                          uniqueId={id}
+                          selected={selectedStudyModeDetail?.id}
+                        />
                       ))}
                   </StyleContainer>
-                  {touchFields?.studyMode && educationFormError?.studyMode && (
+                  {touchFields?.studyModeId &&
+                    educationFormError?.studyMode && (
+                      <div className="invalid-feedback">
+                        Please enter Study Mode
+                      </div>
+                    )}
+                  {educationFormError?.studyModeDetail && (
                     <div className="invalid-feedback">
-                      Please enter Study Mode
+                      Please select Fees and Semester
                     </div>
                   )}
                 </div>

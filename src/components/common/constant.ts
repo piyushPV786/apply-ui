@@ -10,3 +10,8 @@ export const AddressApi = {
   GETSTATES: "global/getStatesOfCountry",
   GETCITY: "global/getCitiesOfState",
 };
+export const CommonApi = {
+  GETSTUDYMODEQUALIFICATION: "global/getQualifications",
+  GETMASTERDATA: "global/master/data",
+  GETAGENT: "global/agent",
+};

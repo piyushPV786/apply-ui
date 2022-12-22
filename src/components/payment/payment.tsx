@@ -13,13 +13,15 @@ import { HighestQualificationElement, Mode } from "../common/types";
 import PaymentOption from "./payment-options";
 import StyledButton from "../button/button";
 import { isInvalidFileType } from "../../Util/Util";
-import FIleUploadImg from '../../../public/assets/images/file-upload-svgrepo-com.svg';
+import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
 import Image from "next/image";
 
 const Payment = (props: any) => {
   const fileUploadRef = useRef<any>(null);
   const { watch, register, setValue } = useFormContext();
-  const [paymentDocs, setPaymentDocs] = useState<File>();
+  const [paymentDocs, setPaymentDocs] = useState<(File & { error: boolean })[]>(
+    []
+  );
   const [promoCode, setPromoCode] = useState<string>("");
   const [showPromoCode, setShowPromoCOde] = useState<boolean>(false);
   const [fileError, setFileError] = useState<boolean>(false);
@@ -46,6 +48,15 @@ const Payment = (props: any) => {
     //   query: { success: false },
     // });
     props?.navigateNext();
+  };
+
+  const onPaymentDocumentUpload = (files: any) => {
+    const uploadedFiles = files;
+    uploadedFiles.forEach((item: any) => {
+      item.error = isInvalidFileType(item.type);
+    });
+    setPaymentDocs(uploadedFiles);
+    setValue("payment.paymentProof", uploadedFiles);
   };
 
   return (
@@ -225,19 +236,16 @@ const Payment = (props: any) => {
                         }) as any)}
                         onChange={(e) => {
                           if (e?.target) {
-                            const files = e.target?.files![0];
-                            if (isInvalidFileType(files.type)) {
-                              setFileError(true);
-                            } else {
-                              setFileError(false);
-                            }
-                            setPaymentDocs(files);
-                            setValue("payment.paymentProof", files);
+                            const files = [...paymentDocs, e.target?.files![0]];
+                            onPaymentDocumentUpload(files);
                           }
                         }}
                       />
                       <GreenFormHeading>Upload Payment Proof</GreenFormHeading>
-                      {paymentDocs && <span>{paymentDocs?.name}</span>}
+                      {paymentDocs &&
+                        paymentDocs.map((file) => (
+                          <span key={file.lastModified}>{file?.name}</span>
+                        ))}
                       {paymentDocs && fileError && (
                         <div className="invalid-feedback">
                           Only "PDF" or "JPEG" file can be upload.

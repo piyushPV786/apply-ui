@@ -89,11 +89,7 @@ const DocumentUploadForm = ({
                   <CustomContainer>
                     <StyledUploadDocumentContainer ref={fileUploadRef}>
                       <div className="mt-1">
-                        <Image
-                          width="100"
-                          src={UploadImg}
-                          alt="uplopad-svg"
-                        />
+                        <Image width="100" src={UploadImg} alt="uplopad-svg" />
                       </div>
                       <input
                         className="d-none"
@@ -171,7 +167,7 @@ const DocumentUploadForm = ({
                                         <Image
                                           className="me-2 ms-2 "
                                           src={ViewIcon}
-                                          alt={'ViewIcon'}
+                                          alt={"ViewIcon"}
                                           width="25"
                                         />
                                       </Link>
@@ -183,7 +179,7 @@ const DocumentUploadForm = ({
                                       <Image
                                         className="me-2 ms-2 "
                                         src={TrashIcon}
-                                        alt={'TrashIcon'}
+                                        alt={"TrashIcon"}
                                         width="25"
                                       />
                                     </span>
@@ -240,7 +236,7 @@ const DocumentUploadForm = ({
                             className="mb-2"
                             width={"40"}
                             src={FileUpload}
-                            alt={'file-upload'}
+                            alt={"file-upload"}
                           />
                           <p className="">Sample Document</p>
                           <GreenFormHeading>

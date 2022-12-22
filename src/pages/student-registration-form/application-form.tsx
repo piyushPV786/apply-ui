@@ -37,6 +37,7 @@ import {
   SuccessMsgContainer,
   ToasterContainer,
 } from "../../components/student/style";
+import { CommonApi } from "../../components/common/constant";
 const isValidFileType = (files: any[]) => {
   return (files || []).filter((file) => file?.error === true);
 };
@@ -145,7 +146,7 @@ const ApplicationForm = (props: any) => {
           message: "Data has been successfully saved.",
           show: true,
         });
-        if (true || !isDrafSave) {
+        if (!isDrafSave) {
           setSubmitted(true);
           setActiveStep(activeStep + 1);
         }
@@ -169,7 +170,7 @@ const ApplicationForm = (props: any) => {
     submitFormData(data, isDrafSave);
   };
   const getMasterData = () => {
-    AuthApi.get("global/master/data")
+    AuthApi.get(CommonApi.GETMASTERDATA)
       .then(({ data }) => {
         setMasterData(data?.data);
       })
@@ -178,7 +179,7 @@ const ApplicationForm = (props: any) => {
       });
   };
   const getAgentDetail = () => {
-    AuthApi.get("global/agent")
+    AuthApi.get(CommonApi.GETAGENT)
       .then((res) => {
         setAgentDetail(res?.data?.data);
       })
@@ -263,7 +264,6 @@ const ApplicationForm = (props: any) => {
                     <EducationForm
                       highestQualifications={highestQualifications}
                       qualificationArr={qualifications}
-                      studyModes={studyModes}
                       referredByArr={referredBy}
                       socialMedias={socialMedias}
                       agentArr={agentDetail}
