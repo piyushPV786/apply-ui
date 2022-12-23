@@ -37,7 +37,11 @@ import {
   SuccessMsgContainer,
   ToasterContainer,
 } from "../../components/student/style";
-import { CommonApi } from "../../components/common/constant";
+import {
+  CommonApi,
+  MagicNumbers,
+  RoutePaths,
+} from "../../components/common/constant";
 const isValidFileType = (files: any[]) => {
   return (files || []).filter((file) => file?.error === true);
 };
@@ -71,6 +75,16 @@ const ApplicationForm = (props: any) => {
     setValue,
     getValues,
   } = methods;
+  useEffect(() => {
+    getUserDetail();
+    getMasterData();
+    getAgentDetail();
+  }, []);
+  useEffect(() => {
+    if (studentData) {
+      mapFormDefaultValue();
+    }
+  }, [studentData]);
   const allFields = watch();
   const isValidDocument =
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
@@ -87,11 +101,6 @@ const ApplicationForm = (props: any) => {
     }
   }, [router.query]);
 
-  useEffect(() => {
-    if (studentData) {
-      mapFormDefaultValue();
-    }
-  }, [studentData]);
   const navigateBack = () => {
     setSubmitted(false);
     setActiveStep((prevState: number) => prevState - 1);
@@ -139,7 +148,7 @@ const ApplicationForm = (props: any) => {
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
     )?.id;
-    AuthApi.put(`/user/${studentId}`, request)
+    AuthApi.put(`${CommonApi.GETUSERDETAIL}/${studentId}`, request)
       .then(({ data }) => {
         setShowDraftSaveToast({
           success: true,
@@ -150,11 +159,11 @@ const ApplicationForm = (props: any) => {
           setSubmitted(true);
           setActiveStep(activeStep + 1);
         }
-        if (activeStep === 2) {
+        if (activeStep === MagicNumbers.TWO) {
           setActiveStep(2);
           setDocumentUploadDone(true);
           setPaymentDone(true);
-          router.push("/student-payment-docs-success");
+          router.push(RoutePaths.Payment_Success);
         }
       })
       .catch((err) => {
@@ -208,11 +217,6 @@ const ApplicationForm = (props: any) => {
     }
   };
 
-  useEffect(() => {
-    getUserDetail();
-    getMasterData();
-    getAgentDetail();
-  }, []);
   const language = masterData?.languages as Language[];
   const nationalities = masterData?.nationalities as Nationality[];
   const highestQualifications =
@@ -249,7 +253,7 @@ const ApplicationForm = (props: any) => {
         <FormProvider {...methods}>
           <FormContainer>
             {" "}
-            {activeStep === 0 && (
+            {activeStep === MagicNumbers.ZERO && (
               <>
                 <div className="row w-100">
                   <form onSubmit={(data) => onSubmit(data)}>
@@ -281,7 +285,7 @@ const ApplicationForm = (props: any) => {
             )}
           </FormContainer>
           <FormContainer>
-            {activeStep === 1 && (
+            {activeStep === MagicNumbers.ONE && (
               <>
                 <Payment
                   qualifications={qualifications}
@@ -291,7 +295,7 @@ const ApplicationForm = (props: any) => {
                 />
               </>
             )}
-            {activeStep === 2 && (
+            {activeStep === MagicNumbers.TWO && (
               <>
                 <DocumentUploadForm
                   allFields={allFields}
@@ -305,7 +309,7 @@ const ApplicationForm = (props: any) => {
           <div className="row">
             <div className="col-md-12">
               <>
-                {activeStep === 0 && (
+                {activeStep === MagicNumbers.ZERO && (
                   <div className="form-check text-center">
                     <input
                       className="form-check-input me-2"
@@ -325,7 +329,8 @@ const ApplicationForm = (props: any) => {
                   </div>
                 )}
 
-                {(activeStep === 0 || activeStep === 2) && (
+                {(activeStep === MagicNumbers.ZERO ||
+                  activeStep === MagicNumbers.TWO) && (
                   <div className="mt-4 text-center">
                     <>
                       {activeStep == 2 && (
@@ -364,7 +369,7 @@ const ApplicationForm = (props: any) => {
                   </div>
                 )}
               </>
-              {activeStep === 1 && (
+              {activeStep === MagicNumbers.ONE && (
                 <div className="mt-5 text-center">
                   <StyledButton
                     onClick={navigateBack}
