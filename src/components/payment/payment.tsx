@@ -15,6 +15,7 @@ import StyledButton from "../button/button";
 import { isInvalidFileType } from "../../Util/Util";
 import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
 import Image from "next/image";
+import { RoutePaths } from "../common/constant";
 
 const Payment = (props: any) => {
   const fileUploadRef = useRef<any>(null);
@@ -43,8 +44,9 @@ const Payment = (props: any) => {
     fileElement.click() as any;
   };
   const submitPaymentDocs = () => {
+    
     // router.push({
-    //   pathname: "/student-registration-form/student-payment-docs-success",
+    //   pathname: RoutePaths.Payment_Success,
     //   query: { success: false },
     // });
     props?.navigateNext();
