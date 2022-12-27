@@ -12,6 +12,7 @@ import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { Gender, Language, Nationality, Race } from "../common/types";
 import { isValidEmail, onlyAlphabets } from "../../Util/Util";
+import AdvanceDropDown from "../dropdown/Dropdown";
 interface IPersonalInfoProps {
   genders: Gender[];
   nationalities: Nationality[];
@@ -44,7 +45,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     genderId,
     dateOfBirth,
     email,
-    mobileNumber,
     nationalityId,
     identificationPassportNumber,
     raceId,
@@ -55,7 +55,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${countryCode}`, `+${countryCode}`);
   };
-
   return (
     <>
       <StyledAccordion defaultExpanded={true}>
@@ -167,25 +166,15 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Gender</StyledLabel>
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                    {...register("genderId", { required: true })}
-                  >
-                    <option value={""}>Select Gender</option>
-                    {genders &&
-                      genders.map(({ id, gender }) => (
-                        <option
-                          selected={id === genderId}
-                          key={id}
-                          value={Number(id)}
-                        >
-                          {gender}
-                        </option>
-                      ))}
-                  </select>
-                  {touchedFields?.gender && errors?.gender && (
+                  <AdvanceDropDown
+                    options={genders}
+                    label={"Gender"}
+                    value={genderId}
+                    name="genderId"
+                    register={register}
+                    displayItem="gender"
+                  />
+                  {touchedFields?.genderId && errors?.genderId && (
                     <div className="invalid-feedback">Please enter Gender</div>
                   )}
                 </div>
@@ -289,25 +278,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Nationality</StyledLabel>
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                    {...register("nationalityId", { required: true })}
-                  >
-                    <option value={""}>Select Nationalty</option>
-
-                    {nationalities &&
-                      nationalities.map(({ id, nationality }) => (
-                        <option
-                          selected={id === nationalityId}
-                          key={id}
-                          value={Number(id)}
-                        >
-                          {nationality}
-                        </option>
-                      ))}
-                  </select>
+                  <AdvanceDropDown
+                    options={nationalities}
+                    value={nationalityId}
+                    name="nationalityId"
+                    register={register}
+                    displayItem="nationality"
+                    label="Nationalty"
+                  />
                   {touchedFields?.nationalityId && errors?.nationalityId && (
                     <div className="invalid-feedback">
                       Please enter Nationality
@@ -319,24 +297,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Home Language</StyledLabel>
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                    {...register("homeLanguageId", { required: true })}
-                  >
-                    <option value={""}>Home Language</option>
-                    {homeLanguage &&
-                      homeLanguage.map(({ id, language }) => (
-                        <option
-                          selected={id === homeLanguageId}
-                          key={id}
-                          value={Number(id)}
-                        >
-                          {language}
-                        </option>
-                      ))}
-                  </select>
+                  <AdvanceDropDown
+                    name="homeLanguageId"
+                    label="Home Language"
+                    register={register}
+                    displayItem="language"
+                    options={homeLanguage}
+                    value={homeLanguageId}
+                  />
                   {touchedFields?.homeLanguageId && errors?.homeLanguageId && (
                     <div className="invalid-feedback">
                       Please enter Home Language
@@ -346,25 +314,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Race</StyledLabel>
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                    {...register("raceId", { required: true })}
-                  >
-                    <option value={""}>Select Race</option>
-
-                    {race &&
-                      race.map(({ id, race }) => (
-                        <option
-                          selected={id === raceId}
-                          key={id}
-                          value={Number(id)}
-                        >
-                          {race}
-                        </option>
-                      ))}
-                  </select>
+                  <AdvanceDropDown
+                    label="Race"
+                    value={raceId}
+                    displayItem="race"
+                    name="raceId"
+                    register={register}
+                    options={race}
+                  />
                   {touchedFields?.raceId && errors?.raceId && (
                     <div className="invalid-feedback">Please enter Race</div>
                   )}
