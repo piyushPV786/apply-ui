@@ -67,5 +67,19 @@ export const uniqueArrayOfObject = (array: any[], key: string) => [
   ...(new Map(array.map((item) => [item[key], item])).values() as any),
 ];
 
-export const onlyAlphabets = (value:string) => /^[a-zA-Z ]*$/.test(value);
-export const onlyAlphaNumeric = (value:string) => /^(?![0-9]*$)[a-zA-Z0-9]+$/.test(value);
+export const onlyAlphabets = (value: string) => /^[a-zA-Z ]*$/.test(value);
+export const onlyAlphaNumeric = (value: string) =>
+  /^(?![0-9]*$)[a-zA-Z0-9]+$/.test(value);
+
+export const GetPaymentImage = (type: string) => {
+  const imgUrl = "/assets/images";
+  if (type === "Payu") {
+    return `${imgUrl}/payu.png`;
+  }
+  if (type === "RazorPay") {
+    return `${imgUrl}/razorpay.png`;
+  }
+  if (type === "Stripe") {
+    return `${imgUrl}/stripe.png`;
+  }
+};

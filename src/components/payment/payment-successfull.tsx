@@ -8,6 +8,7 @@ import Header from "../common/header";
 import WarningIcon from "../../../public/assets/images/warning-svgrepo-com.png";
 import PayIcon from "../../../public/assets/images/pay.png";
 import Image from "next/image";
+import { RoutePaths } from "../common/constant";
 
 const PaymentSuccessFull = (props: any) => {
   const [isSuccess, setSuccess] = useState<boolean>(false);
@@ -22,7 +23,7 @@ const PaymentSuccessFull = (props: any) => {
 
   const onTryAgain = () => {
     router.push({
-      pathname: "/student-registration-form/application-form",
+      pathname: RoutePaths.Application_Form,
       query: { isFormSubmittedAlready: true, isPaymentFail: true },
     });
   };

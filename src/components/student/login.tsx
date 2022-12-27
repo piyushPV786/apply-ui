@@ -20,6 +20,7 @@ import {
   ToasterContainer,
 } from "./style";
 import styled from "styled-components";
+import { CommonApi, RoutePaths } from "../common/constant";
 
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
@@ -40,7 +41,7 @@ const StudentLogin = () => {
       sessionStorage?.getItem("studentId") as any
     )?.id;
     if (studentId && isAuthenticate) {
-      router.push("/student-registration-form/dashboard");
+      router.push(RoutePaths.Dashboard);
     }
   }, []);
   const isNumberValid =
@@ -53,7 +54,7 @@ const StudentLogin = () => {
     setProceed(true);
     const number = parsePhoneNumber(mobileNumber, countryCode);
     axios
-      .post("/register", {
+      .post(CommonApi.REGISTERUSER, {
         mobileNumber: number?.nationalNumber,
         mobileCountryCode: number?.countryCallingCode,
       })
@@ -197,7 +198,7 @@ const StudentLogin = () => {
       sessionStorage.getItem("studentMobile") as any
     )?.mobileNumber!;
     axios
-      .post("/verify-otp", { mobileNumber, otp: +otp })
+      .post(CommonApi.VERIFYOTP, { mobileNumber, otp: +otp })
       .then(({ data }) => {
         sessionStorage.setItem(
           "studentId",
@@ -205,7 +206,7 @@ const StudentLogin = () => {
         );
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
         setTimeout(() => {
-          router.push("/student-registration-form/dashboard");
+          router.push(RoutePaths.Dashboard);
         }, 1000);
       })
       .catch(({ response }) => {

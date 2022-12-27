@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
 import { useFormContext } from "react-hook-form";
 import StyledButton from "../button/button";
+import { PaymentTypes } from "../common/constant";
+import { GetPaymentImage } from "../../Util/Util";
 const imgUrl = "/assets/images";
 const PaymentCard = (props: any) => {
   return (
@@ -34,63 +36,27 @@ const PaymentOption = (props: any) => {
         </PaymentHeading>
         <PaymentContainer>
           <div className="row">
-            <div className="col-md-4 mb-2">
-              <PaymentCardContainer>
-                <PaymentCard
-                  paymentType="Payu"
-                  color={Green}
-                  img={`${imgUrl}/payu.png`}
-                >
-                  <div className="form-check form-check-inline m-0 mt-2">
-                    <input
-                      className="form-check-input "
-                      type="radio"
-                      {...register(`payment.paymentType`, { required: true })}
-                      value="payu"
-                      checked={allFields?.payment?.paymentType === "payu"}
-                    />
-                  </div>
-                </PaymentCard>
-              </PaymentCardContainer>
-            </div>
-            <div className="col-md-4 mb-2">
-              <PaymentCardContainer>
-                <PaymentCard
-                  paymentType="RazorPay"
-                  color={DefaultGrey}
-                  img={`${imgUrl}/razorpay.png`}
-                >
-                  <div className="form-check form-check-inline m-0 mt-2">
-                    <input
-                      className="form-check-input me-2"
-                      type="radio"
-                      {...register(`payment.paymentType`, { required: true })}
-                      value="razorpay"
-                      checked={allFields?.payment?.paymentType === "razorpay"}
-                    />
-                  </div>
-                </PaymentCard>
-              </PaymentCardContainer>
-            </div>
-            <div className="col-md-4 mb-2">
-              <PaymentCardContainer>
-                <PaymentCard
-                  paymentType="Stripe"
-                  color={DefaultGrey}
-                  img={`${imgUrl}/stripe.png`}
-                >
-                  <div className="form-check form-check-inline m-0 mt-2">
-                    <input
-                      className="form-check-input me-2"
-                      type="radio"
-                      {...register(`payment.paymentType`, { required: true })}
-                      value="stripe"
-                      checked={allFields?.payment?.paymentType === "stripe"}
-                    />
-                  </div>
-                </PaymentCard>
-              </PaymentCardContainer>
-            </div>
+            {PaymentTypes.map(({ name, value }) => (
+              <div className="col-md-4 mb-2">
+                <PaymentCardContainer>
+                  <PaymentCard
+                    paymentType={name}
+                    color={name === "Payu" ? Green : DefaultGrey}
+                    img={GetPaymentImage(name)}
+                  >
+                    <div className="form-check form-check-inline m-0 mt-2">
+                      <input
+                        className="form-check-input "
+                        type="radio"
+                        {...register(`payment.paymentType`, { required: true })}
+                        value={value}
+                        checked={allFields?.payment?.paymentType === value}
+                      />
+                    </div>
+                  </PaymentCard>
+                </PaymentCardContainer>
+              </div>
+            ))}
           </div>
         </PaymentContainer>
         <div className="container">

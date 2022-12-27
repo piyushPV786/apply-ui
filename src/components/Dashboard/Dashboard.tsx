@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/application-icon.svg";
+import { RoutePaths } from "../common/constant";
 
 export const ApplicationDashboard = (props: any) => {
   const router = useRouter();
@@ -15,7 +16,7 @@ export const ApplicationDashboard = (props: any) => {
   const existingApplication = [1];
 
   const onApplyNow = () => {
-    router.push("/student-registration-form/application-form");
+    router.push(RoutePaths.Application_Form);
   };
   return (
     <>
