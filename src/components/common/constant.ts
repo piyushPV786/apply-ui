@@ -21,11 +21,15 @@ export const AddressApi = {
 };
 export const CommonApi = {
   GETSTUDYMODEQUALIFICATION: "global/getQualifications",
-  GETMASTERDATA: "global/master/data",
+  GETMASTERDATA: "master/loadMasterData",
   GETAGENT: "global/agent",
   GETUSERDETAIL: "/user",
+  SAVEUSER: "/lead",
   REGISTERUSER: "/register",
   VERIFYOTP: "/verify-otp",
+  PAYUPAYMENT: "global/payuPayment",
+  GETINTRESTEDQUALIFICATION: "programs",
+  GETDOCUMENTURL: "global/file",
 };
 
 export const RoutePaths = {
@@ -41,4 +45,16 @@ export const PaymentTypes = [
   },
   { name: "RazorPay", value: "razorpay" },
   { name: "Stripe", value: "stripe" },
+];
+
+export const AgentandSocialMedia = [
+  { id: 1, name: "Agent" },
+  { id: 2, name: "Social Media" },
+];
+export const studentType = [
+  { name: "Regular", id: 0 },
+
+  { name: "Bursary", id: 1 },
+
+  { name: "Management", id: 2 },
 ];

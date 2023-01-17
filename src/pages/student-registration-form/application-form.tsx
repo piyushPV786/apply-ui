@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import PersonalInfoForm from "../../components/Form/personalInfoForm";
 import { useForm, FormProvider } from "react-hook-form";
 import styled from "styled-components";
@@ -11,22 +11,13 @@ import { EducationForm } from "../../components/Form/EducationForm";
 import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
-import { AuthApi } from "../../service/Axios";
+import { AcadmicApi, AuthApi } from "../../service/Axios";
+import { Agent, IMasterData, IOption } from "../../components/common/types";
 import {
-  Agent,
-  EmploymentIndustry,
-  EmploymentStatus,
-  Gender,
-  HighestQualificationElement,
-  IMasterData,
-  Language,
-  Mode,
-  Nationality,
-  Race,
-  ReferredBy,
-  SocialMedia,
-} from "../../components/common/types";
-import { mapFormData } from "../../Util/Util";
+  getUploadDocumentUrl,
+  mapFormData,
+  uploadDocuments,
+} from "../../Util/Util";
 import { useRouter } from "next/router";
 import Payment from "../../components/payment/payment";
 import Header from "../../components/common/header";
@@ -74,11 +65,14 @@ const ApplicationForm = (props: any) => {
     watch,
     setValue,
     getValues,
+    trigger,
+    control,
   } = methods;
   useEffect(() => {
     getUserDetail();
     getMasterData();
     getAgentDetail();
+    getIntrestedQualification();
   }, []);
   useEffect(() => {
     if (studentData) {
@@ -86,6 +80,8 @@ const ApplicationForm = (props: any) => {
     }
   }, [studentData]);
   const allFields = watch();
+  console.log({ allFields });
+
   const isValidDocument =
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
   useEffect(() => {
@@ -115,20 +111,20 @@ const ApplicationForm = (props: any) => {
       setValue(key, value, { shouldDirty: true, shouldTouch: true });
     }
   };
-
   const submitFormData = (data: object, isDrafSave?: boolean) => {
     const formData = { ...data };
 
     const {
-      postalAddress = null,
-      postalCountry = null,
-      postalZipCode = null,
-      postalCity = null,
-      postalState = null,
-      isSameAsPostalAddress = null,
+      postalAddress = "",
+      postalCountry = "",
+      postalZipCode = "",
+      postalCity = "",
+      postalState = "",
+      isSameAsPostalAddress = "",
       address: residentialAddresses = {},
       ...rest
     } = { ...(formData as any) };
+
     const addressObj = {
       postalAddress,
       postalCountry,
@@ -148,6 +144,67 @@ const ApplicationForm = (props: any) => {
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
     )?.id;
+    // if (true) {
+    //   setSubmitted(true);
+    //   setActiveStep(activeStep + 1);
+    // }
+    if (studentId) {
+      updateUser(studentId, request, isDrafSave);
+    } else {
+      checkValidationForDraftSave() &&
+        createUser({ ...request, isDraft: true });
+    }
+  };
+  const checkValidationForDraftSave = () => {
+    let isValid = true;
+    const {
+      lead: {
+        firstName,
+        lastName,
+        email,
+        mobileNumber,
+        genderId,
+        dateOfBirth,
+        identificationPassportNumber,
+        nationalityId,
+      },
+    } = { ...allFields } as any;
+    const feildObject: any = {
+      firstName,
+      lastName,
+      email,
+      mobileNumber,
+      genderId,
+      dateOfBirth,
+      identificationPassportNumber,
+      nationalityId,
+    };
+
+    for (let [key, value] of Object.entries(feildObject)) {
+      if (
+        !feildObject[key] ||
+        feildObject[key]?.length === 0 ||
+        feildObject[key] === 0
+      ) {
+        isValid = false;
+
+        setValue(key, null, {
+          shouldTouch: true,
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+        trigger(key);
+      } else {
+        isValid = true;
+      }
+    }
+    return isValid;
+  };
+  const updateUser = (
+    studentId: string,
+    request: any,
+    isDrafSave: boolean | undefined
+  ) => {
     AuthApi.put(`${CommonApi.GETUSERDETAIL}/${studentId}`, request)
       .then(({ data }) => {
         setShowDraftSaveToast({
@@ -163,16 +220,79 @@ const ApplicationForm = (props: any) => {
           setActiveStep(2);
           setDocumentUploadDone(true);
           setPaymentDone(true);
-          router.push(RoutePaths.Payment_Success);
+          uploadStudentDocs();
         }
       })
       .catch((err) => {
         setShowDraftSaveToast({
           success: false,
-          message: "Some thing went wrong please try again.",
+          message: err?.message,
           show: true,
         });
         console.log(err);
+      });
+  };
+  const uploadFiles = (fileUrl: string, file: File) => {
+    return uploadDocuments(fileUrl, file)
+      .then((res) => {
+        showToast(true, "Document Upload Successfully");
+        return res;
+      })
+      .catch((err) => {
+        showToast(false, err.message);
+
+        console.log(err.message);
+      });
+  };
+  const uploadStudentDocs = () => {
+    const { uploadedDocs = [] as File[] } = allFields;
+    let count = 0;
+    uploadedDocs.forEach((file: File) => {
+      getUploadDocumentUrl(file).then((res) => {
+        if (res.status === 200) {
+          count = count + 1;
+          uploadFiles(res, file);
+        } else {
+          showToast(false, res.response.data.message);
+          console.log(res.response.data.messag);
+        }
+      });
+    });
+    if (count === uploadedDocs.length) {
+      router.push(RoutePaths.Payment_Success);
+    }
+  };
+  const showToast = (success: boolean, message: string) => {
+    setShowDraftSaveToast({
+      success: success,
+      message: message,
+      show: true,
+    });
+  };
+
+  const createUser = (request: any) => {
+    const studentMobile =
+      sessionStorage &&
+      JSON.parse(sessionStorage?.getItem("studentMobile") as any);
+    AuthApi.post(CommonApi.SAVEUSER, {
+      mobileNumber: studentMobile?.mobileNumber,
+      mobileCountryCode: studentMobile?.countryCodeNumber,
+      ...request,
+    })
+      .then(({ data }) => {
+        console.log(data);
+        sessionStorage.setItem(
+          "studentId",
+          JSON.stringify({ id: data?.data?.id })
+        );
+      })
+      .catch((err) => {
+        console.log({ err });
+        setShowDraftSaveToast({
+          success: false,
+          message: err?.message,
+          show: true,
+        });
       });
   };
   const onSubmit = (data: any, isDrafSave?: boolean) => {
@@ -180,8 +300,8 @@ const ApplicationForm = (props: any) => {
   };
   const getMasterData = () => {
     AuthApi.get(CommonApi.GETMASTERDATA)
-      .then(({ data }) => {
-        setMasterData(data?.data);
+      .then(({ data }: any) => {
+        setMasterData({ ...masterData, ...data?.data });
       })
       .catch((err) => {
         console.log(err);
@@ -204,9 +324,12 @@ const ApplicationForm = (props: any) => {
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
     )?.id;
-    if (!isAuthenticate) {
-      router.push("/");
-    } else {
+    const studentMobile =
+      sessionStorage && JSON.parse(sessionStorage?.getItem("studentId") as any);
+    if (studentMobile && window) {
+      setValue("mobileNumber", studentMobile?.mobileNumber);
+    }
+    if (studentId) {
       AuthApi.get(`/user/${studentId}`)
         .then(({ data: response }) => {
           setStudentData(response?.data);
@@ -217,21 +340,30 @@ const ApplicationForm = (props: any) => {
     }
   };
 
-  const language = masterData?.languages as Language[];
-  const nationalities = masterData?.nationalities as Nationality[];
+  const getIntrestedQualification = () => {
+    AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
+      .then(({ data }: any) => {
+        setMasterData({
+          ...(masterData as any),
+          highestQualification: data.data as IOption[],
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const language = masterData?.languages as IOption[];
+  const nationalities = masterData?.nationalityData as IOption[];
   const highestQualifications =
-    masterData?.highestQualifications as HighestQualificationElement[];
-  const qualifications =
-    masterData?.qualifications as HighestQualificationElement[];
-  const race = masterData?.races as Race[];
-  const referredBy = masterData?.referredBy as ReferredBy[];
-  const socialMedias = masterData?.socialMedias as SocialMedia[];
-  const sponsorModes = masterData?.sponsorModes as Mode[];
-  const studyModes = masterData?.studyModes as Mode[];
-  const genders = masterData?.genders as Gender[];
-  const employmentStatus = masterData?.employmentStatus as EmploymentStatus[];
-  const employmentIndustries =
-    masterData?.employmentIndustries as EmploymentIndustry[];
+    masterData?.highestQualificationData as IOption[];
+  const qualifications = masterData?.programs as IOption[];
+  const race = masterData?.raceData as IOption[];
+  const referredBy = agentDetail as Agent[];
+  const socialMedias = masterData?.socialMediaData as IOption[];
+  const sponsorModes = masterData?.sponsorModes as IOption[];
+  const studyModes = masterData?.studyModeData as IOption[];
+  const genders = masterData?.genderData as IOption[];
+  const employmentStatus = masterData?.employmentStatusData as IOption[];
+  const employmentIndustries = masterData?.employmentIndustries as IOption[];
 
   const onSkipForNowOnPayment = () => {};
   const onSkipForNowOnDocument = () => {
@@ -263,12 +395,11 @@ const ApplicationForm = (props: any) => {
                       homeLanguage={language}
                       race={race}
                     />
-
                     <AddressForm />
                     <EducationForm
                       highestQualifications={highestQualifications}
                       qualificationArr={qualifications}
-                      referredByArr={referredBy}
+                      referredByArr={referredBy as any}
                       socialMedias={socialMedias}
                       agentArr={agentDetail}
                     />
@@ -292,6 +423,7 @@ const ApplicationForm = (props: any) => {
                   studyMode={studyModes}
                   navigateNext={navigateNext}
                   onSkipForNowOnPayment={onSkipForNowOnPayment}
+                  showToast={showToast}
                 />
               </>
             )}

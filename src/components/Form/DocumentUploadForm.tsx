@@ -5,7 +5,10 @@ import DoneIcon from "@material-ui/icons/Done";
 import styled from "styled-components";
 import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
 import StyledButton from "../button/button";
-import { isInvalidFileType, uniqueArrayOfObject } from "../../Util/Util";
+import {
+  isInvalidFileType,
+  uniqueArrayOfObject,
+} from "../../Util/Util";
 import Link from "next/link";
 import Image from "next/image";
 import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
@@ -60,7 +63,7 @@ const DocumentUploadForm = ({
     setUploadDocs(uploadedFiles as any);
     setValue("document.uploadedDocs", uploadedFiles);
   };
-
+ 
   const showPdf = (item: File) => {
     const file = new Blob([item], {
       type: item?.type.includes("pdf") ? "application/pdf" : "image/jpeg",

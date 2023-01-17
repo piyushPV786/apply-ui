@@ -12,6 +12,7 @@ import AddressImg from "../../../public/assets/images/address-card-outlined-svgr
 import { AuthApi } from "../../service/Axios";
 import { IAddressDetailType } from "../common/types";
 import { AddressApi, AddressEnums } from "../common/constant";
+import AdvanceDropDown from "../dropdown/Dropdown";
 const Address = "address";
 const resPostalAddress = `${Address}.residentialAddress`;
 const resCountry = `${Address}.residentialCountry`;
@@ -238,31 +239,22 @@ export const AddressForm = () => {
                 </div>
               </div>
               <div className="col-md-4">
-                <StyledLabel hideLabel={true}></StyledLabel>
-
                 <div className="mb-4">
-                  <select
-                    placeholder="trest"
+                  <AdvanceDropDown
                     value={postalCountryVal}
-                    className="form-select"
-                    {...register(`${postalCountry}`, { required: true })}
+                    options={country}
+                    register={register}
+                    hideLabel={true}
+                    name={postalCountry}
                     onChange={(e: any) => {
                       const value = e.target.value;
                       setValue(postalCountry, value);
                       onDropDownChange(value, AddressEnums.COUNTRY, 1);
                     }}
-                  >
-                    <option value={""}>Select Country</option>
-                    {country.map((item, idx) => (
-                      <option
-                        selected={postalCountryVal === item?.isoCode}
-                        key={idx}
-                        value={item?.isoCode}
-                      >
-                        {item?.name}
-                      </option>
-                    ))}
-                  </select>
+                    displayItem="name"
+                    mapKey="isoCode"
+                  />
+
                   {touchedField?.postalCountry && error?.postalCountry && (
                     <div className="invalid-feedback">
                       Please enter Postal Country
@@ -298,22 +290,15 @@ export const AddressForm = () => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <select
-                    className="form-select"
+                  <AdvanceDropDown
+                    hideLabel={true}
+                    options={city}
                     value={postalCityVal}
-                    {...register(`${postalCity}`, { required: true })}
-                  >
-                    <option value={""}>Select City</option>
-                    {city.map((item, idx) => (
-                      <option
-                        selected={postalCityVal === item?.isoCode}
-                        key={idx}
-                        value={item?.isoCode}
-                      >
-                        {item?.name}
-                      </option>
-                    ))}
-                  </select>
+                    name={postalCity}
+                    register={register}
+                    mapKey={"isoCode"}
+                    displayItem="name"
+                  />
                   {touchedField?.postalCity && error?.postalCity && (
                     <div className="invalid-feedback">Please enter City</div>
                   )}
@@ -321,27 +306,20 @@ export const AddressForm = () => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <select
-                    className="form-select"
+                  <AdvanceDropDown
+                    options={state}
+                    hideLabel={true}
+                    mapKey="isoCode"
+                    displayItem="name"
+                    name={postalState}
                     value={postalStateVal}
-                    {...register(`${postalState}`, { required: true })}
+                    register={register}
                     onChange={(e: any) => {
                       const value = e.target.value;
                       setValue(postalState, value);
                       onDropDownChange(value, AddressEnums.STATE, 1);
                     }}
-                  >
-                    <option value={""}>Select State</option>
-                    {state.map((item, idx) => (
-                      <option
-                        selected={postalStateVal === item?.isoCode}
-                        key={idx}
-                        value={item?.isoCode}
-                      >
-                        {item?.name}
-                      </option>
-                    ))}
-                  </select>
+                  />
                   {touchedField?.postalState && error?.postalState && (
                     <div className="invalid-feedback">
                       Please enter Postal State
@@ -429,30 +407,21 @@ export const AddressForm = () => {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <StyledLabel hideLabel={true}></StyledLabel>
-
                   <div className="mb-4">
-                    <select
+                    <AdvanceDropDown
                       value={resCountryVal}
-                      className="form-select"
-                      {...register(`${resCountry}`, { required: true })}
+                      options={countryTwo}
+                      hideLabel={true}
+                      name={resCountry}
+                      register={register}
+                      mapKey="isoCode"
+                      displayItem="name"
                       onChange={(e: any) => {
                         const value = e.target.value;
                         setValue(resCountry, value);
                         onDropDownChange(value, AddressEnums.COUNTRY, 2);
                       }}
-                    >
-                      <option value={""}>Select Country</option>
-                      {countryTwo.map((item, idx) => (
-                        <option
-                          selected={resCountryVal === item?.isoCode}
-                          key={idx}
-                          value={item?.isoCode}
-                        >
-                          {item?.name}
-                        </option>
-                      ))}
-                    </select>
+                    />
                     {touchedField?.resCountry && error?.resCountry && (
                       <div className="invalid-feedback">
                         Please enter Residential Country
@@ -489,22 +458,15 @@ export const AddressForm = () => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <select
+                    <AdvanceDropDown
                       value={resCityVal}
-                      className="form-select"
-                      {...register(`${resCity}`, { required: true })}
-                    >
-                      <option value={""}>Select City</option>
-                      {cityTwo.map((item, idx) => (
-                        <option
-                          selected={resCityVal === item.isoCode}
-                          key={idx}
-                          value={item?.isoCode}
-                        >
-                          {item?.name}
-                        </option>
-                      ))}
-                    </select>
+                      hideLabel={true}
+                      name={resCity}
+                      options={cityTwo}
+                      register={register}
+                      mapKey="isoCode"
+                      displayItem="name"
+                    />
                     {touchedField?.resCity && error?.resCity && (
                       <div className="invalid-feedback">
                         Please enter Residential City
@@ -514,27 +476,20 @@ export const AddressForm = () => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <select
+                    <AdvanceDropDown
+                      hideLabel={true}
+                      options={stateTwo}
                       value={resStateVal}
-                      className="form-select"
-                      {...register(`${resState}`, { required: true })}
+                      name={resState}
+                      mapKey="isoCode"
+                      displayItem="name"
+                      register={register}
                       onChange={(e: any) => {
                         const value = e.target.value;
                         setValue(resState, value);
                         onDropDownChange(value, AddressEnums.STATE, 2);
                       }}
-                    >
-                      <option value={""}>Select State</option>
-                      {stateTwo.map((item, idx) => (
-                        <option
-                          selected={resStateVal === item?.isoCode}
-                          key={idx}
-                          value={item?.isoCode}
-                        >
-                          {item?.name}
-                        </option>
-                      ))}
-                    </select>
+                    />
                     {touchedField?.resState && error?.resState && (
                       <div className="invalid-feedback">
                         Please enter Residential State

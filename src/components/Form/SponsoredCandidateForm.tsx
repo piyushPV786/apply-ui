@@ -8,7 +8,7 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
-import { Mode } from "../common/types";
+import { IOption, Mode } from "../common/types";
 import { onlyAlphabets } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
@@ -22,7 +22,7 @@ const sponsorPhoneNumber = `${SponsorCandidateDetail}.sponsorMobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.sponsorMobileCode`;
 const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
 interface ISponsorProps {
-  sponsorModeArr: Mode[];
+  sponsorModeArr: IOption[];
 }
 export const SponsoredForm = (props: ISponsorProps) => {
   const { sponsorModeArr } = { ...props };
@@ -99,12 +99,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       <option value={""}>Select Sponsor mode</option>
 
                       {sponsorModeArr &&
-                        sponsorModeArr.map(({ id, mode }) => (
+                        sponsorModeArr.map(({ id, name }) => (
                           <option
                             selected={id === sponsorModeVal}
                             value={Number(id)}
                           >
-                            {mode}
+                            {name}
                           </option>
                         ))}
                     </select>

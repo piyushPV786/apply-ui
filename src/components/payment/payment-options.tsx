@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
 import { useFormContext } from "react-hook-form";
 import StyledButton from "../button/button";
-import { PaymentTypes } from "../common/constant";
+import { CommonApi, PaymentTypes } from "../common/constant";
 import { GetPaymentImage } from "../../Util/Util";
-const imgUrl = "/assets/images";
+import { AuthApi } from "../../service/Axios";
+import axios from "axios";
+const IPaymentType = PaymentTypes.map((item) => item.name);
 const PaymentCard = (props: any) => {
   return (
     <StyledImgCard
@@ -19,8 +21,42 @@ const PaymentCard = (props: any) => {
 };
 const PaymentOption = (props: any) => {
   const { watch, register } = useFormContext();
+  const [paymentPayload, setPaymentTypePayload] = useState<any>(null);
   const allFields = watch();
 
+  const onSelectedPaymentOption = (type: "payu" | "razorpay" | "stripe") => {
+    if (type === "payu") onPayuPayment();
+  };
+  const getSelectedFormId = () => {
+    const { payment = null } = { ...(allFields as any) };
+    if (payment?.paymentType === "payu") {
+      return "payuForm";
+    }
+  };
+  const onPayuPayment = () => {
+    const payload = {
+      amount: allFields?.studyModeDetail?.fees || 2000,
+      email: allFields?.email,
+      firstname: allFields?.firstName,
+      phone: allFields?.mobileNumber || "7566410079",
+      productinfo: "test",
+    };
+
+    AuthApi.post(CommonApi.PAYUPAYMENT, payload)
+      .then(({ data: res }) => {
+        const {
+          salt = null,
+          paymenturl = null,
+          hash = null,
+          ...rest
+        } = { ...(res?.data as any) };
+        setPaymentTypePayload({ ...rest, hash });
+      })
+      .catch((err) => {
+        console.error(err, "errreererer");
+      });
+  };
+  console.log({ paymentPayload }, getSelectedFormId());
   return (
     <>
       <MainContainer>
@@ -45,10 +81,33 @@ const PaymentOption = (props: any) => {
                     img={GetPaymentImage(name)}
                   >
                     <div className="form-check form-check-inline m-0 mt-2">
+                      {name === "Payu" && (
+                        <>
+                          <form
+                            method="post"
+                            id="payuForm"
+                            action={process.env.PAYU_URL}
+                          >
+                            {paymentPayload &&
+                              Object.keys(paymentPayload).map((item) => (
+                                <input
+                                  key={item}
+                                  type="hidden"
+                                  name={item}
+                                  value={paymentPayload[item]}
+                                />
+                              ))}
+                          </form>
+                        </>
+                      )}
+
                       <input
+                        onClick={() => onSelectedPaymentOption(value as any)}
                         className="form-check-input "
                         type="radio"
-                        {...register(`payment.paymentType`, { required: true })}
+                        {...register(`payment.paymentType`, {
+                          required: true,
+                        })}
                         value={value}
                         checked={allFields?.payment?.paymentType === value}
                       />
@@ -63,6 +122,8 @@ const PaymentOption = (props: any) => {
           <div className="row">
             <div className="col align-self-center text-center ">
               <StyledButton
+                form={getSelectedFormId() as any}
+                type="submit"
                 disabled={!allFields?.payment?.paymentType}
                 onClick={() => {}}
                 title="Pay Now"

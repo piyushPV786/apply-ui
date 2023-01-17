@@ -7,9 +7,10 @@ interface IAdvanceDropDownProps {
   label?: string;
   value: string;
   mapKey?: string;
-  displayItem: string;
+  displayItem?: string;
   name?: string;
   required?: boolean;
+  hideLabel?: boolean;
   onChange?: (...args: any) => void;
   onBlur?: (...args: any) => void;
   register: UseFormRegister<any>;
@@ -23,12 +24,13 @@ const AdvanceDropDown = ({
   mapKey = "id",
   onChange,
   register,
-  displayItem, //@param Its require for to pick specific object key value in array of objects
+  hideLabel = false,
+  displayItem = 'name', //@param Its require for to pick specific object key value in array of objects
   ...props
 }: IAdvanceDropDownProps) => {
   return (
     <>
-      <StyledLabel hideLabel={!label} required={required}>
+      <StyledLabel hideLabel={!label} forceHide={hideLabel} required={required}>
         {label}
       </StyledLabel>
       <select

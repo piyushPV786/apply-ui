@@ -12,10 +12,14 @@ import { useFormContext } from "react-hook-form";
 import { HighestQualificationElement, Mode } from "../common/types";
 import PaymentOption from "./payment-options";
 import StyledButton from "../button/button";
-import { isInvalidFileType } from "../../Util/Util";
+import {
+  getUploadDocumentUrl,
+  isInvalidFileType,
+  uploadDocuments,
+} from "../../Util/Util";
 import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
 import Image from "next/image";
-import { RoutePaths } from "../common/constant";
+import DeleteIcon from "@material-ui/icons/DeleteOutline";
 
 const Payment = (props: any) => {
   const fileUploadRef = useRef<any>(null);
@@ -25,7 +29,6 @@ const Payment = (props: any) => {
   );
   const [promoCode, setPromoCode] = useState<string>("");
   const [showPromoCode, setShowPromoCOde] = useState<boolean>(false);
-  const [fileError, setFileError] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
   const selectedQualification: string =
@@ -37,21 +40,50 @@ const Payment = (props: any) => {
   const selectedStudyMode: string =
     props?.studyMode &&
     props.studyMode?.find((item: Mode) => item?.id == allFields?.studyMode)
-      ?.qualification;
+      ?.mode;
+  const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
 
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
   };
+
+  const uploadPaymentDocument = (fileUrl: string, file: File) => {
+    return uploadDocuments(fileUrl, file)
+      .then((res) => {
+        props.showToast(true, "Document Upload Successfully");
+        return res;
+      })
+      .catch((err) => {
+        props.showToast(false, err.message);
+
+        console.log(err.message);
+      });
+  };
   const submitPaymentDocs = () => {
-    
     // router.push({
     //   pathname: RoutePaths.Payment_Success,
     //   query: { success: false },
     // });
-    props?.navigateNext();
+    let count = 0;
+    setPaymentDocSubmit(true);
+    paymentDocs.forEach((file) => {
+      getUploadDocumentUrl(file).then((res) => {
+        if (res.status === 200) {
+          count = count + 1;
+          uploadPaymentDocument(res, file);
+        } else {
+          props.showToast(false, res.response.data.message);
+          console.log(res.response.data.messag);
+          setPaymentDocSubmit(false);
+        }
+      });
+    });
+    if (count === paymentDocs.length) {
+      setPaymentDocSubmit(false);
+      props?.navigateNext();
+    }
   };
-
   const onPaymentDocumentUpload = (files: any) => {
     const uploadedFiles = files;
     uploadedFiles.forEach((item: any) => {
@@ -59,6 +91,9 @@ const Payment = (props: any) => {
     });
     setPaymentDocs(uploadedFiles);
     setValue("payment.paymentProof", uploadedFiles);
+  };
+  const deleteFile = (index: number) => {
+    setPaymentDocs([...paymentDocs.filter((_, idx) => idx !== index)]);
   };
 
   return (
@@ -132,7 +167,9 @@ const Payment = (props: any) => {
                           Application Fee
                         </StyledLabel>
                         <div>
-                          <strong>INR 2100.00</strong>
+                          <strong>
+                            INR {allFields?.studyModeDetail?.fees}
+                          </strong>
                         </div>
                       </div>
                     </div>
@@ -150,7 +187,7 @@ const Payment = (props: any) => {
                         </div>
                         <div>
                           {" "}
-                          <h6>INR 2100.00</h6>
+                          <h6>INR {allFields?.studyModeDetail?.fees}</h6>
                         </div>
                       </div>
                       <div className="text-center">
@@ -244,11 +281,26 @@ const Payment = (props: any) => {
                         }}
                       />
                       <GreenFormHeading>Upload Payment Proof</GreenFormHeading>
-                      {paymentDocs &&
-                        paymentDocs.map((file) => (
-                          <span key={file.lastModified}>{file?.name}</span>
-                        ))}
-                      {paymentDocs && fileError && (
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="d-flex flex-wrap"
+                      >
+                        {paymentDocs &&
+                          paymentDocs.map((file, idx) => (
+                            <span
+                              style={{
+                                color: file?.error ? "red" : "#000",
+                                wordBreak: "break-all",
+                              }}
+                              className="w-100"
+                              key={file.lastModified}
+                            >
+                              {file?.name}{" "}
+                              <DeleteIcon onClick={() => deleteFile(idx)} />
+                            </span>
+                          ))}
+                      </div>
+                      {paymentDocs.length > 0 && isInvalidFiles && (
                         <div className="invalid-feedback">
                           Only "PDF" or "JPEG" file can be upload.
                         </div>
@@ -262,7 +314,11 @@ const Payment = (props: any) => {
               <div className="row">
                 <div className="col align-self-center text-center ">
                   <StyledButton
-                    disabled={fileError || !paymentDocs}
+                    disabled={
+                      isInvalidFiles ||
+                      paymentDocs.length === 0 ||
+                      isPaymentDocSubmit
+                    }
                     onClick={() => submitPaymentDocs()}
                     title="Submit"
                   />
@@ -310,14 +366,16 @@ const StyledDiv = styled.div`
 `;
 
 const UploadPaymentDocsContainer = styled.div`
-  width: 100%;
-  height: 100%;
   background: ${DefaultGrey};
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  padding: 1rem 7.7rem;
+  min-width: 400px;
+  min-height: 150px;
+  padding: 1rem;
+  max-width: 400px;
+  overflow: hidden;
   @media (max-width: 900px) {
     padding: 1rem 4.7rem;
   }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Green, GreenFormHeading } from "../common/common";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer } from "../payment/payment";
@@ -11,9 +11,17 @@ import ApplicationIcon from "../../../public/assets/images/application-icon.svg"
 import { RoutePaths } from "../common/constant";
 
 export const ApplicationDashboard = (props: any) => {
+  const [studentId, setStudenId] = useState<string | null>(null);
   const router = useRouter();
 
   const existingApplication = [1];
+
+  useEffect(() => {
+    const studentId = JSON.parse(
+      sessionStorage?.getItem("studentId") as any
+    )?.id;
+    setStudenId(studentId);
+  }, []);
 
   const onApplyNow = () => {
     router.push(RoutePaths.Application_Form);
@@ -25,7 +33,7 @@ export const ApplicationDashboard = (props: any) => {
         <div className="container-fluid mt-5">
           <div style={{ paddingBottom: "1rem" }}>
             <PaymentContainer>
-              {existingApplication.length > 0 && (
+              {studentId ? (
                 <div>
                   <div className="row">
                     <div className="col">
@@ -63,41 +71,42 @@ export const ApplicationDashboard = (props: any) => {
                     </div>
                   </div>
                 </div>
-              )}
-              {existingApplication.length === 0 && (
-                <div className="row">
-                  <div className="col-sm-12 col-lg-12 col-md-12">
-                    <div className=" d-flex justify-content-center text-center mb-2">
-                      <div
-                        style={{
-                          background: `${Green}`,
-                          borderRadius: "50%",
-                          padding: "1.5rem",
-                        }}
-                      >
-                        <Image
-                          width="85"
-                          height="85"
-                          src={ApplicationIcon}
-                          alt="application-icon.svg"
-                        />
+              ) : (
+                <>
+                  <div className="row">
+                    <div className="col-sm-12 col-lg-12 col-md-12">
+                      <div className=" d-flex justify-content-center text-center mb-2">
+                        <div
+                          style={{
+                            background: `${Green}`,
+                            borderRadius: "50%",
+                            padding: "1.5rem",
+                          }}
+                        >
+                          <Image
+                            width="85"
+                            height="85"
+                            src={ApplicationIcon}
+                            alt="application-icon.svg"
+                          />
+                        </div>
+                      </div>
+                      <div className="text-center w-100">
+                        <GreenFormHeading
+                          style={{ fontSize: "24px", color: "#000" }}
+                        >
+                          No application yet
+                        </GreenFormHeading>
+                        <p>
+                          Thank you for trusting Regenesys as your Educational
+                          Institution. Please Apply for your interested
+                          qualification now.
+                        </p>
+                        <StyledButton onClick={onApplyNow} title="Apply Now" />
                       </div>
                     </div>
-                    <div className="text-center w-100">
-                      <GreenFormHeading
-                        style={{ fontSize: "24px", color: "#000" }}
-                      >
-                        No application yet
-                      </GreenFormHeading>
-                      <p>
-                        Thank you for trusting Regenesys as your Educational
-                        Institution. Please Apply for your interested
-                        qualification now.
-                      </p>
-                      <StyledButton onClick={onApplyNow} title="Apply Now" />
-                    </div>
                   </div>
-                </div>
+                </>
               )}
             </PaymentContainer>
           </div>
