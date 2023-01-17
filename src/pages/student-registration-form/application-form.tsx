@@ -351,7 +351,7 @@ const ApplicationForm = (props: any) => {
       .catch((err) => console.log(err));
   };
 
-  const language = masterData?.languages as IOption[];
+  const language = masterData?.languageData as IOption[];
   const nationalities = masterData?.nationalityData as IOption[];
   const highestQualifications =
     masterData?.highestQualificationData as IOption[];

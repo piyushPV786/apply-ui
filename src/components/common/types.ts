@@ -70,7 +70,7 @@ export interface IFee {
 }
 
 export interface IMasterData {
-  languages: IOption[];
+  languageData: IOption[];
   nationalityData: IOption[];
   programs: IOption[];
   raceData: IOption[];
