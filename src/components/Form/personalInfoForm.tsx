@@ -31,6 +31,7 @@ const identificationPassportNumberKey = `${parentKey}.identificationPassportNumb
 const raceIdKey = `${parentKey}.raceId`;
 const homeLanguageIdKey = `${parentKey}.language`;
 const studentNumberKey = `${parentKey}.mobileNumber`;
+const mobileCountryCodeKey = `${parentKey}.mobileCountryCode`;
 const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const { genders, nationalities, homeLanguage, race } = { ...props };
   const {
@@ -51,6 +52,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       "+" + userNumberDetail?.countryCodeNumber + userNumberDetail?.mobileNumber
     );
     setCountryCode(userNumberDetail?.countryCode);
+    setValue(studentNumberKey, userNumberDetail?.mobileNumber);
+    setValue(mobileCountryCodeKey, userNumberDetail?.countryCode);
   }, []);
   const firstName = watch(firstNameKey);
   const middleName = watch(middleNameKey);

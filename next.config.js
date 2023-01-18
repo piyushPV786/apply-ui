@@ -7,6 +7,7 @@ const nextConfig = {
     base_Url: process.env.NEXT_PUBLIC_BASE_URL,
     PAYU_URL: process.env.PAYU_URL,
     Academic_Url: process.env.NEXT_PUBLIC_ACADEMIC_BASE_URL,
+    Finance_Url: process.env.NEXT_PUBLIC_FINANCE_BASE_URL,
   },
 };
 

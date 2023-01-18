@@ -12,7 +12,7 @@ import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
 import { AcadmicApi, AuthApi } from "../../service/Axios";
-import { Agent, IMasterData, IOption } from "../../components/common/types";
+import { IMasterData, IOption } from "../../components/common/types";
 import {
   getUploadDocumentUrl,
   mapFormData,
@@ -33,6 +33,78 @@ import {
   MagicNumbers,
   RoutePaths,
 } from "../../components/common/constant";
+const mockFormData = {
+  isAgreedTermsAndConditions: false,
+  lead: {
+    firstName: "Shashank",
+    middleName: "",
+    lastName: "Gupta",
+    dateOfBirth: "2023-01-02",
+    email: "dfgdf@rt.vom",
+    mobileNumber: "",
+    identificationPassportNumber: "234324324324",
+    genderId: "M",
+    nationalityId: "BLZ",
+    language: "ISX",
+    raceId: "INDIAN/ASIAN",
+  },
+  address: [
+    {
+      street: "Test adress",
+      zipcode: "234234",
+      city: "test city",
+      state: "test state",
+      country: "Australia",
+      addressType: "POSTAL",
+    },
+    {
+      street: "Test adress",
+      zipcode: "234234",
+      city: "test city",
+      state: "test state",
+      country: "Australia",
+      addressType: "RESIDENTIAL",
+    },
+  ],
+  education: {
+    programCode: "12",
+    qualificationCode: "PGD",
+    highSchoolName: "testschool",
+    referredById: "2",
+    studentTypeId: "1",
+    studyModeCode: null,
+    socialMediaCode: "TWITTER",
+    agentCode: null,
+  },
+  kin: {
+    isKin: "yes",
+    fullName: "sdfsdf",
+    relationship: "single",
+    email: "sdfdsf@tfgfg.vom",
+    mobileNumber: "+9665635435435345",
+    mobileCountryCode: "+966",
+  },
+  employment: {
+    isEmployed: "yes",
+    employmentStatusCode: "1",
+    employer: "123",
+    jobTitle: "tesrt",
+    employmentIndustryCode: "",
+    managerName: "sefsdf",
+    officeAddress: "Test Address",
+    officeMobileNumber: "+96654654654656",
+    officeMobileCountryCode: "+966",
+  },
+  sponser: {
+    isSponsored: "yes",
+    sponsorModeId: "",
+    name: "sfdsffd",
+    address: "dsfdsfsdf",
+    mobileNumber: "+966546354454",
+    mobileCountryCode: "+966",
+  },
+};
+
 const isValidFileType = (files: any[]) => {
   return (files || []).filter((file) => file?.error === true);
 };
@@ -51,12 +123,12 @@ const ApplicationForm = (props: any) => {
   const [isDocumentUploadDone, setDocumentUploadDone] =
     useState<boolean>(false);
   const [masterData, setMasterData] = useState<IMasterData | null>(null);
-  const [agentDetail, setAgentDetail] = useState<Agent[]>([]);
   const methods = useForm({
     mode: "onChange",
     reValidateMode: "onBlur",
     defaultValues: useMemo(() => {
-      return studentData;
+      // return studentData;
+      return mockFormData as any;
     }, [studentData]),
   });
   const {
@@ -66,13 +138,10 @@ const ApplicationForm = (props: any) => {
     setValue,
     getValues,
     trigger,
-    control,
   } = methods;
   useEffect(() => {
     getUserDetail();
     getMasterData();
-    getAgentDetail();
-    getIntrestedQualification();
   }, []);
   useEffect(() => {
     if (studentData) {
@@ -80,7 +149,7 @@ const ApplicationForm = (props: any) => {
     }
   }, [studentData]);
   const allFields = watch();
-  console.log({ allFields });
+  // console.log({ allFields, errors, isValid });
 
   const isValidDocument =
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
@@ -114,29 +183,11 @@ const ApplicationForm = (props: any) => {
   const submitFormData = (data: object, isDrafSave?: boolean) => {
     const formData = { ...data };
 
-    const {
-      postalAddress = "",
-      postalCountry = "",
-      postalZipCode = "",
-      postalCity = "",
-      postalState = "",
-      isSameAsPostalAddress = "",
-      address: residentialAddresses = {},
-      ...rest
-    } = { ...(formData as any) };
+    const { isSameAsPostalAddress = "", ...rest } = { ...(formData as any) };
 
-    const addressObj = {
-      postalAddress,
-      postalCountry,
-      postalZipCode,
-      postalCity,
-      postalState,
-      isSameAsPostalAddress,
-    };
     let request = mapFormData(
       {
         ...rest,
-        address: { ...addressObj, ...residentialAddresses },
       },
       isDrafSave
     );
@@ -151,8 +202,8 @@ const ApplicationForm = (props: any) => {
     if (studentId) {
       updateUser(studentId, request, isDrafSave);
     } else {
-      checkValidationForDraftSave() &&
-        createUser({ ...request, isDraft: true });
+      // checkValidationForDraftSave() &&
+      createUser({ ...request, isDraft: true });
     }
   };
   const checkValidationForDraftSave = () => {
@@ -302,15 +353,7 @@ const ApplicationForm = (props: any) => {
     AuthApi.get(CommonApi.GETMASTERDATA)
       .then(({ data }: any) => {
         setMasterData({ ...masterData, ...data?.data });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  const getAgentDetail = () => {
-    AuthApi.get(CommonApi.GETAGENT)
-      .then((res) => {
-        setAgentDetail(res?.data?.data);
+        getIntrestedQualificationPrograms();
       })
       .catch((err) => {
         console.log(err);
@@ -326,9 +369,9 @@ const ApplicationForm = (props: any) => {
     )?.id;
     const studentMobile =
       sessionStorage && JSON.parse(sessionStorage?.getItem("studentId") as any);
-    if (studentMobile && window) {
-      setValue("mobileNumber", studentMobile?.mobileNumber);
-    }
+    // if (studentMobile && window) {
+    //   setValue("mobileNumber", studentMobile?.mobileNumber);
+    // }
     if (studentId) {
       AuthApi.get(`/user/${studentId}`)
         .then(({ data: response }) => {
@@ -340,14 +383,13 @@ const ApplicationForm = (props: any) => {
     }
   };
 
-  const getIntrestedQualification = () => {
+  const getIntrestedQualificationPrograms = () => {
     AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
       .then(({ data }: any) => {
-        console.log({ data });
-        setMasterData({
-          ...(masterData as any),
+        setMasterData((prevState: any) => ({
+          ...prevState,
           programs: data.data as IOption[],
-        });
+        }));
       })
       .catch((err) => console.log(err));
   };
@@ -358,14 +400,14 @@ const ApplicationForm = (props: any) => {
     masterData?.highestQualificationData as IOption[];
   const programs = masterData?.programs as IOption[];
   const race = masterData?.raceData as IOption[];
-  const referredBy = agentDetail as Agent[];
   const socialMedias = masterData?.socialMediaData as IOption[];
-  const sponsorModes = masterData?.sponsorModes as IOption[];
+  const sponsorModes = masterData?.sponserData as IOption[];
   const studyModes = masterData?.studyModeData as IOption[];
   const genders = masterData?.genderData as IOption[];
   const employmentStatus = masterData?.employmentStatusData as IOption[];
-  const employmentIndustries = masterData?.employmentIndustries as IOption[];
+  const employmentIndustries = masterData?.employerIndustryData as IOption[];
   const countryData = masterData?.countryData as IOption[];
+  const agentData = masterData?.agentData as IOption[];
 
   const onSkipForNowOnPayment = () => {};
   const onSkipForNowOnDocument = () => {
@@ -401,9 +443,8 @@ const ApplicationForm = (props: any) => {
                     <EducationForm
                       highestQualifications={highestQualifications}
                       programs={programs}
-                      referredByArr={referredBy as any}
                       socialMedias={socialMedias}
-                      agentArr={agentDetail}
+                      agentArr={agentData}
                     />
                     <KinDetailsForm />
                     <EmployedForm

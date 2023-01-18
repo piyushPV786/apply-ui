@@ -20,7 +20,7 @@ export const AddressApi = {
   GETCITY: "global/getCitiesOfState",
 };
 export const CommonApi = {
-  GETSTUDYMODEPROGRAMS: "programs",
+  GETSTUDYMODEPROGRAMS: "programs-fee/byProgramCode",
   GETMASTERDATA: "master/loadMasterData",
   GETAGENT: "global/agent",
   GETUSERDETAIL: "/user",
@@ -48,13 +48,13 @@ export const PaymentTypes = [
 ];
 
 export const AgentandSocialMedia = [
-  { id: 1, name: "Agent" },
-  { id: 2, name: "Social Media" },
+  { code: 1, name: "Agent" },
+  { code: 2, name: "Social Media" },
 ];
 export const studentType = [
-  { name: "Regular", id: 0 },
+  { name: "Regular", code: 0 },
 
-  { name: "Bursary", id: 1 },
+  { name: "Bursary", code: 1 },
 
-  { name: "Management", id: 2 },
+  { name: "Management", code: 2 },
 ];

@@ -1,8 +1,3 @@
-export interface Agent {
-  id: number;
-  name: string;
-}
-
 export interface HighestQualificationElement {
   id: number;
   qualification: QualificationEnum;
@@ -11,11 +6,6 @@ export interface HighestQualificationElement {
 export enum QualificationEnum {
   Graduate = "Graduate",
   PostGraduation = "Post Graduation",
-}
-
-export interface Mode {
-  id: number;
-  mode: string;
 }
 
 interface ICountry {
@@ -52,21 +42,19 @@ export interface IAddressDetailType {
 }
 
 export interface IStudyModeQualification {
-  id: number;
-  qualification: string;
-  StudyModes: IStudyMode[];
+  programCode: string;
+  programName: string;
+  studyModes: IStudyMode[];
 }
 
 export interface IStudyMode {
-  id: number;
-  mode: string;
+  studyModeCode: string;
   fees: IFee[];
 }
 
 export interface IFee {
-  id: number;
-  fees: number;
-  feesPeriod: string;
+  fee: string;
+  feeMode: string;
 }
 
 export interface IMasterData {
@@ -76,17 +64,17 @@ export interface IMasterData {
   raceData: IOption[];
   genderData: IOption[];
   qualifications: IOption[];
-  referrals: any[];
   studyModeData: IOption[];
   socialMediaData: IOption[];
-  employmentIndustries: IOption[];
+  employerIndustryData: IOption[];
   employmentStatusData: IOption[];
-  sponsorModes: IOption[];
+  sponserData: IOption[];
   highestQualificationData: IOption[];
   documentTypeData: IOption[];
   salutaionData: IOption[];
   countryData: IOption[];
   disablityData: IOption[];
+  agentData: IOption[];
 }
 
 export interface IOption {

@@ -21,11 +21,11 @@ const AdvanceDropDown = ({
   label = "",
   value,
   required = true,
-  mapKey = "id",
+  mapKey = "code",
   onChange,
   register,
   hideLabel = false,
-  displayItem = 'name', //@param Its require for to pick specific object key value in array of objects
+  displayItem = "name", //@param Its require for to pick specific object key value in array of objects
   ...props
 }: IAdvanceDropDownProps) => {
   return (
@@ -49,7 +49,7 @@ const AdvanceDropDown = ({
             return (
               <option
                 selected={rest[mapKey] == value}
-                key={rest[mapKey]}
+                key={JSON.stringify(rest)}
                 value={rest[mapKey]}
               >
                 {rest[displayItem]}

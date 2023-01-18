@@ -10,3 +10,6 @@ export const AuthApi = axios.create({
 export const AcadmicApi = axios.create({
   baseURL: `${process.env.Academic_Url}`,
 });
+export const FinanceApi = axios.create({
+  baseURL: `${process.env.Finance_Url}`,
+});

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -9,9 +9,6 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
-import { AuthApi } from "../../service/Axios";
-import { IAddressDetailType } from "../common/types";
-import { AddressApi, AddressEnums } from "../common/constant";
 import AdvanceDropDown from "../dropdown/Dropdown";
 const Address = "address";
 const resPostalAddress = `${Address}[1].street`;
@@ -27,21 +24,8 @@ const postalState = `${Address}[0].state`;
 const isSameAsPostalAddress = `${Address}.isSameAsPostalAddress`;
 const addressType = `${Address}[0].addressType`;
 const addressTypeResidential = `${Address}[1].addressType`;
-export const AddressForm = (props: any) => {
-  const CountryData = props?.countryData;
-  const [addressDetails, setAddressDetail] = useState<IAddressDetailType>({
-    state: [],
-    country: [],
-    city: [],
-  });
-  const [addressDetailsTwo, setAddressDetailTwo] = useState<IAddressDetailType>(
-    {
-      state: [],
-      country: [],
-      city: [],
-    }
-  );
-  const [allApiExecuted, setApiExecuted] = useState<boolean>(false);
+export const AddressForm = ({ countryData = [] }: any) => {
+  const CountryData = countryData;
   const {
     setValue,
     register,
@@ -61,150 +45,11 @@ export const AddressForm = (props: any) => {
   const postalZipCodeVal: string = watch(postalZipCode);
   const postalCityVal: string = watch(postalCity);
   const postalStateVal: string = watch(postalState);
-  const allFields = watch();
   useEffect(() => {
     setValue(`${addressType}`, "POSTAL");
     setValue(`${addressTypeResidential}`, "RESIDENTIAL");
-
-    // if (allFields && allFields?.address && !allApiExecuted) {
-    //   Promise.allSettled([getCountry(), getStates(), getCity()]).then((res) => {
-    //     if (
-    //       res.every((item) => item.status.includes("fulfilled")) &&
-    //       !allApiExecuted
-    //     ) {
-    //       if (postalCountryVal && postalCountryVal.length > 0) {
-    //         onDropDownChange(postalCountryVal, AddressEnums.COUNTRY, 1);
-    //       }
-    //       if (postalStateVal && postalStateVal.length > 0) {
-    //         onDropDownChange(postalStateVal, AddressEnums.STATE, 1);
-    //       }
-    //       if (resCountryVal && resCountryVal.length > 0) {
-    //         onDropDownChange(resCountryVal, AddressEnums.COUNTRY, 2);
-    //       }
-    //       if (resStateVal && resStateVal.length > 0) {
-    //         onDropDownChange(resStateVal, AddressEnums.STATE, 2);
-    //       }
-    //       setApiExecuted(true);
-    //     }
-    //   });
-    // }
   }, []);
 
-  // const getCountry = async () => {
-  //   await AuthApi.get(AddressApi.GETCOUNTRIES)
-  //     .then(async ({ data: res }) => {
-  //       setAddressDetail((prevState) => ({ ...prevState, country: res.data }));
-  //       setAddressDetailTwo((prevState) => ({
-  //         ...prevState,
-  //         country: res.data,
-  //       }));
-  //       return new Promise((resolve) => resolve(true));
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       return new Promise((resolve) => resolve(false));
-  //     });
-  // };
-  // const getStates = async (
-  //   country: string = "IN",
-  //   addressType?: number | null
-  // ) => {
-  //   await AuthApi.get(`${AddressApi.GETSTATES}/${country}`)
-  //     .then(({ data: res }) => {
-  //       if (addressType === AddressEnums.ADDRESSTYPE1) {
-  //         setAddressDetail((prevState) => ({
-  //           ...prevState,
-  //           state: res.data,
-  //         }));
-  //         return;
-  //       }
-  //       if (addressType === AddressEnums.ADDRESSTYPE2) {
-  //         setAddressDetailTwo((prevState) => ({
-  //           ...prevState,
-  //           state: res.data,
-  //         }));
-  //         return;
-  //       }
-  //       if (!addressType) {
-  //         setAddressDetail((prevState) => ({ ...prevState, state: res.data }));
-  //         setAddressDetailTwo((prevState) => ({
-  //           ...prevState,
-  //           state: res.data,
-  //         }));
-  //         return;
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-  // const getCity = async (
-  //   country: string = "IN",
-  //   state: string = "AN",
-  //   addressType?: number | null
-  // ) => {
-  //   await AuthApi.get(`${AddressApi.GETCITY}/${country}/${state}`)
-  //     .then(({ data: res }) => {
-  //       if (addressType === AddressEnums.ADDRESSTYPE1) {
-  //         setAddressDetail((prevState) => ({ ...prevState, city: res.data }));
-  //         return;
-  //       }
-  //       if (addressType === AddressEnums.ADDRESSTYPE2) {
-  //         setAddressDetailTwo((prevState) => ({
-  //           ...prevState,
-  //           city: res.data,
-  //         }));
-  //         return;
-  //       }
-  //       if (!addressType) {
-  //         setAddressDetail((prevState) => ({ ...prevState, city: res.data }));
-  //         setAddressDetailTwo((prevState) => ({
-  //           ...prevState,
-  //           city: res.data,
-  //         }));
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-  // const { city, state, country } = addressDetails;
-  // const {
-  //   city: cityTwo,
-  //   state: stateTwo,
-  //   country: countryTwo,
-  // } = addressDetailsTwo;
-
-  // const onDropDownChange = (
-  //   value: string,
-  //   dropdownType: string,
-  //   addressType: number
-  // ) => {
-  //   if (
-  //     dropdownType === AddressEnums.COUNTRY &&
-  //     addressType === AddressEnums.ADDRESSTYPE1
-  //   ) {
-  //     getStates(value, addressType);
-  //   }
-  //   if (
-  //     dropdownType === AddressEnums.STATE &&
-  //     addressType === AddressEnums.ADDRESSTYPE1
-  //   ) {
-  //     getCity(postalCountryVal, value, addressType);
-  //   }
-  //   if (
-  //     dropdownType === AddressEnums.COUNTRY &&
-  //     addressType === AddressEnums.ADDRESSTYPE2
-  //   ) {
-  //     getStates(value, addressType);
-  //   }
-  //   if (
-  //     dropdownType === AddressEnums.STATE &&
-  //     addressType === AddressEnums.ADDRESSTYPE2
-  //   ) {
-  //     getCity(resCountryVal, value, addressType);
-  //   }
-  // };
   return (
     <>
       <StyledAccordion>
@@ -292,7 +137,7 @@ export const AddressForm = (props: any) => {
                     touchedField[0]?.zipcode &&
                     error[0]?.zipcode && (
                       <div className="invalid-feedback">
-                        {error.postalZipCode.type === "maxLength"
+                        {error[0]?.zipcode.type === "maxLength"
                           ? "Max length exceeded"
                           : "Please enter Zip/Postal Code"}
                       </div>
@@ -389,7 +234,6 @@ export const AddressForm = (props: any) => {
                           shouldTouch: true,
                           shouldValidate: true,
                         });
-                        // setAddressDetailTwo(addressDetails);
                       }
                     }}
                   />
@@ -435,7 +279,6 @@ export const AddressForm = (props: any) => {
                       onChange={(e: any) => {
                         const value = e.target.value;
                         setValue(resCountry, value);
-                        // onDropDownChange(value, AddressEnums.COUNTRY, 2);
                       }}
                     />
                     {touchedField &&
@@ -500,6 +343,7 @@ export const AddressForm = (props: any) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
+                  <StyledLabel hideLabel={true}></StyledLabel>
                     <input
                       {...register(`${resState}`, {
                         required: true,

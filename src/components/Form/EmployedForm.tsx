@@ -115,11 +115,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                     >
                       <option value={""}>Select employment status</option>
                       {employmentStatusArr &&
-                        employmentStatusArr.map(({ id, name }) => (
+                        employmentStatusArr.map(({ code, name }) => (
                           <option
-                            selected={id === employmentStatusVal}
-                            key={id}
-                            value={Number(id)}
+                            selected={code === employmentStatusVal}
+                            key={code}
+                            value={code}
                           >
                             {name}
                           </option>
@@ -149,11 +149,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                       <option value={""}>Select Employer</option>
 
                       {employerArr &&
-                        employerArr.map(({ id, name }) => (
+                        employerArr.map(({ code, name }) => (
                           <option
-                            selected={id === employerVal}
-                            key={id}
-                            value={Number(id)}
+                            selected={code === employerVal}
+                            key={code}
+                            value={code}
                           >
                             {name}
                           </option>
@@ -205,11 +205,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                     >
                       <option value={""}>Select Industry</option>
                       {employmentIndustries &&
-                        employmentIndustries.map(({ id, name }) => (
+                        employmentIndustries.map(({ code, name }) => (
                           <option
-                            selected={id === industryVal}
-                            key={id}
-                            value={Number(id)}
+                            selected={code === industryVal}
+                            key={code}
+                            value={code}
                           >
                             {name}
                           </option>

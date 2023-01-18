@@ -99,10 +99,10 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       <option value={""}>Select Sponsor mode</option>
 
                       {sponsorModeArr &&
-                        sponsorModeArr.map(({ id, name }) => (
+                        sponsorModeArr.map(({ code, name }) => (
                           <option
-                            selected={id === sponsorModeVal}
-                            value={Number(id)}
+                            selected={code === sponsorModeVal}
+                            value={code}
                           >
                             {name}
                           </option>
