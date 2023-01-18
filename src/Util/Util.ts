@@ -18,9 +18,7 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
       if (key == "employment" && formData[key]?.isEmployed == "no") {
         delete formData[key];
       }
-      if (key === "mobileNumber") {
-        delete formData[key];
-      }
+
       if (key.includes("Id") && typeof formData[key] !== "object") {
         formData[key] = Number(value);
       }
@@ -88,13 +86,12 @@ export const GetPaymentImage = (type: string) => {
   }
 };
 
-export const getUploadDocumentUrl = async (file: File) => {
-  const { name, type } = file;
+export const getUploadDocumentUrl = async (payload: any) => {
   const url = process.env.base_Url;
   try {
-    const response: any = await AuthApi.put(
-      `${url}${CommonApi.GETDOCUMENTURL}`,
-      { filename: name, filetype: type }
+    const response: any = await AuthApi.post(
+      `${url}application/DRe6Qe8QfX/document`,
+      payload
     );
     if (response.status === 200) {
       const { data } = response.data;

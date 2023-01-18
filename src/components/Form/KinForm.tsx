@@ -84,12 +84,12 @@ export const KinDetailsForm = (props: any) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Full Name</StyledLabel>
+                    <StyledLabel>Full Name</StyledLabel>
                     <input
                       className="form-control"
                       value={fullNameVal}
                       defaultValue={fullNameVal}
-                      {...register(`${fullName}`, { required: true })}
+                      {...register(`${fullName}`)}
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;
@@ -110,13 +110,13 @@ export const KinDetailsForm = (props: any) => {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <StyledLabel required>RelationShip</StyledLabel>
+                  <StyledLabel>RelationShip</StyledLabel>
                   <div className="mb-4">
                     <input
                       className="form-control"
                       value={relationShipVal}
                       defaultValue={relationShipVal}
-                      {...register(`${relationShip}`, { required: true })}
+                      {...register(`${relationShip}`)}
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;

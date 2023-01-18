@@ -185,7 +185,7 @@ export const EducationForm = (props: IEducationProps) => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Interested Qualification</StyledLabel>
+                  <StyledLabel required>Interested Program</StyledLabel>
                   <select
                     className="form-select"
                     {...register(`${program}`, { required: true })}
@@ -288,12 +288,12 @@ export const EducationForm = (props: IEducationProps) => {
               )}
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Highest Qualification</StyledLabel>
+                  <StyledLabel>Highest Qualification</StyledLabel>
                   <select
                     className="form-select"
                     value={highestQualificationVal}
                     defaultValue={highestQualificationVal}
-                    {...register(`${highestQualification}`, { required: true })}
+                    {...register(`${highestQualification}`)}
                   >
                     <option value={""}>Select Highest Qualification</option>
                     {highestQualifications &&
@@ -319,13 +319,13 @@ export const EducationForm = (props: IEducationProps) => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>High School Name</StyledLabel>
+                  <StyledLabel>High School Name</StyledLabel>
 
                   <input
                     value={highSchoolNameVal}
                     defaultValue={highSchoolNameVal}
                     type="text"
-                    {...register(`${highSchoolName}`, { required: true })}
+                    {...register(`${highSchoolName}`)}
                     className="form-control"
                     id="highSchoolName"
                     placeholder=""
@@ -351,7 +351,7 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>
+                  <StyledLabel>
                     Referred by <strong>Agent/Social Media</strong>
                   </StyledLabel>
 
@@ -359,7 +359,7 @@ export const EducationForm = (props: IEducationProps) => {
                     className="form-select"
                     value={referredByeVal}
                     defaultValue={referredByeVal}
-                    {...register(`${referredBy}`, { required: true })}
+                    {...register(`${referredBy}`)}
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
@@ -396,7 +396,7 @@ export const EducationForm = (props: IEducationProps) => {
                       }, 2000);
                     }}
                   >
-                    <option value={""}></option>
+                    <option value={""}>Select Social Media</option>
 
                     {AgentandSocialMedia &&
                       AgentandSocialMedia.map(({ code, name }) => (
@@ -422,12 +422,10 @@ export const EducationForm = (props: IEducationProps) => {
                 )?.name === "Agent" && (
                   <div className="">
                     <div className="mb-4">
-                      <StyledLabel required>Agent Name</StyledLabel>
+                      <StyledLabel>Agent Name</StyledLabel>
                       <select
                         className="form-select"
-                        {...register(`${agentName}`, {
-                          required: true,
-                        })}
+                        {...register(`${agentName}`)}
                         value={agentNameVal}
                       >
                         <option value={""}>Select Agent</option>
@@ -456,13 +454,11 @@ export const EducationForm = (props: IEducationProps) => {
                 )?.name === "Social Media" && (
                   <div className="">
                     <div className="mb-4">
-                      <StyledLabel required>Social Media</StyledLabel>
+                      <StyledLabel>Social Media</StyledLabel>
                       <select
                         className="form-select"
                         value={socialMediaVal}
-                        {...register(`${socialMediaId}`, {
-                          required: true,
-                        })}
+                        {...register(`${socialMediaId}`)}
                       >
                         <option value={""}>Select Social Media</option>
 

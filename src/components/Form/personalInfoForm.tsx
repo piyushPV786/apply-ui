@@ -186,6 +186,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     value={genderId}
                     name={genderIdKey}
                     register={register}
+                    required={false}
                   />
                   {TouchFields?.genderId && Errors?.genderId && (
                     <div className="invalid-feedback">Please enter Gender</div>
@@ -194,11 +195,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Date of Birth</StyledLabel>
+                  <StyledLabel>Date of Birth</StyledLabel>
                   <input
                     value={dateOfBirth}
                     defaultValue={dateOfBirth}
-                    {...register(dateOfBirthKey, { required: true })}
+                    {...register(dateOfBirthKey)}
                     type="date"
                     className="form-control"
                     id="exampleFormControlInput1"
@@ -267,15 +268,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>
+                  <StyledLabel>
                     Identification / Passport Number
                   </StyledLabel>
                   <input
                     value={identificationPassportNumber}
                     defaultValue={identificationPassportNumber}
-                    {...register(identificationPassportNumberKey, {
-                      required: true,
-                    })}
+                    {...register(identificationPassportNumberKey)}
                     type="text"
                     className="form-control"
                     id="identificationPassportNumber"
@@ -297,6 +296,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     name={nationalityIdKey}
                     register={register}
                     label="Nationalty"
+                    required={false}
                   />
                   {TouchFields?.nationalityId && Errors?.nationalityId && (
                     <div className="invalid-feedback">
@@ -315,6 +315,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     register={register}
                     options={homeLanguage}
                     value={homeLanguageId}
+                     required={false}
                   />
                   {TouchFields?.homeLanguageId && Errors?.homeLanguageId && (
                     <div className="invalid-feedback">
@@ -331,6 +332,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     name={raceIdKey}
                     register={register}
                     options={race}
+                     required={false}
                   />
                   {TouchFields?.raceId && Errors?.raceId && (
                     <div className="invalid-feedback">Please enter Race</div>

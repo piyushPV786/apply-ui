@@ -66,9 +66,9 @@ export interface IMasterData {
   qualifications: IOption[];
   studyModeData: IOption[];
   socialMediaData: IOption[];
-  employerIndustryData: IOption[];
+  employmentIndustryData: IOption[];
   employmentStatusData: IOption[];
-  sponserData: IOption[];
+  sponsorMode: IOption[];
   highestQualificationData: IOption[];
   documentTypeData: IOption[];
   salutaionData: IOption[];
@@ -88,4 +88,9 @@ export interface IOption {
   deletedAt?: any;
   name: string;
   code: string;
+}
+
+export interface Mode {
+  id: number;
+  name: string;
 }

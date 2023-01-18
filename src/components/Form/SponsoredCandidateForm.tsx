@@ -15,8 +15,9 @@ import Image from "next/image";
 
 const SponsorCandidateDetail = "sponser";
 
-const sponsorMode = `${SponsorCandidateDetail}.sponsorModeId`;
+const sponsorMode = `${SponsorCandidateDetail}.sponsorModeCode`;
 const sponsorName = `${SponsorCandidateDetail}.name`;
+const sponsorEmail = `${SponsorCandidateDetail}.email`;
 const sponsorAddress = `${SponsorCandidateDetail}.address`;
 const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
@@ -89,12 +90,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Sponsor Mode</StyledLabel>
+                    <StyledLabel>Sponsor Mode</StyledLabel>
                     <select
                       value={sponsorModeVal}
                       className="form-select"
                       aria-label="Default select example"
-                      {...register(`${sponsorMode}`, { required: true })}
+                      {...register(`${sponsorMode}`)}
                     >
                       <option value={""}>Select Sponsor mode</option>
 
@@ -111,14 +112,41 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <StyledLabel required>Sponsor Name</StyledLabel>
+                  <StyledLabel>Sponsor Name</StyledLabel>
                   <div className="mb-4">
                     <input
                       className="form-control"
                       aria-label="Default select example"
                       value={sponsorNameVal}
                       defaultValue={sponsorNameVal}
-                      {...register(`${sponsorName}`, { required: true })}
+                      {...register(`${sponsorName}`)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
+                    />
+                    {touchedField?.name && error?.name && (
+                      <div className="invalid-feedback">
+                        Please enter sponsor name
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <StyledLabel>Sponsor Email</StyledLabel>
+                  <div className="mb-4">
+                    <input
+                      className="form-control"
+                      aria-label="Default select example"
+                      defaultValue={""}
+                      {...register(`${sponsorEmail}`)}
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;
@@ -153,11 +181,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Phone Number</StyledLabel>
+                    <StyledLabel>Phone Number</StyledLabel>
                     <PhoneInput
                       id="2"
                       international
-                      {...register(`${sponsorPhoneNumber}`, { required: true })}
+                      {...register(`${sponsorPhoneNumber}`)}
                       countryCallingCodeEditable={false}
                       defaultCountry={countryCodeRef}
                       placeholder="Select Country Code*"

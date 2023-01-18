@@ -61,17 +61,20 @@ const Payment = (props: any) => {
       });
   };
   const submitPaymentDocs = () => {
-    // router.push({
-    //   pathname: RoutePaths.Payment_Success,
-    //   query: { success: false },
-    // });
     let count = 0;
     setPaymentDocSubmit(true);
     paymentDocs.forEach((file) => {
-      getUploadDocumentUrl(file).then((res) => {
+      const payload = {
+        documentTypeCode: "PAYMENTPROOF",
+        fileName:file.name,
+        fileType: file.type,
+        amount: 12,
+        paymentModeCode: "OFFLINE",
+      };
+      getUploadDocumentUrl(payload).then((res) => {
         if (res.status === 200) {
           count = count + 1;
-          uploadPaymentDocument(res, file);
+         // uploadPaymentDocument(res, file);
         } else {
           props.showToast(false, res.response.data.message);
           console.log(res.response.data.messag);

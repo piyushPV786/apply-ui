@@ -106,12 +106,12 @@ export const EmployedForm = (props: IEmployeProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Employment Status</StyledLabel>
+                    <StyledLabel >Employment Status</StyledLabel>
                     <select
                       value={employmentStatusVal}
                       className="form-select"
                       aria-label="Default select example"
-                      {...register(`${employmentStatus}`, { required: true })}
+                      {...register(`${employmentStatus}`)}
                     >
                       <option value={""}>Select employment status</option>
                       {employmentStatusArr &&
@@ -134,7 +134,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <StyledLabel required={isOtherFieldRequired}>
+                  <StyledLabel >
                     Employer
                   </StyledLabel>
                   <div className="mb-4">
@@ -142,9 +142,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                       className="form-select"
                       aria-label="Default select example"
                       value={employerVal}
-                      {...register(`${employer}`, {
-                        required: isOtherFieldRequired,
-                      })}
+                      {...register(`${employer}`)}
                     >
                       <option value={""}>Select Employer</option>
 
@@ -193,15 +191,13 @@ export const EmployedForm = (props: IEmployeProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required={isOtherFieldRequired}>
+                    <StyledLabel >
                       Industry
                     </StyledLabel>
                     <select
                       className="form-select"
                       aria-label="Default select example"
-                      {...register(`${industry}`, {
-                        required: isOtherFieldRequired,
-                      })}
+                      {...register(`${industry}`)}
                     >
                       <option value={""}>Select Industry</option>
                       {employmentIndustries &&
@@ -224,7 +220,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required={isOtherFieldRequired}>
+                    <StyledLabel>
                       Manager Name
                     </StyledLabel>
                     <input
