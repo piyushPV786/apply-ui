@@ -343,9 +343,10 @@ const ApplicationForm = (props: any) => {
   const getIntrestedQualification = () => {
     AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
       .then(({ data }: any) => {
+        console.log({ data });
         setMasterData({
           ...(masterData as any),
-          highestQualification: data.data as IOption[],
+          programs: data.data as IOption[],
         });
       })
       .catch((err) => console.log(err));
@@ -355,7 +356,7 @@ const ApplicationForm = (props: any) => {
   const nationalities = masterData?.nationalityData as IOption[];
   const highestQualifications =
     masterData?.highestQualificationData as IOption[];
-  const qualifications = masterData?.programs as IOption[];
+  const programs = masterData?.programs as IOption[];
   const race = masterData?.raceData as IOption[];
   const referredBy = agentDetail as Agent[];
   const socialMedias = masterData?.socialMediaData as IOption[];
@@ -364,6 +365,7 @@ const ApplicationForm = (props: any) => {
   const genders = masterData?.genderData as IOption[];
   const employmentStatus = masterData?.employmentStatusData as IOption[];
   const employmentIndustries = masterData?.employmentIndustries as IOption[];
+  const countryData = masterData?.countryData as IOption[];
 
   const onSkipForNowOnPayment = () => {};
   const onSkipForNowOnDocument = () => {
@@ -395,10 +397,10 @@ const ApplicationForm = (props: any) => {
                       homeLanguage={language}
                       race={race}
                     />
-                    <AddressForm />
+                    <AddressForm countryData={countryData} />
                     <EducationForm
                       highestQualifications={highestQualifications}
-                      qualificationArr={qualifications}
+                      programs={programs}
                       referredByArr={referredBy as any}
                       socialMedias={socialMedias}
                       agentArr={agentDetail}
@@ -419,7 +421,7 @@ const ApplicationForm = (props: any) => {
             {activeStep === MagicNumbers.ONE && (
               <>
                 <Payment
-                  qualifications={qualifications}
+                  qualifications={highestQualifications}
                   studyMode={studyModes}
                   navigateNext={navigateNext}
                   onSkipForNowOnPayment={onSkipForNowOnPayment}

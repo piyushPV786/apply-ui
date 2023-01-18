@@ -14,14 +14,14 @@ import Image from "next/image";
 import EmployeeImg from "../../../public/assets/images/employeee.svg";
 
 const EmployementDetails = "employment";
-const employmentStatus = `${EmployementDetails}.employmentStatusId`;
+const employmentStatus = `${EmployementDetails}.employmentStatusCode`;
 const employer = `${EmployementDetails}.employer`;
 const jobTitle = `${EmployementDetails}.jobTitle`;
-const industry = `${EmployementDetails}.industryId`;
-const managerName = `${EmployementDetails}.manager`;
+const industry = `${EmployementDetails}.employmentIndustryCode`;
+const managerName = `${EmployementDetails}.managerName`;
 const officeAddress = `${EmployementDetails}.officeAddress`;
-const officeNumber = `${EmployementDetails}.officePhoneNumber`;
-const officePhoneCode = `${EmployementDetails}.officePhoneCode`;
+const officeNumber = `${EmployementDetails}.officeMobileNumber`;
+const officePhoneCode = `${EmployementDetails}.officeMobileCountryCode`;
 const isEmployed = `${EmployementDetails}.isEmployed`;
 interface IEmployeProps {
   employmentStatusArr: IOption[];

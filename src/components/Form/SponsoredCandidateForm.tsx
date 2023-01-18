@@ -13,13 +13,13 @@ import { onlyAlphabets } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
 
-const SponsorCandidateDetail = "sponsor";
+const SponsorCandidateDetail = "sponser";
 
 const sponsorMode = `${SponsorCandidateDetail}.sponsorModeId`;
 const sponsorName = `${SponsorCandidateDetail}.name`;
-const sponsorAddress = `${SponsorCandidateDetail}.sponsorAddress`;
-const sponsorPhoneNumber = `${SponsorCandidateDetail}.sponsorMobileNumber`;
-const sponsorMobileCode = `${SponsorCandidateDetail}.sponsorMobileCode`;
+const sponsorAddress = `${SponsorCandidateDetail}.address`;
+const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
+const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
 const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
 interface ISponsorProps {
   sponsorModeArr: IOption[];

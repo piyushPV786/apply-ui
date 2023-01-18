@@ -29,7 +29,7 @@ const emailKey = `${parentKey}.email`;
 const nationalityIdKey = `${parentKey}.nationalityId`;
 const identificationPassportNumberKey = `${parentKey}.identificationPassportNumber`;
 const raceIdKey = `${parentKey}.raceId`;
-const homeLanguageIdKey = `${parentKey}.homeLanguageId`;
+const homeLanguageIdKey = `${parentKey}.language`;
 const studentNumberKey = `${parentKey}.mobileNumber`;
 const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const { genders, nationalities, homeLanguage, race } = { ...props };

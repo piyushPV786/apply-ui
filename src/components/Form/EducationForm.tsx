@@ -65,18 +65,18 @@ const mockStudyModeData = [
   },
 ];
 const parentKey = "education";
-const qualification = `${parentKey}.interestedQualificationId`;
-const studyMode = `${parentKey}.studyMode`;
-const highestQualification = `${parentKey}.highestQualificationId`;
+const program = `${parentKey}.programCode`;
+const studyMode = `${parentKey}.studyModeCode`;
+const highestQualification = `${parentKey}.qualificationCode`;
 const highSchoolName = `${parentKey}.highSchoolName`;
 const referredBy = `${parentKey}.referredById`;
-const agentName = `${parentKey}.agentId`;
-const socialMediaId = `${parentKey}.socialMediaId`;
+const agentName = `${parentKey}.agentCode`;
+const socialMediaId = `${parentKey}.socialMediaCode`;
 const studyModeDetail = `${parentKey}.studyModeDetail`;
 const studentTypeName = `${parentKey}.studentTypeId`;
 interface IEducationProps {
   highestQualifications: IOption[];
-  qualificationArr: IOption[];
+  programs: IOption[];
   referredByArr: IOption[];
   socialMedias: IOption[];
   agentArr: Agent[];
@@ -122,11 +122,11 @@ export const EducationForm = (props: IEducationProps) => {
   const {
     agentArr,
     highestQualifications,
-    qualificationArr,
+    programs,
     referredByArr,
     socialMedias,
   } = props;
-  const qualificationVal = watch(qualification);
+  const programVal = watch(program);
   const studyModeVal = watch(studyMode);
   const highestQualificationVal = watch(highestQualification);
   const highSchoolNameVal = watch(highSchoolName);
@@ -142,12 +142,12 @@ export const EducationForm = (props: IEducationProps) => {
     register(`${studyModeDetail}`, {
       required: true,
     });
-    getQualificationStudyModeData();
   }, []);
 
-  const getQualificationStudyModeData = () => {
-    AuthApi.get(CommonApi.GETSTUDYMODEQUALIFICATION)
+  const getQualificationStudyModeData = (programCode: string) => {
+    AuthApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
       .then((res) => {
+        console.log(res);
         // setStudyModeQualification(res?.data?.data);
         setStudyModeQualification(mockStudyModeData);
       })
@@ -190,17 +190,22 @@ export const EducationForm = (props: IEducationProps) => {
                   <StyledLabel required>Interested Qualification</StyledLabel>
                   <select
                     className="form-select"
-                    {...register(`${qualification}`, { required: true })}
+                    {...register(`${program}`, { required: true })}
+                    onChange={(e) => {
+                      console.log({ e: e.target.value });
+                      setValue(e.target.name, e.target.value);
+                      getQualificationStudyModeData(e.target.value);
+                    }}
                   >
                     <option value={""}>Select Interested Qualification</option>
                     <option value={"12"}>Test Qualification</option>
 
-                    {qualificationArr &&
-                      qualificationArr.map(({ id, name }) => (
+                    {programs &&
+                      programs.map(({ code, name }) => (
                         <option
-                          selected={id === qualificationVal}
-                          key={id}
-                          value={Number(id)}
+                          selected={code === programVal}
+                          key={code}
+                          value={code}
                         >
                           {name}
                         </option>
