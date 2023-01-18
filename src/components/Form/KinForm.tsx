@@ -12,10 +12,10 @@ import { isValidEmail, onlyAlphabets } from "../../Util/Util";
 import Image from "next/image";
 import KinImg from "../../../public/assets/images/kin.svg";
 
-const KinDetails = "kinDetails";
+const KinDetails = "kin";
 const isKin = `${KinDetails}.isKin`;
-const fullName = `${KinDetails}.name`;
-const relationShip = `${KinDetails}.relation`;
+const fullName = `${KinDetails}.fullName`;
+const relationShip = `${KinDetails}.relationship`;
 const Email = `${KinDetails}.email`;
 const phoneNumber = `${KinDetails}.mobileNumber`;
 const mobileCountryCode = `${KinDetails}.mobileCountryCode`;

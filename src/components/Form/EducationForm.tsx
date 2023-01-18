@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DefaultGrey,
   Green,
@@ -9,35 +9,83 @@ import {
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
-import {
-  Agent,
-  HighestQualificationElement,
-  IFee,
-  IStudyModeQualification,
-  ReferredBy,
-  SocialMedia,
-} from "../common/types";
+import { IFee, IOption, IStudyModeQualification } from "../common/types";
 import styled from "styled-components";
 import { onlyAlphaNumeric } from "../../Util/Util";
 import EducationImg from "../../../public/assets/images/education-svgrepo-com.svg";
 import Image from "next/image";
-import { AuthApi } from "../../service/Axios";
-import { CommonApi } from "../common/constant";
-
-const qualification = `interestedQualificationId`;
-const studyMode = `studyMode`;
-const highestQualification = `highestQualificationId`;
-const highSchoolName = `highSchoolName`;
-const referredBy = `referredById`;
-const agentName = `agentId`;
-const socialMediaId = `socialMediaId`;
-const studyModeDetail = `studyModeDetail`;
+import { FinanceApi } from "../../service/Axios";
+import {
+  AgentandSocialMedia,
+  CommonApi,
+  studentType,
+} from "../common/constant";
+const mockStudyModeData = [
+  {
+    programCode: "BBA-PROG-501",
+    programName: "Bachelor of Business Administration",
+    studyModes: [
+      {
+        studyModeCode: "DISTANCE-ONLINE",
+        fees: [
+          {
+            fee: "21000.00",
+            feeMode: "SEMESTER",
+          },
+          {
+            fee: "3670.00",
+            feeMode: "MONTHLY",
+          },
+          {
+            fee: "40000.00",
+            feeMode: "ANNUALLY",
+          },
+        ],
+      },
+      {
+        studyModeCode: "FULL-TIME",
+        fees: [
+          {
+            fee: "52500.00",
+            feeMode: "SEMESTER",
+          },
+          {
+            fee: "9170.00",
+            feeMode: "MONTHLY",
+          },
+          {
+            fee: "100000.00",
+            feeMode: "ANNUALLY",
+          },
+        ],
+      },
+      {
+        studyModeCode: "undefined",
+        fees: [
+          {
+            fee: "13000.00",
+            feeMode: "APPLICATION",
+          },
+        ],
+      },
+    ],
+  },
+];
+const parentKey = "education";
+const program = `${parentKey}.programCode`;
+const studyMode = `${parentKey}.studyModeCode`;
+const highestQualification = `${parentKey}.qualificationCode`;
+const highSchoolName = `${parentKey}.highSchoolName`;
+const referredBy = `${parentKey}.referredById`;
+const agentName = `${parentKey}.agentCode`;
+const socialMediaId = `${parentKey}.socialMediaCode`;
+const studyModeDetail = `${parentKey}.studyModeDetail`;
+const studentTypeName = `${parentKey}.studentTypeId`;
 interface IEducationProps {
-  highestQualifications: HighestQualificationElement[];
-  qualificationArr: HighestQualificationElement[];
-  referredByArr: ReferredBy[];
-  socialMedias: SocialMedia[];
-  agentArr: Agent[];
+  highestQualifications: IOption[];
+  programs: IOption[];
+  socialMedias: IOption[];
+  agentArr: IOption[];
 }
 
 const FeeCard = (props: any) => {
@@ -48,13 +96,13 @@ const FeeCard = (props: any) => {
       <StyleFeeCards
         style={{
           border:
-            props?.selected === props?.uniqueId ? "1.5px solid green" : "0",
+            props?.selected === props?.feeMode ? "1.5px solid green" : "0",
         }}
         onClick={() => props.setSelectedMode(selectedData)}
       >
         <span>{props?.fee}</span>
         <br />
-        <span style={{ color: `${Green}` }}>{props?.feePeriod}</span>
+        <span style={{ color: `${Green}` }}>{props?.feeMode}</span>
       </StyleFeeCards>
     </>
   );
@@ -74,17 +122,12 @@ export const EducationForm = (props: IEducationProps) => {
     studyId: null,
     parentIdx: null,
   });
+  // IStudyModeQualification[] | any[]
   const [studyModeQualification, setStudyModeQualification] = useState<
     IStudyModeQualification[]
   >([]);
-  const {
-    agentArr,
-    highestQualifications,
-    qualificationArr,
-    referredByArr,
-    socialMedias,
-  } = props;
-  const qualificationVal = watch(qualification);
+  const { agentArr, highestQualifications, programs, socialMedias } = props;
+  const programVal = watch(program);
   const studyModeVal = watch(studyMode);
   const highestQualificationVal = watch(highestQualification);
   const highSchoolNameVal = watch(highSchoolName);
@@ -100,30 +143,28 @@ export const EducationForm = (props: IEducationProps) => {
     register(`${studyModeDetail}`, {
       required: true,
     });
-    getQualificationStudyModeData();
   }, []);
 
-  const getQualificationStudyModeData = () => {
-    AuthApi.get(CommonApi.GETSTUDYMODEQUALIFICATION)
+  const getQualificationStudyModeData = (programCode: string) => {
+    FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
       .then((res) => {
         setStudyModeQualification(res?.data?.data);
+        // setStudyModeQualification(studyModeQualification);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const setSelectedMode = (props: IFee | any) => {
-    const selectedStudyModeData = studyModeQualification[parentIdx].StudyModes[
+  const setSelectedMode = (props: IFee) => {
+    const selectedStudyModeData = studyModeQualification![parentIdx].studyModes[
       studyIdx
-    ].fees.find((item) => item.id === props.uniqueId);
-
-    setValue("studyModeDetail", selectedStudyModeData, {
+    ].fees.find(({ feeMode }) => feeMode === props.feeMode);
+    setValue(studyModeDetail, selectedStudyModeData, {
       shouldDirty: true,
       shouldValidate: true,
     });
   };
-
   return (
     <>
       <StyledAccordion>
@@ -147,19 +188,21 @@ export const EducationForm = (props: IEducationProps) => {
                   <StyledLabel required>Interested Qualification</StyledLabel>
                   <select
                     className="form-select"
-                    {...register(`${qualification}`, { required: true })}
+                    {...register(`${program}`, { required: true })}
+                    onChange={(e) => {
+                      setValue(e.target.name, e.target.value);
+                      getQualificationStudyModeData(e.target.value);
+                    }}
                   >
                     <option value={""}>Select Interested Qualification</option>
-                    <option value={"12"}>Test Qualification</option>
-
-                    {qualificationArr &&
-                      qualificationArr.map(({ id, qualification }) => (
+                    {programs &&
+                      programs.map(({ code, name }) => (
                         <option
-                          selected={id === qualificationVal}
-                          key={id}
-                          value={Number(id)}
+                          selected={code === programVal}
+                          key={code}
+                          value={code}
                         >
-                          {qualification}
+                          {name}
                         </option>
                       ))}
                   </select>
@@ -170,75 +213,79 @@ export const EducationForm = (props: IEducationProps) => {
                   )}
                 </div>
               </div>
-              <div className="col-md-4">
-                <StyledLabel required>Study Mode</StyledLabel>
+              {studyModeQualification && (
+                <div className="col-md-4">
+                  <StyledLabel required>Study Mode</StyledLabel>
 
-                <div className="mb-4">
-                  {studyModeQualification.map(({ StudyModes }, parentIndex) => {
-                    {
-                      return (
-                        StudyModes &&
-                        StudyModes.map(({ id, mode }, studyIdx) => {
-                          return (
-                            <>
-                              <div className="form-check form-check-inline">
-                                <input
-                                  key={id}
-                                  className="form-check-input me-2"
-                                  type="radio"
-                                  {...register(`${studyMode}`, {
-                                    required: true,
-                                  })}
-                                  onClick={(e: any) => {
-                                    setValue("studyMode", e.target.value);
-                                    setValue("studyModeDetail", null);
-                                    setSelectedStudyMode({
-                                      studyIdx: studyIdx,
-                                      studyId: id,
-                                      parentIdx: parentIndex,
-                                    });
-                                  }}
-                                  value={id}
-                                  checked={+studyModeVal == id}
-                                />
-                                <label className="form-check-label">
-                                  {mode}
-                                </label>
-                              </div>
-                            </>
-                          );
-                        })
-                      );
-                    }
-                  })}
-                  <StyleContainer>
+                  <div className="mb-4">
                     {studyModeQualification &&
-                      studyModeQualification[parentIdx]?.StudyModes[
-                        studyIdx
-                      ]?.fees?.map(({ fees, id, feesPeriod }: IFee) => (
-                        <FeeCard
-                          setSelectedMode={setSelectedMode}
-                          key={id}
-                          fee={fees}
-                          feePeriod={feesPeriod}
-                          uniqueId={id}
-                          selected={selectedStudyModeDetail?.id}
-                        />
-                      ))}
-                  </StyleContainer>
-                  {touchFields?.studyModeId &&
-                    educationFormError?.studyMode && (
+                      studyModeQualification.map(
+                        ({ studyModes, programCode }, parentIndex) => {
+                          {
+                            return (
+                              studyModes &&
+                              studyModes.map(({ studyModeCode }, studyIdx) => {
+                                return (
+                                  <>
+                                    <div className="form-check form-check-inline">
+                                      <input
+                                        key={studyModeCode}
+                                        className="form-check-input me-2"
+                                        type="radio"
+                                        {...register(`${studyMode}`, {
+                                          required: true,
+                                        })}
+                                        onClick={(e: any) => {
+                                          setValue(studyMode, e.target.value);
+                                          setSelectedStudyMode({
+                                            studyIdx: studyIdx,
+                                            studyId: studyModeCode,
+                                            parentIdx: parentIndex,
+                                          });
+                                        }}
+                                        value={studyModeCode}
+                                        checked={studyModeVal == studyModeCode}
+                                      />
+                                      <label className="form-check-label">
+                                        {programCode}
+                                      </label>
+                                    </div>
+                                  </>
+                                );
+                              })
+                            );
+                          }
+                        }
+                      )}
+                    <StyleContainer>
+                      {studyModeQualification &&
+                        studyModeQualification[parentIdx]?.studyModes[
+                          studyIdx
+                        ]?.fees?.map(({ fee, feeMode }: IFee) => (
+                          <FeeCard
+                            setSelectedMode={setSelectedMode}
+                            key={fee}
+                            fee={fee}
+                            feeMode={feeMode}
+                            uniqueId={fee}
+                            selected={selectedStudyModeDetail?.feeMode}
+                          />
+                        ))}
+                    </StyleContainer>
+                    {touchFields?.studyMode &&
+                      educationFormError?.studyMode && (
+                        <div className="invalid-feedback">
+                          Please enter Study Mode
+                        </div>
+                      )}
+                    {educationFormError?.studyModeDetail && (
                       <div className="invalid-feedback">
-                        Please enter Study Mode
+                        Please select Fees and Semester
                       </div>
                     )}
-                  {educationFormError?.studyModeDetail && (
-                    <div className="invalid-feedback">
-                      Please select Fees and Semester
-                    </div>
-                  )}
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel required>Highest Qualification</StyledLabel>
@@ -250,13 +297,13 @@ export const EducationForm = (props: IEducationProps) => {
                   >
                     <option value={""}>Select Highest Qualification</option>
                     {highestQualifications &&
-                      highestQualifications.map(({ id, qualification }) => (
+                      highestQualifications.map(({ code, name }) => (
                         <option
-                          selected={id === highestQualificationVal}
-                          key={id}
-                          value={Number(id)}
+                          selected={code === highestQualificationVal}
+                          key={code}
+                          value={code}
                         >
-                          {qualification}
+                          {name}
                         </option>
                       ))}
                   </select>
@@ -325,9 +372,9 @@ export const EducationForm = (props: IEducationProps) => {
                     onBlur={() => {
                       setTimeout(() => {
                         if (
-                          referredByArr?.find(
-                            (item) => item?.id == +referredByeVal
-                          )?.referredBy === "Agent"
+                          AgentandSocialMedia?.find(
+                            (item) => item?.code == +referredByeVal
+                          )?.name === "Agent"
                         ) {
                           setValue(`${socialMediaId}`, null, {
                             shouldDirty: true,
@@ -336,9 +383,9 @@ export const EducationForm = (props: IEducationProps) => {
                           });
                         }
                         if (
-                          referredByArr?.find(
-                            (item) => item?.id == +referredByeVal
-                          )?.referredBy === "Socail Media"
+                          AgentandSocialMedia?.find(
+                            (item) => item?.code == +referredByeVal
+                          )?.name === "Social Media"
                         ) {
                           setValue(`${agentName}`, null, {
                             shouldDirty: true,
@@ -351,14 +398,14 @@ export const EducationForm = (props: IEducationProps) => {
                   >
                     <option value={""}></option>
 
-                    {referredByArr &&
-                      referredByArr.map(({ id, referredBy }) => (
+                    {AgentandSocialMedia &&
+                      AgentandSocialMedia.map(({ code, name }) => (
                         <option
-                          selected={id === referredByeVal}
-                          key={id}
-                          value={Number(id)}
+                          selected={code === referredByeVal}
+                          key={code}
+                          value={code}
                         >
-                          {referredBy}
+                          {name}
                         </option>
                       ))}
                   </select>
@@ -370,8 +417,9 @@ export const EducationForm = (props: IEducationProps) => {
                     )}
                 </div>
 
-                {referredByArr?.find((item) => item?.id == +referredByeVal)
-                  ?.referredBy === "Agent" && (
+                {AgentandSocialMedia?.find(
+                  (item) => item?.code == +referredByeVal
+                )?.name === "Agent" && (
                   <div className="">
                     <div className="mb-4">
                       <StyledLabel required>Agent Name</StyledLabel>
@@ -384,11 +432,11 @@ export const EducationForm = (props: IEducationProps) => {
                       >
                         <option value={""}>Select Agent</option>
                         {agentArr &&
-                          agentArr.map(({ id, name }) => (
+                          agentArr.map(({ code, name }) => (
                             <option
-                              selected={id === agentNameVal}
-                              key={id}
-                              value={Number(id)}
+                              selected={code === agentNameVal}
+                              key={code}
+                              value={code}
                             >
                               {name}
                             </option>
@@ -403,8 +451,9 @@ export const EducationForm = (props: IEducationProps) => {
                     </div>
                   </div>
                 )}
-                {referredByArr?.find((item) => item?.id == +referredByeVal)
-                  ?.referredBy === "Socail Media" && (
+                {AgentandSocialMedia?.find(
+                  (item) => item?.code == +referredByeVal
+                )?.name === "Social Media" && (
                   <div className="">
                     <div className="mb-4">
                       <StyledLabel required>Social Media</StyledLabel>
@@ -418,13 +467,13 @@ export const EducationForm = (props: IEducationProps) => {
                         <option value={""}>Select Social Media</option>
 
                         {socialMedias &&
-                          socialMedias.map(({ id, socialMedia }) => (
+                          socialMedias.map(({ code, name }) => (
                             <option
-                              selected={id === socialMediaVal}
-                              key={id}
-                              value={Number(id)}
+                              selected={code === socialMediaVal}
+                              key={code}
+                              value={code}
                             >
-                              {socialMedia}
+                              {name}
                             </option>
                           ))}
                       </select>
@@ -437,6 +486,24 @@ export const EducationForm = (props: IEducationProps) => {
                     </div>
                   </div>
                 )}
+              </div>
+              <div className="col-md-4">
+                <div className="mb-4">
+                  <StyledLabel>Student Type</StyledLabel>
+
+                  <select
+                    defaultValue={0}
+                    className="form-select"
+                    {...register(`${studentTypeName}`, { required: true })}
+                  >
+                    {studentType &&
+                      studentType.map(({ code, name }) => (
+                        <option key={code} value={code}>
+                          {name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
               </div>
             </div>
           </div>

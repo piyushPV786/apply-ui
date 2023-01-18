@@ -1,3 +1,7 @@
+import axios from "axios";
+import { CommonApi } from "../components/common/constant";
+import { AuthApi } from "../service/Axios";
+
 export const mapFormData = (data: any, isDraft?: boolean) => {
   let formData = data;
   if (formData) {
@@ -81,5 +85,37 @@ export const GetPaymentImage = (type: string) => {
   }
   if (type === "Stripe") {
     return `${imgUrl}/stripe.png`;
+  }
+};
+
+export const getUploadDocumentUrl = async (file: File) => {
+  const { name, type } = file;
+  const url = process.env.base_Url;
+  try {
+    const response: any = await AuthApi.put(
+      `${url}${CommonApi.GETDOCUMENTURL}`,
+      { filename: name, filetype: type }
+    );
+    if (response.status === 200) {
+      const { data } = response.data;
+      return await data;
+    }
+  } catch (error: any) {
+    console.log(error.message);
+    return await error;
+  }
+};
+
+export const uploadDocuments = async (uploadFileUrl: string, file: File) => {
+  const request = new FormData();
+  request.append("file", file);
+  try {
+    const response = await axios.put(uploadFileUrl, request);
+    if (response.status === 200) {
+      return await response.data;
+    } else return await response.data;
+  } catch (error: any) {
+    console.log(error.message);
+    return await error;
   }
 };

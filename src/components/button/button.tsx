@@ -3,14 +3,15 @@ import { Button } from "@material-ui/core";
 import styled from "styled-components";
 import { Green } from "../common/common";
 import Image from "next/image";
-import EditIcon from '../../../public/assets/images/edit-icon.svg';
-import UploadIcon from '../../../public/assets/images/upload.svg';
-import PayIcon from '../../../public/assets/images/pay-pay.svg';
+import EditIcon from "../../../public/assets/images/edit-icon.svg";
+import UploadIcon from "../../../public/assets/images/upload.svg";
+import PayIcon from "../../../public/assets/images/pay-pay.svg";
 interface IButoonProps {
   title?: string;
   onClick?: (...args: any) => void;
   color?: string;
   className?: string;
+  form?: string;
   disabled?: boolean;
   isGreenWhiteCombination?: boolean;
   style?: any;
@@ -32,6 +33,7 @@ const StyledButton = ({
   isEditBtn = false,
   isPayBtn = false,
   isUploadBtn = false,
+  form = "",
   ...rest
 }: IButoonProps) => {
   return (
@@ -42,11 +44,13 @@ const StyledButton = ({
       isGreenWhiteCombination={isGreenWhiteCombination}
       style={style}
       className={className}
+      type={type}
       onClick={onClick}
+      form={form}
     >
       {isEditBtn && (
         <span className="me-3">
-          <Image alt="edit" width="20"  src={EditIcon} />
+          <Image alt="edit" width="20" src={EditIcon} />
         </span>
       )}
       {isPayBtn && (

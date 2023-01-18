@@ -1,38 +1,3 @@
-export interface IMasterData {
-  languages: Language[];
-  nationalities: Nationality[];
-  qualifications: HighestQualificationElement[];
-  races: Race[];
-  genders: Gender[];
-  highestQualifications: HighestQualificationElement[];
-  referredBy: ReferredBy[];
-  studyModes: Mode[];
-  socialMedias: SocialMedia[];
-  employmentIndustries: EmploymentIndustry[];
-  employmentStatus: EmploymentStatus[];
-  sponsorModes: Mode[];
-}
-
-export interface Agent {
-  id: number;
-  name: string;
-}
-
-export interface EmploymentIndustry {
-  id: number;
-  industry: string;
-}
-
-export interface EmploymentStatus {
-  id: number;
-  status: string;
-}
-
-export interface Gender {
-  id: number;
-  gender: string;
-}
-
 export interface HighestQualificationElement {
   id: number;
   qualification: QualificationEnum;
@@ -41,36 +6,6 @@ export interface HighestQualificationElement {
 export enum QualificationEnum {
   Graduate = "Graduate",
   PostGraduation = "Post Graduation",
-}
-
-export interface Language {
-  id: number;
-  language: string;
-}
-
-export interface Nationality {
-  id: number;
-  nationality: string;
-}
-
-export interface Race {
-  id: number;
-  race: string;
-}
-
-export interface ReferredBy {
-  id: number;
-  referredBy: string;
-}
-
-export interface SocialMedia {
-  id: number;
-  socialMedia: string;
-}
-
-export interface Mode {
-  id: number;
-  mode: string;
 }
 
 interface ICountry {
@@ -107,19 +42,50 @@ export interface IAddressDetailType {
 }
 
 export interface IStudyModeQualification {
-  id: number;
-  qualification: string;
-  StudyModes: IStudyMode[];
+  programCode: string;
+  programName: string;
+  studyModes: IStudyMode[];
 }
 
 export interface IStudyMode {
-  id: number;
-  mode: string;
+  studyModeCode: string;
   fees: IFee[];
 }
 
 export interface IFee {
+  fee: string;
+  feeMode: string;
+}
+
+export interface IMasterData {
+  languageData: IOption[];
+  nationalityData: IOption[];
+  programs: IOption[];
+  raceData: IOption[];
+  genderData: IOption[];
+  qualifications: IOption[];
+  studyModeData: IOption[];
+  socialMediaData: IOption[];
+  employerIndustryData: IOption[];
+  employmentStatusData: IOption[];
+  sponserData: IOption[];
+  highestQualificationData: IOption[];
+  documentTypeData: IOption[];
+  salutaionData: IOption[];
+  countryData: IOption[];
+  disablityData: IOption[];
+  agentData: IOption[];
+}
+
+export interface IOption {
+  isActive: boolean;
   id: number;
-  fees: number;
-  feesPeriod: string;
+  createdBy?: any;
+  createdAt: string;
+  updatedBy?: any;
+  updatedAt: string;
+  deletedBy?: any;
+  deletedAt?: any;
+  name: string;
+  code: string;
 }
