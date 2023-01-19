@@ -76,7 +76,7 @@ export const GetPaymentImage = (type: string) => {
   }
 };
 
-export const getUploadDocumentUrl = async (file: File) => {
+export const getUploadDocumentUrl = async (file: any) => {
   const { name, type } = file;
   const url = process.env.base_Url;
   try {
