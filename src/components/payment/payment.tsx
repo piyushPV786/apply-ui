@@ -72,12 +72,11 @@ const Payment = (props: any) => {
         paymentModeCode: "OFFLINE",
       };
       getUploadDocumentUrl(payload).then((res) => {
-        if (res.status === 200) {
+        if (res?.statusCode === 201) {
           count = count + 1;
-          // uploadPaymentDocument(res, file);
+          uploadPaymentDocument(res?.data, file);
         } else {
-          props.showToast(false, res.response.data.message);
-          console.log(res.response.data.messag);
+          props.showToast(false, res?.response?.data?.message);
           setPaymentDocSubmit(false);
         }
       });

@@ -75,22 +75,27 @@ export const GetPaymentImage = (type: string) => {
     return `${imgUrl}/stripe.png`;
   }
 };
-
-export const getUploadDocumentUrl = async (file: any) => {
-  const { name, type } = file;
+interface getSignParams {
+  documentTypeCode: string;
+  fileName: string;
+  fileType: string;
+  amount: number | string;
+  paymentModeCode: string;
+}
+export const getUploadDocumentUrl = async (payload: getSignParams) => {
   const url = process.env.base_Url;
   try {
-    const response: any = await AuthApi.put(
-      `${url}${CommonApi.GETDOCUMENTURL}`,
-      { filename: name, filetype: type }
+    const response: any = await AuthApi.post(
+      `${url}application/VVYzYW224v/document`,
+      payload
     );
-    if (response.status === 200) {
-      const { data } = response.data;
+    if (response.status === 201) {
+      const { data } = response;
       return await data;
     }
   } catch (error: any) {
     console.log(error.message);
-    return await error;
+    return error;
   }
 };
 
