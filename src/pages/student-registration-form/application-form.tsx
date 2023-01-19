@@ -118,7 +118,7 @@ const ApplicationForm = (props: any) => {
     message: "",
     success: false,
     show: false,
-  }); 
+  });
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isDocumentUploadDone, setDocumentUploadDone] =
     useState<boolean>(false);
@@ -193,14 +193,16 @@ const ApplicationForm = (props: any) => {
     const studentId = JSON.parse(
       sessionStorage?.getItem("leadCode") as any
     )?.leadCode;
+    createUser(request, isDrafSave);
 
-    if (studentId) {
-      updateUser(studentId, request, isDrafSave);
-    } else {
-      // checkValidationForDraftSave() &&
-      createUser({ ...request, isDraft: true });
-    }
+    // if (studentId) {
+    //   updateUser(studentId, request, isDrafSave);
+    // } else {
+    //   // checkValidationForDraftSave() &&
+    //   createUser({ ...request, isDraft: true });
+    // }
   };
+  // console.log({ allFields });
   const checkValidationForDraftSave = () => {
     let isValid = true;
     const {
@@ -300,7 +302,7 @@ const ApplicationForm = (props: any) => {
           uploadFiles(res, file);
         } else {
           showToast(false, res.response.data.message);
-          console.log(res.response.data.messag);
+          console.log(res.response.data.message);
         }
       });
     });
@@ -316,7 +318,7 @@ const ApplicationForm = (props: any) => {
     });
   };
 
-  const createUser = (request: any) => {
+  const createUser = (request: any, isDrafSave) => {
     AuthApi.post(CommonApi.SAVEUSER, {
       ...request,
     })
@@ -334,6 +336,16 @@ const ApplicationForm = (props: any) => {
           message: data?.message,
           show: true,
         });
+        if (!isDrafSave) {
+          setSubmitted(true);
+          setActiveStep(activeStep + 1);
+        }
+        if (activeStep === MagicNumbers.TWO) {
+          setActiveStep(2);
+          setDocumentUploadDone(true);
+          setPaymentDone(true);
+          uploadStudentDocs();
+        }
       })
       .catch((err) => {
         console.log({ err });
@@ -430,7 +442,7 @@ const ApplicationForm = (props: any) => {
             {activeStep === MagicNumbers.ZERO && (
               <>
                 <div className="row w-100">
-                  <form onSubmit={(data) => onSubmit(data)}>
+                  <form onSubmit={(data) => onSubmit(data, false)}>
                     <PersonalInfoForm
                       genders={genders}
                       nationalities={nationalities}
@@ -460,7 +472,7 @@ const ApplicationForm = (props: any) => {
             {activeStep === MagicNumbers.ONE && (
               <>
                 <Payment
-                  qualifications={highestQualifications}
+                  programs={programs}
                   studyMode={studyModes}
                   navigateNext={navigateNext}
                   onSkipForNowOnPayment={onSkipForNowOnPayment}
@@ -527,7 +539,9 @@ const ApplicationForm = (props: any) => {
                     />
                     &nbsp;&nbsp;&nbsp;
                     <StyledButton
-                      onClick={methods.handleSubmit(onSubmit as any, onError)}
+                      onClick={methods.handleSubmit(
+                        (data) => onSubmit(data, false) as any
+                      )}
                       disabled={!isValid && !isValidDocument}
                       title={activeStep < 2 ? "Save & Next" : "Submit"}
                     />

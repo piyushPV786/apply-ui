@@ -168,7 +168,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel>Sponsor Address</StyledLabel>
+                    <StyledLabel required>Sponsor Address</StyledLabel>
                     <input
                       className="form-control"
                       value={sponsorAddressVal}

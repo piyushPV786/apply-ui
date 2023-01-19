@@ -9,7 +9,7 @@ import {
 } from "../common/common";
 import CloseIcon from "@material-ui/icons/CloseOutlined";
 import { useFormContext } from "react-hook-form";
-import { HighestQualificationElement, Mode } from "../common/types";
+import { IOption } from "../common/types";
 import PaymentOption from "./payment-options";
 import StyledButton from "../button/button";
 import {
@@ -31,18 +31,15 @@ const Payment = (props: any) => {
   const [showPromoCode, setShowPromoCOde] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
-  const selectedQualification: string =
-    props?.qualifications &&
-    props.qualifications?.find(
-      (item: HighestQualificationElement) =>
-        item?.id == allFields?.interestedQualificationId
-    )?.qualification;
-  const selectedStudyMode: string =
-    props?.studyMode &&
-    props.studyMode?.find((item: Mode) => item?.id == allFields?.studyMode)
-      ?.mode;
-  const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
+  const selectedProgram: string =
+    props?.programs &&
+    props.programs?.find(
+      (item: IOption) => item?.code == allFields?.education?.programCode
+    )?.name;
+  const selectedStudyMode: string = allFields?.education?.studyModeCode;
+  const programFee: string = allFields?.education?.studyModeDetail?.fee;
 
+  const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
@@ -124,7 +121,7 @@ const Payment = (props: any) => {
                           Proposal Qualification
                         </StyledLabel>
                         <div>
-                          <strong>{selectedQualification}</strong>
+                          <strong>{selectedProgram}</strong>
                         </div>
                       </div>
                     </div>
@@ -170,9 +167,7 @@ const Payment = (props: any) => {
                           Application Fee
                         </StyledLabel>
                         <div>
-                          <strong>
-                            INR {allFields?.studyModeDetail?.fees}
-                          </strong>
+                          <strong>INR {programFee}</strong>
                         </div>
                       </div>
                     </div>
