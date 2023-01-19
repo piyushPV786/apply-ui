@@ -4,7 +4,7 @@ import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
 import { useFormContext } from "react-hook-form";
 import StyledButton from "../button/button";
 import { CommonApi, PaymentTypes } from "../common/constant";
-import { GetPaymentImage } from "../../Util/Util";
+import { getApplicationCode, GetPaymentImage } from "../../Util/Util";
 import { AuthApi } from "../../service/Axios";
 import axios from "axios";
 const IPaymentType = PaymentTypes.map((item) => item.name);
@@ -23,7 +23,7 @@ const PaymentOption = (props: any) => {
   const { watch, register } = useFormContext();
   const [paymentPayload, setPaymentTypePayload] = useState<any>(null);
   const allFields = watch();
-
+  console.log("All field ======>", allFields);
   const onSelectedPaymentOption = (type: "payu" | "razorpay" | "stripe") => {
     if (type === "payu") onPayuPayment();
   };
@@ -33,16 +33,17 @@ const PaymentOption = (props: any) => {
       return "payuForm";
     }
   };
+
   const onPayuPayment = () => {
     const payload = {
-      amount: allFields?.studyModeDetail?.fees || 2,
-      email: allFields?.email || "test@test.com",
-      firstname: allFields?.firstName || "Vivek Kumar Gupta",
-      phone: allFields?.mobileNumber || "7566410079",
+      amount: +allFields?.education?.studyModeDetail?.fee || 2,
+      email: allFields?.lead?.email || "test@test.com",
+      firstname: allFields?.lead?.firstName || "Vivek Kumar Gupta",
+      phone: allFields?.lead?.mobileNumber || "7566410079",
       productinfo: "test",
     };
-
-    AuthApi.post(`application/DRe6Qe8QfX/payment/payu`, payload)
+    const appCode = getApplicationCode();
+    AuthApi.post(`application/${appCode}/payment/payu`, payload)
       .then(({ data: res }) => {
         const { salt = null, hash = null, ...rest } = res?.data as any;
         setPaymentTypePayload({ ...rest, hash });

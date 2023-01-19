@@ -15,25 +15,25 @@ import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
 import ViewIcon from "../../../public/assets/images/view-svgrepo-com.svg";
 import TrashIcon from "../../../public/assets/images/trash-svgrepo-com.svg";
 import FileUpload from "../../../public/assets/images/file-upload-svgrepo-com.svg";
+import { IOption } from "../common/types";
 
 interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
+  documentType:any
 }
 const imgUrl = "/assets/images";
 
 const DocumentUploadForm = ({
   allFields,
   isValidDocument,
+  documentType
 }: IDocumentUploadProps) => {
   const fileUploadRef = useRef<any>(null);
-
   const { register, setValue } = useFormContext();
-
   const [uploadDocs, setUploadDocs] = useState<(File & { error: boolean })[]>(
     []
   );
-
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
     const allUploadedFiles = uniqueArrayOfObject(
@@ -48,7 +48,7 @@ const DocumentUploadForm = ({
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement?.click() as any;
   };
-
+   console.log("documentType=====>", documentType)
   const deleteDocs = (index: number) => {
     const remainingDocs = [...uploadDocs.filter((item, idx) => idx !== index)];
     setValue("document.uploadedDocs", remainingDocs);
@@ -57,10 +57,12 @@ const DocumentUploadForm = ({
 
   const uploadDocuments = (files: any) => {
     const uploadedFiles = files;
+    console.log("upload files ======>", files)
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
     });
     setUploadDocs(uploadedFiles as any);
+    console.log("uploadedFiles =====>", uploadedFiles)
     setValue("document.uploadedDocs", uploadedFiles);
   };
  

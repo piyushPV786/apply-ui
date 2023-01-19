@@ -296,7 +296,14 @@ const ApplicationForm = (props: any) => {
     const { uploadedDocs = [] as File[] } = allFields;
     let count = 0;
     uploadedDocs.forEach((file: File) => {
-      getUploadDocumentUrl(file).then((res) => {
+      const payload = {
+        documentTypeCode: "PAYMENTPROOF",
+        fileName: file.name,
+        fileType: file.type,
+        amount:+allFields?.education?.studyModeDetail?.fee || 0,
+        paymentModeCode: "OFFLINE",
+      };
+      getUploadDocumentUrl(payload).then((res) => {
         if (res.status === 200) {
           count = count + 1;
           uploadFiles(res, file);
@@ -418,6 +425,7 @@ const ApplicationForm = (props: any) => {
   const employmentIndustries = masterData?.employmentIndustryData as IOption[];
   const countryData = masterData?.countryData as IOption[];
   const agentData = masterData?.agentData as IOption[];
+  const documentType = masterData?.documentTypeData as IOption[];
 
   const onSkipForNowOnPayment = () => {};
   const onSkipForNowOnDocument = () => {
@@ -485,6 +493,7 @@ const ApplicationForm = (props: any) => {
                 <DocumentUploadForm
                   allFields={allFields}
                   isValidDocument={isValidDocument}
+                  documentType={documentType}
                 />
               </>
             )}

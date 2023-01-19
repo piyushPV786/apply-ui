@@ -78,21 +78,37 @@ export const GetPaymentImage = (type: string) => {
   }
 };
 
-export const getUploadDocumentUrl = async (file: any) => {
-  const { name, type } = file;
+export const getApplicationCode = () => {
+  let appCode = "";
+  const leadData: any = window.sessionStorage.getItem("leadData");
+  if (leadData) {
+    const leadDataApp = JSON.parse(leadData);
+    appCode = leadDataApp?.applicationData?.applicationCode;
+  }
+  return appCode;
+};
+interface getSignParams {
+  documentTypeCode: string;
+  fileName: string;
+  fileType: string;
+  amount: number | string;
+  paymentModeCode: string;
+}
+export const getUploadDocumentUrl = async (payload: getSignParams) => {
   const url = process.env.base_Url;
+  const appCode = getApplicationCode();
   try {
-    const response: any = await AuthApi.put(
-      `${url}${CommonApi.GETDOCUMENTURL}`,
-      { filename: name, filetype: type }
+    const response: any = await AuthApi.post(
+      `${url}application/${appCode}/document`,
+      payload
     );
-    if (response.status === 200) {
-      const { data } = response.data;
+    if (response.status === 201) {
+      const { data } = response;
       return await data;
     }
   } catch (error: any) {
     console.log(error.message);
-    return await error;
+    return error;
   }
 };
 
