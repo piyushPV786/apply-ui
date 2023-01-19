@@ -8,7 +8,7 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
-import { IOption, Mode } from "../common/types";
+import { IOption } from "../common/types";
 import { onlyAlphabets } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
@@ -168,7 +168,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel >Sponsor Address</StyledLabel>
+                    <StyledLabel>Sponsor Address</StyledLabel>
                     <input
                       className="form-control"
                       value={sponsorAddressVal}

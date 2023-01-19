@@ -68,7 +68,7 @@ export interface IMasterData {
   socialMediaData: IOption[];
   employmentIndustryData: IOption[];
   employmentStatusData: IOption[];
-  sponsorMode: IOption[];
+  sponsorModeData: IOption[];
   highestQualificationData: IOption[];
   documentTypeData: IOption[];
   salutaionData: IOption[];
@@ -93,4 +93,30 @@ export interface IOption {
 export interface Mode {
   id: number;
   name: string;
+}
+
+export interface IApplication {
+  isActive: boolean;
+  id: number;
+  applicationCode: string;
+  status: string;
+  lead: ILead;
+  education: null;
+}
+export interface ILead {
+  isActive: boolean;
+  id: number;
+  leadCode: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  email: string;
+  mobileNumber: string;
+  mobileCountryCode: string;
+  dateOfBirth: Date;
+  identificationNumber: null;
+  gender: null;
+  nationality: null;
+  language: string;
+  race: null;
 }

@@ -177,7 +177,10 @@ export const KinDetailsForm = (props: any) => {
                         uppdateMobNumber();
                       }}
                       onChange={(value) => {
-                        setValue(`${phoneNumber}`, value);
+                        setValue(`${phoneNumber}`, value, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        });
                       }}
                       value={phoneNumberVal}
                     />

@@ -8,21 +8,36 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/application-icon.svg";
-import { RoutePaths } from "../common/constant";
+import { CommonApi, RoutePaths } from "../common/constant";
+import { AuthApi } from "../../service/Axios";
+import { IApplication } from "../common/types";
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
+  const [studentApplications, setStudentApplications] = useState<
+    IApplication[]
+  >([]);
   const router = useRouter();
 
-  const existingApplication = [1];
 
   useEffect(() => {
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
-    )?.id;
-    setStudenId(studentId);
+    )?.leadCode;
+    if (studentId) {
+      getStudentApplications(studentId);
+      setStudenId(studentId);
+    }
   }, []);
-
+  const getStudentApplications = (studentId) => {
+    AuthApi.get(`${CommonApi.SAVEUSER}/${studentId}/application`)
+      .then(({ data: response }) => {
+        setStudentApplications(response?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const onApplyNow = () => {
     router.push(RoutePaths.Application_Form);
   };
@@ -33,7 +48,7 @@ export const ApplicationDashboard = (props: any) => {
         <div className="container-fluid mt-5">
           <div style={{ paddingBottom: "1rem" }}>
             <PaymentContainer>
-              {studentId ? (
+              {studentId && studentApplications.length > 0 ? (
                 <div>
                   <div className="row">
                     <div className="col">
@@ -57,18 +72,24 @@ export const ApplicationDashboard = (props: any) => {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-md-4 mb-2">
-                      <ApplicationCard status="pending" />
-                    </div>
-                    <div className="col-md-4 mb-2">
-                      <ApplicationCard status="draft" />
-                    </div>
-                    <div className="col-md-4">
-                      <ApplicationCard status="pendingDocuments" />
-                    </div>
-                    <div className="col-md-4">
-                      <ApplicationCard status="submitted" />
-                    </div>
+                    {studentApplications.map(
+                      (
+                        {
+                          status,
+                          lead: { firstName, lastName, middleName = "" },
+                        },
+                        idx
+                      ) => (
+                        <div className="col-md-4 mb-2">
+                          <ApplicationCard
+                            status={status}
+                            applicationNumber={idx + 1}
+                            name={`${firstName} ${middleName} ${lastName}`}
+                            // lasUpdated={}
+                          />
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               ) : (
@@ -116,26 +137,26 @@ export const ApplicationDashboard = (props: any) => {
   );
 };
 
-function ApplicationCard(props: any) {
+function ApplicationCard({ name, applicationNumber, status }) {
   return (
     <>
       <div className="container bg-white p-3 border rounded">
         <div className="d-flex justify-content-end">
-          <StyledStatusBedge status={props?.status}>
+          <StyledStatusBedge status={status.toLowerCase()}>
             Payment Pending
           </StyledStatusBedge>
         </div>
         <ContentCard>
           <div className="w-100">
             <GreenFormHeading className="fs-4">
-              Application Number - 01
+              Application Number - {applicationNumber}
             </GreenFormHeading>
           </div>
           <div className="mt-2">
             <p className="mb-0" style={{ color: `#5a636a` }}>
               Name
             </p>
-            <strong>Jhon Doe</strong>
+            <strong>{name}</strong>
           </div>
           <div className="mt-2">
             <p className="mb-0" style={{ color: `#5a636a` }}>
