@@ -300,7 +300,7 @@ const ApplicationForm = (props: any) => {
         documentTypeCode: "PAYMENTPROOF",
         fileName: file.name,
         fileType: file.type,
-        amount: 12,
+        amount:+allFields?.education?.studyModeDetail?.fee || 0,
         paymentModeCode: "OFFLINE",
       };
       getUploadDocumentUrl(payload).then((res) => {
