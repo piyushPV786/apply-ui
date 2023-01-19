@@ -4,9 +4,9 @@ import { ApplicationDashboard } from "../../components/Dashboard/Dashboard";
 
 export default function DashboardHome() {
   const router = useRouter();
-  const isAuthenticate = JSON.parse(
-    sessionStorage?.getItem("authenticate") as any
-  );
+  // const isAuthenticate = JSON.parse(
+  //   sessionStorage?.getItem("authenticate") as any
+  // );
   
   useEffect(() => {
     // if (!isAuthenticate && studentId) {

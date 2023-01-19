@@ -185,7 +185,7 @@ export const EducationForm = (props: IEducationProps) => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Interested Qualification</StyledLabel>
+                  <StyledLabel required>Interested Program</StyledLabel>
                   <select
                     className="form-select"
                     {...register(`${program}`, { required: true })}
@@ -325,7 +325,7 @@ export const EducationForm = (props: IEducationProps) => {
                     value={highSchoolNameVal}
                     defaultValue={highSchoolNameVal}
                     type="text"
-                    {...register(`${highSchoolName}`, { required: true })}
+                    {...register(`${highSchoolName}`,{ required: true })}
                     className="form-control"
                     id="highSchoolName"
                     placeholder=""
@@ -396,7 +396,7 @@ export const EducationForm = (props: IEducationProps) => {
                       }, 2000);
                     }}
                   >
-                    <option value={""}></option>
+                    <option value={""}>Select Social Media</option>
 
                     {AgentandSocialMedia &&
                       AgentandSocialMedia.map(({ code, name }) => (
@@ -425,9 +425,7 @@ export const EducationForm = (props: IEducationProps) => {
                       <StyledLabel required>Agent Name</StyledLabel>
                       <select
                         className="form-select"
-                        {...register(`${agentName}`, {
-                          required: true,
-                        })}
+                        {...register(`${agentName}`, { required: true })}
                         value={agentNameVal}
                       >
                         <option value={""}>Select Agent</option>
@@ -460,9 +458,7 @@ export const EducationForm = (props: IEducationProps) => {
                       <select
                         className="form-select"
                         value={socialMediaVal}
-                        {...register(`${socialMediaId}`, {
-                          required: true,
-                        })}
+                        {...register(`${socialMediaId}`, { required: true })}
                       >
                         <option value={""}>Select Social Media</option>
 
@@ -489,7 +485,7 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel>Student Type</StyledLabel>
+                  <StyledLabel required>Student Type</StyledLabel>
 
                   <select
                     defaultValue={0}

@@ -181,6 +181,9 @@ const ApplicationForm = (props: any) => {
     }
   };
   const submitFormData = (data: object, isDrafSave?: boolean) => {
+    const studentMobile =
+      sessionStorage &&
+      JSON.parse(sessionStorage?.getItem("studentMobile") as any);
     const formData = { ...data };
 
     const { isSameAsPostalAddress = "", ...rest } = { ...(formData as any) };
@@ -191,7 +194,15 @@ const ApplicationForm = (props: any) => {
       },
       isDrafSave
     );
-
+    request = {
+      ...request,
+      lead: {
+        ...request?.lead,
+        mobileNumber: studentMobile?.mobileNumber,
+        mobileCountryCode: studentMobile?.countryCodeNumber,
+      },
+    };
+    console.log("request ======>", request);
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
     )?.id;
@@ -322,15 +333,11 @@ const ApplicationForm = (props: any) => {
   };
 
   const createUser = (request: any) => {
-    const studentMobile =
-      sessionStorage &&
-      JSON.parse(sessionStorage?.getItem("studentMobile") as any);
     AuthApi.post(CommonApi.SAVEUSER, {
-      mobileNumber: studentMobile?.mobileNumber,
-      mobileCountryCode: studentMobile?.countryCodeNumber,
       ...request,
     })
       .then(({ data }) => {
+        setActiveStep(activeStep + 1)
         console.log(data);
         sessionStorage.setItem(
           "studentId",
@@ -401,11 +408,11 @@ const ApplicationForm = (props: any) => {
   const programs = masterData?.programs as IOption[];
   const race = masterData?.raceData as IOption[];
   const socialMedias = masterData?.socialMediaData as IOption[];
-  const sponsorModes = masterData?.sponserData as IOption[];
+  const sponsorModes = masterData?.sponsorMode as IOption[];
   const studyModes = masterData?.studyModeData as IOption[];
   const genders = masterData?.genderData as IOption[];
   const employmentStatus = masterData?.employmentStatusData as IOption[];
-  const employmentIndustries = masterData?.employerIndustryData as IOption[];
+  const employmentIndustries = masterData?.employmentIndustryData as IOption[];
   const countryData = masterData?.countryData as IOption[];
   const agentData = masterData?.agentData as IOption[];
 

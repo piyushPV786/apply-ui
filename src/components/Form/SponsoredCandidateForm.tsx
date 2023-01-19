@@ -15,8 +15,9 @@ import Image from "next/image";
 
 const SponsorCandidateDetail = "sponser";
 
-const sponsorMode = `${SponsorCandidateDetail}.sponsorModeId`;
+const sponsorMode = `${SponsorCandidateDetail}.sponsorModeCode`;
 const sponsorName = `${SponsorCandidateDetail}.name`;
+const sponsorEmail = `${SponsorCandidateDetail}.email`;
 const sponsorAddress = `${SponsorCandidateDetail}.address`;
 const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
@@ -139,8 +140,35 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   </div>
                 </div>
                 <div className="col-md-4">
+                  <StyledLabel required>Sponsor Email</StyledLabel>
                   <div className="mb-4">
-                    <StyledLabel>Sponsor Address</StyledLabel>
+                    <input
+                      className="form-control"
+                      aria-label="Default select example"
+                      defaultValue={""}
+                      {...register(`${sponsorEmail}`, { required: true })}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
+                    />
+                    {touchedField?.name && error?.name && (
+                      <div className="invalid-feedback">
+                        Please enter sponsor name
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <StyledLabel >Sponsor Address</StyledLabel>
                     <input
                       className="form-control"
                       value={sponsorAddressVal}

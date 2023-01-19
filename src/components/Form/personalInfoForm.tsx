@@ -273,9 +273,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <input
                     value={identificationPassportNumber}
                     defaultValue={identificationPassportNumber}
-                    {...register(identificationPassportNumberKey, {
-                      required: true,
-                    })}
+                    {...register(identificationPassportNumberKey, { required: true })}
                     type="text"
                     className="form-control"
                     id="identificationPassportNumber"

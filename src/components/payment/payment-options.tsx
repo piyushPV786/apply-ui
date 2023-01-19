@@ -35,21 +35,16 @@ const PaymentOption = (props: any) => {
   };
   const onPayuPayment = () => {
     const payload = {
-      amount: allFields?.studyModeDetail?.fees || 2000,
-      email: allFields?.email,
-      firstname: allFields?.firstName,
+      amount: allFields?.studyModeDetail?.fees || 2,
+      email: allFields?.email || "test@test.com",
+      firstname: allFields?.firstName || "Vivek Kumar Gupta",
       phone: allFields?.mobileNumber || "7566410079",
       productinfo: "test",
     };
 
-    AuthApi.post(CommonApi.PAYUPAYMENT, payload)
+    AuthApi.post(`application/DRe6Qe8QfX/payment/payu`, payload)
       .then(({ data: res }) => {
-        const {
-          salt = null,
-          paymenturl = null,
-          hash = null,
-          ...rest
-        } = { ...(res?.data as any) };
+        const { salt = null, hash = null, ...rest } = res?.data as any;
         setPaymentTypePayload({ ...rest, hash });
       })
       .catch((err) => {
@@ -86,7 +81,7 @@ const PaymentOption = (props: any) => {
                           <form
                             method="post"
                             id="payuForm"
-                            action={process.env.PAYU_URL}
+                            action={paymentPayload?.paymenturl}
                           >
                             {paymentPayload &&
                               Object.keys(paymentPayload).map((item) => (
