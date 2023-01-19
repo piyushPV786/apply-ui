@@ -95,7 +95,7 @@ export interface Mode {
   name: string;
 }
 
-export interface IApllication {
+export interface IApplication {
   isActive: boolean;
   id: number;
   applicationCode: string;

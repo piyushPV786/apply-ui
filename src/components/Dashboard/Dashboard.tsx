@@ -10,12 +10,12 @@ import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/application-icon.svg";
 import { CommonApi, RoutePaths } from "../common/constant";
 import { AuthApi } from "../../service/Axios";
-import { IApllication } from "../common/types";
+import { IApplication } from "../common/types";
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
   const [studentApplications, setStudentApplications] = useState<
-    IApllication[]
+    IApplication[]
   >([]);
   const router = useRouter();
 
