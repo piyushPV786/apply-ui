@@ -66,7 +66,7 @@ const Payment = (props: any) => {
     paymentDocs.forEach((file) => {
       const payload = {
         documentTypeCode: "PAYMENTPROOF",
-        fileName:file.name,
+        fileName: file.name,
         fileType: file.type,
         amount: 12,
         paymentModeCode: "OFFLINE",
@@ -74,7 +74,7 @@ const Payment = (props: any) => {
       getUploadDocumentUrl(payload).then((res) => {
         if (res.status === 200) {
           count = count + 1;
-         // uploadPaymentDocument(res, file);
+          // uploadPaymentDocument(res, file);
         } else {
           props.showToast(false, res.response.data.message);
           console.log(res.response.data.messag);
