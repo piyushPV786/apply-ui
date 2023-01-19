@@ -70,12 +70,12 @@ export const AddressForm = ({ countryData = [] }: any) => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel>Postal Address</StyledLabel>
+                  <StyledLabel required>Postal Address</StyledLabel>
                   <input
                     value={postalAddressVal}
                     defaultValue={postalAddressVal}
                     type="text"
-                    {...register(`${postalAddress}`)}
+                    {...register(`${postalAddress}`, { required: true })}
                     className="form-control"
                     id="postalAddress"
                     placeholder="e.g 10 church street"
@@ -105,7 +105,6 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     displayItem="name"
                     mapKey="isoCode"
                     label="Country"
-                    required={false}
                   />
 
                   {touchedField &&
@@ -120,10 +119,13 @@ export const AddressForm = ({ countryData = [] }: any) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel>Pin Code</StyledLabel>
+                  <StyledLabel required>Pin Code</StyledLabel>
                   <input
                     value={postalZipCodeVal}
-                    {...register(`${postalZipCode}`)}
+                    {...register(`${postalZipCode}`, {
+                      required: true,
+                      maxLength: 6,
+                    })}
                     type="number"
                     maxLength={6}
                     className="form-control"
@@ -146,12 +148,14 @@ export const AddressForm = ({ countryData = [] }: any) => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel>City</StyledLabel>
+                  <StyledLabel required>City</StyledLabel>
                   <input
                     value={postalCityVal}
                     defaultValue={postalCityVal}
                     className="form-control"
-                    {...register(`${postalCity}`)}
+                    {...register(`${postalCity}`, {
+                      required: true,
+                    })}
                   />
                   {touchedField &&
                     error &&
@@ -163,9 +167,11 @@ export const AddressForm = ({ countryData = [] }: any) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel>State</StyledLabel>
+                  <StyledLabel required>State</StyledLabel>
                   <input
-                    {...register(`${postalState}`)}
+                    {...register(`${postalState}`, {
+                      required: true,
+                    })}
                     className="form-control"
                     value={postalStateVal}
                     defaultValue={postalStateVal}
@@ -189,7 +195,9 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     type="checkbox"
                     id="flexCheckDefault"
                     checked={isSameAsPostalAddressVal}
-                    {...register(`${isSameAsPostalAddress}`)}
+                    {...register(`${isSameAsPostalAddress}`, {
+                      required: true,
+                    })}
                     onClick={(e) => {
                       setValue(
                         `${isSameAsPostalAddress}`,
@@ -239,10 +247,12 @@ export const AddressForm = ({ countryData = [] }: any) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel>Residential Address</StyledLabel>
+                    <StyledLabel required>Residential Address</StyledLabel>
                     <input
                       type="text"
-                      {...register(`${resPostalAddress}`)}
+                      {...register(`${resPostalAddress}`, {
+                      required: true,
+                    })}
                       value={resPostalAddressVal}
                       className="form-control"
                       id="postalAddress"
@@ -264,7 +274,6 @@ export const AddressForm = ({ countryData = [] }: any) => {
                       value={resCountryVal}
                       label="country"
                       options={CountryData}
-                      required={false}
                       name={resCountry}
                       register={register}
                       mapKey="isoCode"
@@ -286,11 +295,14 @@ export const AddressForm = ({ countryData = [] }: any) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel>Pin Code</StyledLabel>
+                    <StyledLabel required>Pin Code</StyledLabel>
                     <input
                       value={resPostalCodeVal}
                       defaultValue={resPostalCodeVal}
-                      {...register(`${resPostalCode}`)}
+                      {...register(`${resPostalCode}`, {
+                        required: true,
+                        maxLength: 6,
+                      })}
                       type="number"
                       className="form-control"
                       id="postalCode"
@@ -312,9 +324,11 @@ export const AddressForm = ({ countryData = [] }: any) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel>City</StyledLabel>
+                    <StyledLabel required>City</StyledLabel>
                     <input
-                      {...register(`${resCity}`)}
+                      {...register(`${resCity}`, {
+                        required: true,
+                      })}
                       className="form-control"
                       value={resCityVal}
                       defaultValue={resCityVal}
@@ -331,9 +345,11 @@ export const AddressForm = ({ countryData = [] }: any) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel>State</StyledLabel>
+                    <StyledLabel required>State</StyledLabel>
                     <input
-                      {...register(`${resState}`)}
+                      {...register(`${resState}`, {
+                        required: true,
+                      })}
                       className="form-control"
                       value={resStateVal}
                       defaultValue={resStateVal}

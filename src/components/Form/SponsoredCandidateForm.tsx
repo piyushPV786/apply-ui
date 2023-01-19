@@ -90,12 +90,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel>Sponsor Mode</StyledLabel>
+                    <StyledLabel required>Sponsor Mode</StyledLabel>
                     <select
                       value={sponsorModeVal}
                       className="form-select"
                       aria-label="Default select example"
-                      {...register(`${sponsorMode}`)}
+                      {...register(`${sponsorMode}`, { required: true })}
                     >
                       <option value={""}>Select Sponsor mode</option>
 
@@ -112,14 +112,14 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <StyledLabel>Sponsor Name</StyledLabel>
+                  <StyledLabel required>Sponsor Name</StyledLabel>
                   <div className="mb-4">
                     <input
                       className="form-control"
                       aria-label="Default select example"
                       value={sponsorNameVal}
                       defaultValue={sponsorNameVal}
-                      {...register(`${sponsorName}`)}
+                      {...register(`${sponsorName}`, { required: true })}
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;
@@ -140,13 +140,13 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <StyledLabel>Sponsor Email</StyledLabel>
+                  <StyledLabel required>Sponsor Email</StyledLabel>
                   <div className="mb-4">
                     <input
                       className="form-control"
                       aria-label="Default select example"
                       defaultValue={""}
-                      {...register(`${sponsorEmail}`)}
+                      {...register(`${sponsorEmail}`, { required: true })}
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;
@@ -181,11 +181,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel>Phone Number</StyledLabel>
+                    <StyledLabel required>Phone Number</StyledLabel>
                     <PhoneInput
                       id="2"
                       international
-                      {...register(`${sponsorPhoneNumber}`)}
+                      {...register(`${sponsorPhoneNumber}`, { required: true })}
                       countryCallingCodeEditable={false}
                       defaultCountry={countryCodeRef}
                       placeholder="Select Country Code*"

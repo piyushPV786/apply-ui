@@ -288,12 +288,12 @@ export const EducationForm = (props: IEducationProps) => {
               )}
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel>Highest Qualification</StyledLabel>
+                  <StyledLabel required>Highest Qualification</StyledLabel>
                   <select
                     className="form-select"
                     value={highestQualificationVal}
                     defaultValue={highestQualificationVal}
-                    {...register(`${highestQualification}`)}
+                    {...register(`${highestQualification}`, { required: true })}
                   >
                     <option value={""}>Select Highest Qualification</option>
                     {highestQualifications &&
@@ -319,13 +319,13 @@ export const EducationForm = (props: IEducationProps) => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel>High School Name</StyledLabel>
+                  <StyledLabel required>High School Name</StyledLabel>
 
                   <input
                     value={highSchoolNameVal}
                     defaultValue={highSchoolNameVal}
                     type="text"
-                    {...register(`${highSchoolName}`)}
+                    {...register(`${highSchoolName}`,{ required: true })}
                     className="form-control"
                     id="highSchoolName"
                     placeholder=""
@@ -351,7 +351,7 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel>
+                  <StyledLabel required>
                     Referred by <strong>Agent/Social Media</strong>
                   </StyledLabel>
 
@@ -359,7 +359,7 @@ export const EducationForm = (props: IEducationProps) => {
                     className="form-select"
                     value={referredByeVal}
                     defaultValue={referredByeVal}
-                    {...register(`${referredBy}`)}
+                    {...register(`${referredBy}`, { required: true })}
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
@@ -422,10 +422,10 @@ export const EducationForm = (props: IEducationProps) => {
                 )?.name === "Agent" && (
                   <div className="">
                     <div className="mb-4">
-                      <StyledLabel>Agent Name</StyledLabel>
+                      <StyledLabel required>Agent Name</StyledLabel>
                       <select
                         className="form-select"
-                        {...register(`${agentName}`)}
+                        {...register(`${agentName}`, { required: true })}
                         value={agentNameVal}
                       >
                         <option value={""}>Select Agent</option>
@@ -454,11 +454,11 @@ export const EducationForm = (props: IEducationProps) => {
                 )?.name === "Social Media" && (
                   <div className="">
                     <div className="mb-4">
-                      <StyledLabel>Social Media</StyledLabel>
+                      <StyledLabel required>Social Media</StyledLabel>
                       <select
                         className="form-select"
                         value={socialMediaVal}
-                        {...register(`${socialMediaId}`)}
+                        {...register(`${socialMediaId}`, { required: true })}
                       >
                         <option value={""}>Select Social Media</option>
 
@@ -485,7 +485,7 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel>Student Type</StyledLabel>
+                  <StyledLabel required>Student Type</StyledLabel>
 
                   <select
                     defaultValue={0}
