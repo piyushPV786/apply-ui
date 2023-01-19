@@ -31,7 +31,8 @@ export const StyledLabel = (props: any) => {
   } = { ...props };
   return (
     <label style={style} className={className}>
-      {props?.children} {required && <span className="text-danger">*</span>}
+      {props?.children}{" "}
+      {required && !props?.forceHide && <span className="text-danger">*</span>}
     </label>
   ) as any;
 };

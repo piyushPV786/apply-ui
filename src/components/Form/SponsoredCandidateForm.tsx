@@ -8,21 +8,22 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
-import { Mode } from "../common/types";
+import { IOption } from "../common/types";
 import { onlyAlphabets } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
 
-const SponsorCandidateDetail = "sponsor";
+const SponsorCandidateDetail = "sponser";
 
-const sponsorMode = `${SponsorCandidateDetail}.sponsorModeId`;
+const sponsorMode = `${SponsorCandidateDetail}.sponsorModeCode`;
 const sponsorName = `${SponsorCandidateDetail}.name`;
-const sponsorAddress = `${SponsorCandidateDetail}.sponsorAddress`;
-const sponsorPhoneNumber = `${SponsorCandidateDetail}.sponsorMobileNumber`;
-const sponsorMobileCode = `${SponsorCandidateDetail}.sponsorMobileCode`;
+const sponsorEmail = `${SponsorCandidateDetail}.email`;
+const sponsorAddress = `${SponsorCandidateDetail}.address`;
+const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
+const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
 const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
 interface ISponsorProps {
-  sponsorModeArr: Mode[];
+  sponsorModeArr: IOption[];
 }
 export const SponsoredForm = (props: ISponsorProps) => {
   const { sponsorModeArr } = { ...props };
@@ -99,12 +100,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       <option value={""}>Select Sponsor mode</option>
 
                       {sponsorModeArr &&
-                        sponsorModeArr.map(({ id, mode }) => (
+                        sponsorModeArr.map(({ code, name }) => (
                           <option
-                            selected={id === sponsorModeVal}
-                            value={Number(id)}
+                            selected={code === sponsorModeVal}
+                            value={code}
                           >
-                            {mode}
+                            {name}
                           </option>
                         ))}
                     </select>
@@ -119,6 +120,33 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       value={sponsorNameVal}
                       defaultValue={sponsorNameVal}
                       {...register(`${sponsorName}`, { required: true })}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
+                    />
+                    {touchedField?.name && error?.name && (
+                      <div className="invalid-feedback">
+                        Please enter sponsor name
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <StyledLabel required>Sponsor Email</StyledLabel>
+                  <div className="mb-4">
+                    <input
+                      className="form-control"
+                      aria-label="Default select example"
+                      defaultValue={""}
+                      {...register(`${sponsorEmail}`, { required: true })}
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;

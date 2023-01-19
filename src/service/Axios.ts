@@ -7,3 +7,9 @@ export default axios.create({
 export const AuthApi = axios.create({
   baseURL: `${process.env.base_Url}`,
 });
+export const AcadmicApi = axios.create({
+  baseURL: `${process.env.Academic_Url}`,
+});
+export const FinanceApi = axios.create({
+  baseURL: `${process.env.Finance_Url}`,
+});

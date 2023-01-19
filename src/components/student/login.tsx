@@ -202,7 +202,7 @@ const StudentLogin = () => {
       .then(({ data }) => {
         sessionStorage.setItem(
           "studentId",
-          JSON.stringify({ id: data?.data?.id })
+          JSON.stringify({ leadCode: data?.data?.leadCode })
         );
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
         setTimeout(() => {

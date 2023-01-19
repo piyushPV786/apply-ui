@@ -20,12 +20,16 @@ export const AddressApi = {
   GETCITY: "global/getCitiesOfState",
 };
 export const CommonApi = {
-  GETSTUDYMODEQUALIFICATION: "global/getQualifications",
-  GETMASTERDATA: "global/master/data",
+  GETSTUDYMODEPROGRAMS: "programs-fee/byProgramCode",
+  GETMASTERDATA: "master/loadMasterData",
   GETAGENT: "global/agent",
   GETUSERDETAIL: "/user",
+  SAVEUSER: "/lead",
   REGISTERUSER: "/register",
   VERIFYOTP: "/verify-otp",
+  PAYUPAYMENT: "global/payuPayment",
+  GETINTRESTEDQUALIFICATION: "programs",
+  GETDOCUMENTURL: "global/file",
 };
 
 export const RoutePaths = {
@@ -41,4 +45,16 @@ export const PaymentTypes = [
   },
   { name: "RazorPay", value: "razorpay" },
   { name: "Stripe", value: "stripe" },
+];
+
+export const AgentandSocialMedia = [
+  { code: 1, name: "Agent" },
+  { code: 2, name: "Social Media" },
+];
+export const studentType = [
+  { name: "Regular", code: 0 },
+
+  { name: "Bursary", code: 1 },
+
+  { name: "Management", code: 2 },
 ];

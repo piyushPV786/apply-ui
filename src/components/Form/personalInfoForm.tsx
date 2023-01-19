@@ -10,14 +10,28 @@ import Image from "next/image";
 import UserCircleIcon from "../../../public/assets/images/user-circle-svgrepo-com.svg";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
-import { Gender, Language, Nationality, Race } from "../common/types";
+import { IOption } from "../common/types";
 import { isValidEmail, onlyAlphabets } from "../../Util/Util";
+import AdvanceDropDown from "../dropdown/Dropdown";
 interface IPersonalInfoProps {
-  genders: Gender[];
-  nationalities: Nationality[];
-  homeLanguage: Language[];
-  race: Race[];
+  genders: IOption[];
+  nationalities: IOption[];
+  homeLanguage: IOption[];
+  race: IOption[];
 }
+const parentKey = "lead";
+const firstNameKey = `${parentKey}.firstName`;
+const middleNameKey = `${parentKey}.middleName`;
+const lastNameKey = `${parentKey}.lastName`;
+const genderIdKey = `${parentKey}.genderId`;
+const dateOfBirthKey = `${parentKey}.dateOfBirth`;
+const emailKey = `${parentKey}.email`;
+const nationalityIdKey = `${parentKey}.nationalityId`;
+const identificationPassportNumberKey = `${parentKey}.identificationPassportNumber`;
+const raceIdKey = `${parentKey}.raceId`;
+const homeLanguageIdKey = `${parentKey}.language`;
+const studentNumberKey = `${parentKey}.mobileNumber`;
+const mobileCountryCodeKey = `${parentKey}.mobileCountryCode`;
 const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const { genders, nationalities, homeLanguage, race } = { ...props };
   const {
@@ -26,6 +40,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     watch,
     formState: { errors, touchedFields },
   } = useFormContext();
+  const TouchFields = touchedFields[parentKey] as any;
+  const Errors = errors[parentKey] as any;
   const [countryCodeRef, setCountryCode] = useState<any>();
   const [mobNum, setMobile] = useState<any>("");
   useEffect(() => {
@@ -36,26 +52,23 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       "+" + userNumberDetail?.countryCodeNumber + userNumberDetail?.mobileNumber
     );
     setCountryCode(userNumberDetail?.countryCode);
+    setValue(studentNumberKey, userNumberDetail?.mobileNumber);
+    setValue(mobileCountryCodeKey, userNumberDetail?.countryCode);
   }, []);
-  const {
-    firstName,
-    middleName,
-    lastName,
-    genderId,
-    dateOfBirth,
-    email,
-    mobileNumber,
-    nationalityId,
-    identificationPassportNumber,
-    raceId,
-    homeLanguageId,
-  } = watch();
-
+  const firstName = watch(firstNameKey);
+  const middleName = watch(middleNameKey);
+  const lastName = watch(lastNameKey);
+  const genderId = watch(genderIdKey);
+  const dateOfBirth = watch(dateOfBirthKey);
+  const email = watch(emailKey);
+  const nationalityId = watch(nationalityIdKey);
+  const identificationPassportNumber = watch(identificationPassportNumberKey);
+  const raceId = watch(raceIdKey);
+  const homeLanguageId = watch(homeLanguageIdKey);
   const uppdateMobNumber = () => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${countryCode}`, `+${countryCode}`);
   };
-
   return (
     <>
       <StyledAccordion defaultExpanded={true}>
@@ -81,7 +94,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     value={firstName}
                     defaultValue={firstName}
                     type="text"
-                    {...register("firstName", {
+                    {...register(firstNameKey, {
                       required: true,
                     })}
                     onChange={(e) => {
@@ -99,7 +112,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="firstName"
                     placeholder="e.g Robert"
                   />
-                  {touchedFields?.firstName && errors?.firstName && (
+                  {TouchFields?.firstName && Errors?.firstName && (
                     <>
                       <div className="invalid-feedback">
                         Please enter First Name
@@ -114,7 +127,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <input
                     value={middleName}
                     defaultValue={middleName}
-                    {...register("middleName")}
+                    {...register(middleNameKey)}
                     type="text"
                     className="form-control"
                     onChange={(e) => {
@@ -139,7 +152,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <input
                     value={lastName}
                     defaultValue={lastName}
-                    {...register("lastName", { required: true })}
+                    {...register(lastNameKey, { required: true })}
                     type="text"
                     className="form-control"
                     onChange={(e) => {
@@ -156,7 +169,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="lastName"
                     placeholder=""
                   />
-                  {touchedFields?.lastName && errors?.lastName && (
+                  {TouchFields?.lastName && Errors?.lastName && (
                     <div className="invalid-feedback">
                       Please enter Last Name
                     </div>
@@ -167,25 +180,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Gender</StyledLabel>
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                    {...register("genderId", { required: true })}
-                  >
-                    <option value={""}>Select Gender</option>
-                    {genders &&
-                      genders.map(({ id, gender }) => (
-                        <option
-                          selected={id === genderId}
-                          key={id}
-                          value={Number(id)}
-                        >
-                          {gender}
-                        </option>
-                      ))}
-                  </select>
-                  {touchedFields?.gender && errors?.gender && (
+                  <AdvanceDropDown
+                    options={genders}
+                    label={"Gender"}
+                    value={genderId}
+                    name={genderIdKey}
+                    register={register}
+                  />
+                  {TouchFields?.genderId && Errors?.genderId && (
                     <div className="invalid-feedback">Please enter Gender</div>
                   )}
                 </div>
@@ -196,13 +198,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <input
                     value={dateOfBirth}
                     defaultValue={dateOfBirth}
-                    {...register("dateOfBirth", { required: true })}
+                    {...register(dateOfBirthKey, { required: true })}
                     type="date"
                     className="form-control"
                     id="exampleFormControlInput1"
                     placeholder=""
                   />
-                  {touchedFields?.dateOfBirth && errors?.dateOfBirth && (
+                  {TouchFields?.dateOfBirth && Errors?.dateOfBirth && (
                     <div className="invalid-feedback">
                       Please enter Date of Birth
                     </div>
@@ -215,7 +217,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <input
                     value={email}
                     defaultValue={email}
-                    {...register("email", {
+                    {...register(emailKey, {
                       required: true,
                       validate: isValidEmail,
                     })}
@@ -224,9 +226,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="email"
                     placeholder=""
                   />
-                  {touchedFields?.email && errors?.email && (
+                  {TouchFields?.email && Errors?.email && (
                     <div className="invalid-feedback">
-                      {errors?.email?.type == "validate"
+                      {Errors?.email?.type == "validate"
                         ? "you have entered an invalid email address. Please try again"
                         : "Please enter Email"}
                     </div>
@@ -244,7 +246,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     countryCallingCodeEditable={false}
                     defaultCountry={countryCodeRef}
                     placeholder="Select Country Code*"
-                    {...register("mobileNumber", { required: false })}
+                    {...register(studentNumberKey, { required: false })}
                     onCountryChange={(value: any) => {
                       return;
                       setCountryCode(value);
@@ -271,7 +273,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <input
                     value={identificationPassportNumber}
                     defaultValue={identificationPassportNumber}
-                    {...register("identificationPassportNumber", {
+                    {...register(identificationPassportNumberKey, {
                       required: true,
                     })}
                     type="text"
@@ -279,8 +281,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="identificationPassportNumber"
                     placeholder=""
                   />
-                  {touchedFields?.identificationPassportNumber &&
-                    errors?.identificationPassportNumber && (
+                  {TouchFields?.identificationPassportNumber &&
+                    Errors?.identificationPassportNumber && (
                       <div className="invalid-feedback">
                         Please enter Identification / Passport Number
                       </div>
@@ -289,26 +291,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Nationality</StyledLabel>
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                    {...register("nationalityId", { required: true })}
-                  >
-                    <option value={""}>Select Nationalty</option>
-
-                    {nationalities &&
-                      nationalities.map(({ id, nationality }) => (
-                        <option
-                          selected={id === nationalityId}
-                          key={id}
-                          value={Number(id)}
-                        >
-                          {nationality}
-                        </option>
-                      ))}
-                  </select>
-                  {touchedFields?.nationalityId && errors?.nationalityId && (
+                  <AdvanceDropDown
+                    options={nationalities}
+                    value={nationalityId}
+                    name={nationalityIdKey}
+                    register={register}
+                    label="Nationalty"
+                  />
+                  {TouchFields?.nationalityId && Errors?.nationalityId && (
                     <div className="invalid-feedback">
                       Please enter Nationality
                     </div>
@@ -319,25 +309,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Home Language</StyledLabel>
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                    {...register("homeLanguageId", { required: true })}
-                  >
-                    <option value={""}>Home Language</option>
-                    {homeLanguage &&
-                      homeLanguage.map(({ id, language }) => (
-                        <option
-                          selected={id === homeLanguageId}
-                          key={id}
-                          value={Number(id)}
-                        >
-                          {language}
-                        </option>
-                      ))}
-                  </select>
-                  {touchedFields?.homeLanguageId && errors?.homeLanguageId && (
+                  <AdvanceDropDown
+                    name={homeLanguageIdKey}
+                    label="Home Language"
+                    register={register}
+                    options={homeLanguage}
+                    value={homeLanguageId}
+                  />
+                  {TouchFields?.homeLanguageId && Errors?.homeLanguageId && (
                     <div className="invalid-feedback">
                       Please enter Home Language
                     </div>
@@ -346,26 +325,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Race</StyledLabel>
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                    {...register("raceId", { required: true })}
-                  >
-                    <option value={""}>Select Race</option>
-
-                    {race &&
-                      race.map(({ id, race }) => (
-                        <option
-                          selected={id === raceId}
-                          key={id}
-                          value={Number(id)}
-                        >
-                          {race}
-                        </option>
-                      ))}
-                  </select>
-                  {touchedFields?.raceId && errors?.raceId && (
+                  <AdvanceDropDown
+                    label="Race"
+                    value={raceId}
+                    name={raceIdKey}
+                    register={register}
+                    options={race}
+                  />
+                  {TouchFields?.raceId && Errors?.raceId && (
                     <div className="invalid-feedback">Please enter Race</div>
                   )}
                 </div>
