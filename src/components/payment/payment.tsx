@@ -65,7 +65,7 @@ const Payment = (props: any) => {
         documentTypeCode: "PAYMENTPROOF",
         fileName: file.name,
         fileType: file.type,
-        amount: 12,
+        amount: +allFields?.education?.studyModeDetail?.fee,
         paymentModeCode: "OFFLINE",
       };
       getUploadDocumentUrl(payload).then((res) => {
