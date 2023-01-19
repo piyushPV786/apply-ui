@@ -4,7 +4,7 @@ import { MainContainer as ParentContainer } from "../../pages/student-registrati
 import { PaymentContainer, MainContainer } from "../payment/payment";
 import Header from "../common/header";
 import Image from "next/image";
-import PayIcon from "../../../public/assets/images/pay.svg";
+import PayIcon from "../../../public/assets/images/pay.png";
 
 export const DocumentSuccess = (props: any) => {
   return (
