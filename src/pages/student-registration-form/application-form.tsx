@@ -118,7 +118,7 @@ const ApplicationForm = (props: any) => {
     message: "",
     success: false,
     show: false,
-  });
+  }); 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isDocumentUploadDone, setDocumentUploadDone] =
     useState<boolean>(false);
