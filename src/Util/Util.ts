@@ -18,20 +18,10 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
       if (key == "employment" && formData[key]?.isEmployed == "no") {
         delete formData[key];
       }
-
-      if (key.includes("Id") && typeof formData[key] !== "object") {
-        formData[key] = Number(value);
-      }
       if (
         key === "identificationPassportNumber" &&
         typeof formData[key] !== "object"
       ) {
-        formData[key] = Number(value);
-      }
-      if (key === "postalZipCode" && typeof formData[key] !== "object") {
-        formData[key] = Number(value);
-      }
-      if (key === "residentialZipCode" && typeof formData[key] !== "object") {
         formData[key] = Number(value);
       }
       if (typeof formData[key] === "object") {
@@ -86,12 +76,13 @@ export const GetPaymentImage = (type: string) => {
   }
 };
 
-export const getUploadDocumentUrl = async (payload: any) => {
+export const getUploadDocumentUrl = async (file: File) => {
+  const { name, type } = file;
   const url = process.env.base_Url;
   try {
-    const response: any = await AuthApi.post(
-      `${url}application/DRe6Qe8QfX/document`,
-      payload
+    const response: any = await AuthApi.put(
+      `${url}${CommonApi.GETDOCUMENTURL}`,
+      { filename: name, filetype: type }
     );
     if (response.status === 200) {
       const { data } = response.data;

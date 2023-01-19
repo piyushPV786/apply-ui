@@ -127,8 +127,8 @@ const ApplicationForm = (props: any) => {
     mode: "onChange",
     reValidateMode: "onBlur",
     defaultValues: useMemo(() => {
-      // return studentData;
-      return mockFormData as any;
+      return studentData;
+      // return mockFormData as any;
     }, [studentData]),
   });
   const {
@@ -149,7 +149,6 @@ const ApplicationForm = (props: any) => {
     }
   }, [studentData]);
   const allFields = watch();
-  // console.log({ allFields, errors, isValid });
 
   const isValidDocument =
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
@@ -181,9 +180,6 @@ const ApplicationForm = (props: any) => {
     }
   };
   const submitFormData = (data: object, isDrafSave?: boolean) => {
-    const studentMobile =
-      sessionStorage &&
-      JSON.parse(sessionStorage?.getItem("studentMobile") as any);
     const formData = { ...data };
 
     const { isSameAsPostalAddress = "", ...rest } = { ...(formData as any) };
@@ -194,22 +190,10 @@ const ApplicationForm = (props: any) => {
       },
       isDrafSave
     );
-    request = {
-      ...request,
-      lead: {
-        ...request?.lead,
-        mobileNumber: studentMobile?.mobileNumber,
-        mobileCountryCode: studentMobile?.countryCodeNumber,
-      },
-    };
-    console.log("request ======>", request);
     const studentId = JSON.parse(
-      sessionStorage?.getItem("studentId") as any
-    )?.id;
-    // if (true) {
-    //   setSubmitted(true);
-    //   setActiveStep(activeStep + 1);
-    // }
+      sessionStorage?.getItem("leadCode") as any
+    )?.leadCode;
+
     if (studentId) {
       updateUser(studentId, request, isDrafSave);
     } else {
@@ -337,12 +321,19 @@ const ApplicationForm = (props: any) => {
       ...request,
     })
       .then(({ data }) => {
-        setActiveStep(activeStep + 1)
-        console.log(data);
         sessionStorage.setItem(
           "studentId",
-          JSON.stringify({ id: data?.data?.id })
+          JSON.stringify({
+            id: data?.data?.leadData?.id,
+            leadCode: data?.data?.leadData?.leadCode,
+          })
         );
+        sessionStorage.setItem("leadData", JSON.stringify(data?.data));
+        setShowDraftSaveToast({
+          success: true,
+          message: data?.message,
+          show: true,
+        });
       })
       .catch((err) => {
         console.log({ err });
@@ -355,6 +346,9 @@ const ApplicationForm = (props: any) => {
   };
   const onSubmit = (data: any, isDrafSave?: boolean) => {
     submitFormData(data, isDrafSave);
+  };
+  const onError = (data: any) => {
+    console.log({ errors });
   };
   const getMasterData = () => {
     AuthApi.get(CommonApi.GETMASTERDATA)
@@ -373,14 +367,11 @@ const ApplicationForm = (props: any) => {
     );
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
-    )?.id;
+    )?.leadCode;
     const studentMobile =
       sessionStorage && JSON.parse(sessionStorage?.getItem("studentId") as any);
-    // if (studentMobile && window) {
-    //   setValue("mobileNumber", studentMobile?.mobileNumber);
-    // }
     if (studentId) {
-      AuthApi.get(`/user/${studentId}`)
+      AuthApi.get(`${CommonApi.GETUSERDETAIL}/${studentId}`)
         .then(({ data: response }) => {
           setStudentData(response?.data);
         })
@@ -408,7 +399,7 @@ const ApplicationForm = (props: any) => {
   const programs = masterData?.programs as IOption[];
   const race = masterData?.raceData as IOption[];
   const socialMedias = masterData?.socialMediaData as IOption[];
-  const sponsorModes = masterData?.sponsorMode as IOption[];
+  const sponsorModes = masterData?.sponsorModeData as IOption[];
   const studyModes = masterData?.studyModeData as IOption[];
   const genders = masterData?.genderData as IOption[];
   const employmentStatus = masterData?.employmentStatusData as IOption[];
@@ -536,7 +527,7 @@ const ApplicationForm = (props: any) => {
                     />
                     &nbsp;&nbsp;&nbsp;
                     <StyledButton
-                      onClick={methods.handleSubmit(onSubmit as any)}
+                      onClick={methods.handleSubmit(onSubmit as any, onError)}
                       disabled={!isValid && !isValidDocument}
                       title={activeStep < 2 ? "Save & Next" : "Submit"}
                     />
