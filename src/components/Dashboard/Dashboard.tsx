@@ -19,7 +19,6 @@ export const ApplicationDashboard = (props: any) => {
   >([]);
   const router = useRouter();
 
-
   useEffect(() => {
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
@@ -76,6 +75,7 @@ export const ApplicationDashboard = (props: any) => {
                       (
                         {
                           status,
+                          applicationCode,
                           lead: { firstName, lastName, middleName = "" },
                         },
                         idx
@@ -83,9 +83,8 @@ export const ApplicationDashboard = (props: any) => {
                         <div className="col-md-4 mb-2">
                           <ApplicationCard
                             status={status}
-                            applicationNumber={idx + 1}
+                            applicationNumber={applicationCode}
                             name={`${firstName} ${middleName} ${lastName}`}
-                            // lasUpdated={}
                           />
                         </div>
                       )

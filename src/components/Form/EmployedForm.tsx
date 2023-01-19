@@ -59,9 +59,8 @@ export const EmployedForm = (props: IEmployeProps) => {
   const error = errors[EmployementDetails] as any;
   const isOtherFieldRequired =
     employmentStatusArr &&
-    employmentStatusArr.find((item) => item?.id == employmentStatusVal)
+    employmentStatusArr.find((item) => item?.code == employmentStatusVal)
       ?.name === "Employed";
-
   return (
     <>
       <StyledAccordion>
@@ -134,7 +133,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <StyledLabel required={isOtherFieldRequired}>
+                  <StyledLabel required>
                     Employer
                   </StyledLabel>
                   <div className="mb-4">
@@ -169,7 +168,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel>Job Title</StyledLabel>
+                    <StyledLabel required>Job Title</StyledLabel>
                     <input
                       className="form-control"
                       value={jobTitleVal}
@@ -224,7 +223,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required={isOtherFieldRequired}>
+                    <StyledLabel required>
                       Manager Name
                     </StyledLabel>
                     <input
@@ -253,7 +252,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel>Office Address</StyledLabel>
+                    <StyledLabel required>Office Address</StyledLabel>
                     <input
                       className="form-control"
                       value={officeAddressVal}

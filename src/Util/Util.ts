@@ -9,12 +9,14 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
       if (formData[key]?.length <= 0 && isDraft) {
         delete formData[key];
       }
-      if (key == "kinDetails" && formData[key]?.isKin == "no") {
+      if (key == "kin" && formData[key]?.isKin == "no") {
         delete formData[key];
       }
-      if (key == "sponsor" && formData[key]?.isSponsored === "no") {
+
+      if (key == "sponser" && formData[key]?.isSponsored === "no") {
         delete formData[key];
       }
+
       if (key == "employment" && formData[key]?.isEmployed == "no") {
         delete formData[key];
       }

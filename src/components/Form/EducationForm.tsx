@@ -220,7 +220,7 @@ export const EducationForm = (props: IEducationProps) => {
                   <div className="mb-4">
                     {studyModeQualification &&
                       studyModeQualification.map(
-                        ({ studyModes, programCode }, parentIndex) => {
+                        ({ studyModes, programName }, parentIndex) => {
                           {
                             return (
                               studyModes &&
@@ -247,7 +247,7 @@ export const EducationForm = (props: IEducationProps) => {
                                         checked={studyModeVal == studyModeCode}
                                       />
                                       <label className="form-check-label">
-                                        {programCode}
+                                        {programName}
                                       </label>
                                     </div>
                                   </>
@@ -325,7 +325,7 @@ export const EducationForm = (props: IEducationProps) => {
                     value={highSchoolNameVal}
                     defaultValue={highSchoolNameVal}
                     type="text"
-                    {...register(`${highSchoolName}`,{ required: true })}
+                    {...register(`${highSchoolName}`, { required: true })}
                     className="form-control"
                     id="highSchoolName"
                     placeholder=""

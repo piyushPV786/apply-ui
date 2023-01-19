@@ -138,7 +138,7 @@ export const KinDetailsForm = (props: any) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel>Email</StyledLabel>
+                    <StyledLabel required>Email</StyledLabel>
                     <input
                       className="form-control"
                       value={EmailVal}

@@ -10,6 +10,7 @@ import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import AdvanceDropDown from "../dropdown/Dropdown";
+import { onlyAlphabets } from "../../Util/Util";
 const Address = "address";
 const resPostalAddress = `${Address}[1].street`;
 const resCountry = `${Address}[1].country`;
@@ -156,6 +157,17 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     {...register(`${postalCity}`, {
                       required: true,
                     })}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphabets(value)) {
+                        setValue(name, value, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
                   />
                   {touchedField &&
                     error &&
@@ -175,6 +187,17 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     className="form-control"
                     value={postalStateVal}
                     defaultValue={postalStateVal}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphabets(value)) {
+                        setValue(name, value, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
                   />
                   {touchedField &&
                     error &&
@@ -251,8 +274,8 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     <input
                       type="text"
                       {...register(`${resPostalAddress}`, {
-                      required: true,
-                    })}
+                        required: true,
+                      })}
                       value={resPostalAddressVal}
                       className="form-control"
                       id="postalAddress"
@@ -332,6 +355,17 @@ export const AddressForm = ({ countryData = [] }: any) => {
                       className="form-control"
                       value={resCityVal}
                       defaultValue={resCityVal}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
                     />
                     {touchedField &&
                       error &&
@@ -354,9 +388,16 @@ export const AddressForm = ({ countryData = [] }: any) => {
                       value={resStateVal}
                       defaultValue={resStateVal}
                       name={resState}
-                      onChange={(e: any) => {
+                      onChange={(e) => {
                         const value = e.target.value;
-                        setValue(resState, value);
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                          });
+                        }
                       }}
                     />
                     {touchedField &&
