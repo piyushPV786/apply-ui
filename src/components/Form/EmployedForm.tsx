@@ -9,7 +9,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { onlyAlphabets, onlyAlphaNumeric } from "../../Util/Util";
+import { onlyAlphabets, onlyAlphaNumericSpace } from "../../Util/Util";
 import Image from "next/image";
 import EmployeeImg from "../../../public/assets/images/employeee.svg";
 
@@ -57,10 +57,8 @@ export const EmployedForm = (props: IEmployeProps) => {
   };
   const touchField = touchedFields[EmployementDetails] as any;
   const error = errors[EmployementDetails] as any;
-  const isOtherFieldRequired =
-    employmentStatusArr &&
-    employmentStatusArr.find((item) => item?.code == employmentStatusVal)
-      ?.name === "Employed";
+
+  const isUnEmployed = employmentStatusVal === "UNEMPLOYED";
   return (
     <>
       <StyledAccordion>
@@ -82,7 +80,7 @@ export const EmployedForm = (props: IEmployeProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isEmployed}`, { required: isOtherFieldRequired })}
+              {...register(`${isEmployed}`)}
               value="yes"
               checked={isEmployedVal === "yes"}
             />
@@ -92,7 +90,7 @@ export const EmployedForm = (props: IEmployeProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isEmployed}`, { required: isOtherFieldRequired })}
+              {...register(`${isEmployed}`)}
               value="no"
               checked={isEmployedVal === "no"}
             />
@@ -133,17 +131,16 @@ export const EmployedForm = (props: IEmployeProps) => {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <StyledLabel required>
-                    Employer
-                  </StyledLabel>
+                  <StyledLabel required>Employer</StyledLabel>
                   <div className="mb-4">
                     <select
                       className="form-select"
                       aria-label="Default select example"
                       value={employerVal}
                       {...register(`${employer}`, {
-                        required: isOtherFieldRequired,
+                        required: !isUnEmployed,
                       })}
+                      disabled={isUnEmployed}
                     >
                       <option value={""}>Select Employer</option>
 
@@ -173,11 +170,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                       className="form-control"
                       value={jobTitleVal}
                       defaultValue={jobTitleVal}
+                      disabled={isUnEmployed}
                       {...register(`${jobTitle}`)}
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;
-                        if (onlyAlphaNumeric(value) || !value) {
+                        if (onlyAlphaNumericSpace(value) || !value) {
                           setValue(name, value, {
                             shouldDirty: true,
                             shouldTouch: true,
@@ -192,15 +190,14 @@ export const EmployedForm = (props: IEmployeProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required={isOtherFieldRequired}>
-                      Industry
-                    </StyledLabel>
+                    <StyledLabel required={!isUnEmployed}>Industry</StyledLabel>
                     <select
                       className="form-select"
                       aria-label="Default select example"
                       {...register(`${industry}`, {
-                        required: isOtherFieldRequired,
+                        required: !isUnEmployed,
                       })}
+                      disabled={isUnEmployed}
                     >
                       <option value={""}>Select Industry</option>
                       {employmentIndustries &&
@@ -223,14 +220,13 @@ export const EmployedForm = (props: IEmployeProps) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>
-                      Manager Name
-                    </StyledLabel>
+                    <StyledLabel required>Manager Name</StyledLabel>
                     <input
                       className="form-control"
                       value={managerNameVal}
                       defaultValue={managerNameVal}
                       {...register(`${managerName}`)}
+                      disabled={isUnEmployed}
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;
@@ -254,6 +250,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                   <div className="mb-4">
                     <StyledLabel required>Office Address</StyledLabel>
                     <input
+                      disabled={isUnEmployed}
                       className="form-control"
                       value={officeAddressVal}
                       defaultValue={officeAddressVal}
@@ -265,7 +262,7 @@ export const EmployedForm = (props: IEmployeProps) => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required={isOtherFieldRequired}>
+                    <StyledLabel required={!isUnEmployed}>
                       Office Number
                     </StyledLabel>
                     <PhoneInput
@@ -274,8 +271,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                       defaultCountry={countryCodeRef}
                       placeholder="Select Country Code*"
                       {...register(`${officeNumber}`, {
-                        required: isOtherFieldRequired,
+                        required: !isUnEmployed,
                       })}
+                      disabled={isUnEmployed}
                       onCountryChange={(value: any) => {
                         setCountryCode(value);
                       }}

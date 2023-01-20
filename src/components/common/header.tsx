@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Grid } from "@material-ui/core";
 import { StyledLink } from "../student/login";
 import { useRouter } from "next/router";
-import RbsLogo from '../../../public/assets/images/RBS_logo_2_white.png';
+import RbsLogo from "../../../public/assets/images/RBS_logo_2_white.png";
 import Image from "next/image";
 
 const Header = (props: any) => {
@@ -22,7 +22,10 @@ const Header = (props: any) => {
   }, [props]);
   const exitApp = () => {
     sessionStorage.clear();
-    router.push("/");
+    localStorage.clear();
+    setTimeout(() => {
+      router.push("/");
+    }, 1000);
   };
   return (
     <>
@@ -39,11 +42,7 @@ const Header = (props: any) => {
                       paddingRight: "0.5rem",
                     }}
                   >
-                    <Image
-                      src={RbsLogo}
-                      width="180"
-                      alt={'RbsLogo'}
-                    />
+                    <Image src={RbsLogo} width="180" alt={"RbsLogo"} />
                   </div>
                   <div>
                     <CustomStyledLink>
@@ -57,11 +56,10 @@ const Header = (props: any) => {
                   <div className="mobNum" style={{ color: "white" }}>
                     Hi {studentMob}
                   </div>
-                  <div  onClick={exitApp}>
-                    <CustomStyledLink  className="mobNum">
+                  <div onClick={exitApp}>
+                    <CustomStyledLink className="mobNum">
                       Logout
                     </CustomStyledLink>
-                  
                   </div>
                 </UserInfoConatiner>
               </div>

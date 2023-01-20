@@ -11,7 +11,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import { IFee, IOption, IStudyModeQualification } from "../common/types";
 import styled from "styled-components";
-import { onlyAlphaNumeric } from "../../Util/Util";
+import { onlyAlphaNumericSpace } from "../../Util/Util";
 import EducationImg from "../../../public/assets/images/education-svgrepo-com.svg";
 import Image from "next/image";
 import { FinanceApi } from "../../service/Axios";
@@ -135,10 +135,9 @@ export const EducationForm = (props: IEducationProps) => {
   const agentNameVal = watch(agentName);
   const socialMediaVal = watch(socialMediaId);
   const selectedStudyModeDetail = watch(studyModeDetail);
-  const educationFormError = errors as any;
-  const touchFields = touchedFields;
+  const educationFormError = errors[parentKey] as any;
+  const touchFields = touchedFields[parentKey];
   const { studyIdx, parentIdx } = selectedStudyMode;
-
   useEffect(() => {
     register(`${studyModeDetail}`, {
       required: true,
@@ -149,7 +148,6 @@ export const EducationForm = (props: IEducationProps) => {
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
       .then((res) => {
         setStudyModeQualification(res?.data?.data);
-        // setStudyModeQualification(studyModeQualification);
       })
       .catch((err) => {
         console.log(err);
@@ -206,21 +204,21 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select>
-                  {educationFormError?.qualification && (
+                  {educationFormError?.programCode && (
                     <div className="invalid-feedback">
-                      Please enter Interested Qualification
+                      Please enter Interested Program
                     </div>
                   )}
                 </div>
               </div>
-              {studyModeQualification && (
+              {studyModeQualification.length > 0 && (
                 <div className="col-md-4">
-                  <StyledLabel required>Study Mode</StyledLabel>
+                  <StyledLabel required>Courses & Fee</StyledLabel>
 
                   <div className="mb-4">
                     {studyModeQualification &&
                       studyModeQualification.map(
-                        ({ studyModes, programName }, parentIndex) => {
+                        ({ studyModes }, parentIndex) => {
                           {
                             return (
                               studyModes &&
@@ -247,7 +245,7 @@ export const EducationForm = (props: IEducationProps) => {
                                         checked={studyModeVal == studyModeCode}
                                       />
                                       <label className="form-check-label">
-                                        {programName}
+                                        {studyModeCode}
                                       </label>
                                     </div>
                                   </>
@@ -272,10 +270,10 @@ export const EducationForm = (props: IEducationProps) => {
                           />
                         ))}
                     </StyleContainer>
-                    {touchFields?.studyMode &&
-                      educationFormError?.studyMode && (
+                    {touchFields?.studyModeCode &&
+                      educationFormError?.studyModeCode && (
                         <div className="invalid-feedback">
-                          Please enter Study Mode
+                          Please select Study Mode
                         </div>
                       )}
                     {educationFormError?.studyModeDetail && (
@@ -307,10 +305,10 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchFields?.highestQualification &&
-                    educationFormError?.highestQualification && (
+                  {touchFields?.qualificationCode &&
+                    educationFormError?.qualificationCode && (
                       <div className="invalid-feedback">
-                        Please enter Highest Qualification
+                        Please select Highest Qualification
                       </div>
                     )}
                 </div>
@@ -332,7 +330,7 @@ export const EducationForm = (props: IEducationProps) => {
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
-                      if (onlyAlphaNumeric(value) || !value) {
+                      if (onlyAlphaNumericSpace(value) || !value) {
                         setValue(name, value, {
                           shouldDirty: true,
                           shouldTouch: true,
@@ -376,7 +374,7 @@ export const EducationForm = (props: IEducationProps) => {
                             (item) => item?.code == +referredByeVal
                           )?.name === "Agent"
                         ) {
-                          setValue(`${socialMediaId}`, null, {
+                          setValue(`${socialMediaId}`, "", {
                             shouldDirty: true,
                             shouldTouch: true,
                             shouldValidate: true,
@@ -387,7 +385,7 @@ export const EducationForm = (props: IEducationProps) => {
                             (item) => item?.code == +referredByeVal
                           )?.name === "Social Media"
                         ) {
-                          setValue(`${agentName}`, null, {
+                          setValue(`${agentName}`, "", {
                             shouldDirty: true,
                             shouldTouch: true,
                             shouldValidate: true,
@@ -396,7 +394,7 @@ export const EducationForm = (props: IEducationProps) => {
                       }, 2000);
                     }}
                   >
-                    <option value={""}>Select Social Media</option>
+                    <option value={""}>Select</option>
 
                     {AgentandSocialMedia &&
                       AgentandSocialMedia.map(({ code, name }) => (
@@ -409,10 +407,10 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchFields[referredBy] &&
-                    educationFormError[referredBy] && (
+                  {touchFields?.referredById &&
+                    educationFormError?.referredById && (
                       <div className="invalid-feedback">
-                        Please enter Referred by
+                        Please select Referred by
                       </div>
                     )}
                 </div>
@@ -440,8 +438,8 @@ export const EducationForm = (props: IEducationProps) => {
                             </option>
                           ))}
                       </select>
-                      {touchFields[agentName] &&
-                        educationFormError[agentName] && (
+                      {touchFields?.agentCode &&
+                        educationFormError?.agentCode && (
                           <div className="invalid-feedback">
                             Please select agent
                           </div>
@@ -473,8 +471,8 @@ export const EducationForm = (props: IEducationProps) => {
                             </option>
                           ))}
                       </select>
-                      {touchFields[socialMediaId] &&
-                        educationFormError[socialMediaId] && (
+                      {touchFields?.socialMediaCode &&
+                        educationFormError?.socialMediaCode && (
                           <div className="invalid-feedback">
                             Please select social media
                           </div>
@@ -492,6 +490,8 @@ export const EducationForm = (props: IEducationProps) => {
                     className="form-select"
                     {...register(`${studentTypeName}`, { required: true })}
                   >
+                    {" "}
+                    <option value={""}>Select Type</option>
                     {studentType &&
                       studentType.map(({ code, name }) => (
                         <option key={code} value={code}>
@@ -499,6 +499,12 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select>
+                  {touchFields?.studentTypeId &&
+                    educationFormError?.studentTypeId && (
+                      <div className="invalid-feedback">
+                        Please select studyType
+                      </div>
+                    )}
                 </div>
               </div>
             </div>

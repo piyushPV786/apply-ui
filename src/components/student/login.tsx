@@ -24,7 +24,7 @@ import { CommonApi, RoutePaths } from "../common/constant";
 
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
-  const [countryCode, setCountryCode] = useState<any>("SA");
+  const [countryCode, setCountryCode] = useState<any>("ZA");
   const [otp, setOtp] = useState<string>("");
   const [isProceed, setProceed] = useState<boolean>(false);
   const [showToast, setToast] = useState<boolean>(false);
@@ -194,11 +194,15 @@ const StudentLogin = () => {
   };
 
   const verifyNumber = () => {
-    const mobileNumber = JSON.parse(
+    const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
-    )?.mobileNumber!;
+    );
     axios
-      .post(CommonApi.VERIFYOTP, { mobileNumber, otp: +otp })
+      .post(CommonApi.VERIFYOTP, {
+        mobileNumber: mobileNumberDetail?.mobileNumber,
+        otp: +otp,
+        mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
+      })
       .then(({ data }) => {
         sessionStorage.setItem(
           "studentId",

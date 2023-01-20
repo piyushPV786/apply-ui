@@ -300,7 +300,7 @@ const ApplicationForm = (props: any) => {
         documentTypeCode: "PAYMENTPROOF",
         fileName: file.name,
         fileType: file.type,
-        amount:+allFields?.education?.studyModeDetail?.fee || 0,
+        amount: +allFields?.education?.studyModeDetail?.fee || 0,
         paymentModeCode: "OFFLINE",
       };
       getUploadDocumentUrl(payload).then((res) => {
@@ -366,9 +366,7 @@ const ApplicationForm = (props: any) => {
   const onSubmit = (data: any, isDrafSave?: boolean) => {
     submitFormData(data, isDrafSave);
   };
-  const onError = (data: any) => {
-    console.log({ errors });
-  };
+
   const getMasterData = () => {
     AuthApi.get(CommonApi.GETMASTERDATA)
       .then(({ data }: any) => {
