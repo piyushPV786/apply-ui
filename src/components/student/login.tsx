@@ -196,9 +196,13 @@ const StudentLogin = () => {
   const verifyNumber = () => {
     const mobileNumber = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
-    )?.mobileNumber!;
+    );
     axios
-      .post(CommonApi.VERIFYOTP, { mobileNumber, otp: +otp })
+      .post(CommonApi.VERIFYOTP, {
+        mobileNumber: mobileNumber?.mobileNumber,
+        otp: +otp,
+        mobileCountryCode: mobileNumber?.countryCodeNumber,
+      })
       .then(({ data }) => {
         sessionStorage.setItem(
           "studentId",

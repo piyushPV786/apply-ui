@@ -127,8 +127,8 @@ const ApplicationForm = (props: any) => {
     mode: "onChange",
     reValidateMode: "onBlur",
     defaultValues: useMemo(() => {
-      return studentData;
-      // return mockFormData as any;
+      // return studentData;
+      return mockFormData as any;
     }, [studentData]),
   });
   const {
@@ -295,12 +295,12 @@ const ApplicationForm = (props: any) => {
   const uploadStudentDocs = () => {
     const { uploadedDocs = [] as File[] } = allFields;
     let count = 0;
-    uploadedDocs.forEach((file: File) => {
+    uploadedDocs.forEach((file: File & { typeCode: string }) => {
       const payload = {
-        documentTypeCode: "PAYMENTPROOF",
+        documentTypeCode: file?.typeCode || "other",
         fileName: file.name,
         fileType: file.type,
-        amount:+allFields?.education?.studyModeDetail?.fee || 0,
+        amount: +allFields?.education?.studyModeDetail?.fee || 0,
         paymentModeCode: "OFFLINE",
       };
       getUploadDocumentUrl(payload).then((res) => {

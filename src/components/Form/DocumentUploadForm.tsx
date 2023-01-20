@@ -5,10 +5,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import styled from "styled-components";
 import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
 import StyledButton from "../button/button";
-import {
-  isInvalidFileType,
-  uniqueArrayOfObject,
-} from "../../Util/Util";
+import { isInvalidFileType, uniqueArrayOfObject } from "../../Util/Util";
 import Link from "next/link";
 import Image from "next/image";
 import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
@@ -20,20 +17,21 @@ import { IOption } from "../common/types";
 interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
-  documentType:any
+  documentType: any;
 }
 const imgUrl = "/assets/images";
 
 const DocumentUploadForm = ({
   allFields,
   isValidDocument,
-  documentType
+  documentType,
 }: IDocumentUploadProps) => {
   const fileUploadRef = useRef<any>(null);
   const { register, setValue } = useFormContext();
-  const [uploadDocs, setUploadDocs] = useState<(File & { error: boolean })[]>(
-    []
-  );
+  const [uploadDocs, setUploadDocs] = useState<
+    (File & { error: boolean; typeCode: "other" })[]
+  >([]);
+ 
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
     const allUploadedFiles = uniqueArrayOfObject(
@@ -48,7 +46,6 @@ const DocumentUploadForm = ({
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement?.click() as any;
   };
-   console.log("documentType=====>", documentType)
   const deleteDocs = (index: number) => {
     const remainingDocs = [...uploadDocs.filter((item, idx) => idx !== index)];
     setValue("document.uploadedDocs", remainingDocs);
@@ -57,21 +54,33 @@ const DocumentUploadForm = ({
 
   const uploadDocuments = (files: any) => {
     const uploadedFiles = files;
-    console.log("upload files ======>", files)
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
+      item.typeCode = "other";
     });
     setUploadDocs(uploadedFiles as any);
-    console.log("uploadedFiles =====>", uploadedFiles)
     setValue("document.uploadedDocs", uploadedFiles);
   };
- 
+
   const showPdf = (item: File) => {
     const file = new Blob([item], {
       type: item?.type.includes("pdf") ? "application/pdf" : "image/jpeg",
     });
     const fileURL = URL.createObjectURL(file);
     window.open(fileURL);
+  };
+
+  const imageType = (type: string) => {
+    let data = "png-svgrepo-com.svg";
+    if (type?.toLowerCase().includes("pdf")) {
+      data = "pdf-svgrepo-com.svg";
+    }
+    return data;
+  };
+  const onFileTypeSelect = (value: string, index: number) => {
+    const allFiles: any = [...uploadDocs];
+    allFiles[index].typeCode = value;
+    setValue("document.uploadedDocs", allFiles);
   };
   return (
     <>
@@ -131,70 +140,83 @@ const DocumentUploadForm = ({
                 <div className="col-md-7">
                   <UploadedFilesContainer>
                     <h4 className="fw-bold">Uploaded Files</h4>
-                    <div>
-                      <ul className="list-group mt-2">
-                        {uploadDocs &&
-                          uploadDocs.length > 0 &&
-                          uploadDocs.map((item, index) => {
-                            const imgType = item?.type
-                              ?.toLowerCase()
-                              .includes("pdf")
-                              ? "pdf-svgrepo-com.svg"
-                              : "png-svgrepo-com.svg";
-                            return (
-                              <>
-                                <li
-                                  key={index}
-                                  style={{
-                                    color: item?.error ? "red" : "#212529",
-                                  }}
-                                  className=" d-flex justify-content-space-around list-group-item border-0 fw-bold p-0 mt-4"
+
+                    <table className="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th scope="col">File Name</th>
+                          <th scope="col">File Type</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {uploadDocs?.map((item, index) => (
+                          <tr>
+                            <td>
+                              <div className="w-75">
+                                <img
+                                  className="me-2"
+                                  src={`${imgUrl}/${imageType(item?.type)}`}
+                                />
+                                {item?.name}{" "}
+                                {item?.error && (
+                                  <span style={{ color: "red" }}>
+                                    ( Invalid file format )
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td>
+                              {" "}
+                              <select
+                                className="form-select"
+                                onChange={(e) =>
+                                  onFileTypeSelect(e?.target?.value, index)
+                                }
+                              >
+                                 <option value="other">Other</option>
+                                {documentType?.map((item) => (
+                                  <option key={item.id} value={item?.code}>
+                                    {item?.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                            <td>
+                              <div>
+                                {!item.error && (
+                                  <Link
+                                    passHref
+                                    onClick={() => showPdf(item)}
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                    href={""}
+                                  >
+                                    <Image
+                                      className="me-2 ms-2 "
+                                      src={ViewIcon}
+                                      alt={"ViewIcon"}
+                                      width="25"
+                                    />
+                                  </Link>
+                                )}
+                                <span
+                                  onClick={() => deleteDocs(index)}
+                                  className="cursor-pointer"
                                 >
-                                  <div className="w-75">
-                                    {" "}
-                                    <img
-                                      className="me-2"
-                                      src={`${imgUrl}/${imgType}`}
-                                    />{" "}
-                                    {item?.name}{" "}
-                                    {item?.error && "( Invalid file format )"}
-                                  </div>
-                                  <div>
-                                    {" "}
-                                    {!item.error && (
-                                      <Link
-                                        passHref
-                                        onClick={() => showPdf(item)}
-                                        rel="noopener noreferrer"
-                                        target="_blank"
-                                        href={""}
-                                      >
-                                        <Image
-                                          className="me-2 ms-2 "
-                                          src={ViewIcon}
-                                          alt={"ViewIcon"}
-                                          width="25"
-                                        />
-                                      </Link>
-                                    )}
-                                    <span
-                                      onClick={() => deleteDocs(index)}
-                                      className="cursor-pointer"
-                                    >
-                                      <Image
-                                        className="me-2 ms-2 "
-                                        src={TrashIcon}
-                                        alt={"TrashIcon"}
-                                        width="25"
-                                      />
-                                    </span>
-                                  </div>
-                                </li>
-                              </>
-                            );
-                          })}
-                      </ul>
-                    </div>
+                                  <Image
+                                    className="me-2 ms-2 "
+                                    src={TrashIcon}
+                                    alt={"TrashIcon"}
+                                    width="25"
+                                  />
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </UploadedFilesContainer>
                   {!isValidDocument && (
                     <h3 style={{ color: "red" }} className="fs-4  mt-5">
