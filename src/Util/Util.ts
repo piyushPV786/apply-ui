@@ -64,6 +64,8 @@ export const uniqueArrayOfObject = (array: any[], key: string) => [
 export const onlyAlphabets = (value: string) => /^[a-zA-Z ]*$/.test(value);
 export const onlyAlphaNumeric = (value: string) =>
   /^(?![0-9]*$)[a-zA-Z0-9]+$/.test(value);
+export const onlyAlphaNumericSpace = (value: string) =>
+  /^(?![0-9]*$)[a-zA-Z0-9 ]+$/.test(value);
 
 export const GetPaymentImage = (type: string) => {
   const imgUrl = "/assets/images";

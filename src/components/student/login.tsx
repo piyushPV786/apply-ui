@@ -24,7 +24,7 @@ import { CommonApi, RoutePaths } from "../common/constant";
 
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
-  const [countryCode, setCountryCode] = useState<any>("SA");
+  const [countryCode, setCountryCode] = useState<any>("ZA");
   const [otp, setOtp] = useState<string>("");
   const [isProceed, setProceed] = useState<boolean>(false);
   const [showToast, setToast] = useState<boolean>(false);
@@ -59,15 +59,12 @@ const StudentLogin = () => {
         mobileCountryCode: number?.countryCallingCode,
       })
       .then(({ data }) => {
-        sessionStorage.setItem(
-          "studentMobile",
-          JSON.stringify({
-            mobileNumber: number?.nationalNumber,
-            countryCodeNumber: number?.countryCallingCode,
-            countryCode: countryCode,
-          })
-        );
-
+        const studentDetail = {
+          mobileNumber: number?.nationalNumber,
+          countryCodeNumber: number?.countryCallingCode,
+          countryCode: countryCode,
+        };
+        sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
         setProceed(true);
         setToastMsg((prevState: any) => ({
           ...prevState,
@@ -194,14 +191,14 @@ const StudentLogin = () => {
   };
 
   const verifyNumber = () => {
-    const mobileNumber = JSON.parse(
+    const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
     axios
       .post(CommonApi.VERIFYOTP, {
-        mobileNumber: mobileNumber?.mobileNumber,
+        mobileNumber: mobileNumberDetail?.mobileNumber,
         otp: +otp,
-        mobileCountryCode: mobileNumber?.countryCodeNumber,
+        mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
       })
       .then(({ data }) => {
         sessionStorage.setItem(

@@ -366,9 +366,7 @@ const ApplicationForm = (props: any) => {
   const onSubmit = (data: any, isDrafSave?: boolean) => {
     submitFormData(data, isDrafSave);
   };
-  const onError = (data: any) => {
-    console.log({ errors });
-  };
+
   const getMasterData = () => {
     AuthApi.get(CommonApi.GETMASTERDATA)
       .then(({ data }: any) => {

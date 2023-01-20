@@ -46,6 +46,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
   };
   const error = errors[SponsorCandidateDetail] as any;
   const touchedField = touchedFields[SponsorCandidateDetail] as any;
+  const isSelfSponsored = sponsorModeVal === "SELF";
   return (
     <>
       <StyledAccordion>
@@ -115,11 +116,14 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   <StyledLabel required>Sponsor Name</StyledLabel>
                   <div className="mb-4">
                     <input
+                      disabled={isSelfSponsored}
                       className="form-control"
                       aria-label="Default select example"
                       value={sponsorNameVal}
                       defaultValue={sponsorNameVal}
-                      {...register(`${sponsorName}`, { required: true })}
+                      {...register(`${sponsorName}`, {
+                        required: !isSelfSponsored,
+                      })}
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;
@@ -143,10 +147,13 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   <StyledLabel required>Sponsor Email</StyledLabel>
                   <div className="mb-4">
                     <input
+                      disabled={isSelfSponsored}
                       className="form-control"
                       aria-label="Default select example"
                       defaultValue={""}
-                      {...register(`${sponsorEmail}`, { required: true })}
+                      {...register(`${sponsorEmail}`, {
+                        required: !isSelfSponsored,
+                      })}
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;
@@ -164,17 +171,6 @@ export const SponsoredForm = (props: ISponsorProps) => {
                         Please enter sponsor name
                       </div>
                     )}
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <StyledLabel required>Sponsor Address</StyledLabel>
-                    <input
-                      className="form-control"
-                      value={sponsorAddressVal}
-                      defaultValue={sponsorAddressVal}
-                      {...register(`${sponsorAddress}`)}
-                    />
                   </div>
                 </div>
               </div>
@@ -208,6 +204,18 @@ export const SponsoredForm = (props: ISponsorProps) => {
                           Please enter phone number
                         </div>
                       )}
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <StyledLabel required>Sponsor Address</StyledLabel>
+                    <input
+                      disabled={isSelfSponsored}
+                      className="form-control"
+                      value={sponsorAddressVal}
+                      defaultValue={sponsorAddressVal}
+                      {...register(`${sponsorAddress}`)}
+                    />
                   </div>
                 </div>
               </div>
