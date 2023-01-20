@@ -9,8 +9,8 @@ import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/application-icon.svg";
 import { CommonApi, RoutePaths } from "../common/constant";
-import { AuthApi } from "../../service/Axios";
-import { IApplication } from "../common/types";
+import { AcadmicApi, AuthApi } from "../../service/Axios";
+import { IApplication, IOption } from "../common/types";
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
@@ -23,19 +23,27 @@ export const ApplicationDashboard = (props: any) => {
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
     )?.leadCode;
-    if (studentId) {
+    if (studentId && studentApplications.length === 0) {
       getStudentApplications(studentId);
       setStudenId(studentId);
     }
   }, []);
   const getStudentApplications = (studentId) => {
     AuthApi.get(`${CommonApi.SAVEUSER}/${studentId}/application`)
-      .then(({ data: response }) => {
-        setStudentApplications(response?.data);
-      })
+      .then(({ data: response }) =>
+        getIntrestedQualificationPrograms(response?.data)
+      )
       .catch((err) => {
         console.log(err);
       });
+  };
+  const getIntrestedQualificationPrograms = (application: [IApplication]) => {
+    AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
+      .then(({ data }: any) => {
+        // console.log(data, { application });
+        setStudentApplications(application);
+      })
+      .catch((err) => console.log(err));
   };
   const onApplyNow = () => {
     router.push(RoutePaths.Application_Form);

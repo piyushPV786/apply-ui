@@ -59,15 +59,12 @@ const StudentLogin = () => {
         mobileCountryCode: number?.countryCallingCode,
       })
       .then(({ data }) => {
-        sessionStorage.setItem(
-          "studentMobile",
-          JSON.stringify({
-            mobileNumber: number?.nationalNumber,
-            countryCodeNumber: number?.countryCallingCode,
-            countryCode: countryCode,
-          })
-        );
-
+        const studentDetail = {
+          mobileNumber: number?.nationalNumber,
+          countryCodeNumber: number?.countryCallingCode,
+          countryCode: countryCode,
+        };
+        sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
         setProceed(true);
         setToastMsg((prevState: any) => ({
           ...prevState,
