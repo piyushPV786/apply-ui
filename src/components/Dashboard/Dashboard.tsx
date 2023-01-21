@@ -8,9 +8,10 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/application-icon.svg";
-import { CommonApi, RoutePaths } from "../common/constant";
+import { CommonApi, CommonEnums, RoutePaths } from "../common/constant";
 import { AcadmicApi, AuthApi } from "../../service/Axios";
 import { IApplication, IOption } from "../common/types";
+import { transformDate } from "../../Util/Util";
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
@@ -23,7 +24,9 @@ export const ApplicationDashboard = (props: any) => {
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
     )?.leadCode;
+    // if ("RLEAD00000005" || (studentId && studentApplications.length === 0)) {
     if (studentId && studentApplications.length === 0) {
+      // getStudentApplications(studentId);
       getStudentApplications(studentId);
       setStudenId(studentId);
     }
@@ -44,7 +47,6 @@ export const ApplicationDashboard = (props: any) => {
           const applications = [...application];
           applications.forEach((app: IApplication) => {
             response?.data.forEach((element: IOption) => {
-              console.log(element?.code, app.education?.programCode);
               if (element?.code === app.education?.programCode) {
                 app.programName = element.name;
               }
@@ -58,14 +60,31 @@ export const ApplicationDashboard = (props: any) => {
   const onApplyNow = () => {
     router.push(RoutePaths.Application_Form);
   };
-  const onEdit = (applicationCode: string | number, leadCode: string) => {
-    sessionStorage.setItem(
-      "activeLeadDetail",
-      JSON.stringify({ applicationCode, leadCode })
-    );
+  const onEdit = (
+    applicationCode: string | number,
+    leadCode: string,
+    isDraft
+  ) => {
+    const isdraftSave = isDraft === CommonEnums.DRAFT ? true : false;
+    const leadDetail = { applicationCode, leadCode, isdraftSave };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     onApplyNow();
   };
-  const onPay = () => {};
+  const onPay = (
+    applicationCode: string | number,
+    leadCode: string,
+    isDraft
+  ) => {
+    const isdraftSave = isDraft === CommonEnums.DRAFT;
+    const isPaymentPending = isDraft === CommonEnums.DRAFT;
+    const leadDetail = {
+      applicationCode,
+      leadCode,
+      isPaymentPending,
+      isdraftSave,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+  };
   return (
     <>
       <ParentContainer>
@@ -103,12 +122,14 @@ export const ApplicationDashboard = (props: any) => {
                           status,
                           applicationCode,
                           programName,
+                          updatedAt,
                           lead: {
                             firstName,
                             lastName,
                             middleName = "",
                             leadCode,
                           },
+                          education: { studyModeCode },
                         },
                         idx
                       ) => (
@@ -122,6 +143,8 @@ export const ApplicationDashboard = (props: any) => {
                             onEdit={onEdit}
                             onPay={onPay}
                             leadCode={leadCode}
+                            studyModeCode={studyModeCode}
+                            updatedAt={updatedAt}
                           />
                         </div>
                       )
@@ -181,14 +204,14 @@ function ApplicationCard({
   leadCode,
   onEdit = (...args) => {},
   onPay = (...args) => {},
+  studyModeCode,
+  updatedAt = "",
 }) {
   return (
     <>
-      <div className="container bg-white p-3 border rounded">
+      <ApplicationContainer className="container bg-white p-3 border rounded ">
         <div className="d-flex justify-content-end">
-          <StyledStatusBedge status={status.toLowerCase()}>
-            {status}
-          </StyledStatusBedge>
+          <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
         </div>
         <ContentCard>
           <div className="w-100">
@@ -213,13 +236,13 @@ function ApplicationCard({
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Study Mode
               </p>
-              <strong>Online/ Distance</strong>
+              <strong>{studyModeCode}</strong>
             </div>
             <div>
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Last updated
               </p>
-              <strong>11th Aug 2022</strong>
+              <strong>{transformDate(new Date(updatedAt))}</strong>
             </div>
           </div>
           <div className=" w-100 text-center d-flex justify-content-evenly mt-5">
@@ -228,11 +251,11 @@ function ApplicationCard({
               className="w-25"
               isGreenWhiteCombination={true}
               title="Edit"
-              onClick={() => onEdit(applicationNumber, leadCode)}
+              onClick={() => onEdit(applicationNumber, leadCode, status)}
             />
-            {status !== "DRAFT" && (
+            {status !== CommonEnums.DRAFT && (
               <StyledButton
-                onClick={() => onPay(applicationNumber)}
+                onClick={() => onPay(applicationNumber, leadCode, status)}
                 isPayBtn
                 className="w-25"
                 title="pay"
@@ -240,15 +263,15 @@ function ApplicationCard({
             )}
           </div>
         </ContentCard>
-      </div>
+      </ApplicationContainer>
     </>
   );
 }
 
 const StyledStatusBedge = styled.div<any>`
   background: ${({ status }) => {
-    if (status === "pending") return "#ffde9e";
-    if (status === "draft") return "#c1c1c1";
+    if (status === CommonEnums.FEES_PENDING) return "#ffde9e";
+    if (status === CommonEnums.DRAFT) return "#c1c1c1";
     if (status === "pendingDocuments") return "#b7fffa";
     if (status === "submitted") return "#e0f8ef";
     else return "#ffde9e";
@@ -259,6 +282,7 @@ const StyledStatusBedge = styled.div<any>`
   border: 1px solid;
 `;
 
+const ApplicationContainer = styled.div``;
 const ContentCard = styled.div`
   display: flex;
   flex-wrap: wrap;

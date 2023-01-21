@@ -2,12 +2,18 @@ import axios from "axios";
 import { CommonApi } from "../components/common/constant";
 import { AuthApi } from "../service/Axios";
 
+export const transformFormValue = (key: any, value) => {
+  console.log({ key, value }, "utils");
+};
 export const mapFormData = (data: any, isDraft?: boolean) => {
   let formData = data;
   if (formData) {
     for (let [key, value] of Object.entries(formData)) {
       if (formData[key]?.length <= 0 && isDraft) {
         delete formData[key];
+      }
+      if (key == "zipcode" && !formData[key]) {
+        formData[key] = 0;
       }
       if (key == "kin" && formData[key]?.isKin == "no") {
         delete formData[key];
@@ -126,4 +132,13 @@ export const uploadDocuments = async (uploadFileUrl: string, file: File) => {
     console.log(error.message);
     return await error;
   }
+};
+
+export const transformDate = (date: Date) => {
+  const month = date.toLocaleString("default", { month: "short" });
+
+  const year = date.getFullYear();
+  const day = date.getDate();
+
+  return `${day}th ${month} ${year}`;
 };

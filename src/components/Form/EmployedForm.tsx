@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -50,6 +50,7 @@ export const EmployedForm = (props: IEmployeProps) => {
   const managerNameVal = watch(managerName);
   const officeAddressVal = watch(officeAddress);
   const officeNumberVal = watch(officeNumber);
+  const isEmployerDetailExist = watch(EmployementDetails);
 
   const uppdateMobNumber = () => {
     const countryCode = getCountryCallingCode(countryCodeRef);
@@ -59,6 +60,11 @@ export const EmployedForm = (props: IEmployeProps) => {
   const error = errors[EmployementDetails] as any;
 
   const isUnEmployed = employmentStatusVal === "UNEMPLOYED";
+  useEffect(() => {
+    if (isEmployerDetailExist) {
+      setValue(isEmployed, "yes");
+    }
+  }, [isEmployerDetailExist]);
   return (
     <>
       <StyledAccordion>

@@ -16,6 +16,7 @@ import { IMasterData, IOption } from "../../components/common/types";
 import {
   getUploadDocumentUrl,
   mapFormData,
+  transformFormValue,
   uploadDocuments,
 } from "../../Util/Util";
 import { useRouter } from "next/router";
@@ -183,6 +184,7 @@ const ApplicationForm = (props: any) => {
   };
   const mapFormDefaultValue = () => {
     for (let [key, value] of Object.entries(studentData)) {
+      transformFormValue(key, value);
       setValue(key, value, {
         shouldDirty: true,
         shouldTouch: true,
@@ -219,7 +221,7 @@ const ApplicationForm = (props: any) => {
         }
       })
       .catch((err) => {
-        console.log({ err });
+        console.log(err.message);
         setShowDraftSaveToast({
           success: false,
           message: err?.message,
@@ -262,7 +264,7 @@ const ApplicationForm = (props: any) => {
         });
       })
       .catch((err) => {
-        console.log({ err });
+        console.log(err.message);
         setShowDraftSaveToast({
           success: false,
           message: err?.message,
@@ -283,12 +285,16 @@ const ApplicationForm = (props: any) => {
     )?.leadCode;
     const appCode = JSON.parse(sessionStorage?.getItem("leadData") as any)
       ?.applicationData?.applicationCode;
+    const activeLeadDetail = JSON.parse(
+      sessionStorage?.getItem("activeLeadDetail") as any
+    )?.applicationCode;
+    const draftUpdateCode = activeLeadDetail || appCode;
     if (leadCode && !isDraftSave) {
       updateLead(request);
       return;
     }
-    if (appCode && isDraftSave) {
-      updateUserAsDraft(request, appCode);
+    if (draftUpdateCode && isDraftSave) {
+      updateUserAsDraft(request, draftUpdateCode);
       return;
     }
     if (isDraftSave && checkValidationForDraftSave()) {
@@ -341,38 +347,7 @@ const ApplicationForm = (props: any) => {
     }
     return isValid;
   };
-  const updateUser = (
-    studentId: string,
-    request: any,
-    isDrafSave: boolean | undefined
-  ) => {
-    AuthApi.put(`${CommonApi.GETUSERDETAIL}/${studentId}`, request)
-      .then(({ data }) => {
-        setShowDraftSaveToast({
-          success: true,
-          message: "Data has been successfully saved.",
-          show: true,
-        });
-        if (!isDrafSave) {
-          setSubmitted(true);
-          setActiveStep(activeStep + 1);
-        }
-        if (activeStep === MagicNumbers.TWO) {
-          setActiveStep(2);
-          setDocumentUploadDone(true);
-          setPaymentDone(true);
-          uploadStudentDocs();
-        }
-      })
-      .catch((err) => {
-        setShowDraftSaveToast({
-          success: false,
-          message: err?.message,
-          show: true,
-        });
-        console.log(err);
-      });
-  };
+
   const uploadFiles = (fileUrl: string, file: File) => {
     return uploadDocuments(fileUrl, file)
       .then((res) => {
@@ -439,18 +414,24 @@ const ApplicationForm = (props: any) => {
     );
     if (!isAuthenticate?.includes("true") || !isAuthenticate) {
       router.push("/");
+      return;
     }
     const leadDetail = JSON.parse(
       sessionStorage?.getItem("activeLeadDetail") as any
     );
-
+    // if ("RLEAD00000005" || leadDetail) {
     if (leadDetail) {
       AuthApi.get(
-        `${leadDetail?.leadCode}/application/${leadDetail?.applicationCode}`
+        `${leadDetail?.leadCode}/application/${leadDetail?.applicationCode}?isDraft=${leadDetail?.isdraftSave}`
+        // `lead/RLEAD00000005/application/RAPP00000006/?isDraft=${leadDetail?.isdraftSave}`
       )
         .then(({ data: response }) => {
-          console.log({ Response });
           setStudentData(response?.data);
+          if (leadDetail?.isPaymentPending) {
+            setActiveStep(1);
+            setSubmitted(true);
+            setPaymentDone(true);
+          }
         })
         .catch((err) => {
           console.log(err);
