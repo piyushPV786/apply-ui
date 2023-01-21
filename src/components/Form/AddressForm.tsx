@@ -101,7 +101,6 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     onChange={(e: any) => {
                       const value = e.target.value;
                       setValue(postalCountry, value);
-                      // onDropDownChange(value, AddressEnums.COUNTRY, 1);
                     }}
                     displayItem="name"
                     mapKey="isoCode"
@@ -126,6 +125,7 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     {...register(`${postalZipCode}`, {
                       required: true,
                       maxLength: 6,
+                      minLength: 5,
                     })}
                     type="number"
                     maxLength={6}
@@ -140,6 +140,8 @@ export const AddressForm = ({ countryData = [] }: any) => {
                       <div className="invalid-feedback">
                         {error[0]?.zipcode.type === "maxLength"
                           ? "Max length exceeded"
+                          : error[0]?.zipcode.type === "minLength"
+                          ? "Minimum length should be 5"
                           : "Please enter Zip/Postal Code"}
                       </div>
                     )}
@@ -295,7 +297,7 @@ export const AddressForm = ({ countryData = [] }: any) => {
                   <div className="mb-4">
                     <AdvanceDropDown
                       value={resCountryVal}
-                      label="country"
+                      label="Country"
                       options={CountryData}
                       name={resCountry}
                       register={register}
@@ -325,6 +327,7 @@ export const AddressForm = ({ countryData = [] }: any) => {
                       {...register(`${resPostalCode}`, {
                         required: true,
                         maxLength: 6,
+                        minLength: 5,
                       })}
                       type="number"
                       className="form-control"
@@ -338,6 +341,8 @@ export const AddressForm = ({ countryData = [] }: any) => {
                         <div className="invalid-feedback">
                           {error[1]?.zipcode.type === "maxLength"
                             ? "Max length exceeded"
+                            : error[1]?.zipcode.type === "minLength"
+                            ? "Minimum length should be 5"
                             : "Please enter Zip/Postal Code"}
                         </div>
                       )}

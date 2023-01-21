@@ -100,6 +100,7 @@ export interface IApplication {
   id: number;
   applicationCode: string;
   programName?: string;
+  updatedAt?: string;
   status: string;
   education: IEducation;
   lead: ILead;

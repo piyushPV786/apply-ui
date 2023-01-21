@@ -134,7 +134,7 @@ export const EducationForm = (props: IEducationProps) => {
   const referredByeVal = watch(referredBy);
   const agentNameVal = watch(agentName);
   const socialMediaVal = watch(socialMediaId);
-  const programModeVal = watch(programMode);
+  const studentTypeVal = watch(studentTypeName);
   const programFeeVal = watch(programFees);
   const educationFormError = errors[parentKey] as any;
   const touchFields = touchedFields[parentKey];
@@ -146,6 +146,13 @@ export const EducationForm = (props: IEducationProps) => {
     register(`${programFees}`, {
       required: true,
     });
+    if (
+      programVal &&
+      programVal.length > 0 &&
+      studyModeQualification.length === 0
+    ) {
+      getQualificationStudyModeData(programVal);
+    }
   }, []);
 
   const getQualificationStudyModeData = (programCode: string) => {
@@ -508,7 +515,8 @@ export const EducationForm = (props: IEducationProps) => {
                   <StyledLabel required>Student Type</StyledLabel>
 
                   <select
-                    defaultValue={0}
+                    defaultValue={studentTypeVal}
+                    value={studentTypeVal}
                     className="form-select"
                     {...register(`${studentTypeName}`, { required: true })}
                   >
@@ -516,7 +524,11 @@ export const EducationForm = (props: IEducationProps) => {
                     <option value={""}>Select Type</option>
                     {studentType &&
                       studentType.map(({ code, name }) => (
-                        <option key={code} value={code}>
+                        <option
+                          selected={code === studentTypeVal}
+                          key={code}
+                          value={code}
+                        >
                           {name}
                         </option>
                       ))}

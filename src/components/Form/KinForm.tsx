@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -35,11 +35,17 @@ export const KinDetailsForm = (props: any) => {
   const relationShipVal = watch(relationShip);
   const EmailVal = watch(Email);
   const phoneNumberVal = watch(phoneNumber);
+  const isKinDetailExist = watch(KinDetails);
 
   const uppdateMobNumber = () => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${mobileCountryCode}`, `+${countryCode}`);
   };
+  useEffect(() => {
+    if(isKinDetailExist) {
+      setValue(isKin,"yes")
+    }
+  },[isKinDetailExist])
   return (
     <>
       <StyledAccordion>

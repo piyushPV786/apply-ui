@@ -1,8 +1,6 @@
-export enum AddressEnums {
-  ADDRESSTYPE1 = 1,
-  ADDRESSTYPE2 = 2,
-  STATE = "state",
-  COUNTRY = "country",
+export enum CommonEnums {
+  DRAFT = "APP-DRAFT",
+  FEES_PENDING = "APP-FEE-PEND",
 }
 
 export enum MagicNumbers {

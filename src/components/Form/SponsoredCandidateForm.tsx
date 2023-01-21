@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -9,7 +9,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { onlyAlphabets } from "../../Util/Util";
+import { isValidEmail, onlyAlphabets } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
 
@@ -48,6 +48,13 @@ export const SponsoredForm = (props: ISponsorProps) => {
   const error = errors[SponsorCandidateDetail] as any;
   const touchedField = touchedFields[SponsorCandidateDetail] as any;
   const isSelfSponsored = sponsorModeVal === "SELF";
+  const isSponserDetailExist = watch(SponsorCandidateDetail);
+
+  useEffect(() => {
+    if (isSponserDetailExist) {
+      setValue(isSponsored, "yes");
+    }
+  }, [isSponserDetailExist]);
   return (
     <>
       <StyledAccordion>
@@ -102,7 +109,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
 
                     {sponsorModeArr &&
                       sponsorModeArr.map(({ code, name }) => (
-                        <option selected={code === sponsorModeVal} value={code}>
+                        <option key={code} selected={code === sponsorModeVal} value={code}>
                           {name}
                         </option>
                       ))}
@@ -150,22 +157,14 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     value={sponserEmailVal}
                     {...register(`${sponsorEmail}`, {
                       required: !isSelfSponsored,
+                      validate: isValidEmail,
                     })}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const name = e.target.name;
-                      if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
-                      }
-                    }}
                   />
-                  {touchedField?.name && error?.name && (
+                  {touchedField?.email && error?.email && (
                     <div className="invalid-feedback">
-                      Please enter sponsor name
+                      {error?.email?.type == "validate"
+                        ? "you have entered an invalid email address. Please try again"
+                        : "Please enter sponser email"}
                     </div>
                   )}
                 </div>
