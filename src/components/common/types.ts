@@ -99,9 +99,15 @@ export interface IApplication {
   isActive: boolean;
   id: number;
   applicationCode: string;
+  programName?: string;
   status: string;
+  education: IEducation;
   lead: ILead;
-  education: null;
+}
+
+export interface IEducation {
+  programCode: string;
+  [key: string]: any;
 }
 export interface ILead {
   isActive: boolean;

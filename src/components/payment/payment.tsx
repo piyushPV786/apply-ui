@@ -20,7 +20,29 @@ import {
 import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
 import Image from "next/image";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
-
+const Currency = [
+  {
+    countryId: 1,
+    label: "South Africa",
+    value: "sa",
+    currency: "sa",
+    symbol: "R",
+  },
+  {
+    countryId: 2,
+    label: "India",
+    value: "ind",
+    currency: "inr",
+    symbol: "₹",
+  },
+  {
+    countryId: 3,
+    label: "Nigeria",
+    value: "ng",
+    currency: "ng",
+    symbol: "₦",
+  },
+];
 const Payment = (props: any) => {
   const fileUploadRef = useRef<any>(null);
   const { watch, register, setValue } = useFormContext();
@@ -37,7 +59,7 @@ const Payment = (props: any) => {
       (item: IOption) => item?.code == allFields?.education?.programCode
     )?.name;
   const selectedStudyMode: string = allFields?.education?.studyModeCode;
-  const programFee: string = allFields?.education?.studyModeDetail?.fee;
+  const programFee: string = allFields?.education?.applicationFees;
 
   const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
   const onDocUploadClick = () => {
@@ -145,15 +167,15 @@ const Payment = (props: any) => {
                           className="form-select"
                           {...register(`payment.currency`, { required: true })}
                         >
-                          {[] &&
-                            [{ id: 21, currency: "Rs" }].map(
-                              ({ id, currency }) => (
+                          {Currency &&
+                            Currency.map(
+                              ({ currency,label,symbol,value }) => (
                                 <option
-                                  selected={id === allFields?.payment?.currency}
-                                  key={id}
-                                  value={Number(id)}
+                                  selected={symbol === allFields?.payment?.currency}
+                                  key={symbol}
+                                  value={symbol}
                                 >
-                                  {currency}
+                                  {symbol}
                                 </option>
                               )
                             )}

@@ -25,6 +25,7 @@ export const CommonApi = {
   GETAGENT: "global/agent",
   GETUSERDETAIL: "/user",
   SAVEUSER: "/lead",
+  SAVEDRAFT: "/draft",
   REGISTERUSER: "/register",
   VERIFYOTP: "/verify-otp",
   PAYUPAYMENT: "global/payuPayment",
