@@ -79,8 +79,10 @@ const highSchoolName = `${parentKey}.highSchoolName`;
 const referredBy = `${parentKey}.referredById`;
 const agentName = `${parentKey}.agentCode`;
 const socialMediaId = `${parentKey}.socialMediaCode`;
-const studyModeDetail = `${parentKey}.studyModeDetail`;
-const studentTypeName = `${parentKey}.studentTypeId`;
+const programMode = `${parentKey}.programMode`;
+const programFees = `${parentKey}.programFees`;
+const studentTypeName = `${parentKey}.studentTypeCode`;
+const applicationFeesKey = `${parentKey}.applicationFees`;
 interface IEducationProps {
   highestQualifications: IOption[];
   programs: IOption[];
@@ -95,8 +97,7 @@ const FeeCard = (props: any) => {
     <>
       <StyleFeeCards
         style={{
-          border:
-            props?.selected === props?.feeMode ? "1.5px solid green" : "0",
+          border: props?.selected === props?.fee ? "1.5px solid green" : "0",
         }}
         onClick={() => props.setSelectedMode(selectedData)}
       >
@@ -122,7 +123,6 @@ export const EducationForm = (props: IEducationProps) => {
     studyId: null,
     parentIdx: null,
   });
-  // IStudyModeQualification[] | any[]
   const [studyModeQualification, setStudyModeQualification] = useState<
     IStudyModeQualification[]
   >([]);
@@ -134,12 +134,16 @@ export const EducationForm = (props: IEducationProps) => {
   const referredByeVal = watch(referredBy);
   const agentNameVal = watch(agentName);
   const socialMediaVal = watch(socialMediaId);
-  const selectedStudyModeDetail = watch(studyModeDetail);
+  const programModeVal = watch(programMode);
+  const programFeeVal = watch(programFees);
   const educationFormError = errors[parentKey] as any;
   const touchFields = touchedFields[parentKey];
   const { studyIdx, parentIdx } = selectedStudyMode;
   useEffect(() => {
-    register(`${studyModeDetail}`, {
+    register(`${programMode}`, {
+      required: true,
+    });
+    register(`${programFees}`, {
       required: true,
     });
   }, []);
@@ -147,7 +151,17 @@ export const EducationForm = (props: IEducationProps) => {
   const getQualificationStudyModeData = (programCode: string) => {
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
       .then((res) => {
-        setStudyModeQualification(res?.data?.data);
+        const courseFeesDetail = res?.data?.data;
+        let applicationFees;
+        courseFeesDetail.forEach((item) =>
+          item.studyModes.forEach((application) => {
+            if (application.studyModeCode === "APPLICATION") {
+              applicationFees = application;
+            }
+          })
+        );
+        setValue(applicationFeesKey, applicationFees?.fees[0]?.fee);
+        setStudyModeQualification(courseFeesDetail);
       })
       .catch((err) => {
         console.log(err);
@@ -158,14 +172,18 @@ export const EducationForm = (props: IEducationProps) => {
     const selectedStudyModeData = studyModeQualification![parentIdx].studyModes[
       studyIdx
     ].fees.find(({ feeMode }) => feeMode === props.feeMode);
-    setValue(studyModeDetail, selectedStudyModeData, {
+    setValue(programMode, selectedStudyModeData?.feeMode, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue(programFees, selectedStudyModeData?.fee, {
       shouldDirty: true,
       shouldValidate: true,
     });
   };
   return (
     <>
-      <StyledAccordion>
+      <StyledAccordion key="education" id="education">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -225,29 +243,33 @@ export const EducationForm = (props: IEducationProps) => {
                               studyModes.map(({ studyModeCode }, studyIdx) => {
                                 return (
                                   <>
-                                    <div className="form-check form-check-inline">
-                                      <input
-                                        key={studyModeCode}
-                                        className="form-check-input me-2"
-                                        type="radio"
-                                        {...register(`${studyMode}`, {
-                                          required: true,
-                                        })}
-                                        onClick={(e: any) => {
-                                          setValue(studyMode, e.target.value);
-                                          setSelectedStudyMode({
-                                            studyIdx: studyIdx,
-                                            studyId: studyModeCode,
-                                            parentIdx: parentIndex,
-                                          });
-                                        }}
-                                        value={studyModeCode}
-                                        checked={studyModeVal == studyModeCode}
-                                      />
-                                      <label className="form-check-label">
-                                        {studyModeCode}
-                                      </label>
-                                    </div>
+                                    {studyModeCode === "APPLICATION" ? null : (
+                                      <div className="form-check form-check-inline">
+                                        <input
+                                          key={studyMode}
+                                          className="form-check-input me-2"
+                                          type="radio"
+                                          {...register(`${studyMode}`, {
+                                            required: true,
+                                          })}
+                                          onClick={(e: any) => {
+                                            setValue(studyMode, e.target.value);
+                                            setSelectedStudyMode({
+                                              studyIdx: studyIdx,
+                                              studyId: studyModeCode,
+                                              parentIdx: parentIndex,
+                                            });
+                                          }}
+                                          value={studyModeCode}
+                                          checked={
+                                            studyModeVal == studyModeCode
+                                          }
+                                        />
+                                        <label className="form-check-label">
+                                          {studyModeCode}
+                                        </label>
+                                      </div>
+                                    )}
                                   </>
                                 );
                               })
@@ -266,7 +288,7 @@ export const EducationForm = (props: IEducationProps) => {
                             fee={fee}
                             feeMode={feeMode}
                             uniqueId={fee}
-                            selected={selectedStudyModeDetail?.feeMode}
+                            selected={programFeeVal}
                           />
                         ))}
                     </StyleContainer>

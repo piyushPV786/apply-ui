@@ -39,15 +39,33 @@ export const ApplicationDashboard = (props: any) => {
   };
   const getIntrestedQualificationPrograms = (application: [IApplication]) => {
     AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
-      .then(({ data }: any) => {
-        // console.log(data, { application });
-        setStudentApplications(application);
+      .then(({ data: response }: any) => {
+        if (application.length > 0 && response.data.length > 0) {
+          const applications = [...application];
+          applications.forEach((app: IApplication) => {
+            response?.data.forEach((element: IOption) => {
+              console.log(element?.code, app.education?.programCode);
+              if (element?.code === app.education?.programCode) {
+                app.programName = element.name;
+              }
+            });
+          });
+          setStudentApplications(applications);
+        } else setStudentApplications(application);
       })
       .catch((err) => console.log(err));
   };
   const onApplyNow = () => {
     router.push(RoutePaths.Application_Form);
   };
+  const onEdit = (applicationCode: string | number, leadCode: string) => {
+    sessionStorage.setItem(
+      "activeLeadDetail",
+      JSON.stringify({ applicationCode, leadCode })
+    );
+    onApplyNow();
+  };
+  const onPay = () => {};
   return (
     <>
       <ParentContainer>
@@ -84,15 +102,26 @@ export const ApplicationDashboard = (props: any) => {
                         {
                           status,
                           applicationCode,
-                          lead: { firstName, lastName, middleName = "" },
+                          programName,
+                          lead: {
+                            firstName,
+                            lastName,
+                            middleName = "",
+                            leadCode,
+                          },
                         },
                         idx
                       ) => (
-                        <div className="col-md-4 mb-2">
+                        <div key={applicationCode} className="col-md-4 mb-2">
                           <ApplicationCard
+                            key={applicationCode}
                             status={status}
                             applicationNumber={applicationCode}
                             name={`${firstName} ${middleName} ${lastName}`}
+                            programName={programName}
+                            onEdit={onEdit}
+                            onPay={onPay}
+                            leadCode={leadCode}
                           />
                         </div>
                       )
@@ -144,13 +173,21 @@ export const ApplicationDashboard = (props: any) => {
   );
 };
 
-function ApplicationCard({ name, applicationNumber, status }) {
+function ApplicationCard({
+  name,
+  applicationNumber,
+  status = "",
+  programName,
+  leadCode,
+  onEdit = (...args) => {},
+  onPay = (...args) => {},
+}) {
   return (
     <>
       <div className="container bg-white p-3 border rounded">
         <div className="d-flex justify-content-end">
           <StyledStatusBedge status={status.toLowerCase()}>
-            Payment Pending
+            {status}
           </StyledStatusBedge>
         </div>
         <ContentCard>
@@ -167,9 +204,9 @@ function ApplicationCard({ name, applicationNumber, status }) {
           </div>
           <div className="mt-2">
             <p className="mb-0" style={{ color: `#5a636a` }}>
-              Intrested Qualification
+              Intrested Program
             </p>
-            <strong>Bachelor of Business Administration</strong>
+            <strong>{programName}</strong>
           </div>
           <div className="mt-2 d-flex justify-content-between w-100">
             <div>
@@ -191,8 +228,16 @@ function ApplicationCard({ name, applicationNumber, status }) {
               className="w-25"
               isGreenWhiteCombination={true}
               title="Edit"
+              onClick={() => onEdit(applicationNumber, leadCode)}
             />
-            <StyledButton isPayBtn className="w-25" title="pay" />
+            {status !== "DRAFT" && (
+              <StyledButton
+                onClick={() => onPay(applicationNumber)}
+                isPayBtn
+                className="w-25"
+                title="pay"
+              />
+            )}
           </div>
         </ContentCard>
       </div>
@@ -206,6 +251,7 @@ const StyledStatusBedge = styled.div<any>`
     if (status === "draft") return "#c1c1c1";
     if (status === "pendingDocuments") return "#b7fffa";
     if (status === "submitted") return "#e0f8ef";
+    else return "#ffde9e";
   }};
   border-radius: 10px;
   color: #2d3d54;

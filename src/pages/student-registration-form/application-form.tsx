@@ -34,19 +34,20 @@ import {
   RoutePaths,
 } from "../../components/common/constant";
 const mockFormData = {
-  isAgreedTermsAndConditions: false,
+  isAgreedTermsAndConditions: true,
   lead: {
     firstName: "Shashank",
     middleName: "",
     lastName: "Gupta",
     dateOfBirth: "2023-01-02",
     email: "dfgdf@rt.vom",
-    mobileNumber: "",
-    identificationPassportNumber: "234324324324",
+    mobileNumber: "7566410079",
+    identificationPassportNumber: 234324324324,
     genderId: "M",
     nationalityId: "BLZ",
     language: "ISX",
     raceId: "INDIAN/ASIAN",
+    mobileCountryCode: "ZA",
   },
   address: [
     {
@@ -54,7 +55,7 @@ const mockFormData = {
       zipcode: "234234",
       city: "test city",
       state: "test state",
-      country: "Australia",
+      country: "Albania",
       addressType: "POSTAL",
     },
     {
@@ -62,22 +63,27 @@ const mockFormData = {
       zipcode: "234234",
       city: "test city",
       state: "test state",
-      country: "Australia",
+      country: "Albania",
       addressType: "RESIDENTIAL",
     },
   ],
   education: {
-    programCode: "12",
-    qualificationCode: "PGD",
+    programCode: "BBA-PROG-501",
+    qualificationCode: "PQ",
     highSchoolName: "testschool",
     referredById: "2",
     studentTypeId: "1",
-    studyModeCode: null,
+    studyModeCode: "DISTANCE-ONLINE",
     socialMediaCode: "TWITTER",
     agentCode: null,
+    studyModeDetail: {
+      fee: "21000.00",
+      feeMode: "SEMESTER",
+    },
+    applicationFees: "13000.00",
   },
   kin: {
-    isKin: "yes",
+    // isKin: "yes",
     fullName: "sdfsdf",
     relationship: "single",
     email: "sdfdsf@tfgfg.vom",
@@ -85,23 +91,24 @@ const mockFormData = {
     mobileCountryCode: "+966",
   },
   employment: {
-    isEmployed: "yes",
-    employmentStatusCode: "1",
+    // isEmployed: "yes",
+    employmentStatusCode: "EMPLOYED",
     employer: "123",
     jobTitle: "tesrt",
-    employmentIndustryCode: "",
+    employmentIndustryCode: "MEDIA",
     managerName: "sefsdf",
     officeAddress: "Test Address",
     officeMobileNumber: "+96654654654656",
     officeMobileCountryCode: "+966",
   },
   sponser: {
-    isSponsored: "yes",
-    sponsorModeId: "",
+    // isSponsored: "yes",
     name: "sfdsffd",
     address: "dsfdsfsdf",
     mobileNumber: "+966546354454",
     mobileCountryCode: "+966",
+    sponsorModeCode: "SPONSER",
+    email: "test@TEST.COM",
   },
 };
 
@@ -127,13 +134,13 @@ const ApplicationForm = (props: any) => {
     mode: "onChange",
     reValidateMode: "onBlur",
     defaultValues: useMemo(() => {
-      // return studentData;
-      return mockFormData as any;
+      return studentData;
+      // return mockFormData as any;
     }, [studentData]),
   });
   const {
     register,
-    formState: { isValid, isDirty, errors },
+    formState: { isValid, isDirty, errors, touchedFields },
     watch,
     setValue,
     getValues,
@@ -176,33 +183,121 @@ const ApplicationForm = (props: any) => {
   };
   const mapFormDefaultValue = () => {
     for (let [key, value] of Object.entries(studentData)) {
-      setValue(key, value, { shouldDirty: true, shouldTouch: true });
+      setValue(key, value, {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      });
     }
   };
-  const submitFormData = (data: object, isDrafSave?: boolean) => {
+  const updateLead = (request: any) => {
+    AuthApi.post(CommonApi.SAVEUSER, {
+      ...request,
+    })
+      .then(({ data: response }) => {
+        sessionStorage.setItem(
+          "studentId",
+          JSON.stringify({
+            id: response?.data?.leadData?.id,
+            leadCode: response?.data?.leadData?.leadCode,
+          })
+        );
+        sessionStorage.setItem("leadData", JSON.stringify(response?.data));
+        setShowDraftSaveToast({
+          success: true,
+          message: response?.message,
+          show: true,
+        });
+        if (activeStep === MagicNumbers.TWO) {
+          setActiveStep(2);
+          setDocumentUploadDone(true);
+          setPaymentDone(true);
+          uploadStudentDocs();
+        } else {
+          setSubmitted(true);
+          setActiveStep(activeStep + 1);
+        }
+      })
+      .catch((err) => {
+        console.log({ err });
+        setShowDraftSaveToast({
+          success: false,
+          message: err?.message,
+          show: true,
+        });
+      });
+  };
+  const updateUserAsDraft = (request, appCode: string) => {
+    AuthApi.put(`${CommonApi.SAVEDRAFT}/${appCode}`, {
+      ...request,
+    })
+      .then(({ data }) => {
+        console.log({ data }, "draft update");
+        setShowDraftSaveToast({
+          success: true,
+          message: data?.message,
+          show: true,
+        });
+      })
+      .catch((err) => {
+        console.log({ err });
+        setShowDraftSaveToast({
+          success: false,
+          message: err?.message,
+          show: true,
+        });
+      });
+  };
+  const creatDraft = (request, leadCode) => {
+    request.lead.leadCode = leadCode;
+    AuthApi.post(`${CommonApi.SAVEDRAFT}`, {
+      ...request,
+    })
+      .then(({ data }) => {
+        console.log({ data }, "draft create");
+        setShowDraftSaveToast({
+          success: true,
+          message: data?.message,
+          show: true,
+        });
+      })
+      .catch((err) => {
+        console.log({ err });
+        setShowDraftSaveToast({
+          success: false,
+          message: err?.message,
+          show: true,
+        });
+      });
+  };
+  const submitFormData = (data: object, isDraftSave?: boolean) => {
     const formData = { ...data };
 
     const { isSameAsPostalAddress = "", ...rest } = { ...(formData as any) };
 
-    let request = mapFormData(
-      {
-        ...rest,
-      },
-      isDrafSave
-    );
-    const studentId = JSON.parse(
-      sessionStorage?.getItem("leadCode") as any
+    let request = mapFormData({
+      ...rest,
+    });
+    const leadCode = JSON.parse(
+      sessionStorage?.getItem("studentId") as any
     )?.leadCode;
-    createUser(request, isDrafSave);
-
-    // if (studentId) {
-    //   updateUser(studentId, request, isDrafSave);
-    // } else {
-    //   // checkValidationForDraftSave() &&
-    //   createUser({ ...request, isDraft: true });
-    // }
+    const appCode = JSON.parse(sessionStorage?.getItem("leadData") as any)
+      ?.applicationData?.applicationCode;
+    if (leadCode && !isDraftSave) {
+      updateLead(request);
+      return;
+    }
+    if (appCode && isDraftSave) {
+      updateUserAsDraft(request, appCode);
+      return;
+    }
+    if (isDraftSave && checkValidationForDraftSave()) {
+      checkValidationForDraftSave() && creatDraft(request, leadCode);
+      return;
+    }
   };
-  // console.log({ allFields });
+
+  // console.log({ allFields, errors });
   const checkValidationForDraftSave = () => {
     let isValid = true;
     const {
@@ -222,10 +317,10 @@ const ApplicationForm = (props: any) => {
       lastName,
       email,
       mobileNumber,
-      genderId,
-      dateOfBirth,
-      identificationPassportNumber,
-      nationalityId,
+      // genderId,
+      // dateOfBirth,
+      // identificationPassportNumber,
+      // nationalityId,
     };
 
     for (let [key, value] of Object.entries(feildObject)) {
@@ -235,15 +330,13 @@ const ApplicationForm = (props: any) => {
         feildObject[key] === 0
       ) {
         isValid = false;
-
-        setValue(key, null, {
+        const lead = `lead.${key}`;
+        setValue(lead, null, {
           shouldTouch: true,
           shouldDirty: true,
           shouldValidate: true,
         });
-        trigger(key);
-      } else {
-        isValid = true;
+        trigger(key, { shouldFocus: true });
       }
     }
     return isValid;
@@ -325,44 +418,6 @@ const ApplicationForm = (props: any) => {
     });
   };
 
-  const createUser = (request: any, isDrafSave) => {
-    AuthApi.post(CommonApi.SAVEUSER, {
-      ...request,
-    })
-      .then(({ data }) => {
-        sessionStorage.setItem(
-          "studentId",
-          JSON.stringify({
-            id: data?.data?.leadData?.id,
-            leadCode: data?.data?.leadData?.leadCode,
-          })
-        );
-        sessionStorage.setItem("leadData", JSON.stringify(data?.data));
-        setShowDraftSaveToast({
-          success: true,
-          message: data?.message,
-          show: true,
-        });
-        if (!isDrafSave) {
-          setSubmitted(true);
-          setActiveStep(activeStep + 1);
-        }
-        if (activeStep === MagicNumbers.TWO) {
-          setActiveStep(2);
-          setDocumentUploadDone(true);
-          setPaymentDone(true);
-          uploadStudentDocs();
-        }
-      })
-      .catch((err) => {
-        console.log({ err });
-        setShowDraftSaveToast({
-          success: false,
-          message: err?.message,
-          show: true,
-        });
-      });
-  };
   const onSubmit = (data: any, isDrafSave?: boolean) => {
     submitFormData(data, isDrafSave);
   };
@@ -382,14 +437,19 @@ const ApplicationForm = (props: any) => {
     const isAuthenticate = JSON.parse(
       sessionStorage?.getItem("authenticate") as any
     );
-    const studentId = JSON.parse(
-      sessionStorage?.getItem("studentId") as any
-    )?.leadCode;
-    const studentMobile =
-      sessionStorage && JSON.parse(sessionStorage?.getItem("studentId") as any);
-    if (studentId) {
-      AuthApi.get(`${CommonApi.GETUSERDETAIL}/${studentId}`)
+    if (!isAuthenticate?.includes("true") || !isAuthenticate) {
+      router.push("/");
+    }
+    const leadDetail = JSON.parse(
+      sessionStorage?.getItem("activeLeadDetail") as any
+    );
+
+    if (leadDetail) {
+      AuthApi.get(
+        `${leadDetail?.leadCode}/application/${leadDetail?.applicationCode}`
+      )
         .then(({ data: response }) => {
+          console.log({ Response });
           setStudentData(response?.data);
         })
         .catch((err) => {
@@ -450,25 +510,31 @@ const ApplicationForm = (props: any) => {
                 <div className="row w-100">
                   <form onSubmit={(data) => onSubmit(data, false)}>
                     <PersonalInfoForm
+                      key="personalForm"
                       genders={genders}
                       nationalities={nationalities}
                       homeLanguage={language}
                       race={race}
                     />
-                    <AddressForm countryData={countryData} />
+                    <AddressForm key="AddressForm" countryData={countryData} />
                     <EducationForm
+                      key="EducationForm"
                       highestQualifications={highestQualifications}
                       programs={programs}
                       socialMedias={socialMedias}
                       agentArr={agentData}
                     />
-                    <KinDetailsForm />
+                    <KinDetailsForm key="KinDetailsForm" />
                     <EmployedForm
+                      key="EmployedForm"
                       employmentStatusArr={employmentStatus}
                       employerArr={[]}
                       employmentIndustries={employmentIndustries}
                     />
-                    <SponsoredForm sponsorModeArr={sponsorModes} />
+                    <SponsoredForm
+                      key="SponsoredForm"
+                      sponsorModeArr={sponsorModes}
+                    />
                   </form>
                 </div>
               </>

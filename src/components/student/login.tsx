@@ -147,7 +147,7 @@ const StudentLogin = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Item>
-              <Title>OPT Verification</Title>
+              <Title>OPT verification</Title>
             </Item>
           </Grid>
           <Grid item xs={12}>
@@ -191,6 +191,7 @@ const StudentLogin = () => {
   };
 
   const verifyNumber = () => {
+    setToast(true);
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
@@ -201,6 +202,10 @@ const StudentLogin = () => {
         mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
       })
       .then(({ data }) => {
+        setToastMsg(() => ({
+          success: true,
+          message: data?.message,
+        }));
         sessionStorage.setItem(
           "studentId",
           JSON.stringify({ leadCode: data?.data?.leadCode })
@@ -208,7 +213,7 @@ const StudentLogin = () => {
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
         setTimeout(() => {
           router.push(RoutePaths.Dashboard);
-        }, 1000);
+        }, 2500);
       })
       .catch(({ response }) => {
         setToastMsg(() => ({
@@ -250,7 +255,7 @@ const StudentLogin = () => {
             </span>
           </StyleFooter>
           <Snackbar
-            autoHideDuration={1000}
+            autoHideDuration={2000}
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "right",
