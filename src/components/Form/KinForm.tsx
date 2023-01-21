@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -36,16 +36,17 @@ export const KinDetailsForm = (props: any) => {
   const EmailVal = watch(Email);
   const phoneNumberVal = watch(phoneNumber);
   const isKinDetailExist = watch(KinDetails);
+  const isKinNeed = isNextKinVal === "yes";
 
   const uppdateMobNumber = () => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${mobileCountryCode}`, `+${countryCode}`);
   };
   useEffect(() => {
-    if(isKinDetailExist) {
-      setValue(isKin,"yes")
+    if (isKinDetailExist) {
+      setValue(isKin, "yes");
     }
-  },[isKinDetailExist])
+  }, [isKinDetailExist]);
   return (
     <>
       <StyledAccordion>
@@ -67,7 +68,7 @@ export const KinDetailsForm = (props: any) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isKin}`, { required: true })}
+              {...register(`${isKin}`, { required: isKinNeed })}
               value="yes"
               checked={isNextKinVal === "yes"}
             />
@@ -77,7 +78,7 @@ export const KinDetailsForm = (props: any) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isKin}`, { required: true })}
+              {...register(`${isKin}`, { required: isKinNeed })}
               value="no"
               checked={isNextKinVal === "no"}
             />
@@ -95,7 +96,7 @@ export const KinDetailsForm = (props: any) => {
                     className="form-control"
                     value={fullNameVal}
                     defaultValue={fullNameVal}
-                    {...register(`${fullName}`, { required: true })}
+                    {...register(`${fullName}`, { required: isKinNeed })}
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
@@ -122,7 +123,7 @@ export const KinDetailsForm = (props: any) => {
                     className="form-control"
                     value={relationShipVal}
                     defaultValue={relationShipVal}
-                    {...register(`${relationShip}`, { required: true })}
+                    {...register(`${relationShip}`, { required: isKinNeed })}
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
@@ -150,8 +151,8 @@ export const KinDetailsForm = (props: any) => {
                     value={EmailVal}
                     defaultValue={EmailVal}
                     {...register(`${Email}`, {
-                      required: true,
-                      validate: isValidEmail,
+                      required: isKinNeed,
+                      validate: (value) =>  isValidEmail(value,!isKinNeed),
                     })}
                   />
                   {touchedField?.email && error?.email && (
@@ -173,7 +174,7 @@ export const KinDetailsForm = (props: any) => {
                     countryCallingCodeEditable={false}
                     defaultCountry={countryCodeRef}
                     placeholder="Select Country Code*"
-                    {...register(`${phoneNumber}`, { required: true })}
+                    {...register(`${phoneNumber}`, { required: isKinNeed })}
                     onCountryChange={(value: any) => {
                       setCountryCode(value);
                     }}

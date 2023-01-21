@@ -3,7 +3,6 @@ import { CommonApi } from "../components/common/constant";
 import { AuthApi } from "../service/Axios";
 
 export const transformFormValue = (key: any, value) => {
-  console.log({ key, value }, "utils");
 };
 export const mapFormData = (data: any, isDraft?: boolean) => {
   let formData = data;
@@ -41,11 +40,13 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
   }
 };
 
-export const isValidEmail = (email: string) =>
+export const isValidEmail = (email: string, passValidator?: boolean) => {
+  if (passValidator) return true;
   // eslint-disable-next-line no-useless-escape
-  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+  return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
     email
   );
+};
 
 export const isInvalidFileType = (type: string) => {
   switch (type) {

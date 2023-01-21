@@ -58,7 +58,7 @@ export const EmployedForm = (props: IEmployeProps) => {
   };
   const touchField = touchedFields[EmployementDetails] as any;
   const error = errors[EmployementDetails] as any;
-
+  const isEmployedNeed = isEmployed === "yes";
   const isUnEmployed = employmentStatusVal === "UNEMPLOYED";
   useEffect(() => {
     if (isEmployerDetailExist) {
@@ -113,7 +113,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                     value={employmentStatusVal}
                     className="form-select"
                     aria-label="Default select example"
-                    {...register(`${employmentStatus}`, { required: true })}
+                    {...register(`${employmentStatus}`, {
+                      required: isEmployedNeed,
+                    })}
                   >
                     <option value={""}>Select employment status</option>
                     {employmentStatusArr &&
@@ -143,7 +145,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                     aria-label="Default select example"
                     value={employerVal}
                     {...register(`${employer}`, {
-                      required: !isUnEmployed,
+                      required: !isUnEmployed && isEmployedNeed,
                     })}
                     disabled={isUnEmployed}
                   >
@@ -200,7 +202,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                     className="form-select"
                     aria-label="Default select example"
                     {...register(`${industry}`, {
-                      required: !isUnEmployed,
+                      required: !isUnEmployed && isEmployedNeed,
                     })}
                     disabled={isUnEmployed}
                   >
@@ -276,7 +278,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                     defaultCountry={countryCodeRef}
                     placeholder="Select Country Code*"
                     {...register(`${officeNumber}`, {
-                      required: !isUnEmployed,
+                      required: !isUnEmployed && isEmployedNeed,
                     })}
                     disabled={isUnEmployed}
                     onCountryChange={(value: any) => {

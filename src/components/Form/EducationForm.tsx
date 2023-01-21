@@ -153,7 +153,7 @@ export const EducationForm = (props: IEducationProps) => {
     ) {
       getQualificationStudyModeData(programVal);
     }
-  }, []);
+  }, [programVal]);
 
   const getQualificationStudyModeData = (programCode: string) => {
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)

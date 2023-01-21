@@ -49,7 +49,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
   const touchedField = touchedFields[SponsorCandidateDetail] as any;
   const isSelfSponsored = sponsorModeVal === "SELF";
   const isSponserDetailExist = watch(SponsorCandidateDetail);
-
+  const isSponserNeed = isSponsoredVal === "yes";
   useEffect(() => {
     if (isSponserDetailExist) {
       setValue(isSponsored, "yes");
@@ -76,7 +76,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isSponsored}`, { required: true })}
+              {...register(`${isSponsored}`, { required: isSponserNeed })}
               value="yes"
               checked={isSponsoredVal === "yes"}
             />
@@ -86,7 +86,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isSponsored}`, { required: true })}
+              {...register(`${isSponsored}`, { required: isSponserNeed })}
               value="no"
               checked={isSponsoredVal === "no"}
             />
@@ -103,13 +103,17 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     value={sponsorModeVal}
                     className="form-select"
                     aria-label="Default select example"
-                    {...register(`${sponsorMode}`, { required: true })}
+                    {...register(`${sponsorMode}`, { required: isSponserNeed })}
                   >
                     <option value={""}>Select Sponsor mode</option>
 
                     {sponsorModeArr &&
                       sponsorModeArr.map(({ code, name }) => (
-                        <option key={code} selected={code === sponsorModeVal} value={code}>
+                        <option
+                          key={code}
+                          selected={code === sponsorModeVal}
+                          value={code}
+                        >
                           {name}
                         </option>
                       ))}
@@ -126,7 +130,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     value={sponsorNameVal}
                     defaultValue={sponsorNameVal}
                     {...register(`${sponsorName}`, {
-                      required: !isSelfSponsored,
+                      required: !isSelfSponsored && isSponserNeed,
                     })}
                     onChange={(e) => {
                       const value = e.target.value;
@@ -156,8 +160,8 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     aria-label="Default select example"
                     value={sponserEmailVal}
                     {...register(`${sponsorEmail}`, {
-                      required: !isSelfSponsored,
-                      validate: isValidEmail,
+                      required: !isSelfSponsored && isSponserNeed,
+                      validate: (value) =>  isValidEmail(value,!isSponserNeed),
                     })}
                   />
                   {touchedField?.email && error?.email && (
@@ -177,7 +181,9 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   <PhoneInput
                     id="2"
                     international
-                    {...register(`${sponsorPhoneNumber}`, { required: true })}
+                    {...register(`${sponsorPhoneNumber}`, {
+                      required: !isSelfSponsored && isSponserNeed,
+                    })}
                     countryCallingCodeEditable={false}
                     defaultCountry={countryCodeRef}
                     placeholder="Select Country Code*"
