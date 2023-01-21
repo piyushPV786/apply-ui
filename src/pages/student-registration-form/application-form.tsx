@@ -422,7 +422,7 @@ const ApplicationForm = (props: any) => {
     // if ("RLEAD00000005" || leadDetail) {
     if (leadDetail) {
       AuthApi.get(
-        `${leadDetail?.leadCode}/application/${leadDetail?.applicationCode}?isDraft=${leadDetail?.isdraftSave}`
+        `lead/${leadDetail?.leadCode}/application/${leadDetail?.applicationCode}?isDraft=${leadDetail?.isdraftSave}`
         // `lead/RLEAD00000005/application/RAPP00000006/?isDraft=${leadDetail?.isdraftSave}`
       )
         .then(({ data: response }) => {
