@@ -122,7 +122,6 @@ const Payment = (props: any) => {
   };
   console.log(allFields)
   const applyDiscount = async () => {
-    setValue(".education.applicationFees", 3000);
     const appCode = getApplicationCode()
     const result: any = await applyDiscountCode(appCode, promoCode, allFields?.education?.studentTypeCode);
     if (result?.statusCode === 200 && result?.data?.percent) {
