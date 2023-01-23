@@ -481,6 +481,9 @@ const ApplicationForm = (props: any) => {
   };
   const { message, success, show } = showDraftSavedToast;
 
+  const today = new Date();
+  const year = today.getFullYear();
+
   return (
     <MainContainer>
       <Header />
@@ -498,7 +501,7 @@ const ApplicationForm = (props: any) => {
             {activeStep === MagicNumbers.ZERO && (
               <>
                 <div className="row w-100">
-                  <form onSubmit={(data) => onSubmit(data, false)}>
+                  <form className="application-form" onSubmit={(data) => onSubmit(data, false)}>
                     <PersonalInfoForm
                       key="personalForm"
                       genders={genders}
@@ -611,8 +614,8 @@ const ApplicationForm = (props: any) => {
                       title={activeStep < 2 ? "Save & Next" : "Submit"}
                     />
                     <StyleFooter>
-                      <span style={{ color: "#131718" }}>
-                        Copyright @ 2015 - 2022{" "}
+                      <span className="footer-text" style={{ color: "#131718" }}>
+                      Copyright @ 2015 - {year}{" "}
                         <a href="https://www.regenesys.net/">
                           Regenesys Business School
                         </a>
@@ -688,7 +691,7 @@ export const MainContainer = styled.div`
 `;
 const FooterConatiner = styled.div`
   width: 100%;
-  height: 310px;
+  min-height: 200px;
   margin-bottom: 4rem;
   .form-check-input:checked {
     background-color: ${Green};

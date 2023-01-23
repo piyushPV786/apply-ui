@@ -30,9 +30,9 @@ const Header = (props: any) => {
   return (
     <>
       <Grid>
-        <CommonHeader>
+        <CommonHeader className="header">
           <>
-            <div className="row">
+            <div className="row align-items-center">
               <div className="col-md-6">
                 <LogoContainer>
                   <div
@@ -57,7 +57,7 @@ const Header = (props: any) => {
                     Hi {studentMob}
                   </div>
                   <div onClick={exitApp}>
-                    <CustomStyledLink className="mobNum">
+                    <CustomStyledLink className="logout-text">
                       Logout
                     </CustomStyledLink>
                   </div>
@@ -104,8 +104,9 @@ const UserInfoConatiner = styled.div`
 `;
 
 const CustomStyledLink = styled(StyledLink)`
-  font-size: 24px;
-  font-weight: 700px;
+  font-size: 20px;
+  font-weight: 500;
+  font-family: Roboto;
   color: #ffd600 !important;
   @media (max-width: 510px) {
     font-size: 15px;

@@ -204,7 +204,7 @@ export const EducationForm = (props: IEducationProps) => {
           </GreenFormHeading>
         </AccordionSummary>
         <AccordionDetails>
-          <div className="container">
+        <div className="container-fluid form-padding">
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">

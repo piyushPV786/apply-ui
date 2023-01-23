@@ -89,7 +89,7 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
         </AccordionSummary>
 
         <AccordionDetails hidden={isNextKinVal === "no"}>
-          <div className="container">
+        <div className="container-fluid form-padding">
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
