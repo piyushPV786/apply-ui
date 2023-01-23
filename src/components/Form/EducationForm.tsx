@@ -15,11 +15,7 @@ import { onlyAlphaNumericSpace } from "../../Util/Util";
 import EducationImg from "../../../public/assets/images/education-svgrepo-com.svg";
 import Image from "next/image";
 import { FinanceApi } from "../../service/Axios";
-import {
-  AgentandSocialMedia,
-  CommonApi,
-  studentType,
-} from "../common/constant";
+import { AgentandSocialMedia, CommonApi } from "../common/constant";
 const mockStudyModeData = [
   {
     programCode: "BBA-PROG-501",
@@ -88,6 +84,7 @@ interface IEducationProps {
   programs: IOption[];
   socialMedias: IOption[];
   agentArr: IOption[];
+  studyTypeData: IOption[];
 }
 
 const FeeCard = (props: any) => {
@@ -126,7 +123,13 @@ export const EducationForm = (props: IEducationProps) => {
   const [studyModeQualification, setStudyModeQualification] = useState<
     IStudyModeQualification[]
   >([]);
-  const { agentArr, highestQualifications, programs, socialMedias } = props;
+  const {
+    agentArr,
+    highestQualifications,
+    programs,
+    socialMedias,
+    studyTypeData,
+  } = props;
   const programVal = watch(program);
   const studyModeVal = watch(studyMode);
   const highestQualificationVal = watch(highestQualification);
@@ -204,7 +207,7 @@ export const EducationForm = (props: IEducationProps) => {
           </GreenFormHeading>
         </AccordionSummary>
         <AccordionDetails>
-        <div className="container-fluid form-padding">
+          <div className="container-fluid form-padding">
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
@@ -522,8 +525,8 @@ export const EducationForm = (props: IEducationProps) => {
                   >
                     {" "}
                     <option value={""}>Select Type</option>
-                    {studentType &&
-                      studentType.map(({ code, name }) => (
+                    {studyTypeData &&
+                      studyTypeData.map(({ code, name }) => (
                         <option
                           selected={code === studentTypeVal}
                           key={code}

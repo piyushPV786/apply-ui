@@ -13,6 +13,8 @@ import { IOption } from "../common/types";
 import PaymentOption from "./payment-options";
 import StyledButton from "../button/button";
 import {
+  applyDiscountCode,
+  getApplicationCode,
   getUploadDocumentUrl,
   isInvalidFileType,
   uploadDocuments,
@@ -79,27 +81,32 @@ const Payment = (props: any) => {
         console.log(err.message);
       });
   };
-  const submitPaymentDocs = () => {
+  const submitPaymentDocs = async () => {
     let count = 0;
     setPaymentDocSubmit(true);
-    paymentDocs.forEach((file) => {
-      const payload = {
-        documentTypeCode: "PAYMENTPROOF",
-        fileName: file.name,
-        fileType: file.type,
-        amount: +allFields?.education?.studyModeDetail?.fee,
-        paymentModeCode: "OFFLINE",
-      };
-      getUploadDocumentUrl(payload).then((res) => {
-        if (res?.statusCode === 201) {
-          count = count + 1;
-          uploadPaymentDocument(res?.data, file);
-        } else {
-          props.showToast(false, res?.response?.data?.message);
-          setPaymentDocSubmit(false);
-        }
-      });
-    });
+    await Promise.all(
+      paymentDocs.map((file) => {
+        const payload = {
+          documentTypeCode: "PAYMENTPROOF",
+          fileName: file.name,
+          fileType: file.type,
+          amount: +allFields?.education?.programFees,
+          paymentModeCode: "OFFLINE",
+          discountCode:"",
+          studentTypeCode:allFields?.education?.studentTypeCode,
+
+        };
+        return getUploadDocumentUrl(payload).then((res) => {
+          if (res?.statusCode === 201) {
+            count = count + 1;
+            uploadPaymentDocument(res?.data, file);
+          } else {
+            props.showToast(false, res?.response?.data?.message);
+            setPaymentDocSubmit(false);
+          }
+        });
+      })
+    );
     if (count === paymentDocs.length) {
       setPaymentDocSubmit(false);
       props?.navigateNext();
@@ -113,6 +120,25 @@ const Payment = (props: any) => {
     setPaymentDocs(uploadedFiles);
     setValue("payment.paymentProof", uploadedFiles);
   };
+  console.log(allFields)
+  const applyDiscount = async () => {
+    const appCode = getApplicationCode()
+    const result: any = await applyDiscountCode(appCode, promoCode, allFields?.education?.studentTypeCode);
+    if (result?.statusCode === 200 && result?.data?.percent) {
+      const { agentCode, percent, discountCode } = result?.data;
+      setValue("payment.agentCode", agentCode);
+      setValue("payment.discountCode", discountCode);
+      setValue("payment.percent", percent);
+      setValue(
+        "payment.discountAmount",
+        (+programFee * percent) / 100
+      );
+      props.showToast(true, result?.message);
+    } else {
+      props.showToast(false, "Invalid Code");
+    }
+  };
+
   const deleteFile = (index: number) => {
     setPaymentDocs([...paymentDocs.filter((_, idx) => idx !== index)]);
   };
@@ -169,9 +195,11 @@ const Payment = (props: any) => {
                         >
                           {Currency &&
                             Currency.map(
-                              ({ currency,label,symbol,value }) => (
+                              ({ currency, label, symbol, value }) => (
                                 <option
-                                  selected={symbol === allFields?.payment?.currency}
+                                  selected={
+                                    symbol === allFields?.payment?.currency
+                                  }
                                   key={symbol}
                                   value={symbol}
                                 >
@@ -206,7 +234,18 @@ const Payment = (props: any) => {
                         </div>
                         <div>
                           {" "}
-                          <h6>INR {allFields?.studyModeDetail?.fees}</h6>
+                          <h6>
+                            Total Application INR -{" "}
+                            {programFee}
+                          </h6>
+                          <h6>
+                            Discount INR - {allFields?.payment?.discountAmount}
+                          </h6>
+                          <h6>
+                            Total Amount -{" "}
+                            {parseInt(programFee) -
+                              parseInt(allFields?.payment?.discountAmount)}
+                          </h6>
                         </div>
                       </div>
                       <div className="text-center">
@@ -229,6 +268,7 @@ const Payment = (props: any) => {
                             />
                             <div className="input-group-append cursor-pointer">
                               <span
+                                onClick={applyDiscount}
                                 style={{
                                   background:
                                     !promoCode || promoCode?.length === 0
@@ -242,12 +282,12 @@ const Payment = (props: any) => {
                                 Apply
                               </span>
                             </div>
-                            <GreenText
+                            {/* <GreenText
                               onClick={() => setShowPromoCOde(!showPromoCode)}
                               className="ms-2 fs-6 d-flex align-items-center justify-content-center"
                             >
                               <CloseIcon />
-                            </GreenText>
+                            </GreenText> */}
                           </div>
                         </div>
                       )}

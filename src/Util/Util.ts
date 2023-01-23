@@ -140,6 +140,22 @@ export const uploadDocuments = async (uploadFileUrl: string, file: File) => {
   }
 };
 
+export const applyDiscountCode = async (
+  appCode: string,
+  disCode: string,
+  studentType: string
+) => {
+  const url = process.env.base_Url;
+  try {
+    const response = await axios.get(
+      `${url}application/${appCode}/discount/${disCode}?studentType=${studentType}`
+    );
+    return response.data;
+  } catch (err: any) {
+    return err;
+  }
+};
+
 export const transformDate = (date: Date) => {
   const month = date.toLocaleString("default", { month: "short" });
 

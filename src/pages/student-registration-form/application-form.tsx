@@ -474,6 +474,7 @@ const ApplicationForm = (props: any) => {
   const countryData = masterData?.countryData as IOption[];
   const agentData = masterData?.agentData as IOption[];
   const documentType = masterData?.documentTypeData as IOption[];
+  const studyTypeData = masterData?.studentTypeData as IOption[];
 
   const onSkipForNowOnPayment = () => {};
   const onSkipForNowOnDocument = () => {
@@ -516,6 +517,7 @@ const ApplicationForm = (props: any) => {
                       programs={programs}
                       socialMedias={socialMedias}
                       agentArr={agentData}
+                      studyTypeData={studyTypeData}
                     />
                     <KinDetailsForm leadId={leadId} key="KinDetailsForm" />
                     <EmployedForm
