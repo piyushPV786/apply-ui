@@ -11,7 +11,7 @@ import UserCircleIcon from "../../../public/assets/images/user-circle-svgrepo-co
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { isValidEmail, onlyAlphabets } from "../../Util/Util";
+import { isValidDate, isValidEmail, onlyAlphabets } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
 interface IPersonalInfoProps {
   genders: IOption[];
@@ -69,6 +69,10 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     const countryCode = getCountryCallingCode(countryCodeRef);
     setValue(`${countryCode}`, `+${countryCode}`);
   };
+  const genderOption = [
+    ...(genders || []),
+    ...[{ name: "Other", code: "other", id: 21 }],
+  ];
   return (
     <>
       <StyledAccordion defaultExpanded={true}>
@@ -181,7 +185,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    options={genders}
+                    options={genderOption}
                     label={"Gender"}
                     value={genderId}
                     name={genderIdKey}
@@ -198,7 +202,10 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <input
                     value={dateOfBirth}
                     defaultValue={dateOfBirth}
-                    {...register(dateOfBirthKey, { required: true })}
+                    {...register(dateOfBirthKey, {
+                      required: true,
+                      validate: isValidDate,
+                    })}
                     type="date"
                     className="form-control"
                     id="exampleFormControlInput1"
@@ -206,7 +213,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   />
                   {TouchFields?.dateOfBirth && Errors?.dateOfBirth && (
                     <div className="invalid-feedback">
-                      Please enter Date of Birth
+                      {Errors?.dateOfBirth?.type === "validate"
+                        ? "Please enter valid date"
+                        : "Please enter Date of Birth"}
                     </div>
                   )}
                 </div>
@@ -296,7 +305,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     value={nationalityId}
                     name={nationalityIdKey}
                     register={register}
-                    label="Nationalty"
+                    label="Nationality"
                   />
                   {TouchFields?.nationalityId && Errors?.nationalityId && (
                     <div className="invalid-feedback">
