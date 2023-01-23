@@ -129,7 +129,7 @@ export const ApplicationDashboard = (props: any) => {
                             middleName = "",
                             leadCode,
                           },
-                          education: { studyModeCode },
+                          education,
                         },
                         idx
                       ) => (
@@ -143,7 +143,7 @@ export const ApplicationDashboard = (props: any) => {
                             onEdit={onEdit}
                             onPay={onPay}
                             leadCode={leadCode}
-                            studyModeCode={studyModeCode}
+                            studyModeCode={education?.studyModeCode}
                             updatedAt={updatedAt}
                           />
                         </div>

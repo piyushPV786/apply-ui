@@ -19,8 +19,10 @@ const relationShip = `${KinDetails}.relationship`;
 const Email = `${KinDetails}.email`;
 const phoneNumber = `${KinDetails}.mobileNumber`;
 const mobileCountryCode = `${KinDetails}.mobileCountryCode`;
-
-export const KinDetailsForm = (props: any) => {
+interface IKinForm {
+  leadId: string;
+}
+export const KinDetailsForm = ({ leadId }: IKinForm) => {
   const {
     setValue,
     register,
@@ -43,7 +45,7 @@ export const KinDetailsForm = (props: any) => {
     setValue(`${mobileCountryCode}`, `+${countryCode}`);
   };
   useEffect(() => {
-    if (isKinDetailExist) {
+    if (isKinDetailExist && leadId) {
       setValue(isKin, "yes");
     }
   }, [isKinDetailExist]);
@@ -152,7 +154,7 @@ export const KinDetailsForm = (props: any) => {
                     defaultValue={EmailVal}
                     {...register(`${Email}`, {
                       required: isKinNeed,
-                      validate: (value) =>  isValidEmail(value,!isKinNeed),
+                      validate: (value) => isValidEmail(value, !isKinNeed),
                     })}
                   />
                   {touchedField?.email && error?.email && (

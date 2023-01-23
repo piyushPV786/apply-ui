@@ -27,6 +27,7 @@ interface IEmployeProps {
   employmentStatusArr: IOption[];
   employerArr: any[];
   employmentIndustries: IOption[];
+  leadId: string;
 }
 export const EmployedForm = (props: IEmployeProps) => {
   const { employerArr, employmentIndustries, employmentStatusArr } = {
@@ -61,7 +62,7 @@ export const EmployedForm = (props: IEmployeProps) => {
   const isEmployedNeed = isEmployed === "yes";
   const isUnEmployed = employmentStatusVal === "UNEMPLOYED";
   useEffect(() => {
-    if (isEmployerDetailExist) {
+    if (isEmployerDetailExist && props?.leadId) {
       setValue(isEmployed, "yes");
     }
   }, [isEmployerDetailExist]);
@@ -140,32 +141,17 @@ export const EmployedForm = (props: IEmployeProps) => {
               <div className="col-md-4">
                 <StyledLabel required>Employer</StyledLabel>
                 <div className="mb-4">
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                    value={employerVal}
+                  <input
+                    className="form-control"
                     {...register(`${employer}`, {
                       required: !isUnEmployed && isEmployedNeed,
                     })}
-                    disabled={isUnEmployed}
-                  >
-                    <option value={""}>Select Employer</option>
-
-                    {employerArr &&
-                      employerArr.map(({ code, name }) => (
-                        <option
-                          selected={code === employerVal}
-                          key={code}
-                          value={code}
-                        >
-                          {name}
-                        </option>
-                      ))}
-                    <option value={123}>Test</option>
-                  </select>
+                    value={employerVal}
+                    defaultValue={employerVal}
+                  />
                   {touchField?.employer && error?.employer && (
                     <div className="invalid-feedback">
-                      Please select employer
+                      Please enter employer
                     </div>
                   )}
                 </div>
