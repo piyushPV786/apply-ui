@@ -13,7 +13,7 @@ import { isValidEmail, onlyAlphabets } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
 
-const SponsorCandidateDetail = "sponser";
+const SponsorCandidateDetail = "sponsor";
 
 const sponsorMode = `${SponsorCandidateDetail}.sponsorModeCode`;
 const sponsorName = `${SponsorCandidateDetail}.name`;
