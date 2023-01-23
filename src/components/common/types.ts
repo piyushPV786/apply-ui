@@ -75,6 +75,7 @@ export interface IMasterData {
   countryData: IOption[];
   disablityData: IOption[];
   agentData: IOption[];
+  studentTypeData: IOption[];
 }
 
 export interface IOption {
