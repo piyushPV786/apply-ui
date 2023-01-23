@@ -58,3 +58,114 @@ input[type="number"]::-webkit-inner-spin-button {
 .PhoneInputCountry {
   margin-right: 0 !important;
 }
+
+.header
+{
+  box-shadow: 0 3px 5px -1px #0003, 0 6px 10px #00000024, 0 1px 18px #0000001f;
+  padding: 10px 15px !important;
+}
+
+.form-control, .PhoneInput, .form-select
+{
+  max-width: 400px;
+}
+
+.application-form
+{
+  max-width: 1600px !important;
+  margin: 0 auto;
+}
+
+.form-label
+{
+  font-weight: 500;
+  position: relative;
+}
+
+.form-control, .form-select
+{
+  border: 2px solid #ced4da !important;
+}
+
+.PhoneInputInput
+{
+  height: 40px;
+  border-radius: 0.375rem;
+  border: 2px solid #ced4da;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.PhoneInputCountry
+{
+  border-top-left-radius: 0.375rem !important;
+  border-bottom-left-radius: 0.375rem !important;
+}
+
+.form-padding
+{
+  padding: 20px 15px 0;
+}
+
+.form-label .text-danger {
+  color: red;
+  font-family: roboto;
+  font-weight: bold;
+  font-size: 20px;
+  position: absolute;
+  top: -5px;
+  right: -13px;
+}
+
+.form-control:focus, .form-select:focus
+{
+  box-shadow: 0 0 0 !important;
+  border-color: #008554 !important;
+}
+
+div.PhoneInput--focus input
+{
+  border:2px solid #008554 !important;
+}
+
+.logout-text
+{
+  font-size: 14px !important;
+}
+
+.logout-text:hover
+{
+ text-decoration: underline;
+}
+
+.mobNum {
+  font-size: 16px;
+  font-family: roboto;
+  font-weight: 500;
+}
+
+.login-logo
+{
+  max-width: 200px;
+  height: auto;
+}
+
+.login-title
+{
+    font-size: 16px !important;
+    font-weight: 500 !important;
+}
+
+.login-text {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  max-width: 280px;
+  display: inline-block;
+}
+
+.footer-text
+{
+  font-family: roboto;
+  font-size: 14px;
+  font-weight: 500;
+}

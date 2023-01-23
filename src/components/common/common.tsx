@@ -7,10 +7,11 @@ export const GreenText = styled.span`
 `;
 
 export const GreenFormHeading = styled.p`
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
   color: #008554;
   margin: 0;
+  
 
   @media (max-width: 510px) {
     font-size: 11px;

@@ -52,9 +52,11 @@ export const ApplicationFormContainer = styled.div<any>`
   top: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background: white;
-  padding: 0.8rem;
-  border-radius: 3px;
+  background: #FFFFFF;
+  padding: 30px;
+  max-width: 420px;
+  border-radius: 5px;
+  margin-top: 30px;
   @media (max-width: 400px) {
     top: ${({ isProceed }) => (isProceed ? "62%" : "55%")};
   }
@@ -78,7 +80,7 @@ export const Heading = styled.span`
   padding: 1rem 0;
   position: relative;
   text-align: center;
-  top: 5%;
+  top:5%;
 `;
 
 export const StyledLink = styled.span`
@@ -92,7 +94,7 @@ export const ImageContainer = styled.div`
   height: 100vh;
   position: fixed;
   background-image: url(${url});
-  background-position: center;
+  background-position: top center;
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;

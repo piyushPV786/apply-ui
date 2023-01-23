@@ -18,7 +18,7 @@ function StepperComponent(props: IStepperProps) {
 
   return (
     <StyledStepper
-      style={{ background: "#dde1e3" }}
+      style={{ background: "transparent" }}
       activeStep={active}
       alternativeLabel
     >

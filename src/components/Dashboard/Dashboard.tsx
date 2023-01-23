@@ -7,7 +7,7 @@ import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import Image from "next/image";
-import ApplicationIcon from "../../../public/assets/images/application-icon.svg";
+import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
 import { CommonApi, CommonEnums, RoutePaths } from "../common/constant";
 import { AcadmicApi, AuthApi } from "../../service/Axios";
 import { IApplication, IOption } from "../common/types";
@@ -164,10 +164,10 @@ export const ApplicationDashboard = (props: any) => {
                           }}
                         >
                           <Image
-                            width="85"
-                            height="85"
+                            width="60"
+                            height="60"
                             src={ApplicationIcon}
-                            alt="application-icon.svg"
+                            alt="Application Icon"
                           />
                         </div>
                       </div>
