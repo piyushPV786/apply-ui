@@ -91,17 +91,17 @@ const StudentLogin = () => {
   const EnterMobNumber = () => {
     return (
       <div>
-        <Grid style={{ marginTop: "6px" }} container spacing={2}>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <Item>
-              <Title>Login With Mobile Number</Title>
+              <Title className="login-title">Login With Mobile Number</Title>
             </Item>
           </Grid>
           <Grid item xs={12}>
             <Item>
               {" "}
-              <span>
-                Enter your mobile number we will send you OPT to Verify
+              <span className="login-text">
+                Enter your mobile number we will send you OTP to Verify
               </span>
             </Item>
           </Grid>
@@ -233,6 +233,9 @@ const StudentLogin = () => {
     setOtp("");
   };
 
+  const today = new Date();
+  const year = today.getFullYear();
+
   const { message, success } = toastMsg;
   return (
     <>
@@ -240,7 +243,7 @@ const StudentLogin = () => {
         <>
           <Heading>
             <div>
-              <Image src={RBSLogo} alt="rbsLogo" />
+              <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
             </div>
             Regenesys Application Form
           </Heading>
@@ -249,8 +252,8 @@ const StudentLogin = () => {
             {isProceed && <EnterOtp />}
           </ApplicationFormContainer>
           <StyleFooter>
-            <span>
-              Copyright @ 2015 - 2022{" "}
+            <span className="footer-text">
+              Copyright @ 2015 - {year}{" "}
               <a href="https://www.regenesys.net/">Regenesys Business School</a>
             </span>
           </StyleFooter>
