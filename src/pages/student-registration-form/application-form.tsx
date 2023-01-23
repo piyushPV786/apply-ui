@@ -564,8 +564,7 @@ const ApplicationForm = (props: any) => {
                     />
                     <label className="form-check-label">
                       <strong className="me-1">I have read and agreed</strong>
-                      <a style={{ color: Green }} href="#">
-                        terms and condition?
+                      <a  target="_blank"   rel="noopener noreferrer" style={{ color: Green }} href="https://www.regenesys.net/terms-and-conditions/"> terms and condition?
                       </a>
                     </label>
                   </div>

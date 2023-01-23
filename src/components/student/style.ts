@@ -47,10 +47,6 @@ export const StyleFooter = styled.div`
   }
 `;
 export const ApplicationFormContainer = styled.div<any>`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   text-align: center;
   background: #FFFFFF;
   padding: 30px;
@@ -80,7 +76,7 @@ export const Heading = styled.span`
   padding: 1rem 0;
   position: relative;
   text-align: center;
-  top:5%;
+  display:block;
 `;
 
 export const StyledLink = styled.span`
