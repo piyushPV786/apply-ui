@@ -1,9 +1,7 @@
 import axios from "axios";
-import { CommonApi } from "../components/common/constant";
 import { AuthApi } from "../service/Axios";
 
-export const transformFormValue = (key: any, value) => {
-};
+export const transformFormValue = (key: any, value) => {};
 export const mapFormData = (data: any, isDraft?: boolean) => {
   let formData = data;
   if (formData) {
@@ -39,7 +37,14 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
     return formData;
   }
 };
-
+export const isValidDate = (value) => {
+  const currentYear = new Date().getFullYear();
+  const year = value.split("-")[0];
+  const age = currentYear - +year;
+  if (age < 16) return false;
+  if (age > currentYear) return false;
+  else return true;
+};
 export const isValidEmail = (email: string, passValidator?: boolean) => {
   if (passValidator) return true;
   // eslint-disable-next-line no-useless-escape

@@ -23,6 +23,7 @@ const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
 const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
 interface ISponsorProps {
+  leadId: string;
   sponsorModeArr: IOption[];
 }
 export const SponsoredForm = (props: ISponsorProps) => {
@@ -51,7 +52,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
   const isSponserDetailExist = watch(SponsorCandidateDetail);
   const isSponserNeed = isSponsoredVal === "yes";
   useEffect(() => {
-    if (isSponserDetailExist) {
+    if (isSponserDetailExist && props?.leadId) {
       setValue(isSponsored, "yes");
     }
   }, [isSponserDetailExist]);
@@ -161,7 +162,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     value={sponserEmailVal}
                     {...register(`${sponsorEmail}`, {
                       required: !isSelfSponsored && isSponserNeed,
-                      validate: (value) =>  isValidEmail(value,!isSponserNeed),
+                      validate: (value) => isValidEmail(value, !isSponserNeed),
                     })}
                   />
                   {touchedField?.email && error?.email && (

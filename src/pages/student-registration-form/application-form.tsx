@@ -127,6 +127,7 @@ const ApplicationForm = (props: any) => {
     success: false,
     show: false,
   });
+  const [leadId, setLeadId] = useState<string>("");
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isDocumentUploadDone, setDocumentUploadDone] =
     useState<boolean>(false);
@@ -183,13 +184,22 @@ const ApplicationForm = (props: any) => {
     setActiveStep((prevState: number) => prevState + 1);
   };
   const mapFormDefaultValue = () => {
+    const acceptedKeys = [
+      "kin",
+      "address",
+      "lead",
+      "education",
+      "employment",
+      "sponsor",
+    ];
     for (let [key, value] of Object.entries(studentData)) {
-      transformFormValue(key, value);
-      setValue(key, value, {
-        shouldDirty: true,
-        shouldTouch: true,
-        shouldValidate: true,
-      });
+      if (acceptedKeys.includes(key)) {
+        setValue(key, value, {
+          shouldDirty: true,
+          shouldTouch: true,
+          shouldValidate: true,
+        });
+      }
     }
   };
   const updateLead = (request: any) => {
@@ -419,11 +429,10 @@ const ApplicationForm = (props: any) => {
     const leadDetail = JSON.parse(
       sessionStorage?.getItem("activeLeadDetail") as any
     );
-    // if ("RLEAD00000005" || leadDetail) {
+    setLeadId(leadDetail?.applicationCode);
     if (leadDetail) {
       AuthApi.get(
         `lead/${leadDetail?.leadCode}/application/${leadDetail?.applicationCode}?isDraft=${leadDetail?.isdraftSave}`
-        // `lead/RLEAD00000005/application/RAPP00000006/?isDraft=${leadDetail?.isdraftSave}`
       )
         .then(({ data: response }) => {
           setStudentData(response?.data);
@@ -508,14 +517,16 @@ const ApplicationForm = (props: any) => {
                       socialMedias={socialMedias}
                       agentArr={agentData}
                     />
-                    <KinDetailsForm key="KinDetailsForm" />
+                    <KinDetailsForm leadId={leadId} key="KinDetailsForm" />
                     <EmployedForm
+                      leadId={leadId}
                       key="EmployedForm"
                       employmentStatusArr={employmentStatus}
                       employerArr={[]}
                       employmentIndustries={employmentIndustries}
                     />
                     <SponsoredForm
+                      leadId={leadId}
                       key="SponsoredForm"
                       sponsorModeArr={sponsorModes}
                     />
