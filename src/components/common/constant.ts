@@ -51,9 +51,9 @@ export const AgentandSocialMedia = [
   { code: 2, name: "Social Media" },
 ];
 export const studentType = [
-  { name: "Regular", code: 0 },
+  { name: "Regular", code: "REGULAR" },
 
-  { name: "Bursary", code: 1 },
+  { name: "Bursary", code: "BURSARY" },
 
-  { name: "Management", code: 2 },
+  { name: "Management", code: "MANAGEMENT" },
 ];
