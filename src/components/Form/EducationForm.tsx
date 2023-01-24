@@ -94,7 +94,10 @@ const FeeCard = (props: any) => {
     <>
       <StyleFeeCards
         style={{
-          border: props?.selected === props?.fee ? "2px solid green" : "2px solid #dde1e3",
+          border:
+            props?.selected === props?.fee
+              ? "2px solid green"
+              : "2px solid #dde1e3",
         }}
         onClick={() => props.setSelectedMode(selectedData)}
       >
@@ -149,7 +152,6 @@ export const EducationForm = (props: IEducationProps) => {
     register(`${programFees}`, {
       required: true,
     });
-    setValue(referredBy, socialMediaVal ? "2" : agentNameVal ? "1" : "");
     if (
       programVal &&
       programVal.length > 0 &&
@@ -158,6 +160,20 @@ export const EducationForm = (props: IEducationProps) => {
       getQualificationStudyModeData(programVal);
     }
   }, [programVal]);
+
+  useEffect(() => {
+    const value =
+      socialMediaVal && socialMediaVal.length > 0
+        ? "2"
+        : agentNameVal && agentNameVal.length > 0
+        ? "1"
+        : "";
+    setValue(referredBy, value, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  }, [socialMediaVal, agentNameVal]);
 
   const getQualificationStudyModeData = (programCode: string) => {
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
@@ -181,7 +197,11 @@ export const EducationForm = (props: IEducationProps) => {
           }));
         }
 
-        setValue(applicationFeesKey, applicationFees?.fees[0]?.fee);
+        setValue(applicationFeesKey, applicationFees?.fees[0]?.fee, {
+          shouldDirty: true,
+          shouldTouch: true,
+          shouldValidate: true,
+        });
         setStudyModeQualification(courseFeesDetail);
       })
       .catch((err) => {
@@ -567,17 +587,17 @@ const StyleFeeCards = styled.div`
   background: ${DefaultGrey};
   padding: 6px 10px;
   cursor: pointer;
-    font-size: 14px;
-    font-family: roboto;
-    font-weight: 600;
-    border-radius: 2px;
-    box-shadow: 0px 0px 30px 0px rgb(82 63 105 / 15%);
-    border: 2px solid #FFF;
-    transition: all 0.5s;
-    -moz-transition: all 0.5s;
-    -webkit-transition: all 0.5s;
-    -ms-transition: all 0.5s;
-    -o-transition: all 0.5s;
+  font-size: 14px;
+  font-family: roboto;
+  font-weight: 600;
+  border-radius: 2px;
+  box-shadow: 0px 0px 30px 0px rgb(82 63 105 / 15%);
+  border: 2px solid #fff;
+  transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -o-transition: all 0.5s;
 `;
 
 const StyleContainer = styled.div`

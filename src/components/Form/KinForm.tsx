@@ -8,7 +8,7 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
-import { isValidEmail, onlyAlphabets } from "../../Util/Util";
+import { isEmpty, isValidEmail, onlyAlphabets } from "../../Util/Util";
 import Image from "next/image";
 import KinImg from "../../../public/assets/images/kin.svg";
 
@@ -45,8 +45,12 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
     setValue(`${mobileCountryCode}`, `+${countryCode}`);
   };
   useEffect(() => {
-    if (isKinDetailExist && leadId) {
-      setValue(isKin, "yes");
+    if (!isEmpty(isKinDetailExist) && leadId) {
+      setValue(isKin, "yes", {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      });
     }
   }, [isKinDetailExist]);
   return (
@@ -89,7 +93,7 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
         </AccordionSummary>
 
         <AccordionDetails hidden={isNextKinVal === "no"}>
-        <div className="container-fluid form-padding">
+          <div className="container-fluid form-padding">
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
