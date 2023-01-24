@@ -94,7 +94,7 @@ const FeeCard = (props: any) => {
     <>
       <StyleFeeCards
         style={{
-          border: props?.selected === props?.fee ? "1.5px solid green" : "0",
+          border: props?.selected === props?.fee ? "2px solid green" : "2px solid #dde1e3",
         }}
         onClick={() => props.setSelectedMode(selectedData)}
       >
@@ -567,6 +567,17 @@ const StyleFeeCards = styled.div`
   background: ${DefaultGrey};
   padding: 6px 10px;
   cursor: pointer;
+    font-size: 14px;
+    font-family: roboto;
+    font-weight: 600;
+    border-radius: 2px;
+    box-shadow: 0px 0px 30px 0px rgb(82 63 105 / 15%);
+    border: 2px solid #FFF;
+    transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    -o-transition: all 0.5s;
 `;
 
 const StyleContainer = styled.div`

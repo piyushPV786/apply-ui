@@ -7,7 +7,7 @@ import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import axios from "../../service/Axios";
-import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.svg";
+import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
 import Image from "next/image";
 import {
   ImageContainer,
@@ -241,6 +241,7 @@ const StudentLogin = () => {
     <>
       <ImageContainer>
         <>
+        <div className="login-spacing">
           <Heading>
             <div>
               <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
@@ -251,6 +252,7 @@ const StudentLogin = () => {
             {!isProceed && <EnterMobNumber />}
             {isProceed && <EnterOtp />}
           </ApplicationFormContainer>
+          </div>
           <StyleFooter>
             <span className="footer-text">
               Copyright @ 2015 - {year}{" "}
