@@ -42,6 +42,9 @@ const PaymentOption = (props: any) => {
       firstname: allFields?.lead?.firstName || "Vivek Kumar Gupta",
       phone: allFields?.lead?.mobileNumber || "7566410079",
       productinfo: "test",
+      discountCode: allFields?.payment?.discountCode,
+      discountAmount: allFields?.payment?.discountAmount,
+      studentTypeCode: allFields?.education?.studentTypeCode,
     };
     const appCode = getApplicationCode();
     AuthApi.post(`application/${appCode}/payment/payu`, payload)
