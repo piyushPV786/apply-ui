@@ -24,9 +24,7 @@ export const ApplicationDashboard = (props: any) => {
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
     )?.leadCode;
-    // if ("RLEAD00000005" || (studentId && studentApplications.length === 0)) {
     if (studentId && studentApplications.length === 0) {
-      // getStudentApplications(studentId);
       getStudentApplications(studentId);
       setStudenId(studentId);
     }
@@ -58,23 +56,37 @@ export const ApplicationDashboard = (props: any) => {
       .catch((err) => console.log(err));
   };
   const onApplyNow = () => {
-    router.push(RoutePaths.Application_Form);
+    clearRoute();
+    const leadId = JSON.parse(sessionStorage.getItem("studentId")!)
+      ?.leadCode as any;
+    const leadDetail = {
+      leadId,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    if (leadId) {
+      router.push(RoutePaths.Application_Form);
+    }
+  };
+  const clearRoute = () => {
+    sessionStorage.setItem("routeTo", "");
   };
   const onEdit = (
     applicationCode: string | number,
     leadCode: string,
     isDraft
   ) => {
+    clearRoute();
     const isdraftSave = isDraft === CommonEnums.DRAFT ? true : false;
     const leadDetail = { applicationCode, leadCode, isdraftSave };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
-    onApplyNow();
+    router.push(RoutePaths.Application_Form);
   };
   const onPay = (
     applicationCode: string | number,
     leadCode: string,
     isDraft
   ) => {
+    clearRoute();
     const isdraftSave = isDraft === CommonEnums.DRAFT;
     const isPaymentPending = isDraft === CommonEnums.DRAFT;
     const leadDetail = {
@@ -84,6 +96,7 @@ export const ApplicationDashboard = (props: any) => {
       isdraftSave,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    router.push(RoutePaths.Application_Form);
   };
   return (
     <>

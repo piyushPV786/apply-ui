@@ -25,7 +25,7 @@ const postalState = `${Address}[0].state`;
 const isSameAsPostalAddress = `${Address}.isSameAsPostalAddress`;
 const addressType = `${Address}[0].addressType`;
 const addressTypeResidential = `${Address}[1].addressType`;
-export const AddressForm = ({ countryData = [] }: any) => {
+export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
   const CountryData = countryData;
   const {
     setValue,
@@ -49,7 +49,7 @@ export const AddressForm = ({ countryData = [] }: any) => {
   useEffect(() => {
     setValue(`${addressType}`, "POSTAL");
     setValue(`${addressTypeResidential}`, "RESIDENTIAL");
-  }, []);
+  }, [leadId]);
 
   return (
     <>
@@ -97,13 +97,12 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     value={postalCountryVal}
                     options={CountryData}
                     register={register}
+                    mapKey="name"
                     name={postalCountry}
                     onChange={(e: any) => {
                       const value = e.target.value;
                       setValue(postalCountry, value);
                     }}
-                    displayItem="name"
-                    mapKey="isoCode"
                     label="Country"
                   />
 
@@ -301,8 +300,7 @@ export const AddressForm = ({ countryData = [] }: any) => {
                       options={CountryData}
                       name={resCountry}
                       register={register}
-                      mapKey="isoCode"
-                      displayItem="name"
+                      mapKey="name"
                       onChange={(e: any) => {
                         const value = e.target.value;
                         setValue(resCountry, value);

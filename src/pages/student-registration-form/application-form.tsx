@@ -114,7 +114,8 @@ const mockFormData = {
 };
 
 const isValidFileType = (files: any[]) => {
-  return (files || []).filter((file) => file?.error === true);
+  if (!files || files.length === 0) return [];
+  return files.filter((file) => file?.error === true);
 };
 const ApplicationForm = (props: any) => {
   const router = useRouter();
@@ -161,18 +162,6 @@ const ApplicationForm = (props: any) => {
 
   const isValidDocument =
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
-  useEffect(() => {
-    if (window && router.query?.isFormSubmittedAlready) {
-      const isFormSubmittedAlready = JSON.parse(
-        router?.query?.isFormSubmittedAlready as any
-      );
-      const isPaymentFail = JSON.parse(router?.query?.isPaymentFail as any);
-      if (isFormSubmittedAlready && isPaymentFail) {
-        setActiveStep(1);
-        setSubmitted(true);
-      }
-    }
-  }, [router.query]);
 
   const navigateBack = () => {
     setSubmitted(false);
@@ -182,6 +171,20 @@ const ApplicationForm = (props: any) => {
     setSubmitted(true);
     setPaymentDone(true);
     setActiveStep((prevState: number) => prevState + 1);
+  };
+
+  const routeIfStepDone = (routeTo: string) => {
+    if (routeTo) {
+      switch (routeTo) {
+        case "Document":
+          setSubmitted(false);
+          setActiveStep(2);
+          setPaymentDone(true);
+          break;
+        default:
+          break;
+      }
+    }
   };
   const mapFormDefaultValue = () => {
     const acceptedKeys = [
@@ -244,12 +247,14 @@ const ApplicationForm = (props: any) => {
       ...request,
     })
       .then(({ data }) => {
-        console.log({ data }, "draft update");
         setShowDraftSaveToast({
           success: true,
           message: data?.message,
           show: true,
         });
+        setTimeout(() => {
+          router.push(RoutePaths.Dashboard);
+        }, 2000);
       })
       .catch((err) => {
         console.log({ err });
@@ -266,12 +271,14 @@ const ApplicationForm = (props: any) => {
       ...request,
     })
       .then(({ data }) => {
-        console.log({ data }, "draft create");
         setShowDraftSaveToast({
           success: true,
           message: data?.message,
           show: true,
         });
+        setTimeout(() => {
+          router.push(RoutePaths.Dashboard);
+        }, 2000);
       })
       .catch((err) => {
         console.log(err.message);
@@ -313,30 +320,16 @@ const ApplicationForm = (props: any) => {
     }
   };
 
-  // console.log({ allFields, errors });
   const checkValidationForDraftSave = () => {
     let isValid = true;
     const {
-      lead: {
-        firstName,
-        lastName,
-        email,
-        mobileNumber,
-        genderId,
-        dateOfBirth,
-        identificationPassportNumber,
-        nationalityId,
-      },
+      lead: { firstName, lastName, email, mobileNumber },
     } = { ...allFields } as any;
     const feildObject: any = {
       firstName,
       lastName,
       email,
       mobileNumber,
-      // genderId,
-      // dateOfBirth,
-      // identificationPassportNumber,
-      // nationalityId,
     };
 
     for (let [key, value] of Object.entries(feildObject)) {
@@ -370,30 +363,37 @@ const ApplicationForm = (props: any) => {
         console.log(err.message);
       });
   };
-  const uploadStudentDocs = () => {
-    const { uploadedDocs = [] as File[] } = allFields;
+  const uploadStudentDocs = async () => {
+    const {
+      document: { uploadedDocs = [] as File[] },
+    } = allFields;
     let count = 0;
-    uploadedDocs.forEach((file: File & { typeCode: string }) => {
-      const payload = {
-        documentTypeCode: file?.typeCode || "other",
-        fileName: file.name,
-        fileType: file.type,
-        amount: +allFields?.education?.studyModeDetail?.fee || 0,
-        paymentModeCode: "OFFLINE",
-      };
-      getUploadDocumentUrl(payload).then((res) => {
-        if (res.status === 200) {
-          count = count + 1;
-          uploadFiles(res, file);
-        } else {
-          showToast(false, res.response.data.message);
-          console.log(res.response.data.message);
-        }
-      });
+    const successLength: any[] = [];
+    await Promise.all(
+      uploadedDocs.map((file: File & { typeCode: string }) => {
+        const payload = {
+          documentTypeCode: file?.typeCode || "other",
+          fileName: file.name,
+          fileType: file.type,
+          amount: +allFields?.education?.studyModeDetail?.fee || 0,
+          paymentModeCode: "OFFLINE",
+        };
+        return getUploadDocumentUrl(payload).then((res) => {
+          if (res.statusCode === 201) {
+            count = count + 1;
+            successLength.push("true");
+            uploadFiles(res?.data, file);
+          } else {
+            showToast(false, res.message);
+            console.log(res.message);
+          }
+        });
+      })
+    ).then(() => {
+      if (count === successLength.length) {
+        router.push(RoutePaths.Document_Success);
+      }
     });
-    if (count === uploadedDocs.length) {
-      router.push(RoutePaths.Payment_Success);
-    }
   };
   const showToast = (success: boolean, message: string) => {
     setShowDraftSaveToast({
@@ -429,6 +429,8 @@ const ApplicationForm = (props: any) => {
     const leadDetail = JSON.parse(
       sessionStorage?.getItem("activeLeadDetail") as any
     );
+    const routeTo: string = sessionStorage.getItem("routeTo")! || "";
+
     setLeadId(leadDetail?.applicationCode);
     if (leadDetail) {
       AuthApi.get(
@@ -436,10 +438,13 @@ const ApplicationForm = (props: any) => {
       )
         .then(({ data: response }) => {
           setStudentData(response?.data);
-          if (leadDetail?.isPaymentPending) {
+          if (leadDetail?.isPaymentPending && routeTo !== "Document") {
             setActiveStep(1);
             setSubmitted(true);
             setPaymentDone(true);
+          }
+          if (routeTo === "Document") {
+            routeIfStepDone(routeTo); /// calling this if user coming back from payment success screen
           }
         })
         .catch((err) => {
@@ -458,7 +463,7 @@ const ApplicationForm = (props: any) => {
       })
       .catch((err) => console.log(err));
   };
-
+  // console.log({ allFields, errors });
   const language = masterData?.languageData as IOption[];
   const nationalities = masterData?.nationalityData as IOption[];
   const highestQualifications =
@@ -511,7 +516,11 @@ const ApplicationForm = (props: any) => {
                       homeLanguage={language}
                       race={race}
                     />
-                    <AddressForm key="AddressForm" countryData={countryData} />
+                    <AddressForm
+                      key="AddressForm"
+                      leadId={leadId}
+                      countryData={countryData}
+                    />
                     <EducationForm
                       key="EducationForm"
                       highestQualifications={highestQualifications}
@@ -557,6 +566,7 @@ const ApplicationForm = (props: any) => {
                   allFields={allFields}
                   isValidDocument={isValidDocument}
                   documentType={documentType}
+                  leadId={leadId}
                 />
               </>
             )}
@@ -617,8 +627,11 @@ const ApplicationForm = (props: any) => {
                       title={activeStep < 2 ? "Save & Next" : "Submit"}
                     />
                     <StyleFooter>
-                      <span className="footer-text" style={{ color: "#131718" }}>
-                      Copyright @ 2015 - {year}{" "}
+                      <span
+                        className="footer-text"
+                        style={{ color: "#131718" }}
+                      >
+                        Copyright @ 2015 - {year}{" "}
                         <a href="https://www.regenesys.net/">
                           Regenesys Business School
                         </a>
