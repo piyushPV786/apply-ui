@@ -507,11 +507,9 @@ const ApplicationForm = (props: any) => {
             {" "}
             {activeStep === MagicNumbers.ZERO && (
               <>
-                <div className="row w-100">
-                  <form
-                    className="application-form"
-                    onSubmit={(data) => onSubmit(data, false)}
-                  >
+              <div className="application-form">
+                <div className="row">
+                  <form onSubmit={(data) => onSubmit(data, false)}>
                     <PersonalInfoForm
                       key="personalForm"
                       genders={genders}
@@ -546,6 +544,7 @@ const ApplicationForm = (props: any) => {
                       sponsorModeArr={sponsorModes}
                     />
                   </form>
+                </div>
                 </div>
               </>
             )}

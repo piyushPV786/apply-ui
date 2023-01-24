@@ -147,12 +147,12 @@ const StudentLogin = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Item>
-              <Title>OPT verification</Title>
+              <Title className="login-title">OTP verification</Title>
             </Item>
           </Grid>
           <Grid item xs={12}>
             <Item>
-              <span>
+              <span className="login-text">
                 Enter 4 digit OTP code sent to your number {mobileNumber}
               </span>
             </Item>
@@ -178,9 +178,9 @@ const StudentLogin = () => {
                 }}
                 title="Verify"
               />
-              <StyledLink onClick={resendOtp}>Resend OTP</StyledLink>
+              <StyledLink className="link-text" onClick={resendOtp}>Resend OTP</StyledLink>
               <br />
-              <StyledLink onClick={() => setProceed(!isProceed)}>
+              <StyledLink className="link-text" onClick={() => setProceed(!isProceed)}>
                 Change Mobile Number
               </StyledLink>
             </Item>

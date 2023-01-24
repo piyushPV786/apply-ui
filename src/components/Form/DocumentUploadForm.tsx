@@ -96,7 +96,7 @@ const DocumentUploadForm = ({
   };
   return (
     <>
-      <div className="row w-100">
+      <div className="row document-container">
         <div className="col-12 col-md-12 mb-3">
           <MainContainer>
             {" "}
@@ -114,7 +114,7 @@ const DocumentUploadForm = ({
                 <div className="col-md-5">
                   <CustomContainer>
                     <StyledUploadDocumentContainer ref={fileUploadRef}>
-                      <div className="mt-1">
+                      <div className="mt-1 upload-icon">
                         <Image width="100" src={UploadImg} alt="uplopad-svg" />
                       </div>
                       <input
@@ -131,10 +131,10 @@ const DocumentUploadForm = ({
                           }
                         }}
                       />
-                      <GreenFormHeading className=" mt-1 fs-3 text">
-                        Drag and Drop files to upload
+                      <GreenFormHeading className="mt-1 text">
+                      Drag and drop, or browse your files
                       </GreenFormHeading>
-                      <strong className="mt-1 fs-4">or</strong>
+                      <strong className="mt-1 fs-6">or</strong>
                       <div>
                         <StyledButton
                           className="mt-2"
@@ -142,8 +142,8 @@ const DocumentUploadForm = ({
                           roundBtn
                           onClick={onDocUploadClick}
                         />
-                        <p className="fs-5" style={{ color: `#838383` }}>
-                          Supported files, PDF, PNG, JPEG, JPG{" "}
+                        <p className="grey-text mt-2" style={{ color: `#838383` }}>
+                        Only PNG, JPEG and PDF files with max size of 2MB{" "}
                         </p>
                       </div>
                     </StyledUploadDocumentContainer>
@@ -151,14 +151,14 @@ const DocumentUploadForm = ({
                 </div>
                 <div className="col-md-7">
                   <UploadedFilesContainer>
-                    <h4 className="fw-bold">Uploaded Files</h4>
+                    <h5 className="fw-bold mb-3 font-roboto">Uploaded Files</h5>
 
-                    <table className="table table-striped table-bordered">
+                    <table className="table table-striped doc-table">
                       <thead>
                         <tr>
                           <th scope="col">File Name</th>
                           <th scope="col">File Type</th>
-                          <th scope="col">Action</th>
+                          <th scope="col" className="text-center">Action</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -194,7 +194,7 @@ const DocumentUploadForm = ({
                                 ))}
                               </select>
                             </td>
-                            <td>
+                            <td className="text-center">
                               <div>
                                 {!item.error && (
                                   <Link
@@ -217,10 +217,10 @@ const DocumentUploadForm = ({
                                   className="cursor-pointer"
                                 >
                                   <Image
-                                    className="me-2 ms-2 "
+                                    className="me-2 ms-2"
                                     src={TrashIcon}
                                     alt={"TrashIcon"}
-                                    width="25"
+                                    width="20"
                                   />
                                 </span>
                               </div>
@@ -313,9 +313,9 @@ const StyledUploadDocumentContainer = styled.div`
 `;
 const CustomContainer = styled.div`
   padding: 1.5rem;
-  max-width: 400px;
+  max-width: 350px;
   cursor: pointer;
-  background-color: ${DefaultGrey};
+  background-color: #f5f5f5;
   width: 100%;
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='green' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
 `;
