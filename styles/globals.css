@@ -23,6 +23,8 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-top: 0.25rem;
   font-size: 0.875em;
   color: #dc3545;
+  font-family: roboto;
+  font-weight: 500;
 }
 .PhoneInputCountry {
   padding: 5px;
@@ -68,6 +70,7 @@ input[type="number"]::-webkit-inner-spin-button {
 .form-control, .PhoneInput, .form-select
 {
   max-width: 400px;
+  font-family: roboto;
 }
 
 .application-form
@@ -85,6 +88,7 @@ input[type="number"]::-webkit-inner-spin-button {
 .form-control, .form-select
 {
   border: 2px solid #ced4da !important;
+  font-family: roboto;
 }
 
 .PhoneInputInput
@@ -94,6 +98,7 @@ input[type="number"]::-webkit-inner-spin-button {
   border: 2px solid #ced4da;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+  font-family: roboto;
 }
 
 .PhoneInputCountry
@@ -168,4 +173,9 @@ div.PhoneInput--focus input
   font-family: roboto;
   font-size: 14px;
   font-weight: 500;
+}
+
+.login-spacing
+{
+  margin-top: 100px;
 }
