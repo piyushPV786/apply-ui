@@ -15,6 +15,7 @@ import { AcadmicApi, AuthApi } from "../../service/Axios";
 import { IMasterData, IOption } from "../../components/common/types";
 import {
   getUploadDocumentUrl,
+  isEmpty,
   mapFormData,
   transformFormValue,
   uploadDocuments,
@@ -196,6 +197,13 @@ const ApplicationForm = (props: any) => {
       "sponsor",
     ];
     for (let [key, value] of Object.entries(studentData)) {
+      if (
+        key === "kin" ||
+        key === "sponser" ||
+        (key === "employment" && isEmpty(studentData[key]))
+      ) {
+        return;
+      }
       if (acceptedKeys.includes(key)) {
         setValue(key, value, {
           shouldDirty: true,

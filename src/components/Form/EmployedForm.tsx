@@ -9,7 +9,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { onlyAlphabets, onlyAlphaNumericSpace } from "../../Util/Util";
+import { isEmpty, onlyAlphabets, onlyAlphaNumericSpace } from "../../Util/Util";
 import Image from "next/image";
 import EmployeeImg from "../../../public/assets/images/employeee.svg";
 
@@ -62,7 +62,7 @@ export const EmployedForm = (props: IEmployeProps) => {
   const isEmployedNeed = isEmployed === "yes";
   const isUnEmployed = employmentStatusVal === "UNEMPLOYED";
   useEffect(() => {
-    if (isEmployerDetailExist && props?.leadId) {
+    if (isEmpty(isEmployerDetailExist) && props?.leadId) {
       setValue(isEmployed, "yes");
     }
   }, [isEmployerDetailExist]);
@@ -105,7 +105,7 @@ export const EmployedForm = (props: IEmployeProps) => {
           </div>
         </AccordionSummary>
         <AccordionDetails hidden={isEmployedVal === "no"}>
-        <div className="container-fluid form-padding">
+          <div className="container-fluid form-padding">
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">

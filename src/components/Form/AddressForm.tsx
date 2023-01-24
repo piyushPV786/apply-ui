@@ -10,7 +10,7 @@ import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import AdvanceDropDown from "../dropdown/Dropdown";
-import { onlyAlphabets } from "../../Util/Util";
+import { onlyAlphabets, sortAscending } from "../../Util/Util";
 const Address = "address";
 const resPostalAddress = `${Address}[1].street`;
 const resCountry = `${Address}[1].country`;
@@ -95,7 +95,9 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                 <div className="mb-4">
                   <AdvanceDropDown
                     value={postalCountryVal}
-                    options={CountryData}
+                    options={CountryData.sort((a, b) =>
+                      sortAscending(a, b, "name")
+                    )}
                     register={register}
                     mapKey="name"
                     name={postalCountry}
@@ -297,7 +299,9 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     <AdvanceDropDown
                       value={resCountryVal}
                       label="Country"
-                      options={CountryData}
+                      options={CountryData?.sort((a, b) =>
+                        sortAscending(a, b, "name")
+                      )}
                       name={resCountry}
                       register={register}
                       mapKey="name"

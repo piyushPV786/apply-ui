@@ -164,3 +164,23 @@ export const transformDate = (date: Date) => {
 
   return `${day}th ${month} ${year}`;
 };
+
+export function sortAscending(a, b, key: string) {
+  // converting to uppercase to have case-insensitive comparison
+  const name1 = a[key].toUpperCase();
+  const name2 = b[key].toUpperCase();
+
+  let comparison = 0;
+
+  if (name1 > name2) {
+    comparison = 1;
+  } else if (name1 < name2) {
+    comparison = -1;
+  }
+  return comparison;
+}
+
+export const isEmpty = (object: any) =>
+  !object || object === null || object === undefined
+    ? true
+    : Object.keys(object).length === 0 && object.constructor === Object;

@@ -11,7 +11,7 @@ import UserCircleIcon from "../../../public/assets/images/user-circle-svgrepo-co
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { isValidDate, isValidEmail, onlyAlphabets } from "../../Util/Util";
+import { isValidDate, isValidEmail, onlyAlphabets, sortAscending } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
 interface IPersonalInfoProps {
   genders: IOption[];
@@ -301,7 +301,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    options={nationalities}
+                    options={nationalities?.sort((a, b) =>
+                      sortAscending(a, b, 'name')
+                    )}
                     value={nationalityId}
                     name={nationalityIdKey}
                     register={register}
