@@ -102,7 +102,7 @@ const DocumentUploadForm = ({
                 <div className="col-md-5">
                   <CustomContainer>
                     <StyledUploadDocumentContainer ref={fileUploadRef}>
-                      <div className="mt-1">
+                      <div className="mt-1 upload-icon">
                         <Image width="100" src={UploadImg} alt="uplopad-svg" />
                       </div>
                       <input
@@ -301,9 +301,9 @@ const StyledUploadDocumentContainer = styled.div`
 `;
 const CustomContainer = styled.div`
   padding: 1.5rem;
-  max-width: 400px;
+  max-width: 350px;
   cursor: pointer;
-  background-color: ${DefaultGrey};
+  background-color: #f5f5f5;
   width: 100%;
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='green' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
 `;

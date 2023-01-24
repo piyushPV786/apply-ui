@@ -501,8 +501,9 @@ const ApplicationForm = (props: any) => {
             {" "}
             {activeStep === MagicNumbers.ZERO && (
               <>
-                <div className="row w-100">
-                  <form className="application-form" onSubmit={(data) => onSubmit(data, false)}>
+              <div className="application-form">
+                <div className="row">
+                  <form onSubmit={(data) => onSubmit(data, false)}>
                     <PersonalInfoForm
                       key="personalForm"
                       genders={genders}
@@ -533,6 +534,7 @@ const ApplicationForm = (props: any) => {
                       sponsorModeArr={sponsorModes}
                     />
                   </form>
+                </div>
                 </div>
               </>
             )}
@@ -575,9 +577,9 @@ const ApplicationForm = (props: any) => {
                         required: true,
                       })}
                     />
-                    <label className="form-check-label">
-                      <strong className="me-1">I have read and agreed</strong>
-                      <a  target="_blank"   rel="noopener noreferrer" style={{ color: Green }} href="https://www.regenesys.net/terms-and-conditions/"> terms and condition?
+                    <label className="form-check-label terms-text">
+                      <span className="me-1">I have read and agreed</span>
+                      <a  target="_blank"   rel="noopener noreferrer" style={{ color: Green }} href="https://www.regenesys.net/terms-and-conditions/">terms and condition?
                       </a>
                     </label>
                   </div>

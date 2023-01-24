@@ -145,7 +145,7 @@ const MainContainer = styled.div`
 
 const PaymentContainer = styled.div<any>`
   width: 100%;
-  padding: 1rem 10px;
+  padding: 1.5rem;
   
   .form-check .form-check-input {
     margin-left: -0.8em!important;
