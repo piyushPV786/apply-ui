@@ -135,7 +135,14 @@ const Payment = (props: any) => {
       promoCode,
       allFields?.education?.studentTypeCode
     );
-    if (result?.statusCode === 200 && result?.data?.percent) {
+    if (
+      result?.statusCode === 200 &&
+      result?.data?.status === "APP-ENROLED" &&
+      allFields?.education?.studentTypeCode?.toLowerCase() === "management"
+    ) {
+      props.showToast(true, "Management Code Applied");
+      props?.navigateNext();
+    } else if (result?.statusCode === 200 && result?.data?.percent) {
       const { agentCode, percent, discountCode } = result?.data;
       setValue("payment.agentCode", agentCode);
       setValue("payment.discountCode", discountCode);

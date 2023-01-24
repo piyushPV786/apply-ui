@@ -308,7 +308,6 @@ const ApplicationForm = (props: any) => {
     const draftUpdateCode = activeLeadDetail || appCode;
     if (leadCode && !isDraftSave) {
       request.lead.leadCode = leadCode;
-      console.log("asdasdasdasdasdasdasdasdasdasdasdasdasd", leadCode);
       updateLead(request);
       return;
     }
