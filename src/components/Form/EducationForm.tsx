@@ -149,6 +149,7 @@ export const EducationForm = (props: IEducationProps) => {
     register(`${programFees}`, {
       required: true,
     });
+    setValue(referredBy, socialMediaVal ? "2" : agentNameVal ? "1" : "");
     if (
       programVal &&
       programVal.length > 0 &&
@@ -164,12 +165,22 @@ export const EducationForm = (props: IEducationProps) => {
         const courseFeesDetail = res?.data?.data;
         let applicationFees;
         courseFeesDetail.forEach((item) =>
-          item.studyModes.forEach((application) => {
+          item.studyModes.forEach((application, index) => {
             if (application.studyModeCode === "APPLICATION") {
               applicationFees = application;
             }
           })
         );
+        if (programVal && courseFeesDetail.length > 0 && studyMode) {
+          const index = courseFeesDetail[0]?.studyModes.findIndex(
+            (item) => item?.studyModeCode === studyModeVal
+          );
+          setSelectedStudyMode((prevState) => ({
+            ...prevState,
+            studyIdx: index,
+          }));
+        }
+
         setValue(applicationFeesKey, applicationFees?.fees[0]?.fee);
         setStudyModeQualification(courseFeesDetail);
       })
@@ -289,7 +300,7 @@ export const EducationForm = (props: IEducationProps) => {
                       )}
                     <StyleContainer>
                       {studyModeQualification &&
-                        studyModeQualification[parentIdx]?.studyModes[
+                        studyModeQualification[0]?.studyModes[
                           studyIdx
                         ]?.fees?.map(({ fee, feeMode }: IFee) => (
                           <FeeCard

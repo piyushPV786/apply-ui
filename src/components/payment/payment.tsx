@@ -92,9 +92,8 @@ const Payment = (props: any) => {
           fileType: file.type,
           amount: +allFields?.education?.programFees,
           paymentModeCode: "OFFLINE",
-          discountCode:"",
-          studentTypeCode:allFields?.education?.studentTypeCode,
-
+          discountCode: "",
+          studentTypeCode: allFields?.education?.studentTypeCode,
         };
         return getUploadDocumentUrl(payload).then((res) => {
           if (res?.statusCode === 201) {
@@ -106,11 +105,17 @@ const Payment = (props: any) => {
           }
         });
       })
-    );
-    if (count === paymentDocs.length) {
-      setPaymentDocSubmit(false);
-      props?.navigateNext();
-    }
+    )
+      .then(() => {
+        if (count === paymentDocs.length) {
+          setPaymentDocSubmit(false);
+          props?.navigateNext();
+        }
+      })
+      .catch((err) => {
+        setPaymentDocSubmit(false);
+        console.log(err);
+      });
   };
   const onPaymentDocumentUpload = (files: any) => {
     const uploadedFiles = files;
@@ -120,19 +125,19 @@ const Payment = (props: any) => {
     setPaymentDocs(uploadedFiles);
     setValue("payment.paymentProof", uploadedFiles);
   };
-  console.log(allFields)
   const applyDiscount = async () => {
-    const appCode = getApplicationCode()
-    const result: any = await applyDiscountCode(appCode, promoCode, allFields?.education?.studentTypeCode);
+    const appCode = getApplicationCode();
+    const result: any = await applyDiscountCode(
+      appCode,
+      promoCode,
+      allFields?.education?.studentTypeCode
+    );
     if (result?.statusCode === 200 && result?.data?.percent) {
       const { agentCode, percent, discountCode } = result?.data;
       setValue("payment.agentCode", agentCode);
       setValue("payment.discountCode", discountCode);
       setValue("payment.percent", percent);
-      setValue(
-        "payment.discountAmount",
-        (+programFee * percent) / 100
-      );
+      setValue("payment.discountAmount", (+programFee * percent) / 100);
       props.showToast(true, result?.message);
     } else {
       props.showToast(false, "Invalid Code");
@@ -234,10 +239,7 @@ const Payment = (props: any) => {
                         </div>
                         <div>
                           {" "}
-                          <h6>
-                            Total Application INR -{" "}
-                            {programFee}
-                          </h6>
+                          <h6>Total Application INR - {programFee}</h6>
                           <h6>
                             Discount INR - {allFields?.payment?.discountAmount}
                           </h6>

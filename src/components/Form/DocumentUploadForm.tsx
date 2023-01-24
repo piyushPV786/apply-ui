@@ -18,6 +18,7 @@ interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
   documentType: any;
+  leadId: string;
 }
 const imgUrl = "/assets/images";
 
@@ -25,22 +26,33 @@ const DocumentUploadForm = ({
   allFields,
   isValidDocument,
   documentType,
+  leadId,
 }: IDocumentUploadProps) => {
   const fileUploadRef = useRef<any>(null);
   const { register, setValue } = useFormContext();
   const [uploadDocs, setUploadDocs] = useState<
     (File & { error: boolean; typeCode: "other" })[]
   >([]);
- 
+  const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
-    const allUploadedFiles = uniqueArrayOfObject(
-      [...uploadDocs, existingPaymentProof],
-      "size"
-    );
-    setValue("document.uploadedDocs", allUploadedFiles);
-    setUploadDocs(allUploadedFiles);
-  }, []);
+    if (existingPaymentProof && existingPaymentProof.length > 0) {
+      existingPaymentProof?.forEach((element) => {
+        element.typeCode = "other";
+      });
+
+      const allUploadedFiles = uniqueArrayOfObject(
+        [...uploadDocs, ...existingPaymentProof],
+        "size"
+      );
+      setValue("document.uploadedDocs", allUploadedFiles, {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+      setUploadDocs(allUploadedFiles);
+    }
+  }, [leadId]);
 
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
@@ -110,7 +122,7 @@ const DocumentUploadForm = ({
                         accept="image/jpeg, application/pdf"
                         type="file"
                         {...(register("document.uploadedDocs", {
-                          required: true,
+                          required: isDocumentRequired,
                         }) as any)}
                         onChange={(e) => {
                           if (e?.target) {
@@ -174,7 +186,7 @@ const DocumentUploadForm = ({
                                   onFileTypeSelect(e?.target?.value, index)
                                 }
                               >
-                                 <option value="other">Other</option>
+                                <option value="other">Other</option>
                                 {documentType?.map((item) => (
                                   <option key={item.id} value={item?.code}>
                                     {item?.name}
