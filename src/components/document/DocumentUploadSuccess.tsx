@@ -1,18 +1,13 @@
 import React from "react";
 import { GreenFormHeading } from "../common/common";
-import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer, MainContainer } from "../payment/payment";
-import Header from "../common/header";
 import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
 
 export const DocumentSuccess = (props: any) => {
   return (
     <>
-      <ParentContainer>
-        <Header />
-        <div className="container-fluid w-75 mt-5">
-          <MainContainer style={{ paddingBottom: "1rem" }}>
+      <MainContainer style={{ paddingBottom: "1rem" }}>
             <PaymentContainer>
               <div className="row">
                 <div className="col-sm-12">
@@ -38,8 +33,6 @@ export const DocumentSuccess = (props: any) => {
               </div>
             </PaymentContainer>
           </MainContainer>
-        </div>
-      </ParentContainer>
     </>
   );
 };

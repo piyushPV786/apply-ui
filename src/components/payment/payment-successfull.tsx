@@ -9,6 +9,7 @@ import WarningIcon from "../../../public/assets/images/warning-svgrepo-com.png";
 import PayIcon from "../../../public/assets/images/pay.png";
 import Image from "next/image";
 import { RoutePaths } from "../common/constant";
+import { DocumentSuccess } from "../document/DocumentUploadSuccess";
 
 const PaymentSuccessFull = (props: any) => {
   const router = useRouter();
@@ -18,6 +19,7 @@ const PaymentSuccessFull = (props: any) => {
       query: { isFormSubmittedAlready: true, isPaymentFail: true },
     });
   };
+
   const OnlinePaymentSuccess = () => {
     return (
       <PaymentContainer>
@@ -77,6 +79,10 @@ const PaymentSuccessFull = (props: any) => {
       </>
     );
   };
+  const onUploadDocument = () => {
+    sessionStorage.setItem("routeTo", "Document");
+    router.push(RoutePaths.Application_Form);
+  };
   const DocumentUploadSuccess = () => {
     return (
       <>
@@ -106,11 +112,11 @@ const PaymentSuccessFull = (props: any) => {
               type="button"
               isGreenWhiteCombination={true}
               title={"Skip for Now"}
-              onClick={props?.onSkipForNowOnPayment}
+              onClick={() => router.push(RoutePaths.Dashboard)}
             />
             &nbsp;&nbsp;&nbsp;
             <StyledButton
-              onClick={props?.submitPaymentDocs}
+              onClick={onUploadDocument}
               title={"Upload Document"}
             />
           </>
@@ -161,6 +167,7 @@ const PaymentSuccessFull = (props: any) => {
           {props?.pageType === "failure" && <OnlinePaymentFailed />}
           {props?.pageType === "success" && <OnlinePaymentSuccess />}
           {props?.pageType === "document-success" && <DocumentUploadSuccess />}
+          {props?.pageType === "document-upload-success" && <DocumentSuccess />}
           {props?.pageType === "document-failure" && <DocumentUploadFailed />}
         </MainContainer>
       </div>

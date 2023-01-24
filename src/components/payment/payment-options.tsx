@@ -23,7 +23,6 @@ const PaymentOption = (props: any) => {
   const { watch, register } = useFormContext();
   const [paymentPayload, setPaymentTypePayload] = useState<any>(null);
   const allFields = watch();
-  console.log("All field ======>", allFields);
   const onSelectedPaymentOption = (type: "payu" | "razorpay" | "stripe") => {
     if (type === "payu") onPayuPayment();
   };
@@ -54,7 +53,6 @@ const PaymentOption = (props: any) => {
         console.error(err, "errreererer");
       });
   };
-  console.log({ paymentPayload }, getSelectedFormId());
   return (
     <>
       <MainContainer>
