@@ -102,19 +102,17 @@ export const ApplicationDashboard = (props: any) => {
     <>
       <ParentContainer>
         <Header />
-        <div className="container-fluid mt-5">
+        <div className="container-fluid application-page mt-5">
           <div style={{ paddingBottom: "1rem" }}>
             <PaymentContainer>
               {studentId && studentApplications.length > 0 ? (
                 <div>
                   <div className="row">
                     <div className="col">
-                      <GreenFormHeading
-                        style={{ fontSize: "24px", color: "#000" }}
-                      >
+                      <h2 className="app-header">
                         My Applications
-                      </GreenFormHeading>
-                      <p>
+                      </h2>
+                      <p className="grey-text">
                         Here are all applications that you've applied through
                         Regenesys
                       </p>
@@ -190,7 +188,7 @@ export const ApplicationDashboard = (props: any) => {
                         >
                           No application yet
                         </GreenFormHeading>
-                        <p>
+                        <p className="grey-text mt-2">
                           Thank you for trusting Regenesys as your Educational
                           Institution. Please Apply for your interested
                           qualification now.
@@ -222,29 +220,29 @@ function ApplicationCard({
 }) {
   return (
     <>
-      <ApplicationContainer className="container bg-white p-3 border rounded ">
+      <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
         <div className="d-flex justify-content-end">
           <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
         </div>
         <ContentCard>
           <div className="w-100">
-            <GreenFormHeading className="fs-4">
+            <GreenFormHeading className="application-number">
               Application Number - {applicationNumber}
             </GreenFormHeading>
           </div>
-          <div className="mt-2">
+          <div className="mt-2 w-100 app-card-block">
             <p className="mb-0" style={{ color: `#5a636a` }}>
               Name
             </p>
             <strong>{name}</strong>
           </div>
-          <div className="mt-2">
+          <div className="mt-2 w-100 app-card-block">
             <p className="mb-0" style={{ color: `#5a636a` }}>
               Intrested Program
             </p>
             <strong>{programName}</strong>
           </div>
-          <div className="mt-2 d-flex justify-content-between w-100">
+          <div className="mt-2 d-flex justify-content-between w-100 app-card-block">
             <div>
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Study Mode
@@ -258,10 +256,10 @@ function ApplicationCard({
               <strong>{transformDate(new Date(updatedAt))}</strong>
             </div>
           </div>
-          <div className=" w-100 text-center d-flex justify-content-evenly mt-5">
+          <div className=" w-100 text-center d-flex justify-content-center mt-4">
             <StyledButton
               isEditBtn
-              className="w-25"
+              className="card-button mr-2"
               isGreenWhiteCombination={true}
               title="Edit"
               onClick={() => onEdit(applicationNumber, leadCode, status)}
@@ -270,7 +268,7 @@ function ApplicationCard({
               <StyledButton
                 onClick={() => onPay(applicationNumber, leadCode, status)}
                 isPayBtn
-                className="w-25"
+                className="card-button"
                 title="pay"
               />
             )}
@@ -289,7 +287,7 @@ const StyledStatusBedge = styled.div<any>`
     if (status === "submitted") return "#e0f8ef";
     else return "#ffde9e";
   }};
-  border-radius: 10px;
+  border-radius: 5px;
   color: #2d3d54;
   padding: 2px 5px;
   border: 1px solid;

@@ -150,8 +150,10 @@ const Payment = (props: any) => {
 
   return (
     <>
-      <div className="row w-100">
-        <div className="col-12 col-md-12 mb-3">
+
+    <div className="payment-conatiner">
+      <div className="row">
+        <div className="col-12 col-md-12 mb-5">
           <MainContainer>
             {" "}
             <PaymentHeading>
@@ -164,8 +166,8 @@ const Payment = (props: any) => {
               </div>
             </PaymentHeading>
             <PaymentContainer>
-              <div className="row">
-                <div className="col-md-7">
+              <div className="row p-4">
+                <div className="col-md-8">
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb-4">
@@ -187,8 +189,7 @@ const Payment = (props: any) => {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="row">
+              
                     <div className="col-md-6">
                       <div className="mb-4 w-75">
                         <StyledLabel required style={{ fontSize: "16px" }}>
@@ -227,12 +228,8 @@ const Payment = (props: any) => {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-5">
-                  <div className="">
-                    <div
-                      style={{ background: "#f5f5f5", minHeight: "110px" }}
-                      className="w-100 p-2"
-                    >
+                <div className="col-md-4">
+                     <div className="w-100 p-4 promo-card">
                       <div className="mb-4 d-flex justify-content-between">
                         <div>
                           <h6>Subtotal (INR)</h6>
@@ -294,7 +291,6 @@ const Payment = (props: any) => {
                         </div>
                       )}
                     </div>
-                  </div>
                 </div>
               </div>
             </PaymentContainer>
@@ -312,15 +308,15 @@ const Payment = (props: any) => {
               <div className="col-md-12">
                 <StyleHeading>
                   <GreenFormHeading style={{ fontSize: "20px" }}>
-                    Upload Document
+                    Upload Payment Proof
                   </GreenFormHeading>
                 </StyleHeading>
               </div>
             </PaymentHeading>
             <PaymentContainer>
-              <div className="d-flex justify-content-center">
+              <div className="d-flex justify-content-center w-100">
                 <div className="">
-                  <UploadPaymentDocsContainer onClick={onDocUploadClick}>
+                  <UploadPaymentDocsContainer onClick={onDocUploadClick} className="w-100">
                     <div ref={fileUploadRef} className="text-center">
                       <Image
                         src={FIleUploadImg}
@@ -341,7 +337,8 @@ const Payment = (props: any) => {
                           }
                         }}
                       />
-                      <GreenFormHeading>Upload Payment Proof</GreenFormHeading>
+                      <GreenFormHeading>Drag and drop, or browse your files</GreenFormHeading>
+                      <p className="grey-text">Only PNG, JPEG and PDF files with max size of 2MB</p>
                       <div
                         onClick={(e) => e.stopPropagation()}
                         className="d-flex flex-wrap"
@@ -389,6 +386,7 @@ const Payment = (props: any) => {
           </MainContainer>
         </div>
       </div>
+      </div>
     </>
   );
 };
@@ -404,7 +402,7 @@ export const MainContainer = styled.div`
 
 export const PaymentContainer = styled.div`
   width: 100%;
-  padding: 1rem 10px;
+  padding: 1.5rem;
 `;
 
 const PaymentHeading = styled(PaymentContainer)`
@@ -427,7 +425,7 @@ const StyledDiv = styled.div`
 `;
 
 const UploadPaymentDocsContainer = styled.div`
-  background: ${DefaultGrey};
+  background: #f5f5f5;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -435,8 +433,9 @@ const UploadPaymentDocsContainer = styled.div`
   min-width: 400px;
   min-height: 150px;
   padding: 1rem;
-  max-width: 400px;
+  width: 100%;
   overflow: hidden;
+  border: 2px dashed #008554;
   @media (max-width: 900px) {
     padding: 1rem 4.7rem;
   }

@@ -143,7 +143,7 @@ const MainContainer = styled.div`
 
 const PaymentContainer = styled.div<any>`
   width: 100%;
-  padding: 1rem 10px;
+  padding: 1.5rem;
   
   .form-check .form-check-input {
     margin-left: -0.8em!important;
@@ -174,21 +174,21 @@ const StyledImgCard = styled.div<any>`
   ${({ paymentType }) => {
     if (paymentType === "RazorPay") {
       return `
-        background-position: 35px 50px;
+        background-position: center 50px;
     background-repeat: no-repeat;
     background-size: 115px;
         `;
     }
     if (paymentType === "Payu") {
       return `
-      background-position: 41px 31px;
+      background-position: center 31px;
       background-repeat: no-repeat;
       background-size: 104px;
         `;
     }
     if (paymentType === "Stripe") {
       return `
-      background-position: 42px 40px;
+      background-position: center 40px;
       background-repeat: no-repeat;
       background-size: 90px;
         `;
