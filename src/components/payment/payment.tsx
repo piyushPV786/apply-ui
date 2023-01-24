@@ -152,7 +152,7 @@ const Payment = (props: any) => {
     <>
 
     <div className="payment-conatiner">
-      <div className="row w-100">
+      <div className="row">
         <div className="col-12 col-md-12 mb-5">
           <MainContainer>
             {" "}

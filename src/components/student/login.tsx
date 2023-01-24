@@ -147,7 +147,7 @@ const StudentLogin = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Item>
-              <Title className="login-title">OPT verification</Title>
+              <Title className="login-title">OTP verification</Title>
             </Item>
           </Grid>
           <Grid item xs={12}>

@@ -79,6 +79,15 @@ input[type="number"]::-webkit-inner-spin-button {
   max-width: 1600px !important;
   margin: 0 auto;
   width: 100%;
+  padding: 0 15px;
+}
+
+.document-container
+{
+  max-width: 1200px !important;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 15px;
 }
 
 .form-label
@@ -179,9 +188,18 @@ div.PhoneInput--focus input
   font-weight: 500;
 }
 
+
+
 .login-spacing
 {
   margin-top: 100px;
+}
+
+@media screen and (max-width: 1367px) {
+  .login-spacing
+  {
+    margin-top: 60px;
+  }
 }
 
 .app-card
@@ -205,9 +223,9 @@ background-color: #e5f5ee !important;
 
 .grey-text
 {
-  color: #6A767C;
-  font-family: roboto;
-  font-size: 14px;
+  color: #6A767C !important;
+  font-family: roboto !important;
+  font-size: 14px !important;
 }
 
 .app-header
@@ -254,8 +272,14 @@ max-width: 60px;
   transition: all .2s ease-in;
 }
 
+.promo-card a
+{
+  color: #008554 !important;
+  font-weight: 600;
+}
 
-.link-text:hover
+
+.link-text:hover, .promo-card a:hover
 {
 text-decoration: underline;
 color: #000;
@@ -284,3 +308,22 @@ color: #000;
 {
   width: 60px !important;
 }
+
+.font-roboto, .doc-table thead,.doc-table tbody,.doc-table tfoot,.doc-table tr,.doc-table td,.doc-table th
+{
+  font-family: roboto;
+}
+
+.doc-table th
+{
+  color: #008554;
+}
+.doc-table td,.doc-table th
+{
+  vertical-align: middle;
+}
+
+.doc-table td img{
+  width: 30px;
+}
+
