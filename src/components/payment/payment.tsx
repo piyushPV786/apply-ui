@@ -90,9 +90,12 @@ const Payment = (props: any) => {
           documentTypeCode: "PAYMENTPROOF",
           fileName: file.name,
           fileType: file.type,
-          amount: +allFields?.education?.programFees,
+          amount:
+            parseInt(programFee) -
+            parseInt(allFields?.payment?.discountAmount || 0),
           paymentModeCode: "OFFLINE",
-          discountCode: "",
+          discountCode: allFields?.payment?.discountCode,
+          discountAmount: allFields?.payment?.discountAmount,
           studentTypeCode: allFields?.education?.studentTypeCode,
         };
         return getUploadDocumentUrl(payload).then((res) => {
