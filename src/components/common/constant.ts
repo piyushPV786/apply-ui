@@ -1,6 +1,7 @@
 export enum CommonEnums {
-  DRAFT = "APP-DRAFT",
-  FEES_PENDING = "APP-FEE-PEND",
+  DRAFT_STATUS = "APP-DRAFT",
+  FEES_PENDING_STATUS = "APP-FEE-PEND",
+  APP_ENROLLED_STATUS = "APP-ENROLED",
 }
 
 export enum MagicNumbers {
@@ -57,4 +58,21 @@ export const studentType = [
   { name: "Bursary", code: "BURSARY" },
 
   { name: "Management", code: "MANAGEMENT" },
+];
+
+export const acceptedKeysToMap = [
+  "kin",
+  "address",
+  "lead",
+  "education",
+  "employment",
+  "sponsor",
+];
+
+export const removedKeysToMap = [
+  "id",
+  "isActive",
+  "updatedAt",
+  "deletedAt",
+  "createdAt",
 ];

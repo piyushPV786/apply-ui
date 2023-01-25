@@ -10,6 +10,7 @@ import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
 import {
+  formOptions,
   isEmpty,
   isObjectEmpty,
   isValidEmail,
@@ -62,11 +63,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
       props?.leadId &&
       isSponserDetailExist
     ) {
-      setValue(isSponsored, "yes", {
-        shouldDirty: true,
-        shouldTouch: true,
-        shouldValidate: true,
-      });
+      setValue(isSponsored, "yes", formOptions);
     }
   }, [isSponserDetailExist]);
   return (
@@ -150,11 +147,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                   />

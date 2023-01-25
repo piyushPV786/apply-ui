@@ -5,7 +5,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import styled from "styled-components";
 import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
 import StyledButton from "../button/button";
-import { isInvalidFileType, uniqueArrayOfObject } from "../../Util/Util";
+import { formOptions, isInvalidFileType, uniqueArrayOfObject } from "../../Util/Util";
 import Link from "next/link";
 import Image from "next/image";
 import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
@@ -45,11 +45,7 @@ const DocumentUploadForm = ({
         [...uploadDocs, ...existingPaymentProof],
         "size"
       );
-      setValue("document.uploadedDocs", allUploadedFiles, {
-        shouldDirty: true,
-        shouldTouch: true,
-        shouldValidate: true,
-      });
+      setValue("document.uploadedDocs", allUploadedFiles, formOptions);
       setUploadDocs(allUploadedFiles);
     }
   }, [leadId]);
@@ -60,7 +56,7 @@ const DocumentUploadForm = ({
   };
   const deleteDocs = (index: number) => {
     const remainingDocs = [...uploadDocs.filter((item, idx) => idx !== index)];
-    setValue("document.uploadedDocs", remainingDocs);
+    setValue("document.uploadedDocs", remainingDocs,formOptions);
     setUploadDocs(remainingDocs);
   };
 
@@ -92,7 +88,7 @@ const DocumentUploadForm = ({
   const onFileTypeSelect = (value: string, index: number) => {
     const allFiles: any = [...uploadDocs];
     allFiles[index].typeCode = value;
-    setValue("document.uploadedDocs", allFiles);
+    setValue("document.uploadedDocs", allFiles,formOptions);
   };
   return (
     <>

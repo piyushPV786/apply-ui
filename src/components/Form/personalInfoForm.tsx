@@ -11,7 +11,7 @@ import UserCircleIcon from "../../../public/assets/images/user-circle-svgrepo-co
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { isValidDate, isValidEmail, onlyAlphabets, sortAscending } from "../../Util/Util";
+import { formOptions, isValidDate, isValidEmail, onlyAlphabets, sortAscending } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
 interface IPersonalInfoProps {
   genders: IOption[];
@@ -105,11 +105,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                     className="form-control"
@@ -138,11 +134,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                     id="middleName"
@@ -163,11 +155,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                     id="lastName"

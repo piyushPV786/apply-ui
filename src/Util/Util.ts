@@ -1,4 +1,5 @@
 import axios from "axios";
+import { removedKeysToMap } from "../components/common/constant";
 import { AuthApi } from "../service/Axios";
 const ignorKeys = {
   createdAt: "",
@@ -227,3 +228,30 @@ export function isObjectEmpty(object: any) {
       : v === 0 || v === null || v === undefined || !v
   );
 }
+
+export const formOptions = {
+  shouldDirty: true,
+  shouldTouch: true,
+  shouldValidate: true,
+};
+
+export const transformFormData = (formData: any) => {
+  if (!formData) return;
+  for (let [key, value] of Object.entries(formData)) {
+    console.log(typeof value === "object", { key });
+    if (removedKeysToMap.includes(key) && typeof value === "object") {
+      transformFormData(value);
+    }
+    // else if (removedKeysToMap.includes(key) && typeof value !== "object") {
+    // if (removedKeysToMap.includes(key) && typeof value === "object") {
+    //   transformFormData(value);
+    // }
+    else if (removedKeysToMap.includes(key) && typeof value !== "object") {
+      delete formData[key];
+    }
+  }
+  console.log({ formData });
+  return formData;
+
+  // return formData;
+};

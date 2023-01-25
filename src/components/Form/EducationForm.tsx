@@ -11,7 +11,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import { IFee, IOption, IStudyModeQualification } from "../common/types";
 import styled from "styled-components";
-import { onlyAlphaNumericSpace } from "../../Util/Util";
+import { formOptions, onlyAlphaNumericSpace } from "../../Util/Util";
 import EducationImg from "../../../public/assets/images/education-svgrepo-com.svg";
 import Image from "next/image";
 import { FinanceApi } from "../../service/Axios";
@@ -161,19 +161,7 @@ export const EducationForm = (props: IEducationProps) => {
     }
   }, [programVal]);
 
-  useEffect(() => {
-    const value =
-      socialMediaVal && socialMediaVal.length > 0
-        ? "2"
-        : agentNameVal && agentNameVal.length > 0
-        ? "1"
-        : "";
-    setValue(referredBy, value, {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
-  }, [socialMediaVal, agentNameVal]);
+
 
   const getQualificationStudyModeData = (programCode: string) => {
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
@@ -197,11 +185,7 @@ export const EducationForm = (props: IEducationProps) => {
           }));
         }
 
-        setValue(applicationFeesKey, applicationFees?.fees[0]?.fee, {
-          shouldDirty: true,
-          shouldTouch: true,
-          shouldValidate: true,
-        });
+        setValue(applicationFeesKey, applicationFees?.fees[0]?.fee, formOptions);
         setStudyModeQualification(courseFeesDetail);
       })
       .catch((err) => {
@@ -213,14 +197,8 @@ export const EducationForm = (props: IEducationProps) => {
     const selectedStudyModeData = studyModeQualification![parentIdx].studyModes[
       studyIdx
     ].fees.find(({ feeMode }) => feeMode === props.feeMode);
-    setValue(programMode, selectedStudyModeData?.feeMode, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    setValue(programFees, selectedStudyModeData?.fee, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
+    setValue(programMode, selectedStudyModeData?.feeMode, formOptions);
+    setValue(programFees, selectedStudyModeData?.fee, formOptions);
   };
   return (
     <>
@@ -247,7 +225,7 @@ export const EducationForm = (props: IEducationProps) => {
                     className="form-select"
                     {...register(`${program}`, { required: true })}
                     onChange={(e) => {
-                      setValue(e.target.name, e.target.value);
+                      setValue(e.target.name, e.target.value,formOptions);
                       getQualificationStudyModeData(e.target.value);
                     }}
                   >
@@ -294,7 +272,7 @@ export const EducationForm = (props: IEducationProps) => {
                                             required: true,
                                           })}
                                           onClick={(e: any) => {
-                                            setValue(studyMode, e.target.value);
+                                            setValue(studyMode, e.target.value,formOptions);
                                             setSelectedStudyMode({
                                               studyIdx: studyIdx,
                                               studyId: studyModeCode,
@@ -394,11 +372,7 @@ export const EducationForm = (props: IEducationProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphaNumericSpace(value) || !value) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                   />
@@ -424,11 +398,7 @@ export const EducationForm = (props: IEducationProps) => {
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
-                      setValue(name, value, {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                        shouldValidate: true,
-                      });
+                      setValue(name, value, formOptions);
                     }}
                     onBlur={() => {
                       setTimeout(() => {
@@ -437,22 +407,14 @@ export const EducationForm = (props: IEducationProps) => {
                             (item) => item?.code == referredByeVal
                           )?.name === "Agent"
                         ) {
-                          setValue(`${socialMediaId}`, "", {
-                            shouldDirty: true,
-                            shouldTouch: true,
-                            shouldValidate: true,
-                          });
+                          setValue(`${socialMediaId}`, "", formOptions);
                         }
                         if (
                           AgentandSocialMedia?.find(
                             (item) => item?.code == referredByeVal
                           )?.name === "Social Media"
                         ) {
-                          setValue(`${agentName}`, "", {
-                            shouldDirty: true,
-                            shouldTouch: true,
-                            shouldValidate: true,
-                          });
+                          setValue(`${agentName}`, "", formOptions);
                         }
                       }, 2000);
                     }}

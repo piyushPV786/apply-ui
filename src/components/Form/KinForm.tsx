@@ -9,6 +9,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import {
+  formOptions,
   isEmpty,
   isObjectEmpty,
   isValidEmail,
@@ -51,11 +52,7 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
   };
   useEffect(() => {
     if (!isObjectEmpty(isKinDetailExist) && leadId) {
-      setValue(isKin, "yes", {
-        shouldDirty: true,
-        shouldTouch: true,
-        shouldValidate: true,
-      });
+      setValue(isKin, "yes", formOptions);
     }
   }, [isKinDetailExist]);
   return (
@@ -112,11 +109,7 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                   />
@@ -139,11 +132,7 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                   />

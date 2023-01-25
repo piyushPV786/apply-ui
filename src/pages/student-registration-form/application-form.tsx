@@ -14,10 +14,12 @@ import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
 import { AcadmicApi, AuthApi } from "../../service/Axios";
 import { IMasterData, IOption } from "../../components/common/types";
 import {
+  formOptions,
   getUploadDocumentUrl,
   isEmpty,
   isObjectEmpty,
   mapFormData,
+  transformFormData,
   uploadDocuments,
 } from "../../Util/Util";
 import { useRouter } from "next/router";
@@ -31,6 +33,7 @@ import {
   ToasterContainer,
 } from "../../components/student/style";
 import {
+  acceptedKeysToMap,
   CommonApi,
   MagicNumbers,
   RoutePaths,
@@ -128,7 +131,7 @@ const ApplicationForm = (props: any) => {
   }, []);
   useEffect(() => {
     if (studentData) {
-      mapFormDefaultValue();
+      // mapFormDefaultValue();
     }
   }, [studentData]);
   const allFields = watch();
@@ -159,15 +162,8 @@ const ApplicationForm = (props: any) => {
       }
     }
   };
-  const mapFormDefaultValue = () => {
-    const acceptedKeys = [
-      "kin",
-      "address",
-      "lead",
-      "education",
-      "employment",
-      "sponsor",
-    ];
+  const mapFormDefaultValue = (studentData: any) => {
+    // const formData = transformFormData(studentData);
     for (let [key, value] of Object.entries(studentData)) {
       if (
         (key === "kin" || key === "sponser" || key === "employment") &&
@@ -175,12 +171,18 @@ const ApplicationForm = (props: any) => {
       ) {
         return;
       }
-      if (acceptedKeys.includes(key)) {
-        setValue(key, value, {
-          shouldDirty: true,
-          shouldTouch: true,
-          shouldValidate: true,
-        });
+      if (acceptedKeysToMap.includes(key)) {
+        if (key === "education" && studentData[key]) {
+          const valueCode = studentData[key]?.socialMediaCode
+            ? "SOCIALMEDIA"
+            : studentData[key]?.agentCode
+            ? "AGENT"
+            : "";
+          setValue(key, value, formOptions);
+          setValue(`${key}.referredById`, valueCode, formOptions);
+          return;
+        }
+        setValue(key, value, formOptions);
       }
     }
   };
@@ -410,16 +412,22 @@ const ApplicationForm = (props: any) => {
       sessionStorage?.getItem("activeLeadDetail") as any
     );
     const routeTo: string = sessionStorage.getItem("routeTo")! || "";
-
     setLeadId(leadDetail?.applicationCode);
     if (leadDetail) {
       AuthApi.get(
         `lead/${leadDetail?.leadCode}/application/${leadDetail?.applicationCode}?isDraft=${leadDetail?.isdraftSave}`
       )
         .then(({ data: response }) => {
+          const formData = { ...response?.data };
+          mapFormDefaultValue(formData);
           setStudentData(response?.data);
           if (leadDetail?.isPaymentPending && routeTo !== "Document") {
             setActiveStep(1);
+            setSubmitted(true);
+            setPaymentDone(true);
+          }
+          if (leadDetail?.isDocumentPending) {
+            setActiveStep(2);
             setSubmitted(true);
             setPaymentDone(true);
           }
@@ -443,7 +451,7 @@ const ApplicationForm = (props: any) => {
       })
       .catch((err) => console.log(err));
   };
-  // console.log({ allFields, errors });
+  // console.log({ allFields });
   const language = masterData?.languageData as IOption[];
   const nationalities = masterData?.nationalityData as IOption[];
   const highestQualifications =
