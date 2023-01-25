@@ -9,7 +9,12 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { isEmpty, onlyAlphabets, onlyAlphaNumericSpace } from "../../Util/Util";
+import {
+  isEmpty,
+  isObjectEmpty,
+  onlyAlphabets,
+  onlyAlphaNumericSpace,
+} from "../../Util/Util";
 import Image from "next/image";
 import EmployeeImg from "../../../public/assets/images/employeee.svg";
 
@@ -44,7 +49,7 @@ export const EmployedForm = (props: IEmployeProps) => {
   } = useFormContext();
 
   const employmentStatusVal = watch(employmentStatus);
-  const isEmployedVal = watch(isEmployed, "no");
+  const isEmployedVal = watch(isEmployed);
   const employerVal = watch(employer);
   const jobTitleVal = watch(jobTitle);
   const industryVal = watch(industry);
@@ -62,7 +67,7 @@ export const EmployedForm = (props: IEmployeProps) => {
   const isEmployedNeed = isEmployed === "yes";
   const isUnEmployed = employmentStatusVal === "UNEMPLOYED";
   useEffect(() => {
-    if (isEmpty(isEmployerDetailExist) && props?.leadId) {
+    if (!isObjectEmpty(isEmployerDetailExist) && props?.leadId) {
       setValue(isEmployed, "yes");
     }
   }, [isEmployerDetailExist]);
@@ -104,7 +109,7 @@ export const EmployedForm = (props: IEmployeProps) => {
             <label className="form-check-label">No</label>
           </div>
         </AccordionSummary>
-        <AccordionDetails hidden={isEmployedVal === "no"}>
+        <AccordionDetails hidden={!isEmployedVal || isEmployedVal === "no"}>
           <div className="container-fluid form-padding">
             <div className="row">
               <div className="col-md-4">

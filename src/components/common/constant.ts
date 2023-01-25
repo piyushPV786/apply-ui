@@ -48,8 +48,8 @@ export const PaymentTypes = [
 ];
 
 export const AgentandSocialMedia = [
-  { code: 1, name: "Agent" },
-  { code: 2, name: "Social Media" },
+  { code: "AGENT", name: "Agent" },
+  { code: "SOCIALMEDIA", name: "Social Media" },
 ];
 export const studentType = [
   { name: "Regular", code: "REGULAR" },
