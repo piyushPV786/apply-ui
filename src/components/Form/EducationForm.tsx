@@ -434,7 +434,7 @@ export const EducationForm = (props: IEducationProps) => {
                       setTimeout(() => {
                         if (
                           AgentandSocialMedia?.find(
-                            (item) => item?.code == +referredByeVal
+                            (item) => item?.code == referredByeVal
                           )?.name === "Agent"
                         ) {
                           setValue(`${socialMediaId}`, "", {
@@ -445,7 +445,7 @@ export const EducationForm = (props: IEducationProps) => {
                         }
                         if (
                           AgentandSocialMedia?.find(
-                            (item) => item?.code == +referredByeVal
+                            (item) => item?.code == referredByeVal
                           )?.name === "Social Media"
                         ) {
                           setValue(`${agentName}`, "", {
@@ -479,7 +479,7 @@ export const EducationForm = (props: IEducationProps) => {
                 </div>
 
                 {AgentandSocialMedia?.find(
-                  (item) => item?.code == +referredByeVal
+                  (item) => item?.code == referredByeVal
                 )?.name === "Agent" && (
                   <div className="">
                     <div className="mb-4">
@@ -511,7 +511,7 @@ export const EducationForm = (props: IEducationProps) => {
                   </div>
                 )}
                 {AgentandSocialMedia?.find(
-                  (item) => item?.code == +referredByeVal
+                  (item) => item?.code == referredByeVal
                 )?.name === "Social Media" && (
                   <div className="">
                     <div className="mb-4">

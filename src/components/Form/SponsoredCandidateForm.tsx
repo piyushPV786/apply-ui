@@ -9,7 +9,12 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { isEmpty, isValidEmail, onlyAlphabets } from "../../Util/Util";
+import {
+  isEmpty,
+  isObjectEmpty,
+  isValidEmail,
+  onlyAlphabets,
+} from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
 
@@ -36,7 +41,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
   } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
 
-  const isSponsoredVal = watch(isSponsored, "no");
+  const isSponsoredVal = watch(isSponsored);
   const sponsorModeVal = watch(sponsorMode);
   const sponsorNameVal = watch(sponsorName);
   const sponsorAddressVal = watch(sponsorAddress);
@@ -52,7 +57,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
   const isSponserDetailExist = watch(SponsorCandidateDetail);
   const isSponserNeed = isSponsoredVal === "yes";
   useEffect(() => {
-    if (!isEmpty(isSponserDetailExist) && props?.leadId) {
+    if (
+      !isObjectEmpty(isSponserDetailExist) &&
+      props?.leadId &&
+      isSponserDetailExist
+    ) {
       setValue(isSponsored, "yes", {
         shouldDirty: true,
         shouldTouch: true,
@@ -98,7 +107,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
             <label className="form-check-label">No</label>
           </div>
         </AccordionSummary>
-        <AccordionDetails hidden={isSponsoredVal === "no"}>
+        <AccordionDetails hidden={!isSponsoredVal || isSponsoredVal === "no"}>
           <div className="container-fluid form-padding">
             <div className="row">
               <div className="col-md-4">

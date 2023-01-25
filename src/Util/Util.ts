@@ -1,26 +1,42 @@
 import axios from "axios";
 import { AuthApi } from "../service/Axios";
-
-export const transformFormValue = (key: any, value) => {};
+const ignorKeys = {
+  createdAt: "",
+  deletedAt: "",
+  isActive: "",
+  updatedAt: "",
+};
 export const mapFormData = (data: any, isDraft?: boolean) => {
   let formData = data;
   if (formData) {
     for (let [key, value] of Object.entries(formData)) {
+      if (key in ignorKeys) {
+        delete formData[key];
+      }
       if (formData[key]?.length <= 0 && isDraft) {
         delete formData[key];
       }
       if (key == "zipcode" && !formData[key]) {
         formData[key] = 0;
       }
-      if (key == "kin" && formData[key]?.isKin == "no") {
+      if (
+        key == "kin" &&
+        (formData[key]?.isKin == "no" || !formData[key]?.isKin)
+      ) {
         delete formData[key];
       }
 
-      if (key == "sponser" && formData[key]?.isSponsored === "no") {
+      if (
+        key == "sponsor" &&
+        (formData[key]?.isSponsored === "no" || !formData[key]?.isSponsored)
+      ) {
         delete formData[key];
       }
 
-      if (key == "employment" && formData[key]?.isEmployed == "no") {
+      if (
+        key == "employment" &&
+        (formData[key]?.isEmployed == "no" || !formData[key]?.isEmployed)
+      ) {
         delete formData[key];
       }
       if (
@@ -33,7 +49,6 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
         mapFormData(formData[key]);
       }
     }
-
     return formData;
   }
 };
@@ -184,3 +199,31 @@ export const isEmpty = (object: any) =>
   !object || object === null || object === undefined
     ? true
     : Object.keys(object).length === 0 && object.constructor === Object;
+
+export function isObjectEmpty(object: any) {
+  if (!object) return true;
+  const mobileNumberKeyOne = "officeMobileNumber";
+  const mobileNumberKeyTwo = "mobileNumber";
+  const isKin = "isKin";
+  const isEmployed = "isEmployed";
+  const isSponsored = "isSponsored";
+  const newCloneObject = { ...object };
+  newCloneObject &&
+    mobileNumberKeyOne in newCloneObject &&
+    delete newCloneObject[mobileNumberKeyOne];
+  newCloneObject &&
+    mobileNumberKeyTwo in newCloneObject &&
+    delete newCloneObject[mobileNumberKeyTwo];
+  newCloneObject && isKin in newCloneObject && delete newCloneObject[isKin];
+  newCloneObject &&
+    isEmployed in newCloneObject &&
+    delete newCloneObject[isEmployed];
+  newCloneObject &&
+    isSponsored in newCloneObject &&
+    delete newCloneObject[isSponsored];
+  return Object?.values(newCloneObject).every((v) =>
+    v && typeof v === "object"
+      ? isObjectEmpty(v)
+      : v === 0 || v === null || v === undefined || !v
+  );
+}

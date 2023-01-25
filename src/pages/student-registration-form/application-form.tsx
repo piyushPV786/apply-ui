@@ -17,7 +17,6 @@ import {
   getUploadDocumentUrl,
   isEmpty,
   mapFormData,
-  transformFormValue,
   uploadDocuments,
 } from "../../Util/Util";
 import { useRouter } from "next/router";
@@ -257,12 +256,12 @@ const ApplicationForm = (props: any) => {
       .then(({ data }) => {
         setShowDraftSaveToast({
           success: true,
-          message: data?.message,
+          message: "Saved as draft",
           show: true,
         });
-        setTimeout(() => {
-          router.push(RoutePaths.Dashboard);
-        }, 2000);
+        // setTimeout(() => {
+        //   router.push(RoutePaths.Dashboard);
+        // }, 2000);
       })
       .catch((err) => {
         console.log({ err });
@@ -281,12 +280,12 @@ const ApplicationForm = (props: any) => {
       .then(({ data }) => {
         setShowDraftSaveToast({
           success: true,
-          message: data?.message,
+          message: "Saved as draft",
           show: true,
         });
-        setTimeout(() => {
-          router.push(RoutePaths.Dashboard);
-        }, 2000);
+        // setTimeout(() => {
+        //   router.push(RoutePaths.Dashboard);
+        // }, 2000);
       })
       .catch((err) => {
         console.log(err.message);
@@ -514,44 +513,44 @@ const ApplicationForm = (props: any) => {
             {" "}
             {activeStep === MagicNumbers.ZERO && (
               <>
-              <div className="application-form">
-                <div className="row">
-                  <form onSubmit={(data) => onSubmit(data, false)}>
-                    <PersonalInfoForm
-                      key="personalForm"
-                      genders={genders}
-                      nationalities={nationalities}
-                      homeLanguage={language}
-                      race={race}
-                    />
-                    <AddressForm
-                      key="AddressForm"
-                      leadId={leadId}
-                      countryData={countryData}
-                    />
-                    <EducationForm
-                      key="EducationForm"
-                      highestQualifications={highestQualifications}
-                      programs={programs}
-                      socialMedias={socialMedias}
-                      agentArr={agentData}
-                      studyTypeData={studyTypeData}
-                    />
-                    <KinDetailsForm leadId={leadId} key="KinDetailsForm" />
-                    <EmployedForm
-                      leadId={leadId}
-                      key="EmployedForm"
-                      employmentStatusArr={employmentStatus}
-                      employerArr={[]}
-                      employmentIndustries={employmentIndustries}
-                    />
-                    <SponsoredForm
-                      leadId={leadId}
-                      key="SponsoredForm"
-                      sponsorModeArr={sponsorModes}
-                    />
-                  </form>
-                </div>
+                <div className="application-form">
+                  <div className="row">
+                    <form onSubmit={(data) => onSubmit(data, false)}>
+                      <PersonalInfoForm
+                        key="personalForm"
+                        genders={genders}
+                        nationalities={nationalities}
+                        homeLanguage={language}
+                        race={race}
+                      />
+                      <AddressForm
+                        key="AddressForm"
+                        leadId={leadId}
+                        countryData={countryData}
+                      />
+                      <EducationForm
+                        key="EducationForm"
+                        highestQualifications={highestQualifications}
+                        programs={programs}
+                        socialMedias={socialMedias}
+                        agentArr={agentData}
+                        studyTypeData={studyTypeData}
+                      />
+                      <KinDetailsForm leadId={leadId} key="KinDetailsForm" />
+                      <EmployedForm
+                        leadId={leadId}
+                        key="EmployedForm"
+                        employmentStatusArr={employmentStatus}
+                        employerArr={[]}
+                        employmentIndustries={employmentIndustries}
+                      />
+                      <SponsoredForm
+                        leadId={leadId}
+                        key="SponsoredForm"
+                        sponsorModeArr={sponsorModes}
+                      />
+                    </form>
+                  </div>
                 </div>
               </>
             )}
@@ -597,7 +596,13 @@ const ApplicationForm = (props: any) => {
                     />
                     <label className="form-check-label terms-text">
                       <span className="me-1">I have read and agreed</span>
-                      <a  target="_blank"   rel="noopener noreferrer" style={{ color: Green }} href="https://www.regenesys.net/terms-and-conditions/">terms and condition?
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: Green }}
+                        href="https://www.regenesys.net/terms-and-conditions/"
+                      >
+                        terms and condition?
                       </a>
                     </label>
                   </div>

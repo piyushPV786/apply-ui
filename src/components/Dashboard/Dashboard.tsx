@@ -109,9 +109,7 @@ export const ApplicationDashboard = (props: any) => {
                 <div>
                   <div className="row">
                     <div className="col">
-                      <h2 className="app-header">
-                        My Applications
-                      </h2>
+                      <h2 className="app-header">My Applications</h2>
                       <p className="grey-text">
                         Here are all applications that you've applied through
                         Regenesys
@@ -264,7 +262,7 @@ function ApplicationCard({
               title="Edit"
               onClick={() => onEdit(applicationNumber, leadCode, status)}
             />
-            {status !== CommonEnums.DRAFT && (
+            {!status.includes("DRAFT" || CommonEnums.DRAFT) && (
               <StyledButton
                 onClick={() => onPay(applicationNumber, leadCode, status)}
                 isPayBtn

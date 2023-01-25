@@ -222,7 +222,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     id="flexCheckDefault"
                     checked={isSameAsPostalAddressVal}
                     {...register(`${isSameAsPostalAddress}`, {
-                      required: true,
+                      required: false,
                     })}
                     onClick={(e) => {
                       setValue(

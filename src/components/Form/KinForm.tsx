@@ -8,10 +8,15 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
-import { isEmpty, isValidEmail, onlyAlphabets } from "../../Util/Util";
+import {
+  isEmpty,
+  isObjectEmpty,
+  isValidEmail,
+  onlyAlphabets,
+} from "../../Util/Util";
 import Image from "next/image";
 import KinImg from "../../../public/assets/images/kin.svg";
-
+import _ from "lodash";
 const KinDetails = "kin";
 const isKin = `${KinDetails}.isKin`;
 const fullName = `${KinDetails}.fullName`;
@@ -32,7 +37,7 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
   const error = errors[KinDetails] as any;
   const touchedField = touchedFields[KinDetails] as any;
-  const isNextKinVal = watch(isKin, "no");
+  const isNextKinVal = watch(isKin);
   const fullNameVal = watch(fullName);
   const relationShipVal = watch(relationShip);
   const EmailVal = watch(Email);
@@ -45,7 +50,7 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
     setValue(`${mobileCountryCode}`, `+${countryCode}`);
   };
   useEffect(() => {
-    if (!isEmpty(isKinDetailExist) && leadId) {
+    if (!isObjectEmpty(isKinDetailExist) && leadId) {
       setValue(isKin, "yes", {
         shouldDirty: true,
         shouldTouch: true,
@@ -92,7 +97,7 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
           </div>
         </AccordionSummary>
 
-        <AccordionDetails hidden={isNextKinVal === "no"}>
+        <AccordionDetails hidden={!isNextKinVal || isNextKinVal === "no"}>
           <div className="container-fluid form-padding">
             <div className="row">
               <div className="col-md-4">
