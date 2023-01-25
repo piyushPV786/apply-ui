@@ -90,9 +90,12 @@ const Payment = (props: any) => {
           documentTypeCode: "PAYMENTPROOF",
           fileName: file.name,
           fileType: file.type,
-          amount: +allFields?.education?.programFees,
+          amount:
+            parseInt(programFee) -
+            parseInt(allFields?.payment?.discountAmount || 0),
           paymentModeCode: "OFFLINE",
-          discountCode: "",
+          discountCode: allFields?.payment?.discountCode,
+          discountAmount: allFields?.payment?.discountAmount,
           studentTypeCode: allFields?.education?.studentTypeCode,
         };
         return getUploadDocumentUrl(payload).then((res) => {
@@ -132,7 +135,14 @@ const Payment = (props: any) => {
       promoCode,
       allFields?.education?.studentTypeCode
     );
-    if (result?.statusCode === 200 && result?.data?.percent) {
+    if (
+      result?.statusCode === 200 &&
+      result?.data?.status === "APP-ENROLED" &&
+      allFields?.education?.studentTypeCode?.toLowerCase() === "management"
+    ) {
+      props.showToast(true, "Management Code Applied");
+      props?.navigateNext();
+    } else if (result?.statusCode === 200 && result?.data?.percent) {
       const { agentCode, percent, discountCode } = result?.data;
       setValue("payment.agentCode", agentCode);
       setValue("payment.discountCode", discountCode);
