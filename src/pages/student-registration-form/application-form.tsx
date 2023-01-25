@@ -16,6 +16,7 @@ import { IMasterData, IOption } from "../../components/common/types";
 import {
   getUploadDocumentUrl,
   isEmpty,
+  isObjectEmpty,
   mapFormData,
   uploadDocuments,
 } from "../../Util/Util";
@@ -34,82 +35,54 @@ import {
   MagicNumbers,
   RoutePaths,
 } from "../../components/common/constant";
-const mockFormData = {
+const mockData = {
   isAgreedTermsAndConditions: true,
   lead: {
-    firstName: "Shashank",
+    id: 84,
+    leadCode: "RLEAD00000074",
+    firstName: "Shashank test update",
     middleName: "",
     lastName: "Gupta",
-    dateOfBirth: "2023-01-02",
-    email: "dfgdf@rt.vom",
-    mobileNumber: "7566410079",
-    identificationPassportNumber: 234324324324,
-    genderId: "M",
-    nationalityId: "BLZ",
-    language: "ISX",
-    raceId: "INDIAN/ASIAN",
-    mobileCountryCode: "ZA",
+    email: "shashankTest@test.com",
+    mobileNumber: "123456789",
+    mobileCountryCode: "27",
+    dateOfBirth: "1991-12-02",
+    identificationNumber: "34543535435",
+    gender: "M",
+    nationality: "IND",
+    language: "HIN",
+    race: "INDIAN/ASIAN",
   },
   address: [
     {
-      street: "Test adress",
-      zipcode: "234234",
-      city: "test city",
-      state: "test state",
-      country: "Albania",
       addressType: "POSTAL",
+      street: "sdfdsf",
+      country: "Indian",
+      state: "dwfdsf",
+      city: "dsfds",
+      zipcode: 34435,
     },
     {
-      street: "Test adress",
-      zipcode: "234234",
-      city: "test city",
-      state: "test state",
-      country: "Albania",
       addressType: "RESIDENTIAL",
+      street: "sdfdsf",
+      country: "Indian",
+      state: "dwfdsf",
+      city: "dsfds",
+      zipcode: 34435,
     },
   ],
   education: {
     programCode: "BBA-PROG-501",
-    qualificationCode: "PQ",
-    highSchoolName: "testschool",
-    referredById: "2",
-    studentTypeId: "1",
     studyModeCode: "DISTANCE-ONLINE",
-    socialMediaCode: "TWITTER",
-    agentCode: null,
-    studyModeDetail: {
-      fee: "21000.00",
-      feeMode: "SEMESTER",
-    },
+    qualificationCode: "MAT",
+    socialMediaCode: "",
     applicationFees: "13000.00",
-  },
-  kin: {
-    // isKin: "yes",
-    fullName: "sdfsdf",
-    relationship: "single",
-    email: "sdfdsf@tfgfg.vom",
-    mobileNumber: "+9665635435435345",
-    mobileCountryCode: "+966",
-  },
-  employment: {
-    // isEmployed: "yes",
-    employmentStatusCode: "EMPLOYED",
-    employer: "123",
-    jobTitle: "tesrt",
-    employmentIndustryCode: "MEDIA",
-    managerName: "sefsdf",
-    officeAddress: "Test Address",
-    officeMobileNumber: "+96654654654656",
-    officeMobileCountryCode: "+966",
-  },
-  sponser: {
-    // isSponsored: "yes",
-    name: "sfdsffd",
-    address: "dsfdsfsdf",
-    mobileNumber: "+966546354454",
-    mobileCountryCode: "+966",
-    sponsorModeCode: "SPONSER",
-    email: "test@TEST.COM",
+    programFees: "21000.00",
+    programMode: "SEMESTER",
+    agentCode: "ABSI",
+    highSchoolName: "sdfsdf",
+    studentTypeCode: "REGULAR",
+    referredById: "AGENT",
   },
 };
 
@@ -137,8 +110,8 @@ const ApplicationForm = (props: any) => {
     mode: "onChange",
     reValidateMode: "onBlur",
     defaultValues: useMemo(() => {
+      // return mockData;
       return studentData;
-      // return mockFormData as any;
     }, [studentData]),
   });
   const {
@@ -197,9 +170,8 @@ const ApplicationForm = (props: any) => {
     ];
     for (let [key, value] of Object.entries(studentData)) {
       if (
-        key === "kin" ||
-        key === "sponser" ||
-        (key === "employment" && isEmpty(studentData[key]))
+        (key === "kin" || key === "sponser" || key === "employment") &&
+        isObjectEmpty(studentData[key])
       ) {
         return;
       }
