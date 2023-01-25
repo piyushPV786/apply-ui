@@ -10,6 +10,7 @@ import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
 import {
+  formOptions,
   isEmpty,
   isObjectEmpty,
   onlyAlphabets,
@@ -174,11 +175,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphaNumericSpace(value) || !value) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                   />
@@ -229,11 +226,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                   />
@@ -281,7 +274,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                       uppdateMobNumber();
                     }}
                     onChange={(value) => {
-                      setValue(`${officeNumber}`, value);
+                      setValue(`${officeNumber}`, value,);
                     }}
                     value={officeNumberVal}
                   />

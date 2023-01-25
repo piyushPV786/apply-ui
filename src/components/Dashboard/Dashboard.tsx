@@ -73,10 +73,11 @@ export const ApplicationDashboard = (props: any) => {
   const onEdit = (
     applicationCode: string | number,
     leadCode: string,
-    isDraft
+    status
   ) => {
     clearRoute();
-    const isdraftSave = isDraft === CommonEnums.DRAFT ? true : false;
+    const isdraftSave =
+      status === (CommonEnums.DRAFT_STATUS || "DRAFT") ? true : false;
     const leadDetail = { applicationCode, leadCode, isdraftSave };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     router.push(RoutePaths.Application_Form);
@@ -84,16 +85,35 @@ export const ApplicationDashboard = (props: any) => {
   const onPay = (
     applicationCode: string | number,
     leadCode: string,
-    isDraft
+    status
   ) => {
     clearRoute();
-    const isdraftSave = isDraft === CommonEnums.DRAFT;
-    const isPaymentPending = isDraft === CommonEnums.DRAFT;
+    const isdraftSave = false;
+    const isPaymentPending = status;
     const leadDetail = {
       applicationCode,
       leadCode,
       isPaymentPending,
       isdraftSave,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    router.push(RoutePaths.Application_Form);
+  };
+  const onUploadDocuments = (
+    applicationCode: string | number,
+    leadCode: string,
+    status
+  ) => {
+    clearRoute();
+    const isdraftSave = false;
+    const isPaymentPending = false;
+    const isDocumentPending = true;
+    const leadDetail = {
+      applicationCode,
+      leadCode,
+      isPaymentPending,
+      isdraftSave,
+      isDocumentPending,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     router.push(RoutePaths.Application_Form);
@@ -151,6 +171,7 @@ export const ApplicationDashboard = (props: any) => {
                             programName={programName}
                             onEdit={onEdit}
                             onPay={onPay}
+                            onUploadDocuments={onUploadDocuments}
                             leadCode={leadCode}
                             studyModeCode={education?.studyModeCode}
                             updatedAt={updatedAt}
@@ -213,6 +234,7 @@ function ApplicationCard({
   leadCode,
   onEdit = (...args) => {},
   onPay = (...args) => {},
+  onUploadDocuments = (...args) => {},
   studyModeCode,
   updatedAt = "",
 }) {
@@ -262,12 +284,22 @@ function ApplicationCard({
               title="Edit"
               onClick={() => onEdit(applicationNumber, leadCode, status)}
             />
-            {!status.includes("DRAFT" || CommonEnums.DRAFT) && (
+            {status.includes(CommonEnums.FEES_PENDING_STATUS) && (
               <StyledButton
-                onClick={() => onPay(applicationNumber, leadCode, status)}
+                onClick={() => onPay(applicationNumber, leadCode, true)}
                 isPayBtn
                 className="card-button"
                 title="pay"
+              />
+            )}
+            {status.includes(CommonEnums.APP_ENROLLED_STATUS) && (
+              <StyledButton
+                onClick={() =>
+                  onUploadDocuments(applicationNumber, leadCode, true)
+                }
+                isUploadBtn
+                className="card-button"
+                title="Upload Document"
               />
             )}
           </div>
@@ -279,8 +311,8 @@ function ApplicationCard({
 
 const StyledStatusBedge = styled.div<any>`
   background: ${({ status }) => {
-    if (status === CommonEnums.FEES_PENDING) return "#ffde9e";
-    if (status === CommonEnums.DRAFT) return "#c1c1c1";
+    if (status === CommonEnums.FEES_PENDING_STATUS) return "#ffde9e";
+    if (status === (CommonEnums.DRAFT_STATUS || "DRAFT")) return "#c1c1c1";
     if (status === "pendingDocuments") return "#b7fffa";
     if (status === "submitted") return "#e0f8ef";
     else return "#ffde9e";
