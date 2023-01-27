@@ -5,6 +5,7 @@ import { StyledLink } from "../student/login";
 import { useRouter } from "next/router";
 import RbsLogo from "../../../public/assets/images/RBS_logo_2_white.png";
 import Image from "next/image";
+import { RoutePaths } from "./constant";
 
 const Header = (props: any) => {
   const [studentMob, setStudentMob] = useState<string>("");
@@ -34,7 +35,9 @@ const Header = (props: any) => {
           <>
             <div className="row align-items-center">
               <div className="col-md-6">
-                <LogoContainer>
+                <LogoContainer
+                  onClick={() => router.push(RoutePaths.Dashboard)}
+                >
                   <div
                     style={{
                       borderRight: "3px solid white",
