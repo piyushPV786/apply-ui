@@ -11,7 +11,13 @@ import UserCircleIcon from "../../../public/assets/images/user-circle-svgrepo-co
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { formOptions, isValidDate, isValidEmail, onlyAlphabets, sortAscending } from "../../Util/Util";
+import {
+  formOptions,
+  isValidDate,
+  isValidEmail,
+  onlyAlphabets,
+  sortAscending,
+} from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
 interface IPersonalInfoProps {
   genders: IOption[];
@@ -179,7 +185,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     name={genderIdKey}
                     register={register}
                   />
-                  {TouchFields?.genderId && Errors?.genderId && (
+                  {TouchFields?.gender && Errors?.gender && (
                     <div className="invalid-feedback">Please enter Gender</div>
                   )}
                 </div>
@@ -290,14 +296,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                 <div className="mb-4">
                   <AdvanceDropDown
                     options={nationalities?.sort((a, b) =>
-                      sortAscending(a, b, 'name')
+                      sortAscending(a, b, "name")
                     )}
                     value={nationalityId}
                     name={nationalityIdKey}
                     register={register}
                     label="Nationality"
                   />
-                  {TouchFields?.nationalityId && Errors?.nationalityId && (
+                  {TouchFields?.nationality && Errors?.nationality && (
                     <div className="invalid-feedback">
                       Please enter Nationality
                     </div>
@@ -315,9 +321,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     options={homeLanguage}
                     value={homeLanguageId}
                   />
-                  {TouchFields?.homeLanguageId && Errors?.homeLanguageId && (
+                  {TouchFields?.language && Errors?.language && (
                     <div className="invalid-feedback">
-                      Please enter Home Language
+                      Please select Home Language
                     </div>
                   )}
                 </div>
@@ -331,8 +337,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     register={register}
                     options={race}
                   />
-                  {TouchFields?.raceId && Errors?.raceId && (
-                    <div className="invalid-feedback">Please enter Race</div>
+                  {TouchFields?.race && Errors?.race && (
+                    <div className="invalid-feedback">Please select Race</div>
                   )}
                 </div>
               </div>

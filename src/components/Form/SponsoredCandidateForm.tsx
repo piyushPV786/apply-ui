@@ -57,6 +57,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
   const isSelfSponsored = sponsorModeVal === "SELF";
   const isSponserDetailExist = watch(SponsorCandidateDetail);
   const isSponserNeed = isSponsoredVal === "yes";
+  const disablePhoneOnSelfSponser = isSelfSponsored;
   useEffect(() => {
     if (
       !isObjectEmpty(isSponserDetailExist) &&
@@ -197,8 +198,9 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     countryCallingCodeEditable={false}
                     defaultCountry={countryCodeRef}
                     placeholder="Select Country Code*"
+                    disabled={disablePhoneOnSelfSponser}
                     onCountryChange={(value: any) => {
-                      setCountryCode(value);
+                      !disablePhoneOnSelfSponser && setCountryCode(value);
                     }}
                     onBlur={(e) => {
                       e.stopPropagation();

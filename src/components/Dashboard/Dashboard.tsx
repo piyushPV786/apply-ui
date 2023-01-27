@@ -60,7 +60,7 @@ export const ApplicationDashboard = (props: any) => {
     const leadId = JSON.parse(sessionStorage.getItem("studentId")!)
       ?.leadCode as any;
     const leadDetail = {
-      leadId,
+      leadCode: leadId,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     if (leadId) {
@@ -73,19 +73,26 @@ export const ApplicationDashboard = (props: any) => {
   const onEdit = (
     applicationCode: string | number,
     leadCode: string,
-    status
+    status,
+    educationDetail
   ) => {
     clearRoute();
     const isdraftSave =
       status === (CommonEnums.DRAFT_STATUS || "DRAFT") ? true : false;
-    const leadDetail = { applicationCode, leadCode, isdraftSave };
+    const leadDetail = {
+      applicationCode,
+      leadCode,
+      isdraftSave,
+      educationDetail,
+    };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     router.push(RoutePaths.Application_Form);
   };
   const onPay = (
     applicationCode: string | number,
     leadCode: string,
-    status
+    status,
+    educationDetail
   ) => {
     clearRoute();
     const isdraftSave = false;
@@ -95,6 +102,7 @@ export const ApplicationDashboard = (props: any) => {
       leadCode,
       isPaymentPending,
       isdraftSave,
+      educationDetail,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     router.push(RoutePaths.Application_Form);
@@ -118,6 +126,8 @@ export const ApplicationDashboard = (props: any) => {
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     router.push(RoutePaths.Application_Form);
   };
+
+  const onDownloadAcceptence = () => {};
   return (
     <>
       <ParentContainer>
@@ -171,10 +181,12 @@ export const ApplicationDashboard = (props: any) => {
                             programName={programName}
                             onEdit={onEdit}
                             onPay={onPay}
+                            onDownloadAcceptence={onDownloadAcceptence}
                             onUploadDocuments={onUploadDocuments}
                             leadCode={leadCode}
                             studyModeCode={education?.studyModeCode}
                             updatedAt={updatedAt}
+                            educationDetail={education}
                           />
                         </div>
                       )
@@ -235,8 +247,10 @@ function ApplicationCard({
   onEdit = (...args) => {},
   onPay = (...args) => {},
   onUploadDocuments = (...args) => {},
+  onDownloadAcceptence = (...args) => {},
   studyModeCode,
   updatedAt = "",
+  educationDetail,
 }) {
   return (
     <>
@@ -282,11 +296,15 @@ function ApplicationCard({
               className="card-button mr-2"
               isGreenWhiteCombination={true}
               title="Edit"
-              onClick={() => onEdit(applicationNumber, leadCode, status)}
+              onClick={() =>
+                onEdit(applicationNumber, leadCode, status, educationDetail)
+              }
             />
             {status.includes(CommonEnums.FEES_PENDING_STATUS) && (
               <StyledButton
-                onClick={() => onPay(applicationNumber, leadCode, true)}
+                onClick={() =>
+                  onPay(applicationNumber, leadCode, true, educationDetail)
+                }
                 isPayBtn
                 className="card-button"
                 title="pay"
@@ -300,6 +318,15 @@ function ApplicationCard({
                 isUploadBtn
                 className="card-button"
                 title="Upload Document"
+              />
+            )}
+            {status.includes(CommonEnums.APP_ENROLLED_ACCEPTED) && (
+              <StyledButton
+                onClick={onDownloadAcceptence}
+                isGreenWhiteCombination
+                isDownloadBtn
+                className="card-button"
+                title="Acceptence Letter"
               />
             )}
           </div>

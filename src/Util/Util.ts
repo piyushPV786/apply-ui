@@ -1,6 +1,6 @@
 import axios from "axios";
-import { removedKeysToMap } from "../components/common/constant";
-import { AuthApi } from "../service/Axios";
+import { CommonApi, removedKeysToMap } from "../components/common/constant";
+import { AuthApi, FinanceApi } from "../service/Axios";
 const ignorKeys = {
   createdAt: "",
   deletedAt: "",
@@ -38,6 +38,9 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
         key == "employment" &&
         (formData[key]?.isEmployed == "no" || !formData[key]?.isEmployed)
       ) {
+        delete formData[key];
+      }
+      if (removedKeysToMap[key] && typeof formData[key] !== "object") {
         delete formData[key];
       }
       if (
@@ -142,6 +145,17 @@ export const getUploadDocumentUrl = async (payload: getSignParams) => {
   }
 };
 
+export const getQualificationStudyModeData = async (programCode: string) => {
+  const response = await FinanceApi.get(
+    `${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`
+  );
+  try {
+    if (response.status === 200) return await response.data?.data;
+  } catch (error: any) {
+    return null;
+  }
+};
+
 export const uploadDocuments = async (uploadFileUrl: string, file: File) => {
   const request = new FormData();
   request.append("file", file);
@@ -236,22 +250,18 @@ export const formOptions = {
 };
 
 export const transformFormData = (formData: any) => {
-  if (!formData) return;
-  for (let [key, value] of Object.entries(formData)) {
-    console.log(typeof value === "object", { key });
-    if (removedKeysToMap.includes(key) && typeof value === "object") {
-      transformFormData(value);
-    }
-    // else if (removedKeysToMap.includes(key) && typeof value !== "object") {
-    // if (removedKeysToMap.includes(key) && typeof value === "object") {
-    //   transformFormData(value);
-    // }
-    else if (removedKeysToMap.includes(key) && typeof value !== "object") {
-      delete formData[key];
+  if (formData) {
+    for (let [key, value] of Object.entries(formData)) {
+      if (typeof value === "object") {
+        transformFormData(value);
+      }
+      if (removedKeysToMap.includes(key) && typeof value !== "object") {
+        delete formData[key];
+      } else if (removedKeysToMap.includes(key) && typeof value !== "object") {
+        delete formData[key];
+      }
     }
   }
-  console.log({ formData });
-  return formData;
 
-  // return formData;
+  return formData;
 };
