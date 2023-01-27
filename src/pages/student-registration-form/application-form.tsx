@@ -129,11 +129,11 @@ const ApplicationForm = (props: any) => {
     getUserDetail();
     getMasterData();
   }, []);
-  useEffect(() => {
-    if (studentData) {
-      // mapFormDefaultValue();
-    }
-  }, [studentData]);
+  // useEffect(() => {
+  //   if (studentData) {
+  //     // mapFormDefaultValue();
+  //   }
+  // }, [studentData]);
   const allFields = watch();
 
   const isValidDocument =
@@ -163,7 +163,6 @@ const ApplicationForm = (props: any) => {
     }
   };
   const mapFormDefaultValue = (studentData: any) => {
-    // const formData = transformFormData(studentData);
     for (let [key, value] of Object.entries(studentData)) {
       if (
         (key === "kin" || key === "sponser" || key === "employment") &&
@@ -187,6 +186,13 @@ const ApplicationForm = (props: any) => {
     }
   };
   const updateLead = (request: any) => {
+    if (activeStep === MagicNumbers.TWO) {
+      // setActiveStep(2);
+      setDocumentUploadDone(true);
+      setPaymentDone(true);
+      uploadStudentDocs();
+      return;
+    }
     AuthApi.post(CommonApi.SAVEUSER, {
       ...request,
     })
@@ -204,15 +210,8 @@ const ApplicationForm = (props: any) => {
           message: response?.message,
           show: true,
         });
-        if (activeStep === MagicNumbers.TWO) {
-          setActiveStep(2);
-          setDocumentUploadDone(true);
-          setPaymentDone(true);
-          uploadStudentDocs();
-        } else {
-          setSubmitted(true);
-          setActiveStep(activeStep + 1);
-        }
+        setSubmitted(true);
+        setActiveStep(activeStep + 1);
       })
       .catch((err) => {
         console.log(err.message);
@@ -273,7 +272,11 @@ const ApplicationForm = (props: any) => {
   const submitFormData = (data: object, isDraftSave?: boolean) => {
     const formData = { ...data };
 
-    const { isSameAsPostalAddress = "", ...rest } = { ...(formData as any) };
+    const {
+      isSameAsPostalAddress = "",
+      payment = null,
+      ...rest
+    } = { ...(formData as any) };
 
     let request = mapFormData({
       ...rest,
@@ -373,7 +376,10 @@ const ApplicationForm = (props: any) => {
       })
     ).then(() => {
       if (count === successLength.length) {
-        router.push(RoutePaths.Document_Success);
+        showToast(true, "Docuuments Successfully Uploaded");
+        setTimeout(() => {
+          router.push(RoutePaths.Document_Success);
+        }, 2000);
       }
     });
   };
@@ -419,6 +425,9 @@ const ApplicationForm = (props: any) => {
       )
         .then(({ data: response }) => {
           const formData = { ...response?.data };
+          console.log({ formData });
+          const truncateFormData = transformFormData(formData);
+          console.log({ truncateFormData });
           mapFormDefaultValue(formData);
           setStudentData(response?.data);
           if (leadDetail?.isPaymentPending && routeTo !== "Document") {

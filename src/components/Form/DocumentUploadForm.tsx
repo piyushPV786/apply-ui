@@ -3,16 +3,19 @@ import { MainContainer, PaymentContainer } from "../payment/payment";
 import { useFormContext } from "react-hook-form";
 import DoneIcon from "@material-ui/icons/Done";
 import styled from "styled-components";
-import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
+import { Green, GreenFormHeading } from "../common/common";
 import StyledButton from "../button/button";
-import { formOptions, isInvalidFileType, uniqueArrayOfObject } from "../../Util/Util";
+import {
+  formOptions,
+  isInvalidFileType,
+  uniqueArrayOfObject,
+} from "../../Util/Util";
 import Link from "next/link";
 import Image from "next/image";
 import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
 import ViewIcon from "../../../public/assets/images/view-svgrepo-com.svg";
 import TrashIcon from "../../../public/assets/images/trash-svgrepo-com.svg";
 import FileUpload from "../../../public/assets/images/file-upload-svgrepo-com.svg";
-import { IOption } from "../common/types";
 
 interface IDocumentUploadProps {
   allFields: any;
@@ -38,7 +41,7 @@ const DocumentUploadForm = ({
     const existingPaymentProof = allFields?.payment?.paymentProof;
     if (existingPaymentProof && existingPaymentProof.length > 0) {
       existingPaymentProof?.forEach((element) => {
-        element.typeCode = "other";
+        element.typeCode = "PAYMENTPROOF";
       });
 
       const allUploadedFiles = uniqueArrayOfObject(
@@ -56,7 +59,7 @@ const DocumentUploadForm = ({
   };
   const deleteDocs = (index: number) => {
     const remainingDocs = [...uploadDocs.filter((item, idx) => idx !== index)];
-    setValue("document.uploadedDocs", remainingDocs,formOptions);
+    setValue("document.uploadedDocs", remainingDocs, formOptions);
     setUploadDocs(remainingDocs);
   };
 
@@ -88,7 +91,7 @@ const DocumentUploadForm = ({
   const onFileTypeSelect = (value: string, index: number) => {
     const allFiles: any = [...uploadDocs];
     allFiles[index].typeCode = value;
-    setValue("document.uploadedDocs", allFiles,formOptions);
+    setValue("document.uploadedDocs", allFiles, formOptions);
   };
   return (
     <>
@@ -128,7 +131,7 @@ const DocumentUploadForm = ({
                         }}
                       />
                       <GreenFormHeading className="mt-1 text">
-                      Drag and drop, or browse your files
+                        Drag and drop, or browse your files
                       </GreenFormHeading>
                       <strong className="mt-1 fs-6">or</strong>
                       <div>
@@ -138,8 +141,11 @@ const DocumentUploadForm = ({
                           roundBtn
                           onClick={onDocUploadClick}
                         />
-                        <p className="grey-text mt-2" style={{ color: `#838383` }}>
-                        Only PNG, JPEG and PDF files with max size of 2MB{" "}
+                        <p
+                          className="grey-text mt-2"
+                          style={{ color: `#838383` }}
+                        >
+                          Only PNG, JPEG and PDF files with max size of 2MB{" "}
                         </p>
                       </div>
                     </StyledUploadDocumentContainer>
@@ -154,7 +160,9 @@ const DocumentUploadForm = ({
                         <tr>
                           <th scope="col">File Name</th>
                           <th scope="col">File Type</th>
-                          <th scope="col" className="text-center">Action</th>
+                          <th scope="col" className="text-center">
+                            Action
+                          </th>
                         </tr>
                       </thead>
                       <tbody>

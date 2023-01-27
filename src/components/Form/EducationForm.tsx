@@ -161,9 +161,7 @@ export const EducationForm = (props: IEducationProps) => {
     }
   }, [programVal]);
 
-
-
-  const getQualificationStudyModeData = (programCode: string) => {
+  const getQualificationStudyModeData = async (programCode: string) => {
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
       .then((res) => {
         const courseFeesDetail = res?.data?.data;
@@ -185,7 +183,11 @@ export const EducationForm = (props: IEducationProps) => {
           }));
         }
 
-        setValue(applicationFeesKey, applicationFees?.fees[0]?.fee, formOptions);
+        setValue(
+          applicationFeesKey,
+          applicationFees?.fees[0]?.fee,
+          formOptions
+        );
         setStudyModeQualification(courseFeesDetail);
       })
       .catch((err) => {
@@ -194,7 +196,7 @@ export const EducationForm = (props: IEducationProps) => {
   };
 
   const setSelectedMode = (props: IFee) => {
-    const selectedStudyModeData = studyModeQualification![parentIdx].studyModes[
+    const selectedStudyModeData = studyModeQualification![0].studyModes[
       studyIdx
     ].fees.find(({ feeMode }) => feeMode === props.feeMode);
     setValue(programMode, selectedStudyModeData?.feeMode, formOptions);
@@ -225,7 +227,7 @@ export const EducationForm = (props: IEducationProps) => {
                     className="form-select"
                     {...register(`${program}`, { required: true })}
                     onChange={(e) => {
-                      setValue(e.target.name, e.target.value,formOptions);
+                      setValue(e.target.name, e.target.value, formOptions);
                       getQualificationStudyModeData(e.target.value);
                     }}
                   >
@@ -272,7 +274,11 @@ export const EducationForm = (props: IEducationProps) => {
                                             required: true,
                                           })}
                                           onClick={(e: any) => {
-                                            setValue(studyMode, e.target.value,formOptions);
+                                            setValue(
+                                              studyMode,
+                                              e.target.value,
+                                              formOptions
+                                            );
                                             setSelectedStudyMode({
                                               studyIdx: studyIdx,
                                               studyId: studyModeCode,

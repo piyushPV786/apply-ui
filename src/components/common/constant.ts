@@ -2,6 +2,7 @@ export enum CommonEnums {
   DRAFT_STATUS = "APP-DRAFT",
   FEES_PENDING_STATUS = "APP-FEE-PEND",
   APP_ENROLLED_STATUS = "APP-ENROLED",
+  APP_ENROLLED_ACCEPTED = "ENRL-ACCEPTED",
 }
 
 export enum MagicNumbers {

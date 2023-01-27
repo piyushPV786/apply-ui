@@ -6,6 +6,7 @@ import Image from "next/image";
 import EditIcon from "../../../public/assets/images/edit-icon.svg";
 import UploadIcon from "../../../public/assets/images/upload.svg";
 import PayIcon from "../../../public/assets/images/pay-pay.svg";
+import UploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
 interface IButoonProps {
   title?: string;
   onClick?: (...args: any) => void;
@@ -20,6 +21,7 @@ interface IButoonProps {
   isEditBtn?: boolean;
   isPayBtn?: boolean;
   isUploadBtn?: boolean;
+  isDownloadBtn?: boolean;
 }
 const StyledButton = ({
   title = "",
@@ -33,6 +35,7 @@ const StyledButton = ({
   isEditBtn = false,
   isPayBtn = false,
   isUploadBtn = false,
+  isDownloadBtn = false,
   form = "",
   ...rest
 }: IButoonProps) => {
@@ -63,6 +66,11 @@ const StyledButton = ({
           <Image alt="upload" src={UploadIcon} />
         </span>
       )}
+      {isDownloadBtn && (
+        <StyledDownloadIcon className="me-3 icon-additinal">
+          <Image alt="download" src={UploadImg} />
+        </StyledDownloadIcon>
+      )}
       {title}
     </MyButton>
   );
@@ -92,3 +100,5 @@ const MyButton = styled(Button)<any>`
     }
   }
 `;
+
+const StyledDownloadIcon = styled.span``;

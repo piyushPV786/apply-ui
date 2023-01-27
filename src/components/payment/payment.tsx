@@ -1,13 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import {
   DefaultGrey,
   Green,
   GreenFormHeading,
-  GreenText,
   StyledLabel,
 } from "../common/common";
-import CloseIcon from "@material-ui/icons/CloseOutlined";
 import { useFormContext } from "react-hook-form";
 import { IOption } from "../common/types";
 import PaymentOption from "./payment-options";
@@ -15,6 +13,7 @@ import StyledButton from "../button/button";
 import {
   applyDiscountCode,
   getApplicationCode,
+  getQualificationStudyModeData,
   getUploadDocumentUrl,
   isInvalidFileType,
   uploadDocuments,
@@ -55,19 +54,39 @@ const Payment = (props: any) => {
   const [showPromoCode, setShowPromoCOde] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
-  const selectedProgram: string =
+  const selectedProgram =
     props?.programs &&
     props.programs?.find(
       (item: IOption) => item?.code == allFields?.education?.programCode
-    )?.name;
+    );
   const selectedStudyMode: string = allFields?.education?.studyModeCode;
-  const programFee: string = allFields?.education?.applicationFees;
+  const programFee: string = allFields?.education?.applicationFees || "0";
 
   const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
   };
+  const discountAmount = allFields?.payment?.discountAmount
+    ? parseInt(allFields?.payment?.discountAmount)
+    : 0;
+
+  useEffect(() => {
+    const programDetails =
+      JSON.parse(sessionStorage.getItem("activeLeadDetail")!)
+        ?.educationDetail || null;
+    if (selectedProgram && programDetails) {
+      (async () => {
+        const selectedProgramCode = await getQualificationStudyModeData(
+          programDetails?.programCode
+        );
+        const applicationDetail = selectedProgramCode[0]?.studyModes?.find(
+          (item) => item?.studyModeCode === "APPLICATION"
+        );
+        setValue("education.applicationFees", applicationDetail?.fees[0]?.fee);
+      })();
+    }
+  }, [selectedProgram]);
 
   const uploadPaymentDocument = (fileUrl: string, file: File) => {
     return uploadDocuments(fileUrl, file)
@@ -160,86 +179,87 @@ const Payment = (props: any) => {
 
   return (
     <>
+      <div className="payment-conatiner">
+        <div className="row">
+          <div className="col-12 col-md-12 mb-5">
+            <MainContainer>
+              {" "}
+              <PaymentHeading>
+                <div className="col-md-12">
+                  <StyleHeading>
+                    <GreenFormHeading style={{ fontSize: "20px" }}>
+                      Order Summary
+                    </GreenFormHeading>
+                  </StyleHeading>
+                </div>
+              </PaymentHeading>
+              <PaymentContainer>
+                <div className="row p-4">
+                  <div className="col-md-8">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="mb-4">
+                          <StyledLabel style={{ fontSize: "16px" }}>
+                            Proposal Qualification
+                          </StyledLabel>
+                          <div>
+                            <strong>{selectedProgram?.name}</strong>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-4">
+                          <StyledLabel style={{ fontSize: "16px" }}>
+                            Study Mode
+                          </StyledLabel>
+                          <div>
+                            <strong>{selectedStudyMode}</strong>
+                          </div>
+                        </div>
+                      </div>
 
-    <div className="payment-conatiner">
-      <div className="row">
-        <div className="col-12 col-md-12 mb-5">
-          <MainContainer>
-            {" "}
-            <PaymentHeading>
-              <div className="col-md-12">
-                <StyleHeading>
-                  <GreenFormHeading style={{ fontSize: "20px" }}>
-                    Order Summary
-                  </GreenFormHeading>
-                </StyleHeading>
-              </div>
-            </PaymentHeading>
-            <PaymentContainer>
-              <div className="row p-4">
-                <div className="col-md-8">
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-4">
-                        <StyledLabel style={{ fontSize: "16px" }}>
-                          Proposal Qualification
-                        </StyledLabel>
-                        <div>
-                          <strong>{selectedProgram}</strong>
+                      <div className="col-md-6">
+                        <div className="mb-4 w-75">
+                          <StyledLabel required style={{ fontSize: "16px" }}>
+                            Currency Selection
+                          </StyledLabel>
+                          <select
+                            className="form-select"
+                            {...register(`payment.currency`, {
+                              required: true,
+                            })}
+                          >
+                            {Currency &&
+                              Currency.map(
+                                ({ currency, label, symbol, value }) => (
+                                  <option
+                                    selected={
+                                      symbol === allFields?.payment?.currency
+                                    }
+                                    key={symbol}
+                                    value={symbol}
+                                  >
+                                    {symbol}
+                                  </option>
+                                )
+                              )}
+                          </select>
                         </div>
                       </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-4">
-                        <StyledLabel style={{ fontSize: "16px" }}>
-                          Study Mode
-                        </StyledLabel>
-                        <div>
-                          <strong>{selectedStudyMode}</strong>
-                        </div>
-                      </div>
-                    </div>
-              
-                    <div className="col-md-6">
-                      <div className="mb-4 w-75">
-                        <StyledLabel required style={{ fontSize: "16px" }}>
-                          Currency Selection
-                        </StyledLabel>
-                        <select
-                          className="form-select"
-                          {...register(`payment.currency`, { required: true })}
-                        >
-                          {Currency &&
-                            Currency.map(
-                              ({ currency, label, symbol, value }) => (
-                                <option
-                                  selected={
-                                    symbol === allFields?.payment?.currency
-                                  }
-                                  key={symbol}
-                                  value={symbol}
-                                >
-                                  {symbol}
-                                </option>
-                              )
-                            )}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-4">
-                        <StyledLabel style={{ fontSize: "16px" }}>
-                          Application Fee
-                        </StyledLabel>
-                        <div>
-                          <strong>INR {programFee}</strong>
+                      <div className="col-md-6">
+                        <div className="mb-4">
+                          <StyledLabel style={{ fontSize: "16px" }}>
+                            Application Fee
+                          </StyledLabel>
+                          <div>
+                            <strong>INR {programFee}</strong>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="col-md-4">
-                     <div className="w-100 p-4 promo-card">
+                  <div className="col-md-4">
+                    <div className="w-100 p-4 promo-card">
                       <div className="mb-4 d-flex justify-content-between">
                         <div>
                           <h6>Subtotal (INR)</h6>
@@ -251,9 +271,8 @@ const Payment = (props: any) => {
                             Discount INR - {allFields?.payment?.discountAmount}
                           </h6>
                           <h6>
-                            Total Amount -{" "}
-                            {parseInt(programFee) -
-                              parseInt(allFields?.payment?.discountAmount)}
+                            Total Amount -
+                            {parseInt(programFee) - discountAmount}
                           </h6>
                         </div>
                       </div>
@@ -301,101 +320,111 @@ const Payment = (props: any) => {
                         </div>
                       )}
                     </div>
+                  </div>
                 </div>
-              </div>
-            </PaymentContainer>
-          </MainContainer>
-        </div>
-        <div className="col-md-6">
-          <PaymentOption navigateNext={props?.navigateNext} />
-        </div>
-        <div className="col-md-1">
-          <StyledDiv>Or</StyledDiv>
-        </div>
-        <div className="col-md-5">
-          <MainContainer>
-            <PaymentHeading>
-              <div className="col-md-12">
-                <StyleHeading>
-                  <GreenFormHeading style={{ fontSize: "20px" }}>
-                    Upload Payment Proof
-                  </GreenFormHeading>
-                </StyleHeading>
-              </div>
-            </PaymentHeading>
-            <PaymentContainer>
-              <div className="d-flex justify-content-center w-100">
-                <div className="">
-                  <UploadPaymentDocsContainer onClick={onDocUploadClick} className="w-100">
-                    <div ref={fileUploadRef} className="text-center">
-                      <Image
-                        src={FIleUploadImg}
-                        width="35"
-                        alt="file-upload-svgrepo"
-                      />
-                      <input
-                        className="d-none"
-                        accept="image/jpeg, application/pdf"
-                        type="file"
-                        {...(register("payment.paymentProof", {
-                          required: true,
-                        }) as any)}
-                        onChange={(e) => {
-                          if (e?.target) {
-                            const files = [...paymentDocs, e.target?.files![0]];
-                            onPaymentDocumentUpload(files);
-                          }
-                        }}
-                      />
-                      <GreenFormHeading>Drag and drop, or browse your files</GreenFormHeading>
-                      <p className="grey-text">Only PNG, JPEG and PDF files with max size of 2MB</p>
-                      <div
-                        onClick={(e) => e.stopPropagation()}
-                        className="d-flex flex-wrap"
-                      >
-                        {paymentDocs &&
-                          paymentDocs.map((file, idx) => (
-                            <span
-                              style={{
-                                color: file?.error ? "red" : "#000",
-                                wordBreak: "break-all",
-                              }}
-                              className="w-100"
-                              key={file.lastModified}
-                            >
-                              {file?.name}{" "}
-                              <DeleteIcon onClick={() => deleteFile(idx)} />
-                            </span>
-                          ))}
-                      </div>
-                      {paymentDocs.length > 0 && isInvalidFiles && (
-                        <div className="invalid-feedback">
-                          Only "PDF" or "JPEG" file can be upload.
+              </PaymentContainer>
+            </MainContainer>
+          </div>
+          <div className="col-md-6">
+            <PaymentOption navigateNext={props?.navigateNext} />
+          </div>
+          <div className="col-md-1">
+            <StyledDiv>Or</StyledDiv>
+          </div>
+          <div className="col-md-5">
+            <MainContainer>
+              <PaymentHeading>
+                <div className="col-md-12">
+                  <StyleHeading>
+                    <GreenFormHeading style={{ fontSize: "20px" }}>
+                      Upload Payment Proof
+                    </GreenFormHeading>
+                  </StyleHeading>
+                </div>
+              </PaymentHeading>
+              <PaymentContainer>
+                <div className="d-flex justify-content-center w-100">
+                  <div className="">
+                    <UploadPaymentDocsContainer
+                      onClick={onDocUploadClick}
+                      className="w-100"
+                    >
+                      <div ref={fileUploadRef} className="text-center">
+                        <Image
+                          src={FIleUploadImg}
+                          width="35"
+                          alt="file-upload-svgrepo"
+                        />
+                        <input
+                          className="d-none"
+                          accept="image/jpeg, application/pdf"
+                          type="file"
+                          {...(register("payment.paymentProof", {
+                            required: true,
+                          }) as any)}
+                          onChange={(e) => {
+                            if (e?.target) {
+                              const files = [
+                                ...paymentDocs,
+                                e.target?.files![0],
+                              ];
+                              onPaymentDocumentUpload(files);
+                            }
+                          }}
+                        />
+                        <GreenFormHeading>
+                          Drag and drop, or browse your files
+                        </GreenFormHeading>
+                        <p className="grey-text">
+                          Only PNG, JPEG and PDF files with max size of 2MB
+                        </p>
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          className="d-flex flex-wrap"
+                        >
+                          {paymentDocs &&
+                            paymentDocs.map((file, idx) => (
+                              <span
+                                style={{
+                                  color: file?.error ? "red" : "#000",
+                                  wordBreak: "break-all",
+                                }}
+                                className="w-100"
+                                key={file.lastModified}
+                              >
+                                {file?.name}{" "}
+                                <DeleteIcon onClick={() => deleteFile(idx)} />
+                              </span>
+                            ))}
                         </div>
-                      )}
-                    </div>
-                  </UploadPaymentDocsContainer>
+                        {paymentDocs.length > 0 && isInvalidFiles && (
+                          <div className="invalid-feedback">
+                            Only "PDF" or "JPEG" file can be upload.
+                          </div>
+                        )}
+                      </div>
+                    </UploadPaymentDocsContainer>
+                  </div>
+                </div>
+              </PaymentContainer>
+              <div className="container">
+                <div className="row">
+                  <div className="col align-self-center text-center ">
+                    <StyledButton
+                      disabled={
+                        isInvalidFiles ||
+                        paymentDocs.length === 0 ||
+                        isPaymentDocSubmit
+                      }
+                      onClick={() => submitPaymentDocs()}
+                      title="Submit"
+                    />
+                  </div>
                 </div>
               </div>
-            </PaymentContainer>
-            <div className="container">
-              <div className="row">
-                <div className="col align-self-center text-center ">
-                  <StyledButton
-                    disabled={
-                      isInvalidFiles ||
-                      paymentDocs.length === 0 ||
-                      isPaymentDocSubmit
-                    }
-                    onClick={() => submitPaymentDocs()}
-                    title="Submit"
-                  />
-                </div>
-              </div>
-            </div>
-          </MainContainer>
+            </MainContainer>
+          </div>
         </div>
-      </div>
       </div>
     </>
   );
