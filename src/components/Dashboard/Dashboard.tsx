@@ -13,6 +13,7 @@ import { AcadmicApi, AuthApi } from "../../service/Axios";
 import { IApplication, IDocument, IOption } from "../common/types";
 import {
   downloadDocument,
+  getCommonUploadDocumentUrl,
   getUploadDocumentUrl,
   transformDate,
 } from "../../Util/Util";
@@ -140,16 +141,10 @@ export const ApplicationDashboard = (props: any) => {
     documentDetail: IDocument[],
     applicationCode: string
   ) => {
-    console.log({ documentDetail, applicationCode });
     const { name, documentTypeCode } = documentDetail[0];
-    const fileType = name.split(".").pop();
-    const payload = {
-      documentTypeCode,
-      fileType,
-      fileName: name,
-    };
-    getUploadDocumentUrl(payload as any, applicationCode).then((res) => {
-      if (res?.statusCode === 201) {
+    // const fileType = name.split(".").pop();
+    getCommonUploadDocumentUrl(name).then((res) => {
+      if (res?.statusCode === 200) {
         downloadDocument(res?.data, name);
       } else {
         setToast({ show: true, message: res?.message, success: false });
@@ -363,7 +358,7 @@ function ApplicationCard({
                 title="Upload Document"
               />
             )}
-            {!status.includes(CommonEnums.APP_ENROLLED_ACCEPTED) && (
+            {status.includes(CommonEnums.APP_ENROLLED_ACCEPTED) && (
               <StyledButton
                 onClick={() =>
                   onDownloadAcceptence(document, applicationNumber)

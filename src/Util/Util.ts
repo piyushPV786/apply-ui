@@ -1,6 +1,6 @@
 import axios from "axios";
 import { CommonApi, removedKeysToMap } from "../components/common/constant";
-import { AuthApi, FinanceApi } from "../service/Axios";
+import { AuthApi, CommonAPI, FinanceApi } from "../service/Axios";
 const ignorKeys = {
   createdAt: "",
   deletedAt: "",
@@ -113,10 +113,14 @@ export const GetPaymentImage = (type: string) => {
 
 export const getApplicationCode = () => {
   let appCode = "";
-  const leadData: any = window.sessionStorage.getItem("leadData");
-  if (leadData) {
-    const leadDataApp = JSON.parse(leadData);
-    appCode = leadDataApp?.applicationData?.applicationCode;
+  // const leadData: any = window.sessionStorage.getItem("leadData");
+  const activeLeadDetail = JSON.parse(
+    sessionStorage?.getItem("activeLeadDetail") as any
+  )?.applicationCode;
+  const leadCode = activeLeadDetail;
+  if (leadCode) {
+    // const leadDataApp = JSON.parse(leadCode);
+    appCode = leadCode;
   }
   return appCode;
 };
@@ -139,6 +143,20 @@ export const getUploadDocumentUrl = async (
       payload
     );
     if (response.status === 201) {
+      const { data } = response;
+      return await data;
+    }
+  } catch (error: any) {
+    console.log(error.message);
+    return error;
+  }
+};
+export const getCommonUploadDocumentUrl = async (fileName: string) => {
+  try {
+    const response: any = await CommonAPI.get(
+      `${CommonApi.GETCOMMONDOCUMENTURL}?filename=${fileName}`
+    );
+    if (response.status === 200) {
       const { data } = response;
       return await data;
     }
@@ -268,10 +286,9 @@ export const transformFormData = (formData: any) => {
   return formData;
 };
 
-export const downloadDocument = (blob, fileName: string) => {
-  const fileURL = window.URL.createObjectURL(blob);
+export const downloadDocument = (url, fileName: string) => {
   let alink = document.createElement("a");
-  alink.href = fileURL;
+  alink.href = url;
   alink.download = fileName;
   alink.click();
 };

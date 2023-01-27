@@ -34,9 +34,13 @@ const DocumentUploadForm = ({
   const fileUploadRef = useRef<any>(null);
   const { register, setValue } = useFormContext();
   const [uploadDocs, setUploadDocs] = useState<
-    (File & { error: boolean; typeCode: "other" })[]
+    (File & { error: boolean; typeCode: string })[]
   >([]);
   const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
+  const documentTypeList = [
+    ...documentType,
+    ...[{ name: "Other", code: "other" }],
+  ];
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
     if (existingPaymentProof && existingPaymentProof.length > 0) {
@@ -67,7 +71,9 @@ const DocumentUploadForm = ({
     const uploadedFiles = files;
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
-      item.typeCode = "other";
+      if (!item?.typeCode) {
+        item.typeCode = "other";
+      }
     });
     setUploadDocs(uploadedFiles as any);
     setValue("document.uploadedDocs", uploadedFiles);
@@ -93,6 +99,7 @@ const DocumentUploadForm = ({
     allFiles[index].typeCode = value;
     setValue("document.uploadedDocs", allFiles, formOptions);
   };
+
   return (
     <>
       <div className="row document-container">
@@ -190,9 +197,14 @@ const DocumentUploadForm = ({
                                   onFileTypeSelect(e?.target?.value, index)
                                 }
                               >
-                                <option value="other">Other</option>
-                                {documentType?.map((item) => (
-                                  <option key={item.id} value={item?.code}>
+                                {documentTypeList?.map((item) => (
+                                  <option
+                                    selected={
+                                      item?.code === uploadDocs[index]?.typeCode
+                                    }
+                                    key={item.id}
+                                    value={item?.code}
+                                  >
                                     {item?.name}
                                   </option>
                                 ))}
