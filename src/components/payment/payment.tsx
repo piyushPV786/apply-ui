@@ -136,9 +136,9 @@ const Payment = (props: any) => {
       })
       .catch((err) => {
         setPaymentDocSubmit(false);
+        props.showToast(false, "Something went wrong");
         console.log(err);
       });
-      props?.navigateNext();
   };
   const onPaymentDocumentUpload = (files: any) => {
     const uploadedFiles = files;

@@ -38,7 +38,7 @@ const DocumentUploadForm = ({
   >([]);
   const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
   const documentTypeList = [
-    ...documentType,
+    ...documentType || [],
     ...[{ name: "Other", code: "other" }],
   ];
   useEffect(() => {
