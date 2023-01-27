@@ -328,10 +328,10 @@ function ApplicationCard({
               <strong>{transformDate(new Date(updatedAt))}</strong>
             </div>
           </div>
-          <div className=" w-100 text-center d-flex justify-content-center mt-4">
+          <div className="w-100 text-center d-flex justify-content-center mt-4 card-group-button">
             <StyledButton
               isEditBtn
-              className="card-button mr-2"
+              className="card-button"
               isGreenWhiteCombination={true}
               title="Edit"
               onClick={() =>
@@ -358,7 +358,7 @@ function ApplicationCard({
                 title="Upload Document"
               />
             )}
-            {status.includes(CommonEnums.APP_ENROLLED_ACCEPTED) && (
+            {status.includes(CommonEnums.APP_ENROLLED_ACCEPTED) && ( 
               <StyledButton
                 onClick={() =>
                   onDownloadAcceptence(document, applicationNumber)
@@ -368,7 +368,7 @@ function ApplicationCard({
                 className="card-button"
                 title="Acceptence Letter"
               />
-            )}
+              )}
           </div>
         </ContentCard>
       </ApplicationContainer>

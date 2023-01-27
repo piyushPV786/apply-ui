@@ -83,7 +83,6 @@ const MyButton = styled(Button)<any>`
   background: ${({ isGreenWhiteCombination }) =>
     isGreenWhiteCombination ? "white!important" : "#008554 !important"};
   border: 1px solid #008554 !important;
-  padding: 0.5rem 3rem !important;
   .MuiButton-label {
     color: ${({ isGreenWhiteCombination }) =>
       isGreenWhiteCombination ? Green : "white"};

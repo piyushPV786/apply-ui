@@ -1,3 +1,10 @@
+
+@font-face {
+  font-family: "roboto";
+  src:  url("/assets/fonts/Roboto-Regular.ttf")  format('truetype');
+  font-weight: 500;
+}
+
 body {
   margin: 0 auto;
   font-family: roboto;
@@ -198,7 +205,7 @@ div.PhoneInput--focus input
 @media screen and (max-width: 1367px) {
   .login-spacing
   {
-    margin-top: 60px;
+    margin-top: 40px;
   }
 }
 
@@ -241,9 +248,17 @@ button
   text-transform:capitalize
 }
 
+
 .card-button
 {
-max-width: 60px;
+min-width: 60px;
+padding: 6px 8px !important;
+margin-right: 10px !important;
+}
+
+.card-button:last-child
+{
+  margin-right: 0 !important;
 }
 
 .card-button .me-3
