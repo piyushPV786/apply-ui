@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import PersonalInfoForm from "../../components/Form/personalInfoForm";
 import { useForm, FormProvider } from "react-hook-form";
 import styled from "styled-components";
@@ -109,13 +109,14 @@ const ApplicationForm = (props: any) => {
   const [isDocumentUploadDone, setDocumentUploadDone] =
     useState<boolean>(false);
   const [masterData, setMasterData] = useState<IMasterData | null>(null);
+  const [leadDetail, setLeadDetail] = useState<any>(null);
   const methods = useForm({
-    mode: "onChange",
+    mode: "all",
     reValidateMode: "onBlur",
-    defaultValues: useMemo(() => {
-      // return mockData;
-      return studentData;
-    }, [studentData]),
+    // defaultValues: useMemo(() => {
+    //   // return mockData;
+    //   // return studentData;
+    // }, [studentData]),
   });
   const {
     register,
@@ -129,17 +130,16 @@ const ApplicationForm = (props: any) => {
     getUserDetail();
     getMasterData();
   }, []);
-  // useEffect(() => {
-  //   if (studentData) {
-  //     // mapFormDefaultValue();
-  //   }
-  // }, [studentData]);
   const allFields = watch();
 
   const isValidDocument =
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
 
   const navigateBack = () => {
+    if (leadDetail?.isPaymentPending || leadDetail?.isDocumentPending) {
+      router.back();
+      return;
+    }
     setSubmitted(false);
     setActiveStep((prevState: number) => prevState - 1);
   };
@@ -185,17 +185,30 @@ const ApplicationForm = (props: any) => {
       }
     }
   };
-  const updateLead = (request: any) => {
+  const updateLead = (
+    request: any,
+    leadCode: string,
+    applicationCode: string
+  ) => {
     if (activeStep === MagicNumbers.TWO) {
-      // setActiveStep(2);
+      setActiveStep(2);
       setDocumentUploadDone(true);
       setPaymentDone(true);
       uploadStudentDocs();
       return;
     }
-    AuthApi.post(CommonApi.SAVEUSER, {
-      ...request,
-    })
+
+    const methodType = applicationCode
+      ? AuthApi.put(
+          `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}`,
+          {
+            ...request,
+          }
+        )
+      : AuthApi.post(CommonApi.SAVEUSER, {
+          ...request,
+        });
+    methodType
       .then(({ data: response }) => {
         sessionStorage.setItem(
           "studentId",
@@ -292,7 +305,7 @@ const ApplicationForm = (props: any) => {
     const draftUpdateCode = activeLeadDetail || appCode;
     if (leadCode && !isDraftSave) {
       request.lead.leadCode = leadCode;
-      updateLead(request);
+      updateLead(request, leadCode, draftUpdateCode);
       return;
     }
     if (draftUpdateCode && isDraftSave) {
@@ -425,9 +438,7 @@ const ApplicationForm = (props: any) => {
       )
         .then(({ data: response }) => {
           const formData = { ...response?.data };
-          console.log({ formData });
           const truncateFormData = transformFormData(formData);
-          console.log({ truncateFormData });
           mapFormDefaultValue(formData);
           setStudentData(response?.data);
           if (leadDetail?.isPaymentPending && routeTo !== "Document") {
@@ -443,6 +454,7 @@ const ApplicationForm = (props: any) => {
           if (routeTo === "Document") {
             routeIfStepDone(routeTo); /// calling this if user coming back from payment success screen
           }
+          setLeadDetail(leadDetail);
         })
         .catch((err) => {
           console.log(err);
@@ -668,7 +680,10 @@ const ApplicationForm = (props: any) => {
           }}
           open={show}
           onClose={() => {
-            setShowDraftSaveToast(!showDraftSavedToast);
+            setShowDraftSaveToast((prevState) => ({
+              ...prevState,
+              show: !show,
+            }));
           }}
           key={"bottom"}
         >

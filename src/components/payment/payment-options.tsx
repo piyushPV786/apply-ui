@@ -6,7 +6,6 @@ import StyledButton from "../button/button";
 import { CommonApi, PaymentTypes } from "../common/constant";
 import { getApplicationCode, GetPaymentImage } from "../../Util/Util";
 import { AuthApi } from "../../service/Axios";
-import axios from "axios";
 const IPaymentType = PaymentTypes.map((item) => item.name);
 const PaymentCard = (props: any) => {
   return (

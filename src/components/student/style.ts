@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { GreenText } from "../common/common";
 
 export const ApplicationFormContainerStyle = {
   display: "flex",
@@ -66,7 +65,11 @@ export const Item = styled.div`
     margin-bottom: 0.7rem;
   }
 `;
-
+export const GreenText = styled.span`
+  color: #008554;
+  font-weight: 700;
+  font-size: 14px;
+`;
 export const Title = styled(GreenText)``;
 
 export const Heading = styled.span`

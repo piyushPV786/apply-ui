@@ -124,12 +124,15 @@ interface getSignParams {
   documentTypeCode: string;
   fileName: string;
   fileType: string;
-  amount: number | string;
-  paymentModeCode: string;
+  amount?: number | string;
+  paymentModeCode?: string;
 }
-export const getUploadDocumentUrl = async (payload: getSignParams) => {
+export const getUploadDocumentUrl = async (
+  payload: getSignParams,
+  code?: string
+) => {
   const url = process.env.base_Url;
-  const appCode = getApplicationCode();
+  const appCode = code || getApplicationCode();
   try {
     const response: any = await AuthApi.post(
       `${url}application/${appCode}/document`,
@@ -262,6 +265,13 @@ export const transformFormData = (formData: any) => {
       }
     }
   }
-
   return formData;
+};
+
+export const downloadDocument = (blob, fileName: string) => {
+  const fileURL = window.URL.createObjectURL(blob);
+  let alink = document.createElement("a");
+  alink.href = fileURL;
+  alink.download = fileName;
+  alink.click();
 };

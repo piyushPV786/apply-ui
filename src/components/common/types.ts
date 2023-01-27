@@ -105,6 +105,15 @@ export interface IApplication {
   status: string;
   education: IEducation;
   lead: ILead;
+  document: IDocument;
+}
+
+export interface IDocument {
+  id: number;
+  documentTypeCode: string;
+  name: string;
+  status: string;
+  comments: null;
 }
 
 export interface IEducation {

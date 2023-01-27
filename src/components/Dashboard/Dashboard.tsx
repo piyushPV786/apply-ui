@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Green, GreenFormHeading } from "../common/common";
+import { Green, GreenFormHeading, Toaster } from "../common/common";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer } from "../payment/payment";
 import Header from "../common/header";
@@ -10,14 +10,23 @@ import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
 import { CommonApi, CommonEnums, RoutePaths } from "../common/constant";
 import { AcadmicApi, AuthApi } from "../../service/Axios";
-import { IApplication, IOption } from "../common/types";
-import { transformDate } from "../../Util/Util";
+import { IApplication, IDocument, IOption } from "../common/types";
+import {
+  downloadDocument,
+  getUploadDocumentUrl,
+  transformDate,
+} from "../../Util/Util";
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
   const [studentApplications, setStudentApplications] = useState<
     IApplication[]
   >([]);
+  const [showToast, setToast] = useState<{
+    success: boolean;
+    message: string;
+    show: boolean;
+  }>({ success: false, message: "", show: false });
   const router = useRouter();
 
   useEffect(() => {
@@ -127,7 +136,31 @@ export const ApplicationDashboard = (props: any) => {
     router.push(RoutePaths.Application_Form);
   };
 
-  const onDownloadAcceptence = () => {};
+  const onDownloadAcceptence = (
+    documentDetail: IDocument[],
+    applicationCode: string
+  ) => {
+    console.log({ documentDetail, applicationCode });
+    const { name, documentTypeCode } = documentDetail[0];
+    const fileType = name.split(".").pop();
+    const payload = {
+      documentTypeCode,
+      fileType,
+      fileName: name,
+    };
+    getUploadDocumentUrl(payload as any, applicationCode).then((res) => {
+      if (res?.statusCode === 201) {
+        downloadDocument(res?.data, name);
+      } else {
+        setToast({ show: true, message: res?.message, success: false });
+      }
+    });
+  };
+
+  const onToast = () => {
+    setToast((prevState) => ({ ...prevState, show: !prevState?.show }));
+  };
+  const { message, show, success } = showToast;
   return (
     <>
       <ParentContainer>
@@ -169,6 +202,7 @@ export const ApplicationDashboard = (props: any) => {
                             leadCode,
                           },
                           education,
+                          document,
                         },
                         idx
                       ) => (
@@ -187,6 +221,7 @@ export const ApplicationDashboard = (props: any) => {
                             studyModeCode={education?.studyModeCode}
                             updatedAt={updatedAt}
                             educationDetail={education}
+                            document={document}
                           />
                         </div>
                       )
@@ -233,6 +268,13 @@ export const ApplicationDashboard = (props: any) => {
             </PaymentContainer>
           </div>
         </div>
+        <Toaster
+          key={"id"}
+          message={message}
+          show={show}
+          success={success}
+          setShowToast={onToast}
+        />
       </ParentContainer>
     </>
   );
@@ -251,6 +293,7 @@ function ApplicationCard({
   studyModeCode,
   updatedAt = "",
   educationDetail,
+  document,
 }) {
   return (
     <>
@@ -320,9 +363,11 @@ function ApplicationCard({
                 title="Upload Document"
               />
             )}
-            {status.includes(CommonEnums.APP_ENROLLED_ACCEPTED) && (
+            {!status.includes(CommonEnums.APP_ENROLLED_ACCEPTED) && (
               <StyledButton
-                onClick={onDownloadAcceptence}
+                onClick={() =>
+                  onDownloadAcceptence(document, applicationNumber)
+                }
                 isGreenWhiteCombination
                 isDownloadBtn
                 className="card-button"
