@@ -31,6 +31,8 @@ export const CommonApi = {
   PAYUPAYMENT: "global/payuPayment",
   GETINTRESTEDQUALIFICATION: "programs",
   GETDOCUMENTURL: "global/file",
+  GETCOMMONDOCUMENTURL: "/document",
+  GETDOCUMENT: "/document/upload",
 };
 
 export const RoutePaths = {

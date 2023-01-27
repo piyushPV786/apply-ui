@@ -138,6 +138,7 @@ const Payment = (props: any) => {
         setPaymentDocSubmit(false);
         console.log(err);
       });
+      props?.navigateNext();
   };
   const onPaymentDocumentUpload = (files: any) => {
     const uploadedFiles = files;
