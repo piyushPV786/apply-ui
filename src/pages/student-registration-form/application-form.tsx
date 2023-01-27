@@ -189,7 +189,7 @@ const ApplicationForm = (props: any) => {
     request: any,
     leadCode: string,
     applicationCode: string,
-    activeLeadDetail:any
+    activeLeadDetail: any
   ) => {
     if (activeStep === MagicNumbers.TWO) {
       setActiveStep(2);
@@ -219,7 +219,11 @@ const ApplicationForm = (props: any) => {
           })
         );
         sessionStorage.setItem("leadData", JSON.stringify(response?.data));
-        sessionStorage.setItem("activeLeadDetail", JSON.stringify({...activeLeadDetail}));
+        activeLeadDetail &&
+          sessionStorage.setItem(
+            "activeLeadDetail",
+            JSON.stringify({ ...activeLeadDetail })
+          );
 
         setShowDraftSaveToast({
           success: true,
@@ -308,7 +312,7 @@ const ApplicationForm = (props: any) => {
     const draftUpdateCode = activeLeadDetail?.applicationCode || appCode;
     if (leadCode && !isDraftSave) {
       request.lead.leadCode = leadCode;
-      updateLead(request, leadCode, draftUpdateCode,activeLeadDetail);
+      updateLead(request, leadCode, draftUpdateCode, activeLeadDetail);
       return;
     }
     if (draftUpdateCode && isDraftSave) {
