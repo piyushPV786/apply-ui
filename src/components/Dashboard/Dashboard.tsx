@@ -297,15 +297,16 @@ function ApplicationCard({
     status.includes(CommonEnums.DRAFT_STATUS);
   const showDOcumentUploadBtn =
     status.includes(CommonEnums.RESUB_APP_DOC) ||
-    status.includes(CommonEnums.APP_ENROLLED_STATUS);
+    status.includes(CommonEnums.APP_ENROLLED_STATUS) ||
+    status.includes("APP-ENROLED");
   const showPayBtn =
     status.includes(CommonEnums.RESUB_APP_FEE_PROOF) ||
     status.includes(CommonEnums.FEES_PENDING_STATUS);
-  const enrollmentNumber = status.includes(
-    CommonEnums.APP_ENROLLED_STATUS || "APP-ENROLED"
-  )
-    ? enrolmentCode
-    : "";
+  const enrollmentNumber =
+    status.includes(CommonEnums.APP_ENROLLED_STATUS) ||
+    status.includes("APP-ENROLED")
+      ? enrolmentCode
+      : "";
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
@@ -315,9 +316,11 @@ function ApplicationCard({
         <ContentCard>
           <div className="w-100">
             <GreenFormHeading className="application-number">
-              Application Number - {enrollmentNumber || applicationNumber}
+              Application Number - {applicationNumber}
               <br />
-              Enrollment Number - {enrollmentNumber}
+              {enrollmentNumber
+                ? ` Enrollment Number - ${enrollmentNumber}`
+                : ""}
             </GreenFormHeading>
           </div>
           <div className="mt-2 w-100 app-card-block">
