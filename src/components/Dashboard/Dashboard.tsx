@@ -318,7 +318,9 @@ function ApplicationCard({
             <GreenFormHeading className="application-number">
               Application Number - {applicationNumber}
               <br />
-              Enrollment Number - {enrollmentNumber}
+              {enrollmentNumber
+                ? ` Enrollment Number - ${enrollmentNumber}`
+                : ""}
             </GreenFormHeading>
           </div>
           <div className="mt-2 w-100 app-card-block">
