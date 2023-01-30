@@ -169,7 +169,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     {...register(`${sponsorEmail}`, {
                       required: !isSelfSponsored && isSponserNeed,
                       validate: (value) =>
-                        !isSponsoredVal || isSelfSponsored
+                        !isSponsoredVal  || !isSponserNeed || isSelfSponsored
                           ? true
                           : isValidEmail(value),
                     })}
