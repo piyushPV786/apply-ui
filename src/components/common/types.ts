@@ -103,7 +103,7 @@ export interface IApplication {
   programName?: string;
   updatedAt?: string;
   status: string;
-  enrollmentCode?: string;
+  enrolmentCode?: string;
   education: IEducation;
   lead: ILead;
   document: IDocument;
