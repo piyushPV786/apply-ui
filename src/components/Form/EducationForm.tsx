@@ -323,7 +323,7 @@ export const EducationForm = (props: IEducationProps) => {
                           Please select Study Mode
                         </div>
                       )}
-                    {educationFormError?.studyModeDetail && (
+                    {educationFormError?.programFees && (
                       <div className="invalid-feedback">
                         Please select Fees and Semester
                       </div>
@@ -535,10 +535,10 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchFields?.studentTypeId &&
-                    educationFormError?.studentTypeId && (
+                  {touchFields?.studentTypeCode &&
+                    educationFormError?.studentTypeCode && (
                       <div className="invalid-feedback">
-                        Please select studyType
+                        Please select study type
                       </div>
                     )}
                 </div>
