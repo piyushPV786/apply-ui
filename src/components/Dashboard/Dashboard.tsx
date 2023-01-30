@@ -316,7 +316,7 @@ function ApplicationCard({
         <ContentCard>
           <div className="w-100">
             <GreenFormHeading className="application-number">
-              Application Number - {enrollmentNumber || applicationNumber}
+              Application Number - {applicationNumber}
               <br />
               Enrollment Number - {enrollmentNumber}
             </GreenFormHeading>
