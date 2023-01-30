@@ -189,7 +189,7 @@ export const ApplicationDashboard = (props: any) => {
                           applicationCode,
                           programName,
                           updatedAt,
-                          enrollmentCode,
+                          enrolmentCode,
                           lead: {
                             firstName,
                             lastName,
@@ -217,7 +217,7 @@ export const ApplicationDashboard = (props: any) => {
                             updatedAt={updatedAt}
                             educationDetail={education}
                             document={document}
-                            enrollmentCode={enrollmentCode}
+                            enrolmentCode={enrolmentCode}
                           />
                         </div>
                       )
@@ -279,7 +279,7 @@ export const ApplicationDashboard = (props: any) => {
 function ApplicationCard({
   name,
   applicationNumber,
-  enrollmentCode,
+  enrolmentCode,
   status = "",
   programName,
   leadCode,
@@ -295,12 +295,14 @@ function ApplicationCard({
   const showEditBtn =
     status.includes(CommonEnums.FEES_PENDING_STATUS) ||
     status.includes(CommonEnums.DRAFT_STATUS);
-  const showDOcumentUploadBtn = status.includes(CommonEnums.RESUB_APP_DOC);
+  const showDOcumentUploadBtn =
+    status.includes(CommonEnums.RESUB_APP_DOC) ||
+    status.includes(CommonEnums.APP_ENROLLED_STATUS);
   const showPayBtn =
     status.includes(CommonEnums.RESUB_APP_FEE_PROOF) ||
     status.includes(CommonEnums.FEES_PENDING_STATUS);
   const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
-    ? enrollmentCode
+    ? enrolmentCode
     : "";
   return (
     <>
@@ -312,6 +314,8 @@ function ApplicationCard({
           <div className="w-100">
             <GreenFormHeading className="application-number">
               Application Number - {enrollmentNumber || applicationNumber}
+              <br />
+              Enrollment Number - {enrollmentNumber}
             </GreenFormHeading>
           </div>
           <div className="mt-2 w-100 app-card-block">
