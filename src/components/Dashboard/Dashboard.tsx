@@ -301,7 +301,9 @@ function ApplicationCard({
   const showPayBtn =
     status.includes(CommonEnums.RESUB_APP_FEE_PROOF) ||
     status.includes(CommonEnums.FEES_PENDING_STATUS);
-  const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
+  const enrollmentNumber = status.includes(
+    CommonEnums.APP_ENROLLED_STATUS || "APP-ENROLED"
+  )
     ? enrolmentCode
     : "";
   return (
