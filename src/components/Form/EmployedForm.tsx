@@ -31,12 +31,11 @@ const officePhoneCode = `${EmployementDetails}.officeMobileCountryCode`;
 const isEmployed = `${EmployementDetails}.isEmployed`;
 interface IEmployeProps {
   employmentStatusArr: IOption[];
-  employerArr: any[];
   employmentIndustries: IOption[];
   leadId: string;
 }
 export const EmployedForm = (props: IEmployeProps) => {
-  const { employerArr, employmentIndustries, employmentStatusArr } = {
+  const { employmentIndustries, employmentStatusArr } = {
     ...props,
   };
 
@@ -136,8 +135,8 @@ export const EmployedForm = (props: IEmployeProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchField?.employmentStatusId &&
-                    error?.employmentStatusId && (
+                  {touchField?.employmentStatusCode &&
+                    error?.employmentStatusCode && (
                       <div className="invalid-feedback">
                         Please select employment status
                       </div>
@@ -152,6 +151,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                     {...register(`${employer}`, {
                       required: !isUnEmployed && isEmployedNeed,
                     })}
+                    disabled={isUnEmployed}
                     value={employerVal}
                     defaultValue={employerVal}
                   />
@@ -206,11 +206,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchField?.industryId && error?.industryId && (
-                    <div className="invalid-feedback">
-                      Please select industry
-                    </div>
-                  )}
+                  {touchField?.employmentIndustryCode &&
+                    error?.employmentIndustryCode && (
+                      <div className="invalid-feedback">
+                        Please select industry
+                      </div>
+                    )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -274,12 +275,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                       uppdateMobNumber();
                     }}
                     onChange={(value) => {
-                      setValue(`${officeNumber}`, value,);
+                      setValue(`${officeNumber}`, value);
                     }}
                     value={officeNumberVal}
                   />
-                  {touchField?.officePhoneNumber &&
-                    error?.officePhoneNumber && (
+                  {touchField?.officeMobileNumber &&
+                    error?.officeMobileNumber && (
                       <div className="invalid-feedback">
                         Please enter office number
                       </div>

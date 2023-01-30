@@ -120,7 +120,12 @@ const ApplicationForm = (props: any) => {
   });
   const {
     register,
-    formState: { isValid, isDirty, errors, touchedFields },
+    formState: {
+      isValid,
+      isDirty,
+      errors,
+      touchedFields,
+    },
     watch,
     setValue,
     getValues,
@@ -230,7 +235,7 @@ const ApplicationForm = (props: any) => {
           message: response?.message,
           show: true,
         });
-        setSubmitted(true);
+        setSubmitted(false);
         setActiveStep(activeStep + 1);
       })
       .catch((err) => {
@@ -240,6 +245,8 @@ const ApplicationForm = (props: any) => {
           message: err?.message,
           show: true,
         });
+        setSubmitted(false);
+
       });
   };
   const updateUserAsDraft = (request, appCode: string) => {
@@ -311,6 +318,7 @@ const ApplicationForm = (props: any) => {
     );
     const draftUpdateCode = activeLeadDetail?.applicationCode || appCode;
     if (leadCode && !isDraftSave) {
+      setSubmitted(true);
       request.lead.leadCode = leadCode;
       updateLead(request, leadCode, draftUpdateCode, activeLeadDetail);
       return;
@@ -479,7 +487,10 @@ const ApplicationForm = (props: any) => {
       })
       .catch((err) => console.log(err));
   };
-  // console.log({ allFields,errors });
+  // console.log({
+  //   allFields,
+  //   errors,
+  // });
   const language = masterData?.languageData as IOption[];
   const nationalities = masterData?.nationalityData as IOption[];
   const highestQualifications =
@@ -550,7 +561,6 @@ const ApplicationForm = (props: any) => {
                         leadId={leadId}
                         key="EmployedForm"
                         employmentStatusArr={employmentStatus}
-                        employerArr={[]}
                         employmentIndustries={employmentIndustries}
                       />
                       <SponsoredForm
@@ -648,7 +658,7 @@ const ApplicationForm = (props: any) => {
                       onClick={methods.handleSubmit(
                         (data) => onSubmit(data, false) as any
                       )}
-                      disabled={!isValid && !isValidDocument}
+                      disabled={!isValid && !isValidDocument || isFormSubmitted }
                       title={activeStep < 2 ? "Save & Next" : "Submit"}
                     />
                     <StyleFooter>
