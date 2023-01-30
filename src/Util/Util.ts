@@ -116,7 +116,7 @@ export const getApplicationCode = () => {
   // const leadData: any = window.sessionStorage.getItem("leadData");
   const activeLeadDetail = JSON.parse(
     sessionStorage?.getItem("activeLeadDetail") as any
-  )?.applicationCode;
+  )?.leadCode;
   const leadCode = activeLeadDetail;
   if (leadCode) {
     // const leadDataApp = JSON.parse(leadCode);
