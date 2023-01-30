@@ -189,12 +189,12 @@ export const ApplicationDashboard = (props: any) => {
                           applicationCode,
                           programName,
                           updatedAt,
+                          enrollmentCode,
                           lead: {
                             firstName,
                             lastName,
                             middleName = "",
                             leadCode,
-                            enrollmentCode,
                           },
                           education,
                           document,
