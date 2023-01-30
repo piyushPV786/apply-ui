@@ -372,6 +372,7 @@ const ApplicationForm = (props: any) => {
       });
   };
   const uploadStudentDocs = async () => {
+
     const {
       document: { uploadedDocs = [] as File[] },
     } = allFields;
@@ -397,14 +398,18 @@ const ApplicationForm = (props: any) => {
           }
         });
       })
-    ).then(() => {
-      if (count === successLength.length) {
-        showToast(true, "Docuuments Successfully Uploaded");
-        setTimeout(() => {
-          router.push(RoutePaths.Document_Success);
-        }, 2000);
-      }
-    });
+    )
+      .then(() => {
+        if (count === successLength.length) {
+          showToast(true, "Docuuments Successfully Uploaded");
+          setTimeout(() => {
+            router.push(RoutePaths.Document_Success);
+          }, 2000);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const showToast = (success: boolean, message: string) => {
     setShowDraftSaveToast({
@@ -508,7 +513,6 @@ const ApplicationForm = (props: any) => {
     setActiveStep(0);
   };
   const { message, success, show } = showDraftSavedToast;
-
   const today = new Date();
   const year = today.getFullYear();
 
@@ -650,13 +654,14 @@ const ApplicationForm = (props: any) => {
                     )}
                     &nbsp;&nbsp;&nbsp;
                     <StyledButton
-                      onClick={methods.handleSubmit(
-                        (data) => onSubmit(data, false) as any
-                      )}
-                      disabled={
-                        (!isValid && !isValidDocument) ||
-                        (isFormSubmitted && activeStep === 0)
-                      }
+                      onClick={() => {
+                        activeStep === 2
+                          ? (submitFormData(allFields, false) as any)
+                          : methods.handleSubmit(
+                              (data) => onSubmit(data, false) as any
+                            )();
+                      }}
+                      disabled={!isValid && !isValidDocument}
                       title={activeStep < 2 ? "Save & Next" : "Submit"}
                     />
                     <StyleFooter>
