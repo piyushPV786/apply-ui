@@ -189,12 +189,12 @@ export const ApplicationDashboard = (props: any) => {
                           applicationCode,
                           programName,
                           updatedAt,
+                          enrollmentCode,
                           lead: {
                             firstName,
                             lastName,
                             middleName = "",
                             leadCode,
-                            enrollmentCode,
                           },
                           education,
                           document,
@@ -295,9 +295,10 @@ function ApplicationCard({
   const showEditBtn =
     status.includes(CommonEnums.FEES_PENDING_STATUS) ||
     status.includes(CommonEnums.DRAFT_STATUS);
-  const showDOcumentUploadBtn =
-    status.includes(CommonEnums.RESUB_APP_DOC) ||
-    status.includes(CommonEnums.RESUB_APP_FEE_PROOF);
+  const showDOcumentUploadBtn = status.includes(CommonEnums.RESUB_APP_DOC);
+  const showPayBtn =
+    status.includes(CommonEnums.RESUB_APP_FEE_PROOF) ||
+    status.includes(CommonEnums.FEES_PENDING_STATUS);
   const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
     ? enrollmentCode
     : "";
@@ -351,7 +352,7 @@ function ApplicationCard({
                 }
               />
             )}
-            {status.includes(CommonEnums.FEES_PENDING_STATUS) && (
+            {showPayBtn && (
               <StyledButton
                 onClick={() =>
                   onPay(applicationNumber, leadCode, true, educationDetail)
