@@ -136,4 +136,5 @@ export interface ILead {
   nationality: null;
   language: string;
   race: null;
+  enrollmentCode?: string;
 }

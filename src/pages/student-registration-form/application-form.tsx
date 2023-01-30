@@ -479,7 +479,7 @@ const ApplicationForm = (props: any) => {
       })
       .catch((err) => console.log(err));
   };
-  // console.log({ allFields });
+  // console.log({ allFields,errors });
   const language = masterData?.languageData as IOption[];
   const nationalities = masterData?.nationalityData as IOption[];
   const highestQualifications =
@@ -632,15 +632,17 @@ const ApplicationForm = (props: any) => {
                         />
                       )}
                     </>
-                    <StyledButton
-                      onClick={() => onSubmit(getValues(), true)}
-                      type="button"
-                      disabled={
-                        (!isDirty && !isValidDocument) || !isValidDocument
-                      }
-                      isGreenWhiteCombination={true}
-                      title={"Save as Draft"}
-                    />
+                    {activeStep !== 2 && (
+                      <StyledButton
+                        onClick={() => onSubmit(getValues(), true)}
+                        type="button"
+                        disabled={
+                          (!isDirty && !isValidDocument) || !isValidDocument
+                        }
+                        isGreenWhiteCombination={true}
+                        title={"Save as Draft"}
+                      />
+                    )}
                     &nbsp;&nbsp;&nbsp;
                     <StyledButton
                       onClick={methods.handleSubmit(

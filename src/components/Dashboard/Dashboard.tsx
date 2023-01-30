@@ -195,6 +195,7 @@ export const ApplicationDashboard = (props: any) => {
                             lastName,
                             middleName = "",
                             leadCode,
+                            enrollmentCode,
                           },
                           education,
                           document,
@@ -217,6 +218,7 @@ export const ApplicationDashboard = (props: any) => {
                             updatedAt={updatedAt}
                             educationDetail={education}
                             document={document}
+                            enrollmentCode={enrollmentCode}
                           />
                         </div>
                       )
@@ -278,6 +280,7 @@ export const ApplicationDashboard = (props: any) => {
 function ApplicationCard({
   name,
   applicationNumber,
+  enrollmentCode,
   status = "",
   programName,
   leadCode,
@@ -290,6 +293,15 @@ function ApplicationCard({
   educationDetail,
   document,
 }) {
+  const showEditBtn =
+    status.includes(CommonEnums.FEES_PENDING_STATUS) ||
+    status.includes(CommonEnums.DRAFT_STATUS);
+  const showDOcumentUploadBtn =
+    status.includes(CommonEnums.RESUB_APP_DOC) ||
+    status.includes(CommonEnums.RESUB_APP_FEE_PROOF);
+  const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
+    ? enrollmentCode
+    : "";
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
@@ -299,7 +311,7 @@ function ApplicationCard({
         <ContentCard>
           <div className="w-100">
             <GreenFormHeading className="application-number">
-              Application Number - {applicationNumber}
+              Application Number - {enrollmentNumber || applicationNumber}
             </GreenFormHeading>
           </div>
           <div className="mt-2 w-100 app-card-block">
@@ -329,15 +341,17 @@ function ApplicationCard({
             </div>
           </div>
           <div className="w-100 text-center d-flex justify-content-center mt-4 card-group-button">
-            <StyledButton
-              isEditBtn
-              className="card-button"
-              isGreenWhiteCombination={true}
-              title="Edit"
-              onClick={() =>
-                onEdit(applicationNumber, leadCode, status, educationDetail)
-              }
-            />
+            {showEditBtn && (
+              <StyledButton
+                isEditBtn
+                className="card-button"
+                isGreenWhiteCombination={true}
+                title="Edit"
+                onClick={() =>
+                  onEdit(applicationNumber, leadCode, status, educationDetail)
+                }
+              />
+            )}
             {status.includes(CommonEnums.FEES_PENDING_STATUS) && (
               <StyledButton
                 onClick={() =>
@@ -348,7 +362,7 @@ function ApplicationCard({
                 title="pay"
               />
             )}
-            {status.includes(CommonEnums.APP_ENROLLED_STATUS) && (
+            {showDOcumentUploadBtn && (
               <StyledButton
                 onClick={() =>
                   onUploadDocuments(applicationNumber, leadCode, true)
@@ -358,7 +372,7 @@ function ApplicationCard({
                 title="Upload Document"
               />
             )}
-            {status.includes(CommonEnums.APP_ENROLLED_ACCEPTED) && ( 
+            {status.includes(CommonEnums.APP_ENROLLED_ACCEPTED) && (
               <StyledButton
                 onClick={() =>
                   onDownloadAcceptence(document, applicationNumber)
@@ -368,7 +382,7 @@ function ApplicationCard({
                 className="card-button"
                 title="Acceptence Letter"
               />
-              )}
+            )}
           </div>
         </ContentCard>
       </ApplicationContainer>
@@ -380,8 +394,11 @@ const StyledStatusBedge = styled.div<any>`
   background: ${({ status }) => {
     if (status === CommonEnums.FEES_PENDING_STATUS) return "#ffde9e";
     if (status === (CommonEnums.DRAFT_STATUS || "DRAFT")) return "#c1c1c1";
-    if (status === "pendingDocuments") return "#b7fffa";
-    if (status === "submitted") return "#e0f8ef";
+    if (
+      status === (CommonEnums.RESUB_APP_DOC || CommonEnums.RESUB_APP_FEE_PROOF)
+    )
+      return "#b7fffa";
+    if (status === CommonEnums.APP_ENROLLED_STATUS) return "#e0f8ef";
     else return "#ffde9e";
   }};
   border-radius: 5px;

@@ -11,7 +11,6 @@ import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
 import {
   formOptions,
-  isEmpty,
   isObjectEmpty,
   isValidEmail,
   onlyAlphabets,
@@ -169,7 +168,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     value={sponserEmailVal}
                     {...register(`${sponsorEmail}`, {
                       required: !isSelfSponsored && isSponserNeed,
-                      validate: (value) => isValidEmail(value, !isSponserNeed),
+                      validate: (value) => isValidEmail(value, isSponserNeed),
                     })}
                   />
                   {touchedField?.email &&
