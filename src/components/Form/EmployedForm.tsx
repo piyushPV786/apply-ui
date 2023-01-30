@@ -151,6 +151,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                     {...register(`${employer}`, {
                       required: !isUnEmployed && isEmployedNeed,
                     })}
+                    disabled={isUnEmployed}
                     value={employerVal}
                     defaultValue={employerVal}
                   />
