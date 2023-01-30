@@ -120,12 +120,7 @@ const ApplicationForm = (props: any) => {
   });
   const {
     register,
-    formState: {
-      isValid,
-      isDirty,
-      errors,
-      touchedFields,
-    },
+    formState: { isValid, isDirty, errors, touchedFields },
     watch,
     setValue,
     getValues,
@@ -197,6 +192,7 @@ const ApplicationForm = (props: any) => {
     activeLeadDetail: any
   ) => {
     if (activeStep === MagicNumbers.TWO) {
+      setSubmitted(false);
       setActiveStep(2);
       setDocumentUploadDone(true);
       setPaymentDone(true);
@@ -246,7 +242,6 @@ const ApplicationForm = (props: any) => {
           show: true,
         });
         setSubmitted(false);
-
       });
   };
   const updateUserAsDraft = (request, appCode: string) => {
@@ -658,7 +653,10 @@ const ApplicationForm = (props: any) => {
                       onClick={methods.handleSubmit(
                         (data) => onSubmit(data, false) as any
                       )}
-                      disabled={!isValid && !isValidDocument || isFormSubmitted }
+                      disabled={
+                        (!isValid && !isValidDocument) ||
+                        (isFormSubmitted && activeStep === 0)
+                      }
                       title={activeStep < 2 ? "Save & Next" : "Submit"}
                     />
                     <StyleFooter>

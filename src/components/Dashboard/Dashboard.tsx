@@ -14,7 +14,6 @@ import { IApplication, IDocument, IOption } from "../common/types";
 import {
   downloadDocument,
   getCommonUploadDocumentUrl,
-  getUploadDocumentUrl,
   transformDate,
 } from "../../Util/Util";
 
