@@ -16,7 +16,6 @@ import { IMasterData, IOption } from "../../components/common/types";
 import {
   formOptions,
   getUploadDocumentUrl,
-  isEmpty,
   isObjectEmpty,
   mapFormData,
   transformFormData,
@@ -38,56 +37,6 @@ import {
   MagicNumbers,
   RoutePaths,
 } from "../../components/common/constant";
-const mockData = {
-  isAgreedTermsAndConditions: true,
-  lead: {
-    id: 84,
-    leadCode: "RLEAD00000074",
-    firstName: "Shashank test update",
-    middleName: "",
-    lastName: "Gupta",
-    email: "shashankTest@test.com",
-    mobileNumber: "123456789",
-    mobileCountryCode: "27",
-    dateOfBirth: "1991-12-02",
-    identificationNumber: "34543535435",
-    gender: "M",
-    nationality: "IND",
-    language: "HIN",
-    race: "INDIAN/ASIAN",
-  },
-  address: [
-    {
-      addressType: "POSTAL",
-      street: "sdfdsf",
-      country: "Indian",
-      state: "dwfdsf",
-      city: "dsfds",
-      zipcode: 34435,
-    },
-    {
-      addressType: "RESIDENTIAL",
-      street: "sdfdsf",
-      country: "Indian",
-      state: "dwfdsf",
-      city: "dsfds",
-      zipcode: 34435,
-    },
-  ],
-  education: {
-    programCode: "BBA-PROG-501",
-    studyModeCode: "DISTANCE-ONLINE",
-    qualificationCode: "MAT",
-    socialMediaCode: "",
-    applicationFees: "13000.00",
-    programFees: "21000.00",
-    programMode: "SEMESTER",
-    agentCode: "ABSI",
-    highSchoolName: "sdfsdf",
-    studentTypeCode: "REGULAR",
-    referredById: "AGENT",
-  },
-};
 
 const isValidFileType = (files: any[]) => {
   if (!files || files.length === 0) return [];
@@ -202,7 +151,7 @@ const ApplicationForm = (props: any) => {
 
     const methodType = applicationCode
       ? AuthApi.put(
-          `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}`,
+          `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}?isDraft=false`,
           {
             ...request,
           }
@@ -254,9 +203,6 @@ const ApplicationForm = (props: any) => {
           message: "Saved as draft",
           show: true,
         });
-        // setTimeout(() => {
-        //   router.push(RoutePaths.Dashboard);
-        // }, 2000);
       })
       .catch((err) => {
         console.log({ err });
@@ -278,9 +224,6 @@ const ApplicationForm = (props: any) => {
           message: "Saved as draft",
           show: true,
         });
-        // setTimeout(() => {
-        //   router.push(RoutePaths.Dashboard);
-        // }, 2000);
       })
       .catch((err) => {
         console.log(err.message);
@@ -372,7 +315,6 @@ const ApplicationForm = (props: any) => {
       });
   };
   const uploadStudentDocs = async () => {
-
     const {
       document: { uploadedDocs = [] as File[] },
     } = allFields;
@@ -501,7 +443,9 @@ const ApplicationForm = (props: any) => {
   const sponsorModes = masterData?.sponsorModeData as IOption[];
   const studyModes = masterData?.studyModeData as IOption[];
   const genders = masterData?.genderData as IOption[];
-  const employmentStatus = masterData?.employmentStatusData as IOption[];
+  const employmentStatus = masterData?.employmentStatusData?.filter(
+    (item) => item?.name?.toLowerCase() !== "unemployed"
+  ) as IOption[];
   const employmentIndustries = masterData?.employmentIndustryData as IOption[];
   const countryData = masterData?.countryData as IOption[];
   const agentData = masterData?.agentData as IOption[];
