@@ -15,7 +15,11 @@ import { formOptions, onlyAlphaNumericSpace } from "../../Util/Util";
 import EducationImg from "../../../public/assets/images/education-svgrepo-com.svg";
 import Image from "next/image";
 import { FinanceApi } from "../../service/Axios";
-import { AgentandSocialMedia, CommonApi } from "../common/constant";
+import {
+  AgentandSocialMedia,
+  CommonApi,
+  CommonEnums,
+} from "../common/constant";
 const mockStudyModeData = [
   {
     programCode: "BBA-PROG-501",
@@ -521,6 +525,17 @@ export const EducationForm = (props: IEducationProps) => {
                     value={studentTypeVal}
                     className="form-select"
                     {...register(`${studentTypeName}`, { required: true })}
+                    onBlur={({ target: { value } }) => {
+                      if (
+                        value?.toLowerCase().includes(CommonEnums.MANAGEMENT)
+                      ) {
+                        console.log("go");
+                        setValue("sponsor.isSponsored", "no", formOptions);
+                      }
+                      if (value?.toLowerCase().includes(CommonEnums.REGULAR)) {
+                        setValue("sponsor.isSponsored", "no", formOptions);
+                      } else setValue("sponsor.isSponsored", "", formOptions);
+                    }}
                   >
                     {" "}
                     <option value={""}>Select Type</option>

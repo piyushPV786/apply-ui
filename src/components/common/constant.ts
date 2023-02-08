@@ -5,6 +5,9 @@ export enum CommonEnums {
   APP_ENROLLED_ACCEPTED = "ENRL-ACCEPTED",
   RESUB_APP_FEE_PROOF = "RESUB-APP-FEE-PROOF",
   RESUB_APP_DOC = "RESUB-APP-DOC",
+  MANAGEMENT = "management",
+  BURSARY = "bursary",
+  REGULAR = "regular",
 }
 
 export enum MagicNumbers {

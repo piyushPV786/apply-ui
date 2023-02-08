@@ -8,8 +8,6 @@ import {
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import { Snackbar } from "@material-ui/core";
 
-
-
 export const GreenFormHeading = styled.p`
   font-size: 17px;
   font-weight: 500;
@@ -87,3 +85,47 @@ export const Toaster = ({ success, message, setShowToast, show }) => (
     </ToasterContainer>
   </Snackbar>
 );
+
+//sponsor field Keys ///
+const SponsorCandidateDetail = "sponsor";
+
+const sponsorMode = `${SponsorCandidateDetail}.sponsorModeCode`;
+const sponsorName = `${SponsorCandidateDetail}.name`;
+const sponsorEmail = `${SponsorCandidateDetail}.email`;
+const sponsorAddress = `${SponsorCandidateDetail}.address`;
+const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
+const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
+const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
+
+export const getSponsorNameLabel = (studentType: string) => {
+  if (studentType === "regular") {
+    return "Guardian Name";
+  }
+  if (studentType === "bursary") {
+    return "Employer Bursary Name";
+  } else return "Sponsor Name";
+};
+export const getSponsorEmailLabel = (studentType: string) => {
+  if (studentType === "regular") {
+    return "Guardian Email Address";
+  }
+  if (studentType === "bursary") {
+    return "Employer Bursary Email Address";
+  } else return "Email Address";
+};
+export const getSponsorMobileLabel = (studentType: string) => {
+  if (studentType === "regular") {
+    return "Guardian Phone Number";
+  }
+  if (studentType === "bursary") {
+    return "Employer Bursary Phone Number";
+  } else return "Phone Number";
+};
+export const getSponsorAddressLabel = (studentType: string) => {
+  if (studentType === "regular") {
+    return "Guardian Address";
+  }
+  if (studentType === "bursary") {
+    return "Employer Bursary Address";
+  } else return "Address";
+};
