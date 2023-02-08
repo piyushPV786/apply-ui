@@ -7,7 +7,7 @@ import {
   StyledLabel,
 } from "../common/common";
 import { useFormContext } from "react-hook-form";
-import { IOption } from "../common/types";
+import { IFee, IOption } from "../common/types";
 import PaymentOption from "./payment-options";
 import StyledButton from "../button/button";
 import {
@@ -21,6 +21,7 @@ import {
 import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
 import Image from "next/image";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
+import { GreenText } from "../student/style";
 const Currency = [
   {
     countryId: 1,
@@ -50,6 +51,7 @@ const Payment = (props: any) => {
   const [paymentDocs, setPaymentDocs] = useState<(File & { error: boolean })[]>(
     []
   );
+  const [feeOptions, setFeeOptions] = useState<IFee[]>([]);
   const [promoCode, setPromoCode] = useState<string>("");
   const [showPromoCode, setShowPromoCOde] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
@@ -79,6 +81,11 @@ const Payment = (props: any) => {
       (async () => {
         const selectedProgramCode = await getQualificationStudyModeData(
           programDetails?.programCode
+        );
+        setFeeOptions(
+          selectedProgramCode[0]?.studyModes.find(
+            (item) => item.studyModeCode === selectedStudyMode
+          )?.fees
         );
         const applicationDetail = selectedProgramCode[0]?.studyModes?.find(
           (item) => item?.studyModeCode === "APPLICATION"
@@ -220,6 +227,45 @@ const Payment = (props: any) => {
                       </div>
 
                       <div className="col-md-6">
+                        <div className="mb-4 ">
+                          {feeOptions.length > 0 &&
+                            feeOptions.map(({ fee, feeMode }, index) => (
+                              <div className="form-check form-check-inline">
+                                <>
+                                  <input
+                                    key={index}
+                                    className="form-check-input me-2"
+                                    type="radio"
+                                    {...(register(`payment.selectedFeeMode`, {
+                                      required: true,
+                                    }) as any)}
+                                    onChange={() => {
+                                      setValue(
+                                        "payment.selectedFeeMode",
+                                        feeMode
+                                      );
+                                      setValue(
+                                        "payment.selectedFeeModeFee",
+                                        fee
+                                      );
+                                    }}
+                                    value={feeMode}
+                                    checked={
+                                      feeMode ==
+                                      allFields?.payment?.selectedFeeMode
+                                    }
+                                  />
+                                  <label className="form-check-label">
+                                    {feeMode}
+                                    <br />
+                                    <GreenText>{fee}</GreenText>
+                                  </label>
+                                </>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                      <div className="col-md-6">
                         <div className="mb-4 w-75">
                           <StyledLabel required style={{ fontSize: "16px" }}>
                             Currency Selection
@@ -250,7 +296,7 @@ const Payment = (props: any) => {
                       <div className="col-md-6">
                         <div className="mb-4">
                           <StyledLabel style={{ fontSize: "16px" }}>
-                            Application Fee
+                            Programme Fee
                           </StyledLabel>
                           <div>
                             <strong>INR {programFee}</strong>
@@ -311,12 +357,6 @@ const Payment = (props: any) => {
                                 Apply
                               </span>
                             </div>
-                            {/* <GreenText
-                              onClick={() => setShowPromoCOde(!showPromoCode)}
-                              className="ms-2 fs-6 d-flex align-items-center justify-content-center"
-                            >
-                              <CloseIcon />
-                            </GreenText> */}
                           </div>
                         </div>
                       )}

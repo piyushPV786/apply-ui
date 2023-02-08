@@ -95,7 +95,10 @@ export const ApplicationDashboard = (props: any) => {
       educationDetail,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
-    router.push(RoutePaths.Application_Form);
+    const url = status.includes(CommonEnums.APP_ENROLLED_ACCEPTED)
+      ? `${RoutePaths.Application_Form}?status=${CommonEnums.APP_ENROLLED_ACCEPTED}`
+      : RoutePaths.Application_Form;
+    router.push(url);
   };
   const onPay = (
     applicationCode: string | number,
@@ -292,15 +295,20 @@ function ApplicationCard({
   educationDetail,
   document,
 }) {
+  const isAcceptedApplication = status.includes(
+    CommonEnums.APP_ENROLLED_ACCEPTED
+  );
   const showEditBtn =
     status.includes(CommonEnums.FEES_PENDING_STATUS) ||
-    status.includes(CommonEnums.DRAFT_STATUS);
-  const showDOcumentUploadBtn =
+    status.includes(CommonEnums.DRAFT_STATUS) ||
+    isAcceptedApplication;
+  const showDocumentUploadBtn =
     status.includes(CommonEnums.RESUB_APP_DOC) ||
     status.includes(CommonEnums.APP_ENROLLED_STATUS);
   const showPayBtn =
     status.includes(CommonEnums.RESUB_APP_FEE_PROOF) ||
-    status.includes(CommonEnums.FEES_PENDING_STATUS);
+    status.includes(CommonEnums.FEES_PENDING_STATUS) ||
+    isAcceptedApplication;
   const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
     ? enrolmentCode
     : "";
@@ -365,10 +373,10 @@ function ApplicationCard({
                 }
                 isPayBtn
                 className="card-button"
-                title="pay"
+                title="Pay Program Fee"
               />
             )}
-            {showDOcumentUploadBtn && (
+            {showDocumentUploadBtn && (
               <StyledButton
                 onClick={() =>
                   onUploadDocuments(applicationNumber, leadCode, true)
@@ -378,7 +386,7 @@ function ApplicationCard({
                 title="Upload Document"
               />
             )}
-            {status.includes(CommonEnums.APP_ENROLLED_ACCEPTED) && (
+            {isAcceptedApplication && (
               <StyledButton
                 onClick={() =>
                   onDownloadAcceptence(document, applicationNumber)

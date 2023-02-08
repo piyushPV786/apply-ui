@@ -34,6 +34,7 @@ import {
 import {
   acceptedKeysToMap,
   CommonApi,
+  CommonEnums,
   MagicNumbers,
   RoutePaths,
 } from "../../components/common/constant";
@@ -59,13 +60,11 @@ const ApplicationForm = (props: any) => {
     useState<boolean>(false);
   const [masterData, setMasterData] = useState<IMasterData | null>(null);
   const [leadDetail, setLeadDetail] = useState<any>(null);
+  const [isApplicationEnrolled, setApllicationEnrolled] =
+    useState<boolean>(false);
   const methods = useForm({
     mode: "all",
     reValidateMode: "onBlur",
-    // defaultValues: useMemo(() => {
-    //   // return mockData;
-    //   // return studentData;
-    // }, [studentData]),
   });
   const {
     register,
@@ -78,6 +77,16 @@ const ApplicationForm = (props: any) => {
   useEffect(() => {
     getUserDetail();
     getMasterData();
+  }, []);
+
+  useEffect(() => {
+    if (window) {
+      const queryParams = new URLSearchParams(location?.search);
+      const applicationStatus = queryParams.get("status");
+      const isApplicationAccepted =
+        applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED;
+      setApllicationEnrolled(isApplicationAccepted);
+    }
   }, []);
   const allFields = watch();
 
@@ -168,7 +177,7 @@ const ApplicationForm = (props: any) => {
             leadCode: response?.data?.leadData?.leadCode,
           })
         );
-        sessionStorage.setItem("leadData", JSON.stringify(response?.data));
+        localStorage.setItem("leadData", JSON.stringify(response?.data));
         activeLeadDetail &&
           sessionStorage.setItem(
             "activeLeadDetail",
@@ -213,7 +222,7 @@ const ApplicationForm = (props: any) => {
         });
       });
   };
-  const creatDraft = (request, leadCode) => {
+  const createDraft = (request, leadCode) => {
     request.lead.leadCode = leadCode;
     AuthApi.post(`${CommonApi.SAVEDRAFT}`, {
       ...request,
@@ -266,7 +275,7 @@ const ApplicationForm = (props: any) => {
       return;
     }
     if (isDraftSave && checkValidationForDraftSave()) {
-      checkValidationForDraftSave() && creatDraft(request, leadCode);
+      checkValidationForDraftSave() && createDraft(request, leadCode);
       return;
     }
   };
@@ -574,40 +583,65 @@ const ApplicationForm = (props: any) => {
                 {(activeStep === MagicNumbers.ZERO ||
                   activeStep === MagicNumbers.TWO) && (
                   <div className="mt-4 text-center">
-                    <>
-                      {activeStep == 2 && (
+                    {!isApplicationEnrolled && (
+                      <>
+                        <>
+                          {activeStep == 2 && (
+                            <StyledButton
+                              onClick={onSkipForNowOnDocument}
+                              type="button"
+                              className="me-2 mb-1"
+                              isGreenWhiteCombination={true}
+                              title={"Skip for Now"}
+                            />
+                          )}
+                        </>
+                        {activeStep !== 2 && (
+                          <StyledButton
+                            onClick={() => onSubmit(getValues(), true)}
+                            type="button"
+                            disabled={
+                              (!isDirty && !isValidDocument) || !isValidDocument
+                            }
+                            isGreenWhiteCombination={true}
+                            title={"Save as Draft"}
+                          />
+                        )}
+                        &nbsp;&nbsp;&nbsp;
                         <StyledButton
-                          onClick={onSkipForNowOnDocument}
-                          type="button"
-                          className="me-2 mb-1"
-                          isGreenWhiteCombination={true}
-                          title={"Skip for Now"}
+                          onClick={() => {
+                            activeStep === 2
+                              ? (submitFormData(allFields, false) as any)
+                              : methods.handleSubmit(
+                                  (data) => onSubmit(data, false) as any
+                                )();
+                          }}
+                          disabled={!isValid && !isValidDocument}
+                          title={activeStep < 2 ? "Save & Next" : "Submit"}
                         />
-                      )}
-                    </>
-                    {activeStep !== 2 && (
-                      <StyledButton
-                        onClick={() => onSubmit(getValues(), true)}
-                        type="button"
-                        disabled={
-                          (!isDirty && !isValidDocument) || !isValidDocument
-                        }
-                        isGreenWhiteCombination={true}
-                        title={"Save as Draft"}
-                      />
+                      </>
                     )}
-                    &nbsp;&nbsp;&nbsp;
-                    <StyledButton
-                      onClick={() => {
-                        activeStep === 2
-                          ? (submitFormData(allFields, false) as any)
-                          : methods.handleSubmit(
+                    {isApplicationEnrolled && (
+                      <>
+                        <StyledButton
+                          onClick={() => {
+                            router.push(RoutePaths.Dashboard);
+                          }}
+                          isGreenWhiteCombination
+                          title={"Back to Dashboard"}
+                          className="me-3"
+                        />
+                        <StyledButton
+                          onClick={() => {
+                            methods.handleSubmit(
                               (data) => onSubmit(data, false) as any
                             )();
-                      }}
-                      disabled={!isValid && !isValidDocument}
-                      title={activeStep < 2 ? "Save & Next" : "Submit"}
-                    />
+                          }}
+                          disabled={!isValid}
+                          title={"Save"}
+                        />
+                      </>
+                    )}
                     <StyleFooter>
                       <span
                         className="footer-text"
