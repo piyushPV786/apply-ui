@@ -7,7 +7,9 @@ export enum CommonEnums {
   RESUB_APP_DOC = "RESUB-APP-DOC",
   MANAGEMENT = "management",
   BURSARY = "bursary",
+  EMPLOYEE_BURSARY = "EMPBURSARY",
   REGULAR = "regular",
+  GUARDIAN = "guardian",
 }
 
 export enum MagicNumbers {

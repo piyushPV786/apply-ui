@@ -36,9 +36,10 @@ const relationShip = `${SponsorCandidateDetail}.relationship`;
 interface ISponsorProps {
   leadId: string;
   sponsorModeArr: IOption[];
+  relationData: IOption[];
 }
 export const SponsoredForm = (props: ISponsorProps) => {
-  const { sponsorModeArr } = { ...props };
+  const { sponsorModeArr, relationData } = { ...props };
   const {
     setValue,
     register,
@@ -80,6 +81,10 @@ export const SponsoredForm = (props: ISponsorProps) => {
       setValue(isSponsored, "yes", formOptions);
     }
   }, [isSponserDetailExist]);
+  const isRequired =
+    sponsorModeVal?.toLowerCase() === CommonEnums.EMPLOYEE_BURSARY;
+  const isGuardian = sponsorModeVal?.toLowerCase() === CommonEnums.GUARDIAN;
+
   return (
     <>
       <StyledAccordion>
@@ -87,7 +92,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
-          disabled={disableSponsorForm}
+          className={disableSponsorForm ? "disabled" : ""}
         >
           <GreenFormHeading>
             <span className="me-2">
@@ -150,27 +155,31 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   </div>
                 </div>
 
-                {sponsorModeVal === "Guardian" && (
+                {isGuardian && (
                   <div className="col-md-4">
                     <StyledLabel required>Relationship Type</StyledLabel>
                     <div className="mb-4">
-                      <input
-                        disabled={isSelfSponsored}
-                        className="form-control"
-                        aria-label="Default select example"
+                      <select
                         value={relationshipVal}
-                        defaultValue={relationshipVal}
+                        className="form-select"
+                        aria-label="Default select example"
                         {...register(`${relationShip}`, {
-                          required: !isSelfSponsored && isSponserNeed,
+                          required: isSponserNeed,
                         })}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          const name = e.target.name;
-                          if (onlyAlphabets(value)) {
-                            setValue(name, value, formOptions);
-                          }
-                        }}
-                      />
+                      >
+                        <option value={""}>Select Relationship </option>
+
+                        {relationData &&
+                          relationData.map(({ code, name }) => (
+                            <option
+                              key={code}
+                              selected={code === sponsorModeVal}
+                              value={code}
+                            >
+                              {name}
+                            </option>
+                          ))}
+                      </select>
                       {touchedField?.relationship && error?.relationship && (
                         <div className="invalid-feedback">
                           Please select relationship type
@@ -183,7 +192,10 @@ export const SponsoredForm = (props: ISponsorProps) => {
                   <>
                     <div className="col-md-4">
                       <StyledLabel required>
-                        {getSponsorNameLabel(studentType?.toLowerCase())}
+                        {getSponsorNameLabel(
+                          studentType?.toLowerCase(),
+                          sponsorModeVal?.toLowerCase()
+                        )}
                       </StyledLabel>
                       <div className="mb-4">
                         <input
@@ -193,7 +205,8 @@ export const SponsoredForm = (props: ISponsorProps) => {
                           value={sponsorNameVal}
                           defaultValue={sponsorNameVal}
                           {...register(`${sponsorName}`, {
-                            required: !isSelfSponsored && isSponserNeed,
+                            required:
+                              !isSelfSponsored && isSponserNeed && isRequired,
                           })}
                           onChange={(e) => {
                             const value = e.target.value;
@@ -213,7 +226,10 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     <div className="col-md-4">
                       <StyledLabel required>
                         {" "}
-                        {getSponsorEmailLabel(studentType?.toLowerCase())}
+                        {getSponsorEmailLabel(
+                          studentType?.toLowerCase(),
+                          sponsorModeVal?.toLowerCase()
+                        )}
                       </StyledLabel>
                       <div className="mb-4">
                         <input
@@ -222,11 +238,13 @@ export const SponsoredForm = (props: ISponsorProps) => {
                           aria-label="Default select example"
                           value={sponserEmailVal}
                           {...register(`${sponsorEmail}`, {
-                            required: !isSelfSponsored && isSponserNeed,
+                            required:
+                              !isSelfSponsored && isSponserNeed && isRequired,
                             validate: (value) =>
-                              !isSponsoredVal ||
-                              !isSponserNeed ||
-                              isSelfSponsored
+                              (!isSponsoredVal ||
+                                !isSponserNeed ||
+                                isSelfSponsored) &&
+                              isRequired
                                 ? true
                                 : isValidEmail(value),
                           })}
@@ -234,7 +252,8 @@ export const SponsoredForm = (props: ISponsorProps) => {
                         {touchedField?.email &&
                           error?.email &&
                           !isSelfSponsored &&
-                          isSponserNeed && (
+                          isSponserNeed &&
+                          isRequired && (
                             <div className="invalid-feedback">
                               {error?.email?.type == "validate"
                                 ? "you have entered an invalid email address. Please try again"
@@ -245,63 +264,71 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     </div>
                   </>
                 )}
+
+                {!isStudentAndSponsorBursary && (
+                  <>
+                    <div className="col-md-4">
+                      <div className="mb-4">
+                        <StyledLabel required>
+                          {" "}
+                          {getSponsorMobileLabel(
+                            studentType?.toLowerCase(),
+                            sponsorModeVal?.toLowerCase()
+                          )}
+                        </StyledLabel>
+                        <PhoneInput
+                          id="2"
+                          international
+                          {...register(`${sponsorPhoneNumber}`, {
+                            required:
+                              !isSelfSponsored && isSponserNeed && isRequired,
+                          })}
+                          countryCallingCodeEditable={false}
+                          defaultCountry={countryCodeRef}
+                          placeholder="Select Country Code*"
+                          disabled={disablePhoneOnSelfSponser}
+                          onCountryChange={(value: any) => {
+                            !disablePhoneOnSelfSponser && setCountryCode(value);
+                          }}
+                          onBlur={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            uppdateMobNumber();
+                          }}
+                          onChange={(value) => {
+                            setValue(`${sponsorPhoneNumber}`, value);
+                          }}
+                          value={sponsorPhoneNumberVal}
+                        />
+                        {touchedField?.sponsorMobileNumber &&
+                          error?.sponsorMobileNumber && (
+                            <div className="invalid-feedback">
+                              Please enter phone number
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-4">
+                        <StyledLabel required>
+                          {" "}
+                          {getSponsorAddressLabel(
+                            studentType?.toLowerCase(),
+                            sponsorModeVal?.toLowerCase()
+                          )}
+                        </StyledLabel>
+                        <input
+                          disabled={isSelfSponsored}
+                          className="form-control"
+                          value={sponsorAddressVal}
+                          defaultValue={sponsorAddressVal}
+                          {...register(`${sponsorAddress}`)}
+                        />
+                      </div>
+                    </div>{" "}
+                  </>
+                )}
               </div>
-              {!isStudentAndSponsorBursary && (
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-4">
-                      <StyledLabel required>
-                        {" "}
-                        {getSponsorMobileLabel(studentType?.toLowerCase())}
-                      </StyledLabel>
-                      <PhoneInput
-                        id="2"
-                        international
-                        {...register(`${sponsorPhoneNumber}`, {
-                          required: !isSelfSponsored && isSponserNeed,
-                        })}
-                        countryCallingCodeEditable={false}
-                        defaultCountry={countryCodeRef}
-                        placeholder="Select Country Code*"
-                        disabled={disablePhoneOnSelfSponser}
-                        onCountryChange={(value: any) => {
-                          !disablePhoneOnSelfSponser && setCountryCode(value);
-                        }}
-                        onBlur={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          uppdateMobNumber();
-                        }}
-                        onChange={(value) => {
-                          setValue(`${sponsorPhoneNumber}`, value);
-                        }}
-                        value={sponsorPhoneNumberVal}
-                      />
-                      {touchedField?.sponsorMobileNumber &&
-                        error?.sponsorMobileNumber && (
-                          <div className="invalid-feedback">
-                            Please enter phone number
-                          </div>
-                        )}
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-4">
-                      <StyledLabel required>
-                        {" "}
-                        {getSponsorAddressLabel(studentType?.toLowerCase())}
-                      </StyledLabel>
-                      <input
-                        disabled={isSelfSponsored}
-                        className="form-control"
-                        value={sponsorAddressVal}
-                        defaultValue={sponsorAddressVal}
-                        {...register(`${sponsorAddress}`)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </AccordionDetails>
         )}

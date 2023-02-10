@@ -59,6 +59,7 @@ export interface IFee {
 
 export interface IMasterData {
   languageData: IOption[];
+  relationData: IOption[];
   nationalityData: IOption[];
   programs: IOption[];
   raceData: IOption[];
