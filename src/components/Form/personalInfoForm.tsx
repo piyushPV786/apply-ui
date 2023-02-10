@@ -17,6 +17,7 @@ import {
   isValidEmail,
   onlyAlphabets,
   sortAscending,
+  transformDate,
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
 interface IPersonalInfoProps {
@@ -200,6 +201,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       required: true,
                       validate: isValidDate,
                     })}
+                    max={transformDate(new Date(), true)}
                     type="date"
                     className="form-control"
                     id="exampleFormControlInput1"
