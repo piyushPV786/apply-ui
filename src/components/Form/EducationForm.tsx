@@ -91,27 +91,27 @@ interface IEducationProps {
   studyTypeData: IOption[];
 }
 
-// const FeeCard = (props: any) => {
-//   const { setSelectedMode = () => {}, ...rest } = { ...props };
-//   const selectedData = { ...rest };
-//   return (
-//     <>
-//       <StyleFeeCards
-//         style={{
-//           border:
-//             props?.selected === props?.fee
-//               ? "2px solid green"
-//               : "2px solid #dde1e3",
-//         }}
-//         onClick={() => props.setSelectedMode(selectedData)}
-//       >
-//         <span>{props?.fee}</span>
-//         <br />
-//         <span style={{ color: `${Green}` }}>{props?.feeMode}</span>
-//       </StyleFeeCards>
-//     </>
-//   );
-// };
+const FeeCard = (props: any) => {
+  const { setSelectedMode = () => {}, ...rest } = { ...props };
+  const selectedData = { ...rest };
+  return (
+    <>
+      <StyleFeeCards
+        style={{
+          border:
+            props?.selected === props?.fee
+              ? "2px solid green"
+              : "2px solid #dde1e3",
+        }}
+        // onClick={() => props.setSelectedMode(selectedData)}
+      >
+        <span>{props?.fee}</span>
+        <br />
+        <span style={{ color: `${Green}` }}>{props?.feeMode}</span>
+      </StyleFeeCards>
+    </>
+  );
+};
 
 export const EducationForm = (props: IEducationProps) => {
   const {
@@ -306,22 +306,22 @@ export const EducationForm = (props: IEducationProps) => {
                           }
                         }
                       )}
-                    {/* <StyleContainer>
+                    <StyleContainer>
                       {studyModeQualification &&
-                        studyModeQualification[0]?.studyModes[
-                          studyIdx
-                        ]?.fees?.map(({ fee, feeMode }: IFee) => (
-                          <FeeCard
-                            setSelectedMode={setSelectedMode}
-                            key={fee}
-                            fee={fee}
-                            feeMode={feeMode}
-                            uniqueId={fee}
-                            selected={programFeeVal}
-                          />
-                        ))}
+                        studyModeQualification[0]?.studyModes[0]?.fees?.map(
+                          ({ fee, feeMode }: IFee) => (
+                            <FeeCard
+                              // setSelectedMode={setSelectedMode}
+                              key={fee}
+                              fee={fee}
+                              feeMode={feeMode}
+                              uniqueId={fee}
+                              // selected={programFeeVal}
+                            />
+                          )
+                        )}
                     </StyleContainer>
-                    {touchFields?.studyModeCode &&
+                    {/* {touchFields?.studyModeCode &&
                       educationFormError?.studyModeCode && (
                         <div className="invalid-feedback">
                           Please select Study Mode
@@ -578,7 +578,7 @@ export const EducationForm = (props: IEducationProps) => {
 const StyleFeeCards = styled.div`
   background: ${DefaultGrey};
   padding: 6px 10px;
-  cursor: pointer;
+  // cursor: pointer;
   font-size: 14px;
   font-family: roboto;
   font-weight: 600;
@@ -592,8 +592,8 @@ const StyleFeeCards = styled.div`
   -o-transition: all 0.5s;
 `;
 
-// const StyleContainer = styled.div`
-//   display: flex;
-//   column-gap: 10px;
-//   padding: 1rem 0.2rem;
-// `;
+const StyleContainer = styled.div`
+  display: flex;
+  column-gap: 10px;
+  padding: 1rem 0.2rem;
+`;
