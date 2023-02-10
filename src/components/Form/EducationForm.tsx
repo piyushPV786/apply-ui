@@ -91,27 +91,27 @@ interface IEducationProps {
   studyTypeData: IOption[];
 }
 
-const FeeCard = (props: any) => {
-  const { setSelectedMode = () => {}, ...rest } = { ...props };
-  const selectedData = { ...rest };
-  return (
-    <>
-      <StyleFeeCards
-        style={{
-          border:
-            props?.selected === props?.fee
-              ? "2px solid green"
-              : "2px solid #dde1e3",
-        }}
-        onClick={() => props.setSelectedMode(selectedData)}
-      >
-        <span>{props?.fee}</span>
-        <br />
-        <span style={{ color: `${Green}` }}>{props?.feeMode}</span>
-      </StyleFeeCards>
-    </>
-  );
-};
+// const FeeCard = (props: any) => {
+//   const { setSelectedMode = () => {}, ...rest } = { ...props };
+//   const selectedData = { ...rest };
+//   return (
+//     <>
+//       <StyleFeeCards
+//         style={{
+//           border:
+//             props?.selected === props?.fee
+//               ? "2px solid green"
+//               : "2px solid #dde1e3",
+//         }}
+//         onClick={() => props.setSelectedMode(selectedData)}
+//       >
+//         <span>{props?.fee}</span>
+//         <br />
+//         <span style={{ color: `${Green}` }}>{props?.feeMode}</span>
+//       </StyleFeeCards>
+//     </>
+//   );
+// };
 
 export const EducationForm = (props: IEducationProps) => {
   const {
@@ -145,17 +145,17 @@ export const EducationForm = (props: IEducationProps) => {
   const agentNameVal = watch(agentName);
   const socialMediaVal = watch(socialMediaId);
   const studentTypeVal = watch(studentTypeName);
-  const programFeeVal = watch(programFees);
+  // const programFeeVal = watch(programFees);
   const educationFormError = errors[parentKey] as any;
   const touchFields = touchedFields[parentKey];
-  const { studyIdx, parentIdx } = selectedStudyMode;
+  // const { studyIdx, parentIdx } = selectedStudyMode;
   useEffect(() => {
-    register(`${programMode}`, {
-      required: true,
-    });
-    register(`${programFees}`, {
-      required: true,
-    });
+    // register(`${programMode}`, {
+    //   required: true,
+    // });
+    // register(`${programFees}`, {
+    //   required: true,
+    // });
     if (
       programVal &&
       programVal.length > 0 &&
@@ -177,15 +177,15 @@ export const EducationForm = (props: IEducationProps) => {
             }
           })
         );
-        if (programVal && courseFeesDetail.length > 0 && studyMode) {
-          const index = courseFeesDetail[0]?.studyModes.findIndex(
-            (item) => item?.studyModeCode === studyModeVal
-          );
-          setSelectedStudyMode((prevState) => ({
-            ...prevState,
-            studyIdx: index,
-          }));
-        }
+        // if (programVal && courseFeesDetail.length > 0 && studyMode) {
+        //   const index = courseFeesDetail[0]?.studyModes.findIndex(
+        //     (item) => item?.studyModeCode === studyModeVal
+        //   );
+        //   setSelectedStudyMode((prevState) => ({
+        //     ...prevState,
+        //     studyIdx: index,
+        //   }));
+        // }
 
         setValue(
           applicationFeesKey,
@@ -199,13 +199,13 @@ export const EducationForm = (props: IEducationProps) => {
       });
   };
 
-  const setSelectedMode = (props: IFee) => {
-    const selectedStudyModeData = studyModeQualification![0].studyModes[
-      studyIdx
-    ].fees.find(({ feeMode }) => feeMode === props.feeMode);
-    setValue(programMode, selectedStudyModeData?.feeMode, formOptions);
-    setValue(programFees, selectedStudyModeData?.fee, formOptions);
-  };
+  // const setSelectedMode = (props: IFee) => {
+  //   const selectedStudyModeData = studyModeQualification![0].studyModes[
+  //     studyIdx
+  //   ].fees.find(({ feeMode }) => feeMode === props.feeMode);
+  //   setValue(programMode, selectedStudyModeData?.feeMode, formOptions);
+  //   setValue(programFees, selectedStudyModeData?.fee, formOptions);
+  // };
   return (
     <>
       <StyledAccordion key="education" id="education">
@@ -306,7 +306,7 @@ export const EducationForm = (props: IEducationProps) => {
                           }
                         }
                       )}
-                    <StyleContainer>
+                    {/* <StyleContainer>
                       {studyModeQualification &&
                         studyModeQualification[0]?.studyModes[
                           studyIdx
@@ -331,7 +331,7 @@ export const EducationForm = (props: IEducationProps) => {
                       <div className="invalid-feedback">
                         Please select Fees and Semester
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
               )}
@@ -547,15 +547,17 @@ export const EducationForm = (props: IEducationProps) => {
                     {" "}
                     <option value={""}>Select Type</option>
                     {studyTypeData &&
-                      studyTypeData.map(({ code, name }) => (
-                        <option
-                          selected={code === studentTypeVal}
-                          key={code}
-                          value={code}
-                        >
-                          {name}
-                        </option>
-                      ))}
+                      studyTypeData
+                        .filter((item) => item.code !== "MGMTBURSARY")
+                        .map(({ code, name }) => (
+                          <option
+                            selected={code === studentTypeVal}
+                            key={code}
+                            value={code}
+                          >
+                            {name}
+                          </option>
+                        ))}
                   </select>
                   {touchFields?.studentTypeCode &&
                     educationFormError?.studentTypeCode && (
@@ -590,8 +592,8 @@ const StyleFeeCards = styled.div`
   -o-transition: all 0.5s;
 `;
 
-const StyleContainer = styled.div`
-  display: flex;
-  column-gap: 10px;
-  padding: 1rem 0.2rem;
-`;
+// const StyleContainer = styled.div`
+//   display: flex;
+//   column-gap: 10px;
+//   padding: 1rem 0.2rem;
+// `;

@@ -113,7 +113,8 @@ export const GetPaymentImage = (type: string) => {
 
 export const getApplicationCode = () => {
   let appCode = "";
-  const leadData: any = JSON.parse(window.localStorage.getItem("leadData")!)?.applicationData?.applicationCode;
+  const leadData: any = JSON.parse(window.localStorage.getItem("leadData")!)
+    ?.applicationData?.applicationCode;
   const activeLeadDetail = JSON.parse(
     sessionStorage?.getItem("activeLeadDetail") as any
   )?.applicationCode;
@@ -206,12 +207,16 @@ export const applyDiscountCode = async (
   }
 };
 
-export const transformDate = (date: Date) => {
-  const month = date.toLocaleString("default", { month: "short" });
+export const transformDate = (date: Date, transformCustom?: boolean) => {
+  const month = transformCustom
+    ? date.getMonth()
+    : date.toLocaleString("default", { month: "short" });
 
   const year = date.getFullYear();
   const day = date.getDate();
-
+  if (transformCustom) {
+    return `${year}-${month < 10 ? `0${month}` : month}-${day}`;
+  }
   return `${day}th ${month} ${year}`;
 };
 

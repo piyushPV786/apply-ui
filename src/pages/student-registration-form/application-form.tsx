@@ -212,6 +212,7 @@ const ApplicationForm = (props: any) => {
           message: "Saved as draft",
           show: true,
         });
+        router.push(RoutePaths.Dashboard);
       })
       .catch((err) => {
         console.log({ err });
@@ -233,6 +234,7 @@ const ApplicationForm = (props: any) => {
           message: "Saved as draft",
           show: true,
         });
+        router.push(RoutePaths.Dashboard);
       })
       .catch((err) => {
         console.log(err.message);
@@ -509,19 +511,19 @@ const ApplicationForm = (props: any) => {
                         agentArr={agentData}
                         studyTypeData={studyTypeData}
                       />
-                      <KinDetailsForm leadId={leadId} key="KinDetailsForm" />
-                      <EmployedForm
-                        leadId={leadId}
-                        key="EmployedForm"
-                        employmentStatusArr={employmentStatus}
-                        employmentIndustries={employmentIndustries}
-                      />
                       <SponsoredForm
                         leadId={leadId}
                         key="SponsoredForm"
                         sponsorModeArr={sponsorModes}
                         relationData={relationData}
                       />
+                      <EmployedForm
+                        leadId={leadId}
+                        key="EmployedForm"
+                        employmentStatusArr={employmentStatus}
+                        employmentIndustries={employmentIndustries}
+                      />
+                      <KinDetailsForm leadId={leadId} key="KinDetailsForm" />
                     </form>
                   </div>
                 </div>

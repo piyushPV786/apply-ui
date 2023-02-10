@@ -39,7 +39,7 @@ interface ISponsorProps {
   relationData: IOption[];
 }
 export const SponsoredForm = (props: ISponsorProps) => {
-  const { sponsorModeArr, relationData } = { ...props };
+  const { sponsorModeArr = [], relationData = [] } = { ...props };
   const {
     setValue,
     register,
@@ -84,7 +84,10 @@ export const SponsoredForm = (props: ISponsorProps) => {
   const isRequired =
     sponsorModeVal?.toLowerCase() === CommonEnums.EMPLOYEE_BURSARY;
   const isGuardian = sponsorModeVal?.toLowerCase() === CommonEnums.GUARDIAN;
-
+  const sponsorModeData =
+    studentType?.toLowerCase() === CommonEnums.BURSARY
+      ? sponsorModeArr.filter((item) => item.name !== "Guardian")
+      : sponsorModeArr.filter((item) => item.name === "Guardian");
   return (
     <>
       <StyledAccordion>
@@ -141,8 +144,8 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     >
                       <option value={""}>Select Sponsor type</option>
 
-                      {sponsorModeArr &&
-                        sponsorModeArr.map(({ code, name }) => (
+                      {sponsorModeData &&
+                        sponsorModeData.map(({ code, name }) => (
                           <option
                             key={code}
                             selected={code === sponsorModeVal}
@@ -241,10 +244,9 @@ export const SponsoredForm = (props: ISponsorProps) => {
                             required:
                               !isSelfSponsored && isSponserNeed && isRequired,
                             validate: (value) =>
-                              (!isSponsoredVal ||
-                                !isSponserNeed ||
-                                isSelfSponsored) &&
-                              isRequired
+                              !isSponsoredVal ||
+                              !isSponserNeed ||
+                              isSelfSponsored
                                 ? true
                                 : isValidEmail(value),
                           })}
