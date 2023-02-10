@@ -444,6 +444,7 @@ const ApplicationForm = (props: any) => {
   // });
   const language = masterData?.languageData as IOption[];
   const nationalities = masterData?.nationalityData as IOption[];
+  const relationData = masterData?.relationData as IOption[];
   const highestQualifications =
     masterData?.highestQualificationData as IOption[];
   const programs = masterData?.programs as IOption[];
@@ -519,6 +520,7 @@ const ApplicationForm = (props: any) => {
                         leadId={leadId}
                         key="SponsoredForm"
                         sponsorModeArr={sponsorModes}
+                        relationData={relationData}
                       />
                     </form>
                   </div>

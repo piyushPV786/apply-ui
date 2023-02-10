@@ -7,6 +7,7 @@ import {
 } from "../student/style";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import { Snackbar } from "@material-ui/core";
+import { CommonEnums } from "./constant";
 
 export const GreenFormHeading = styled.p`
   font-size: 17px;
@@ -97,32 +98,44 @@ const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
 const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
 
-export const getSponsorNameLabel = (studentType: string) => {
-  if (studentType === "regular") {
+export const getSponsorNameLabel = (
+  studentType: string,
+  sponsorType: string
+) => {
+  if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Name";
   }
   if (studentType === "bursary") {
     return "Employer Bursary Name";
   } else return "Sponsor Name";
 };
-export const getSponsorEmailLabel = (studentType: string) => {
-  if (studentType === "regular") {
+export const getSponsorEmailLabel = (
+  studentType: string,
+  sponsorType: string
+) => {
+  if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Email Address";
   }
   if (studentType === "bursary") {
     return "Employer Bursary Email Address";
   } else return "Email Address";
 };
-export const getSponsorMobileLabel = (studentType: string) => {
-  if (studentType === "regular") {
+export const getSponsorMobileLabel = (
+  studentType: string,
+  sponsorType: string
+) => {
+  if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Phone Number";
   }
   if (studentType === "bursary") {
     return "Employer Bursary Phone Number";
   } else return "Phone Number";
 };
-export const getSponsorAddressLabel = (studentType: string) => {
-  if (studentType === "regular") {
+export const getSponsorAddressLabel = (
+  studentType: string,
+  sponsorType: string
+) => {
+  if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Address";
   }
   if (studentType === "bursary") {

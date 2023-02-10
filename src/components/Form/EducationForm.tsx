@@ -525,16 +525,23 @@ export const EducationForm = (props: IEducationProps) => {
                     value={studentTypeVal}
                     className="form-select"
                     {...register(`${studentTypeName}`, { required: true })}
-                    onBlur={({ target: { value } }) => {
+                    onChange={({ target: { value } }) => {
+                      setValue(studentTypeName, value, formOptions);
                       if (
                         value?.toLowerCase().includes(CommonEnums.MANAGEMENT)
                       ) {
-                        console.log("go");
                         setValue("sponsor.isSponsored", "no", formOptions);
+                        return;
                       }
                       if (value?.toLowerCase().includes(CommonEnums.REGULAR)) {
                         setValue("sponsor.isSponsored", "no", formOptions);
+                        return;
+                      }
+                      if (value?.toLowerCase().includes(CommonEnums.BURSARY)) {
+                        setValue("sponsor.isSponsored", "yes", formOptions);
+                        return;
                       } else setValue("sponsor.isSponsored", "", formOptions);
+                      return;
                     }}
                   >
                     {" "}
