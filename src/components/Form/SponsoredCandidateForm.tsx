@@ -312,7 +312,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     </div>
                     <div className="col-md-4">
                       <div className="mb-4">
-                        <StyledLabel required>
+                        <StyledLabel required={isGuardian}>
                           {" "}
                           {getSponsorAddressLabel(
                             studentType?.toLowerCase(),
