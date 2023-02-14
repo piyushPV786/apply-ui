@@ -148,6 +148,13 @@ export const ApplicationDashboard = (props: any) => {
     getCommonUploadDocumentUrl(name).then((res) => {
       if (res?.statusCode === 200) {
         downloadDocument(res?.data, name);
+        setTimeout(() => {
+          setToast({
+            show: true,
+            message: "Acceptance Letter Downloaded Successfully",
+            success: true,
+          });
+        }, 1000);
       } else {
         setToast({ show: true, message: res?.message, success: false });
       }
