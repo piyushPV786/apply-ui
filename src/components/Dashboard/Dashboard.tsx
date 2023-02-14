@@ -321,13 +321,20 @@ function ApplicationCard({
         <ContentCard>
           <div className="w-100">
             <GreenFormHeading className="application-number">
-              Application Number - {applicationNumber}
-              <br />
+              {!enrollmentNumber && `Application Number - ${applicationNumber}`}
               {enrollmentNumber
                 ? ` Enrollment Number - ${enrollmentNumber}`
                 : ""}
             </GreenFormHeading>
           </div>
+          {enrollmentNumber && (
+            <div className="mt-2 w-100 app-card-block">
+              <p className="mb-0" style={{ color: `#5a636a` }}>
+                Application Number
+              </p>
+              <strong>{applicationNumber}</strong>
+            </div>
+          )}
           <div className="mt-2 w-100 app-card-block">
             <p className="mb-0" style={{ color: `#5a636a` }}>
               Name
