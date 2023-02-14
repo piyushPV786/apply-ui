@@ -143,24 +143,26 @@ export const EmployedForm = (props: IEmployeProps) => {
                     )}
                 </div>
               </div>
-              <div className="col-md-4">
-                <StyledLabel required>Employer</StyledLabel>
-                <div className="mb-4">
-                  <input
-                    className="form-control"
-                    {...register(`${employer}`, {
-                      required: isEmployedNeed,
-                    })}
-                    value={employerVal}
-                    defaultValue={employerVal}
-                  />
-                  {touchField?.employer && error?.employer && (
-                    <div className="invalid-feedback">
-                      Please enter employer
-                    </div>
-                  )}
+              {!isSelfEmployed && (
+                <div className="col-md-4">
+                  <StyledLabel required>Employer</StyledLabel>
+                  <div className="mb-4">
+                    <input
+                      className="form-control"
+                      {...register(`${employer}`, {
+                        required: isEmployedNeed,
+                      })}
+                      value={employerVal}
+                      defaultValue={employerVal}
+                    />
+                    {touchField?.employer && error?.employer && (
+                      <div className="invalid-feedback">
+                        Please enter employer
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel required>Job Title</StyledLabel>
@@ -181,38 +183,37 @@ export const EmployedForm = (props: IEmployeProps) => {
                   />
                 </div>
               </div>
-              {!isSelfEmployed && (
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <StyledLabel required>Industry</StyledLabel>
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      {...register(`${industry}`, {
-                        required: isEmployedNeed && isSelfEmployed,
-                      })}
-                    >
-                      <option value={""}>Select Industry</option>
-                      {employmentIndustries &&
-                        employmentIndustries.map(({ code, name }) => (
-                          <option
-                            selected={code === industryVal}
-                            key={code}
-                            value={code}
-                          >
-                            {name}
-                          </option>
-                        ))}
-                    </select>
-                    {touchField?.employmentIndustryCode &&
-                      error?.employmentIndustryCode && (
-                        <div className="invalid-feedback">
-                          Please select industry
-                        </div>
-                      )}
-                  </div>
+
+              <div className="col-md-4">
+                <div className="mb-4">
+                  <StyledLabel required>Industry</StyledLabel>
+                  <select
+                    className="form-select"
+                    aria-label="Default select example"
+                    {...register(`${industry}`, {
+                      required: isEmployedNeed && isSelfEmployed,
+                    })}
+                  >
+                    <option value={""}>Select Industry</option>
+                    {employmentIndustries &&
+                      employmentIndustries.map(({ code, name }) => (
+                        <option
+                          selected={code === industryVal}
+                          key={code}
+                          value={code}
+                        >
+                          {name}
+                        </option>
+                      ))}
+                  </select>
+                  {touchField?.employmentIndustryCode &&
+                    error?.employmentIndustryCode && (
+                      <div className="invalid-feedback">
+                        Please select industry
+                      </div>
+                    )}
                 </div>
-              )}
+              </div>
               {!isSelfEmployed && (
                 <div className="col-md-4">
                   <div className="mb-4">
