@@ -94,7 +94,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
 
   const handleInternationAccordian = (state) => {
     setIsExpanded(true);
-    if (state == "yes") {
+    if (state === "yes") {
       setNationality(false);
       setDocument(true);
     } else {
