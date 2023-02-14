@@ -30,6 +30,15 @@ interface IPersonalInfoProps {
   race: IOption[];
 }
 
+const identityDocuments = [
+  {
+    code: "SI",
+    name: "Smart ID",
+  },
+  { code: "DL", name: "Driving License" },
+  { code: "PA", name: "Passport" },
+];
+
 const parentKey = "lead";
 
 const firstNameKey = `${parentKey}.firstName`;
@@ -363,8 +372,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       <div className="mb-4">
                         <AdvanceDropDown
                           disabled={isdocument}
-                          options={[]}
-                          value={""}
+                          options={identityDocuments}
+                          value={identityDocuments ? "PA" : identityDocuments}
                           name={"identification"}
                           register={register}
                           label="Identification Document Type"
