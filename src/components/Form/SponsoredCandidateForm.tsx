@@ -160,7 +160,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
 
                   {!isStudentAndSponsorBursary ? (
                     <div className="mb-4">
-                      <AlertBox>{bursaryWarning}</AlertBox>
+                      <AlertBox severity="info">{bursaryWarning}</AlertBox>
                     </div>
                   ) : null}
                 </div>
