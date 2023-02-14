@@ -21,7 +21,8 @@ import {
 } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
-import { CommonEnums } from "../common/constant";
+import { CommonEnums, bursaryWarning } from "../common/constant";
+import AlertBox from "../alert/Alert";
 
 const SponsorCandidateDetail = "sponsor";
 
@@ -156,6 +157,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                         ))}
                     </select>
                   </div>
+
+                  {!isStudentAndSponsorBursary ? (
+                    <div className="mb-4">
+                      <AlertBox>{bursaryWarning}</AlertBox>
+                    </div>
+                  ) : null}
                 </div>
 
                 {isGuardian && (
