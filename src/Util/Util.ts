@@ -186,7 +186,7 @@ export const uploadDocuments = async (uploadFileUrl: string, file: File) => {
   // const request = new FormData();
   // request.append("file", file);
   try {
-    const response = await axios.put(uploadFileUrl, {file});
+    const response = await axios.put(uploadFileUrl, file);
     if (response.status === 200) {
       return await response.data;
     } else return await response.data;
