@@ -14,10 +14,9 @@ import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
 import { AcadmicApi, AuthApi } from "../../service/Axios";
 import { IMasterData, IOption } from "../../components/common/types";
 import {
-  formOptions,
   getUploadDocumentUrl,
-  isObjectEmpty,
   mapFormData,
+  mapFormDefaultValue,
   transformFormData,
   uploadDocuments,
 } from "../../Util/Util";
@@ -32,7 +31,6 @@ import {
   ToasterContainer,
 } from "../../components/student/style";
 import {
-  acceptedKeysToMap,
   CommonApi,
   CommonEnums,
   MagicNumbers,
@@ -120,29 +118,7 @@ const ApplicationForm = (props: any) => {
       }
     }
   };
-  const mapFormDefaultValue = (studentData: any) => {
-    for (let [key, value] of Object.entries(studentData)) {
-      if (
-        (key === "kin" || key === "sponser" || key === "employment") &&
-        isObjectEmpty(studentData[key])
-      ) {
-        return;
-      }
-      if (acceptedKeysToMap.includes(key)) {
-        if (key === "education" && studentData[key]) {
-          const valueCode = studentData[key]?.socialMediaCode
-            ? "SOCIALMEDIA"
-            : studentData[key]?.agentCode
-            ? "AGENT"
-            : "";
-          setValue(key, value, formOptions);
-          setValue(`${key}.referredById`, valueCode, formOptions);
-          return;
-        }
-        setValue(key, value, formOptions);
-      }
-    }
-  };
+
   const updateLead = (
     request: any,
     leadCode: string,
@@ -407,7 +383,7 @@ const ApplicationForm = (props: any) => {
         .then(({ data: response }) => {
           const formData = { ...response?.data };
           const truncateFormData = transformFormData(formData);
-          mapFormDefaultValue(formData);
+          mapFormDefaultValue(formData, setValue);
           setStudentData(response?.data);
           if (leadDetail?.isPaymentPending && routeTo !== "Document") {
             setActiveStep(1);
