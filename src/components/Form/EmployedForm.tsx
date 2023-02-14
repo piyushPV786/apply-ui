@@ -65,7 +65,7 @@ export const EmployedForm = (props: IEmployeProps) => {
   const touchField = touchedFields[EmployementDetails] as any;
   const error = errors[EmployementDetails] as any;
   const isEmployedNeed = isEmployed === "yes";
-  const isUnEmployed = employmentStatusVal === "UNEMPLOYED";
+  const isSelfEmployed = employmentStatusVal === "SELFEMPLOYED";
   useEffect(() => {
     if (!isObjectEmpty(isEmployerDetailExist) && props?.leadId) {
       setValue(isEmployed, "yes");
@@ -149,9 +149,8 @@ export const EmployedForm = (props: IEmployeProps) => {
                   <input
                     className="form-control"
                     {...register(`${employer}`, {
-                      required: !isUnEmployed && isEmployedNeed,
+                      required: isEmployedNeed,
                     })}
-                    disabled={isUnEmployed}
                     value={employerVal}
                     defaultValue={employerVal}
                   />
@@ -169,8 +168,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                     className="form-control"
                     value={jobTitleVal}
                     defaultValue={jobTitleVal}
-                    disabled={isUnEmployed}
-                    {...register(`${jobTitle}`)}
+                    {...register(`${jobTitle}`, {
+                      required: isEmployedNeed && isSelfEmployed,
+                    })}
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
@@ -181,112 +181,112 @@ export const EmployedForm = (props: IEmployeProps) => {
                   />
                 </div>
               </div>
-            </div>
-            <div className="row">
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required={!isUnEmployed}>Industry</StyledLabel>
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                    {...register(`${industry}`, {
-                      required: !isUnEmployed && isEmployedNeed,
-                    })}
-                    disabled={isUnEmployed}
-                  >
-                    <option value={""}>Select Industry</option>
-                    {employmentIndustries &&
-                      employmentIndustries.map(({ code, name }) => (
-                        <option
-                          selected={code === industryVal}
-                          key={code}
-                          value={code}
-                        >
-                          {name}
-                        </option>
-                      ))}
-                  </select>
-                  {touchField?.employmentIndustryCode &&
-                    error?.employmentIndustryCode && (
+              {!isSelfEmployed && (
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <StyledLabel required>Industry</StyledLabel>
+                    <select
+                      className="form-select"
+                      aria-label="Default select example"
+                      {...register(`${industry}`, {
+                        required: isEmployedNeed && isSelfEmployed,
+                      })}
+                    >
+                      <option value={""}>Select Industry</option>
+                      {employmentIndustries &&
+                        employmentIndustries.map(({ code, name }) => (
+                          <option
+                            selected={code === industryVal}
+                            key={code}
+                            value={code}
+                          >
+                            {name}
+                          </option>
+                        ))}
+                    </select>
+                    {touchField?.employmentIndustryCode &&
+                      error?.employmentIndustryCode && (
+                        <div className="invalid-feedback">
+                          Please select industry
+                        </div>
+                      )}
+                  </div>
+                </div>
+              )}
+              {!isSelfEmployed && (
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <StyledLabel required>Manager Name</StyledLabel>
+                    <input
+                      className="form-control"
+                      value={managerNameVal}
+                      defaultValue={managerNameVal}
+                      {...register(`${managerName}`)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, formOptions);
+                        }
+                      }}
+                    />
+                    {touchField?.manager && error?.manager && (
                       <div className="invalid-feedback">
-                        Please select industry
+                        Please enter manager name
                       </div>
                     )}
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>Manager Name</StyledLabel>
-                  <input
-                    className="form-control"
-                    value={managerNameVal}
-                    defaultValue={managerNameVal}
-                    {...register(`${managerName}`)}
-                    disabled={isUnEmployed}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const name = e.target.name;
-                      if (onlyAlphabets(value)) {
-                        setValue(name, value, formOptions);
-                      }
-                    }}
-                  />
-                  {touchField?.manager && error?.manager && (
-                    <div className="invalid-feedback">
-                      Please enter manager name
-                    </div>
-                  )}
+              )}
+              {!isSelfEmployed && (
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <StyledLabel required>Office Address</StyledLabel>
+                    <input
+                      className="form-control"
+                      value={officeAddressVal}
+                      defaultValue={officeAddressVal}
+                      {...register(`${officeAddress}`)}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>Office Address</StyledLabel>
-                  <input
-                    disabled={isUnEmployed}
-                    className="form-control"
-                    value={officeAddressVal}
-                    defaultValue={officeAddressVal}
-                    {...register(`${officeAddress}`)}
-                  />
-                </div>
-              </div>
+              )}
             </div>
             <div className="row">
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required={!isUnEmployed}>
-                    Office Number
-                  </StyledLabel>
-                  <PhoneInput
-                    international
-                    countryCallingCodeEditable={false}
-                    defaultCountry={countryCodeRef}
-                    placeholder="Select Country Code*"
-                    {...register(`${officeNumber}`, {
-                      required: !isUnEmployed && isEmployedNeed,
-                    })}
-                    disabled={isUnEmployed}
-                    onCountryChange={(value: any) => {
-                      setCountryCode(value);
-                    }}
-                    onBlur={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      uppdateMobNumber();
-                    }}
-                    onChange={(value) => {
-                      setValue(`${officeNumber}`, value);
-                    }}
-                    value={officeNumberVal}
-                  />
-                  {touchField?.officeMobileNumber &&
-                    error?.officeMobileNumber && (
-                      <div className="invalid-feedback">
-                        Please enter office number
-                      </div>
-                    )}
+              {!isSelfEmployed && (
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <StyledLabel required>Office Number</StyledLabel>
+                    <PhoneInput
+                      international
+                      countryCallingCodeEditable={false}
+                      defaultCountry={countryCodeRef}
+                      placeholder="Select Country Code*"
+                      {...register(`${officeNumber}`, {
+                        required: isEmployedNeed,
+                      })}
+                      onCountryChange={(value: any) => {
+                        setCountryCode(value);
+                      }}
+                      onBlur={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        uppdateMobNumber();
+                      }}
+                      onChange={(value) => {
+                        setValue(`${officeNumber}`, value);
+                      }}
+                      value={officeNumberVal}
+                    />
+                    {touchField?.officeMobileNumber &&
+                      error?.officeMobileNumber && (
+                        <div className="invalid-feedback">
+                          Please enter office number
+                        </div>
+                      )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </AccordionDetails>

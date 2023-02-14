@@ -1,5 +1,10 @@
 import axios from "axios";
-import { CommonApi, removedKeysToMap } from "../components/common/constant";
+import { FieldValues, UseFormSetValue } from "react-hook-form";
+import {
+  acceptedKeysToMap,
+  CommonApi,
+  removedKeysToMap,
+} from "../components/common/constant";
 import { AuthApi, CommonAPI, FinanceApi } from "../service/Axios";
 const ignorKeys = {
   createdAt: "",
@@ -178,10 +183,10 @@ export const getQualificationStudyModeData = async (programCode: string) => {
 };
 
 export const uploadDocuments = async (uploadFileUrl: string, file: File) => {
-  const request = new FormData();
-  request.append("file", file);
+  // const request = new FormData();
+  // request.append("file", file);
   try {
-    const response = await axios.put(uploadFileUrl, request);
+    const response = await axios.put(uploadFileUrl, {file});
     if (response.status === 200) {
       return await response.data;
     } else return await response.data;
@@ -295,4 +300,32 @@ export const downloadDocument = (url, fileName: string) => {
   alink.href = url;
   alink.download = fileName;
   alink.click();
+};
+
+export const mapFormDefaultValue = (
+  studentData: object,
+  setValue: UseFormSetValue<FieldValues>
+) => {
+  for (let [key, value] of Object.entries(studentData)) {
+    console.log({ key });
+    if (
+      (key === "kin" && isObjectEmpty(studentData[key])) ||
+      (key === "sponsor" && isObjectEmpty(studentData[key])) ||
+      (key === "employment" && isObjectEmpty(studentData[key]))
+    ) {
+      delete studentData[key];
+    }
+    if (acceptedKeysToMap.includes(key)) {
+      if (key === "education" && studentData[key]) {
+        const valueCode = studentData[key]?.socialMediaCode
+          ? "SOCIALMEDIA"
+          : studentData[key]?.agentCode
+          ? "AGENT"
+          : "";
+        setValue(key, value, formOptions);
+        setValue(`${key}.referredById`, valueCode, formOptions);
+      }
+      setValue(key, value, formOptions);
+    }
+  }
 };
