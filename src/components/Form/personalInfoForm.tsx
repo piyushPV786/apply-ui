@@ -75,8 +75,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const genderId = watch(genderIdKey);
   const dateOfBirth = watch(dateOfBirthKey);
   const email = watch(emailKey);
-  const defaulte = "SA";
-  const nationalityId = watch(nationalityIdKey, defaulte);
+  const nationalityId = watch(nationalityIdKey);
   const identificationPassportNumber = watch(identificationPassportNumberKey);
   const raceId = watch(raceIdKey);
   const homeLanguageId = watch(homeLanguageIdKey);
