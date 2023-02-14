@@ -486,6 +486,7 @@ const ApplicationForm = (props: any) => {
                         socialMedias={socialMedias}
                         agentArr={agentData}
                         studyTypeData={studyTypeData}
+                        isApplicationEnrolled={isApplicationEnrolled}
                       />
                       <SponsoredForm
                         leadId={leadId}

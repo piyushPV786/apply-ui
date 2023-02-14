@@ -89,6 +89,7 @@ interface IEducationProps {
   socialMedias: IOption[];
   agentArr: IOption[];
   studyTypeData: IOption[];
+  isApplicationEnrolled: boolean;
 }
 
 const FeeCard = (props: any) => {
@@ -136,6 +137,7 @@ export const EducationForm = (props: IEducationProps) => {
     programs,
     socialMedias,
     studyTypeData,
+    isApplicationEnrolled,
   } = props;
   const programVal = watch(program);
   const studyModeVal = watch(studyMode);
@@ -234,6 +236,7 @@ export const EducationForm = (props: IEducationProps) => {
                       setValue(e.target.name, e.target.value, formOptions);
                       getQualificationStudyModeData(e.target.value);
                     }}
+                    disabled={isApplicationEnrolled}
                   >
                     <option value={""}>Select Interested Qualification</option>
                     {programs &&
@@ -271,6 +274,7 @@ export const EducationForm = (props: IEducationProps) => {
                                     {studyModeCode === "APPLICATION" ? null : (
                                       <div className="form-check form-check-inline">
                                         <input
+                                          disabled={isApplicationEnrolled}
                                           key={studyMode}
                                           className="form-check-input me-2"
                                           type="radio"
