@@ -108,9 +108,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     if (state === "yes") {
       setNationality(false);
       setDocument(true);
+      setValue(nationalityIdKey, "SA", formOptions);
     } else {
       setNationality(true);
       setDocument(false);
+      setValue(nationalityIdKey, "SA", formOptions);
     }
   };
 
@@ -375,7 +377,15 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                         <AdvanceDropDown
                           disabled={isDocument}
                           options={identityDocuments}
+<<<<<<< HEAD
                           value={isDocument ? "PA" : identificationDocumentType}
+=======
+                          value={
+                            identityDocuments
+                              ? "PA"
+                              : identificationDocumentType
+                          }
+>>>>>>> 79ae74dcb8deb89fdc5dc12a5f46c6a46a0dad0e
                           name={identificationDocumentTypeKey}
                           register={register}
                           label="Identification Document Type"
@@ -419,7 +429,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           options={nationalities?.sort((a, b) =>
                             sortAscending(a, b, "name")
                           )}
-                          value={isNationality ? "SA" : nationalityId}
+                          value={nationalityId}
                           name={nationalityIdKey}
                           register={register}
                           label="Nationality"

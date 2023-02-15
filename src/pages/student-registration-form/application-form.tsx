@@ -104,7 +104,6 @@ const ApplicationForm = (props: any) => {
     setPaymentDone(true);
     setActiveStep((prevState: number) => prevState + 1);
   };
-
   const routeIfStepDone = (routeTo: string) => {
     if (routeTo) {
       switch (routeTo) {
@@ -126,10 +125,6 @@ const ApplicationForm = (props: any) => {
     activeLeadDetail: any
   ) => {
     if (activeStep === MagicNumbers.TWO) {
-      setSubmitted(false);
-      setActiveStep(2);
-      setDocumentUploadDone(true);
-      setPaymentDone(true);
       uploadStudentDocs();
       return;
     }
@@ -307,38 +302,49 @@ const ApplicationForm = (props: any) => {
     } = allFields;
     let count = 0;
     const successLength: any[] = [];
-    await Promise.all(
-      uploadedDocs.map((file: File & { typeCode: string }) => {
-        const payload = {
-          documentTypeCode: file?.typeCode || "other",
-          fileName: file.name,
-          fileType: file.type,
-          amount: +allFields?.education?.studyModeDetail?.fee || 0,
-          paymentModeCode: "OFFLINE",
-        };
-        return getUploadDocumentUrl(payload).then((res) => {
-          if (res.statusCode === 201) {
-            count = count + 1;
-            successLength.push("true");
-            uploadFiles(res?.data, file);
-          } else {
-            showToast(false, res.message);
-            console.log(res.message);
+    const filteredDocs = uploadedDocs.filter(
+      (doc) => doc.typeCode !== "PAYMENTPROOF"
+    );
+    if (filteredDocs.length > 0) {
+      await Promise.all(
+        uploadedDocs.map((file: File & { typeCode: string }) => {
+          const payload = {
+            documentTypeCode: file?.typeCode || "other",
+            fileName: file.name,
+            fileType: file.type,
+            amount: +allFields?.education?.studyModeDetail?.fee || 0,
+            paymentModeCode: "OFFLINE",
+          };
+          return getUploadDocumentUrl(payload).then((res) => {
+            if (res.statusCode === 201) {
+              count = count + 1;
+              successLength.push("true");
+              uploadFiles(res?.data, file);
+            } else {
+              showToast(false, res.message);
+              console.log(res.message);
+            }
+          });
+        })
+      )
+        .then(() => {
+          if (count === successLength.length) {
+            showToast(true, "Docuuments Successfully Uploaded");
+            setSubmitted(false);
+            setActiveStep(2);
+            setDocumentUploadDone(true);
+            setPaymentDone(true);
+            setTimeout(() => {
+              router.push(RoutePaths.Document_Success);
+            }, 2000);
           }
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      })
-    )
-      .then(() => {
-        if (count === successLength.length) {
-          showToast(true, "Docuuments Successfully Uploaded");
-          setTimeout(() => {
-            router.push(RoutePaths.Document_Success);
-          }, 2000);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    } else {
+      showToast(false, "Upload Documents to proceed");
+    }
   };
   const showToast = (success: boolean, message: string) => {
     setShowDraftSaveToast({
