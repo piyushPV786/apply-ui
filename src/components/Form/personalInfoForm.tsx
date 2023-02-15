@@ -108,11 +108,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     if (state === "yes") {
       setNationality(false);
       setDocument(true);
-      setValue(nationalityIdKey, "SA", formOptions);
+      setValue(nationalityIdKey, formOptions);
+      setValue(identificationDocumentTypeKey, "PA", formOptions);
     } else {
       setNationality(true);
       setDocument(false);
       setValue(nationalityIdKey, "SA", formOptions);
+      setValue(identificationDocumentTypeKey, formOptions);
     }
   };
 
@@ -377,17 +379,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                         <AdvanceDropDown
                           disabled={isDocument}
                           options={identityDocuments}
-                          value={
-                            identityDocuments
-                              ? "PA"
-                              : identificationDocumentType
-                          }
+                          value={identificationDocumentType}
                           name={identificationDocumentTypeKey}
                           register={register}
                           label="Identification Document Type"
                         />
-                        {TouchFields?.identificationDocumentTypeKey &&
-                          Errors?.identificationDocumentTypeKey && (
+                        {TouchFields?.identificationDocumentType &&
+                          Errors?.identificationDocumentType && (
                             <div className="invalid-feedback">
                               Please enter Document Type
                             </div>
