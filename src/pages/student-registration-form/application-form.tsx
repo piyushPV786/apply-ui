@@ -380,7 +380,9 @@ const ApplicationForm = (props: any) => {
     setLeadId(leadDetail?.applicationCode);
     if (leadDetail) {
       AuthApi.get(
-        `lead/${leadDetail?.leadCode}/application/${leadDetail?.applicationCode}?isDraft=${leadDetail?.isdraftSave}`
+        `lead/${leadDetail?.leadCode}/application/${
+          leadDetail?.applicationCode
+        }?isDraft=${leadDetail?.isdraftSave || "false"}`
       )
         .then(({ data: response }) => {
           const formData = { ...response?.data };
