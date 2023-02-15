@@ -80,6 +80,18 @@ const PaymentSuccessFull = (props: any) => {
     );
   };
   const onUploadDocument = () => {
+    const isdraftSave = false;
+    const isPaymentPending = false;
+    const isDocumentPending = true;
+    const leadDetails = JSON.parse(sessionStorage.getItem("activeLeadDetail")!);
+    const leadDetail = {
+      applicationCode: leadDetails?.applicationCode,
+      leadCode: leadDetails?.leadCode,
+      isPaymentPending,
+      isdraftSave,
+      isDocumentPending,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     sessionStorage.setItem("routeTo", "Document");
     router.push(RoutePaths.Application_Form);
   };
@@ -159,23 +171,34 @@ const PaymentSuccessFull = (props: any) => {
       </div>
     );
   };
+
   return (
     <ParentContainer className="text-center">
-    <Header />
-    <div className="container-fluid w-75 mt-5">
-      <MainContainer style={{ paddingBottom: "1rem" }}>
-        {props?.pageType === "failure" && <OnlinePaymentFailed />}
-        {props?.pageType === "success" && <OnlinePaymentSuccess />}
-        {props?.pageType === "document-success" && <DocumentUploadSuccess />}
-        {props?.pageType === "document-upload-success" && <DocumentSuccess />}
-        {props?.pageType === "document-failure" && <DocumentUploadFailed />}
-      </MainContainer>
-    </div>
-    <StyledButton
-      onClick={() => router.push(RoutePaths.Dashboard)}
-      title="Back to Dashboard"
-    />
-  </ParentContainer>
+      <Header />
+      <div className="container-fluid w-75 mt-5">
+        <MainContainer style={{ paddingBottom: "1rem" }}>
+          {props?.pageType === "failure" && <OnlinePaymentFailed />}
+          {props?.pageType === "success" && <OnlinePaymentSuccess />}
+          {props?.pageType === "document-success" && <DocumentUploadSuccess />}
+          {props?.pageType === "document-upload-success" && <DocumentSuccess />}
+          {props?.pageType === "document-failure" && <DocumentUploadFailed />}
+          {props?.pageType === "success" && (
+            <div>
+              <StyledButton
+                onClick={() => router.push(RoutePaths.Dashboard)}
+                title="Back to Dashboard"
+                isGreenWhiteCombination
+                className="me-2"
+              />
+              <StyledButton
+                onClick={() => onUploadDocument()}
+                title="Upload Documents"
+              />
+            </div>
+          )}
+        </MainContainer>
+      </div>
+    </ParentContainer>
   );
 };
 
