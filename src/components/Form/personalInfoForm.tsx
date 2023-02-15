@@ -108,13 +108,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     if (state === "yes") {
       setNationality(false);
       setDocument(true);
+      setValue(nationalityIdKey, "SA", formOptions);
     } else {
       setNationality(true);
       setDocument(false);
+      setValue(nationalityIdKey, "SA", formOptions);
     }
   };
-
-
 
   return (
     <>
@@ -377,16 +377,21 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                         <AdvanceDropDown
                           disabled={isDocument}
                           options={identityDocuments}
-                          value={identityDocuments ? "PA" : identificationDocumentType}
+                          value={
+                            identityDocuments
+                              ? "PA"
+                              : identificationDocumentType
+                          }
                           name={identificationDocumentTypeKey}
                           register={register}
                           label="Identification Document Type"
                         />
-                        {TouchFields?.identificationDocumentTypeKey && Errors?.identificationDocumentTypeKey && (
-                          <div className="invalid-feedback">
-                            Please enter Document Type
-                          </div>
-                        )}
+                        {TouchFields?.identificationDocumentTypeKey &&
+                          Errors?.identificationDocumentTypeKey && (
+                            <div className="invalid-feedback">
+                              Please enter Document Type
+                            </div>
+                          )}
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -420,7 +425,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           options={nationalities?.sort((a, b) =>
                             sortAscending(a, b, "name")
                           )}
-                          value={isNationality ? "SA" : nationalityId}
+                          value={nationalityId}
                           name={nationalityIdKey}
                           register={register}
                           label="Nationality"
