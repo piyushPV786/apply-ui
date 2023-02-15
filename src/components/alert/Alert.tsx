@@ -4,53 +4,82 @@ import {
   Warning,
   CheckCircleOutline,
 } from "@material-ui/icons/";
+import { AlertEnums } from "../common/constant";
+import styled, { css } from "styled-components";
 
-type alertProps = {
+interface IAlertProps {
   children: string;
-  severity?: "info" | "danger" | "warning" | "success";
-};
-const alertStyle = {
-  maxWidth: "400px",
-};
+  severity?: AlertEnums;
+}
+interface IStyledAlertProps {
+  className: string;
+  variant?: AlertEnums;
+}
 
-const AlertBox = ({ children, severity = "info" }: alertProps) => {
+const AlertBox = ({ children, severity = AlertEnums.INFO }: IAlertProps) => {
   return (
-    <div
-      className={`p-2 d-flex shadow border-start border-primary border-4 rounded-end align-items-center bg-${severity}`}
-      style={alertStyle}
+    <StyledAlert
+      variant={severity}
+      className="p-2 d-flex shadow border-start border-4 rounded-end align-items-center"
     >
-      {severity === "info" && (
+      {severity === AlertEnums.INFO && (
         <Info
           fontSize="large"
-          color="primary"
-          style={{ paddingRight: "10px" }}
+          style={{ paddingRight: "10px", fill: "#3b90ff" }}
         />
       )}
-      {severity === "danger" && (
+      {severity === AlertEnums.DANGER && (
         <ErrorOutline
           fontSize="large"
           color="secondary"
-          style={{ paddingRight: "10px" }}
+          style={{ paddingRight: "10px", fill: "#d33534" }}
         />
       )}
-      {severity === "warning" && (
+      {severity === AlertEnums.WARNING && (
         <Warning
           fontSize="large"
-          color="error"
-          style={{ paddingRight: "10px" }}
+          style={{ paddingRight: "10px", fill: "#ff5400" }}
         />
       )}
-      {severity === "success" && (
+      {severity === AlertEnums.SUCCESS && (
         <CheckCircleOutline
           fontSize="large"
           color="inherit"
-          style={{ paddingRight: "10px" }}
+          style={{ paddingRight: "10px", fill: "#42ae42" }}
         />
       )}
 
       {children}
-    </div>
+    </StyledAlert>
   );
 };
 
 export default AlertBox;
+
+const StyledAlert = styled.div<IStyledAlertProps>`
+  max-width: 400px;
+  ${({ variant }) =>
+    variant == AlertEnums.INFO &&
+    css`
+      background-color: #3b90ff20;
+      border-color: #3b90ff !important;
+    `}
+  ${({ variant }) =>
+    variant == AlertEnums.DANGER &&
+    css`
+      background-color: #d3353420 !important;
+      border-color: #d33534 !important;
+    `};
+  ${({ variant }) =>
+    variant == AlertEnums.WARNING &&
+    css`
+      background-color: #ff540020 !important;
+      border-color: #ff5400 !important;
+    `};
+  ${({ variant }) =>
+    variant == AlertEnums.SUCCESS &&
+    css`
+      background-color: #42ae4220 !important;
+      border-color: #42ae42 !important;
+    `};
+`;
