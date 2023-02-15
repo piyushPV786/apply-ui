@@ -38,7 +38,7 @@ const DocumentUploadForm = ({
   >([]);
   const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
   const documentTypeList = [
-    ...documentType || [],
+    ...(documentType || []),
     ...[{ name: "Other", code: "other" }],
   ];
   useEffect(() => {
@@ -174,7 +174,13 @@ const DocumentUploadForm = ({
                       </thead>
                       <tbody>
                         {uploadDocs?.map((item, index) => (
-                          <tr>
+                          <tr
+                            className={
+                              item?.typeCode === "PAYMENTPROOF"
+                                ? "disabled"
+                                : ""
+                            }
+                          >
                             <td>
                               <div className="w-75">
                                 <img

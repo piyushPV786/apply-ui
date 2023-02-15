@@ -307,6 +307,7 @@ function ApplicationCard({
   );
   const showEditBtn =
     status.includes(CommonEnums.FEES_PENDING_STATUS) ||
+    status.includes(CommonEnums.APP_FEE_DOC_VER_PEND) ||
     status.includes(CommonEnums.DRAFT_STATUS) ||
     isAcceptedApplication;
   const showDocumentUploadBtn =
@@ -314,6 +315,7 @@ function ApplicationCard({
     status.includes(CommonEnums.APP_ENROLLED_STATUS);
   const showPayBtn =
     status.includes(CommonEnums.RESUB_APP_FEE_PROOF) ||
+    status.includes(CommonEnums.APP_FEE_DOC_VER_PEND) ||
     status.includes(CommonEnums.FEES_PENDING_STATUS) ||
     isAcceptedApplication;
   const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
