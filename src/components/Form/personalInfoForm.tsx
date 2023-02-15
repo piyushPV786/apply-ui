@@ -114,8 +114,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     }
   };
 
-
-
   return (
     <>
       <StyledAccordion defaultExpanded={true}>
@@ -377,16 +375,17 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                         <AdvanceDropDown
                           disabled={isDocument}
                           options={identityDocuments}
-                          value={identityDocuments ? "PA" : identificationDocumentType}
+                          value={isDocument ? "PA" : identificationDocumentType}
                           name={identificationDocumentTypeKey}
                           register={register}
                           label="Identification Document Type"
                         />
-                        {TouchFields?.identificationDocumentTypeKey && Errors?.identificationDocumentTypeKey && (
-                          <div className="invalid-feedback">
-                            Please enter Document Type
-                          </div>
-                        )}
+                        {TouchFields?.identificationDocumentTypeKey &&
+                          Errors?.identificationDocumentTypeKey && (
+                            <div className="invalid-feedback">
+                              Please enter Document Type
+                            </div>
+                          )}
                       </div>
                     </div>
                     <div className="col-md-4">
