@@ -160,18 +160,22 @@ const PaymentSuccessFull = (props: any) => {
     );
   };
   return (
-    <ParentContainer>
-      <Header />
-      <div className="container-fluid w-75 mt-5">
-        <MainContainer style={{ paddingBottom: "1rem" }}>
-          {props?.pageType === "failure" && <OnlinePaymentFailed />}
-          {props?.pageType === "success" && <OnlinePaymentSuccess />}
-          {props?.pageType === "document-success" && <DocumentUploadSuccess />}
-          {props?.pageType === "document-upload-success" && <DocumentSuccess />}
-          {props?.pageType === "document-failure" && <DocumentUploadFailed />}
-        </MainContainer>
-      </div>
-    </ParentContainer>
+    <ParentContainer className="text-center">
+    <Header />
+    <div className="container-fluid w-75 mt-5">
+      <MainContainer style={{ paddingBottom: "1rem" }}>
+        {props?.pageType === "failure" && <OnlinePaymentFailed />}
+        {props?.pageType === "success" && <OnlinePaymentSuccess />}
+        {props?.pageType === "document-success" && <DocumentUploadSuccess />}
+        {props?.pageType === "document-upload-success" && <DocumentSuccess />}
+        {props?.pageType === "document-failure" && <DocumentUploadFailed />}
+      </MainContainer>
+    </div>
+    <StyledButton
+      onClick={() => router.push(RoutePaths.Dashboard)}
+      title="Back to Dashboard"
+    />
+  </ParentContainer>
   );
 };
 
