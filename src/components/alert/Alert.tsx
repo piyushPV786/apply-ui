@@ -2,55 +2,82 @@ import {
   Info,
   ErrorOutline,
   Warning,
-  CheckCircleOutline,
-} from "@material-ui/icons/";
+  CheckCircleOutline
+} from '@material-ui/icons/'
+import { AlertEnums } from '../common/constant'
+import styled, { css } from 'styled-components'
 
-type alertProps = {
-  children: string;
-  severity?: "info" | "danger" | "warning" | "success";
-};
-const alertStyle = {
-  maxWidth: "400px",
-};
+interface IAlertProps {
+  children: string
+  severity?: AlertEnums
+}
+interface IStyledAlertProps {
+  className: string
+  variant?: AlertEnums
+}
 
-const AlertBox = ({ children, severity = "info" }: alertProps) => {
+const AlertBox = ({ children, severity = AlertEnums.INFO }: IAlertProps) => {
   return (
-    <div
-      className={`p-2 d-flex shadow border-start border-primary border-4 rounded-end align-items-center bg-${severity}`}
-      style={alertStyle}
+    <StyledAlert
+      variant={severity}
+      className='p-2 d-flex shadow border-start border-primary border-4 rounded-end align-items-center'
     >
-      {severity === "info" && (
+      {severity === AlertEnums.INFO && (
         <Info
-          fontSize="large"
-          color="primary"
-          style={{ paddingRight: "10px" }}
+          fontSize='large'
+          color='primary'
+          style={{ paddingRight: '10px' }}
         />
       )}
-      {severity === "danger" && (
+      {severity === AlertEnums.DANGER && (
         <ErrorOutline
-          fontSize="large"
-          color="secondary"
-          style={{ paddingRight: "10px" }}
+          fontSize='large'
+          color='secondary'
+          style={{ paddingRight: '10px' }}
         />
       )}
-      {severity === "warning" && (
+      {severity === AlertEnums.WARNING && (
         <Warning
-          fontSize="large"
-          color="error"
-          style={{ paddingRight: "10px" }}
+          fontSize='large'
+          color='error'
+          style={{ paddingRight: '10px' }}
         />
       )}
-      {severity === "success" && (
+      {severity === AlertEnums.SUCCESS && (
         <CheckCircleOutline
-          fontSize="large"
-          color="inherit"
-          style={{ paddingRight: "10px" }}
+          fontSize='large'
+          color='inherit'
+          style={{ paddingRight: '10px' }}
         />
       )}
 
       {children}
-    </div>
-  );
-};
+    </StyledAlert>
+  )
+}
 
-export default AlertBox;
+export default AlertBox
+
+const StyledAlert = styled.div<IStyledAlertProps>`
+  max-width: 400px
+    ${({ variant }) =>
+      variant == AlertEnums.INFO &&
+      css`
+        background-color: skyblue !important;
+      `}
+    ${({ variant }) =>
+      variant == AlertEnums.DANGER &&
+      css`
+        background-color: red !important;
+      `};
+  ${({ variant }) =>
+    variant == AlertEnums.WARNING &&
+    css`
+      background-color: yellow !important;
+    `};
+  ${({ variant }) =>
+    variant == AlertEnums.SUCCESS &&
+    css`
+      background-color: green !important;
+    `};
+`

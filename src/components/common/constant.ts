@@ -5,12 +5,17 @@ export enum CommonEnums {
   APP_ENROLLED_ACCEPTED = "ENRL-ACCEPTED",
   RESUB_APP_FEE_PROOF = "RESUB-APP-FEE-PROOF",
   RESUB_APP_DOC = "RESUB-APP-DOC",
-  APP_FEE_DOC_VER_PEND = "APP-FEE-DOC-VER-PEND",
   MANAGEMENT = "management",
   BURSARY = "bursary",
   EMPLOYEE_BURSARY = "EMPBURSARY",
   REGULAR = "regular",
   GUARDIAN = "guardian",
+}
+export enum AlertEnums {
+  INFO = "info",
+  DANGER = "danger",
+  WARNING = "warning",
+  SUCCESS = "success",
 }
 
 export enum MagicNumbers {
