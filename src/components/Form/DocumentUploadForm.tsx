@@ -175,11 +175,6 @@ const DocumentUploadForm = ({
                       <tbody>
                         {uploadDocs?.map((item, index) => (
                           <tr
-                            className={
-                              item?.typeCode === "PAYMENTPROOF"
-                                ? "disabled"
-                                : ""
-                            }
                           >
                             <td>
                               <div className="w-75">
@@ -195,7 +190,11 @@ const DocumentUploadForm = ({
                                 )}
                               </div>
                             </td>
-                            <td>
+                            <td  className={
+                              item?.typeCode === "PAYMENTPROOF"
+                                ? "disabled"
+                                : ""
+                            }>
                               {" "}
                               <select
                                 className="form-select"
@@ -236,7 +235,11 @@ const DocumentUploadForm = ({
                                 )}
                                 <span
                                   onClick={() => deleteDocs(index)}
-                                  className="cursor-pointer"
+                                  className={
+                                    item?.typeCode === "PAYMENTPROOF"
+                                      ? "disabled"
+                                      : "cursor-pointer"
+                                  }
                                 >
                                   <Image
                                     className="me-2 ms-2"
