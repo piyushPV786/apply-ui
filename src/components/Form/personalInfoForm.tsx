@@ -48,8 +48,9 @@ const genderIdKey = `${parentKey}.gender`;
 const dateOfBirthKey = `${parentKey}.dateOfBirth`;
 const emailKey = `${parentKey}.email`;
 const nationalityIdKey = `${parentKey}.nationality`;
-const identificationPassportNumberKey = `${parentKey}.identificationNumber`;
+const identificationPassportNumberKey = `${parentKey}.identificationPassportNumber`;
 const raceIdKey = `${parentKey}.race`;
+const identificationDocumentTypeKey = `${parentKey}.identificationDocumentType`;
 const homeLanguageIdKey = `${parentKey}.language`;
 const studentNumberKey = `${parentKey}.mobileNumber`;
 const mobileCountryCodeKey = `${parentKey}.mobileCountryCode`;
@@ -87,6 +88,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const nationalityId = watch(nationalityIdKey);
   const identificationPassportNumber = watch(identificationPassportNumberKey);
   const raceId = watch(raceIdKey);
+  const identificationDocumentType = watch(identificationDocumentTypeKey);
   const homeLanguageId = watch(homeLanguageIdKey);
   const uppdateMobNumber = () => {
     const countryCode = getCountryCallingCode(countryCodeRef);
@@ -97,11 +99,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     ...[{ name: "Other", code: "other", id: 21 }],
   ];
 
-  const [isdocument, setDocument] = useState(false);
-  const [isnationality, setNationality] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isDocument, setDocument] = useState<boolean>(false);
+  const [isNationality, setNationality] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-  const handleInternationAccordian = (state) => {
+  const handleInternationAccordian = (state: string) => {
     setIsExpanded(true);
     if (state === "yes") {
       setNationality(false);
@@ -111,6 +113,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       setDocument(false);
     }
   };
+
+
 
   return (
     <>
@@ -371,14 +375,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
-                          disabled={isdocument}
+                          disabled={isDocument}
                           options={identityDocuments}
-                          value={identityDocuments ? "PA" : identityDocuments}
-                          name={"identification"}
+                          value={identityDocuments ? "PA" : identificationDocumentType}
+                          name={identificationDocumentTypeKey}
                           register={register}
                           label="Identification Document Type"
                         />
-                        {TouchFields?.nationality && Errors?.nationality && (
+                        {TouchFields?.identificationDocumentTypeKey && Errors?.identificationDocumentTypeKey && (
                           <div className="invalid-feedback">
                             Please enter Document Type
                           </div>
@@ -391,36 +395,32 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           Identification Number
                         </StyledLabel>
                         <input
-                          value={lastName}
-                          defaultValue={lastName}
-                          {...register(lastNameKey, { required: true })}
+                          value={identificationPassportNumber}
+                          defaultValue={identificationPassportNumber}
+                          {...register(identificationPassportNumberKey, {
+                            required: true,
+                          })}
                           type="text"
                           className="form-control"
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            const name = e.target.name;
-                            if (onlyAlphabets(value)) {
-                              setValue(name, value, formOptions);
-                            }
-                          }}
-                          id="lastName"
+                          id="identificationPassportNumber"
                           placeholder=""
                         />
-                        {TouchFields?.lastName && Errors?.lastName && (
-                          <div className="invalid-feedback">
-                            Please enter Passport Number
-                          </div>
-                        )}
+                        {TouchFields?.identificationPassportNumber &&
+                          Errors?.identificationPassportNumber && (
+                            <div className="invalid-feedback">
+                              Please enter Identification Number
+                            </div>
+                          )}
                       </div>
                     </div>
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
-                          disabled={isnationality}
+                          disabled={isNationality}
                           options={nationalities?.sort((a, b) =>
                             sortAscending(a, b, "name")
                           )}
-                          value={isnationality ? "SA" : nationalityId}
+                          value={isNationality ? "SA" : nationalityId}
                           name={nationalityIdKey}
                           register={register}
                           label="Nationality"
