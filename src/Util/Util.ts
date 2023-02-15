@@ -307,7 +307,6 @@ export const mapFormDefaultValue = (
   setValue: UseFormSetValue<FieldValues>
 ) => {
   for (let [key, value] of Object.entries(studentData)) {
-    console.log({ key });
     if (
       (key === "kin" && isObjectEmpty(studentData[key])) ||
       (key === "sponsor" && isObjectEmpty(studentData[key])) ||
