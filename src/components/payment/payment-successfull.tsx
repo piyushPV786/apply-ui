@@ -212,10 +212,12 @@ const PaymentSuccessFull = (props: any) => {
                 isGreenWhiteCombination
                 className="me-2"
               />
-              <StyledButton
-                onClick={() => onUploadDocument()}
-                title="Upload Documents"
-              />
+              {props?.pageType === "document-upload-success" && (
+                <StyledButton
+                  onClick={() => onUploadDocument()}
+                  title="Upload Documents"
+                />
+              )}
             </div>
           )}
         </MainContainer>
