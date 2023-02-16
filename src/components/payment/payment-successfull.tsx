@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import StyledButton from "../button/button";
 import { Green, GreenFormHeading } from "../common/common";
 import { MainContainer, PaymentContainer } from "./payment";
@@ -37,6 +37,24 @@ const PaymentSuccessFull = (props: any) => {
                 confirmation <br />
                 email with details soon.
               </p>
+            </div>
+          </div>
+        </div>
+      </PaymentContainer>
+    );
+  };
+  const ApplicationEnrolledSuccess = () => {
+    return (
+      <PaymentContainer>
+        <div className="row">
+          <div className="col-sm-12">
+            <div className="text-center mb-2">
+              <Image width="190" height="170" src={PayIcon} alt="payIcon" />
+            </div>
+            <div className="text-center w-100">
+              <GreenFormHeading style={{ fontSize: "24px" }}>
+                Application enrolled Sucessfully
+              </GreenFormHeading>
             </div>
           </div>
         </div>
@@ -182,7 +200,11 @@ const PaymentSuccessFull = (props: any) => {
           {props?.pageType === "document-success" && <DocumentUploadSuccess />}
           {props?.pageType === "document-upload-success" && <DocumentSuccess />}
           {props?.pageType === "document-failure" && <DocumentUploadFailed />}
-          {props?.pageType === "success" && (
+          {props?.pageType === "application-enrolled-success" && (
+            <ApplicationEnrolledSuccess />
+          )}
+          {(props?.pageType === "success" ||
+            props?.pageType === "application-enrolled-success") && (
             <div>
               <StyledButton
                 onClick={() => router.push(RoutePaths.Dashboard)}

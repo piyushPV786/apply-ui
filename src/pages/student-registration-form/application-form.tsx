@@ -420,10 +420,13 @@ const ApplicationForm = (props: any) => {
       })
       .catch((err) => console.log(err));
   };
-  // console.log({
-  //   allFields,
-  //   errors,
-  // });
+
+  const onManagementStudentSubmit = () => {
+    router.push(RoutePaths.APPLICATION_ENROLLED_SUCCESS);
+    setActiveStep(0);
+    setPaymentDone(true);
+  };
+
   const language = masterData?.languageData as IOption[];
   const nationalities = masterData?.nationalityData as IOption[];
   const relationData = masterData?.relationData as IOption[];
@@ -443,6 +446,9 @@ const ApplicationForm = (props: any) => {
   const agentData = masterData?.agentData as IOption[];
   const documentType = masterData?.documentTypeData as IOption[];
   const studyTypeData = masterData?.studentTypeData as IOption[];
+  const isManagementStudentType =
+    allFields?.education?.studentTypeCode?.toLowerCase() ===
+    CommonEnums.MANAGEMENT;
 
   const onSkipForNowOnPayment = () => {};
   const onSkipForNowOnDocument = () => {
@@ -451,7 +457,10 @@ const ApplicationForm = (props: any) => {
   const { message, success, show } = showDraftSavedToast;
   const today = new Date();
   const year = today.getFullYear();
-
+  // console.log({
+  //   allFields,
+  //   errors,
+  // });
   return (
     <MainContainer>
       <Header />
@@ -520,6 +529,7 @@ const ApplicationForm = (props: any) => {
                   navigateNext={navigateNext}
                   onSkipForNowOnPayment={onSkipForNowOnPayment}
                   showToast={showToast}
+                  isManagementStudentType={isManagementStudentType}
                 />
               </>
             )}
@@ -644,12 +654,22 @@ const ApplicationForm = (props: any) => {
               {activeStep === MagicNumbers.ONE && (
                 <div className="mt-5 text-center">
                   <StyledButton
+                    className="me-2"
                     onClick={navigateBack}
                     type="button"
                     disabled={!isDirty}
                     isGreenWhiteCombination={true}
                     title={"Back"}
                   />
+                  {isManagementStudentType && (
+                    <StyledButton
+                      onClick={() => {
+                        onManagementStudentSubmit();
+                      }}
+                      disabled={Number(allFields?.payment?.discountedFee) !== 0}
+                      title={"Submit"}
+                    />
+                  )}
                 </div>
               )}
             </div>

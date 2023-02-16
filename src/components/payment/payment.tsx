@@ -22,6 +22,8 @@ import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com
 import Image from "next/image";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import { GreenText } from "../student/style";
+import { CommonEnums } from "../common/constant";
+import CircleTick from "../../../public/assets/images/circle-tick.svg";
 const Currency = [
   {
     countryId: 1,
@@ -53,6 +55,8 @@ const Payment = (props: any) => {
   );
   const [feeOptions, setFeeOptions] = useState<IFee[]>([]);
   const [promoCode, setPromoCode] = useState<string>("");
+  const [isManagementPromoCode, setManagementPromoCode] =
+    useState<boolean>(false);
   const [showPromoCode, setShowPromoCOde] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
@@ -164,11 +168,16 @@ const Payment = (props: any) => {
     );
     if (
       result?.statusCode === 200 &&
-      result?.data?.status === "APP-ENROLED" &&
-      allFields?.education?.studentTypeCode?.toLowerCase() === "management"
+      (result?.data?.status === "APP-ENROLED" ||
+        result?.data?.status === CommonEnums.APP_ENROLLED_STATUS) &&
+      allFields?.education?.studentTypeCode?.toLowerCase() ===
+        CommonEnums.MANAGEMENT
     ) {
+      setManagementPromoCode(true);
+      setValue("payment.discountCode", promoCode);
+      setValue("payment.discountAmount", (+programFee * 100) / 100);
+      setValue("payment.discountedFee", "0.00");
       props.showToast(true, "Management Code Applied");
-      props?.navigateNext();
     } else if (result?.statusCode === 200 && result?.data?.percent) {
       const { agentCode, percent, discountCode } = result?.data;
       setValue("payment.agentCode", agentCode);
@@ -313,51 +322,92 @@ const Payment = (props: any) => {
                         </div>
                         <div>
                           {" "}
-                          <h6>Total Application INR - {programFee}</h6>
                           <h6>
-                            Discount INR - {allFields?.payment?.discountAmount}
+                            Total Application INR -{" "}
+                            {isManagementPromoCode
+                              ? allFields?.payment?.discountedFee
+                              : programFee}
                           </h6>
-                          <h6>
-                            Total Amount -
-                            {parseInt(programFee) - discountAmount}
-                          </h6>
+                          {!isManagementPromoCode && (
+                            <>
+                              <h6>
+                                Discount INR -{" "}
+                                {allFields?.payment?.discountAmount}
+                              </h6>
+                              <h6>
+                                Total Amount -
+                                {parseInt(programFee) - discountAmount}
+                              </h6>
+                            </>
+                          )}
                         </div>
                       </div>
-                      <div className="text-center">
-                        <a
-                          onClick={() => setShowPromoCOde(!showPromoCode)}
-                          href="#"
-                          className="w-100 text-dark"
-                        >
-                          Have a promo code?
-                        </a>
-                      </div>
-                      {showPromoCode && (
-                        <div className="w-100 text-center ps-4 pe-4">
-                          <div className="input-group mb-2 mt-4">
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Enter promo code"
-                              onChange={(e) => setPromoCode(e?.target?.value)}
-                            />
-                            <div className="input-group-append cursor-pointer">
-                              <span
-                                onClick={applyDiscount}
-                                style={{
-                                  background:
-                                    !promoCode || promoCode?.length === 0
-                                      ? `${DefaultGrey}`
-                                      : `${Green}`,
-                                  padding: "0.47rem 0.75rem",
-                                }}
-                                className="input-group-text"
-                                id="basic-addon2"
-                              >
-                                Apply
-                              </span>
+                      {!isManagementPromoCode && (
+                        <>
+                          <div className="text-center show-promo-code">
+                            <a
+                              onClick={() => setShowPromoCOde(!showPromoCode)}
+                              href="#"
+                              className="w-100 text-dark"
+                            >
+                              Have a promo code?
+                            </a>
+                          </div>
+
+                          <div className="w-100 text-center ps-4 pe-4">
+                            <div className="input-group mb-2 mt-4">
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter promo code"
+                                onChange={(e) => setPromoCode(e?.target?.value)}
+                              />
+                              <div className="input-group-append cursor-pointer">
+                                <span
+                                  onClick={applyDiscount}
+                                  style={{
+                                    background:
+                                      !promoCode || promoCode?.length === 0
+                                        ? `${DefaultGrey}`
+                                        : `${Green}`,
+                                    padding: "0.47rem 0.75rem",
+                                  }}
+                                  className="input-group-text"
+                                  id="basic-addon2"
+                                >
+                                  Apply
+                                </span>
+                              </div>
                             </div>
                           </div>
+                        </>
+                      )}
+                      {isManagementPromoCode && (
+                        <div className="w-100 text-center ps-4 pe-4">
+                          <div>
+                            <p className="fw-bold">
+                              Promo Code: <strong>{promoCode} </strong>
+                              <GreenText className="cursor-pointer">
+                                {" "}
+                                <DeleteIcon
+                                  onClick={() => {
+                                    setManagementPromoCode(false);
+                                    setPromoCode("");
+                                    setValue("payment.discountedFee", "0.00");
+                                    setValue("payment.discountAmount", "0.00");
+                                  }}
+                                />
+                              </GreenText>
+                            </p>
+                          </div>
+                          <GreenText>
+                            <Image
+                              className="me-2"
+                              src={CircleTick}
+                              alt="circle"
+                            />
+                            You have saved {discountAmount} on this application
+                          </GreenText>
                         </div>
                       )}
                     </div>
@@ -366,105 +416,111 @@ const Payment = (props: any) => {
               </PaymentContainer>
             </MainContainer>
           </div>
-          <div className="col-md-6">
-            <PaymentOption navigateNext={props?.navigateNext} />
-          </div>
-          <div className="col-md-1">
-            <StyledDiv>Or</StyledDiv>
-          </div>
-          <div className="col-md-5">
-            <MainContainer>
-              <PaymentHeading>
-                <div className="col-md-12">
-                  <StyleHeading>
-                    <GreenFormHeading style={{ fontSize: "20px" }}>
-                      Upload Payment Proof
-                    </GreenFormHeading>
-                  </StyleHeading>
-                </div>
-              </PaymentHeading>
-              <PaymentContainer>
-                <div className="d-flex justify-content-center w-100">
-                  <div className="">
-                    <UploadPaymentDocsContainer
-                      onClick={onDocUploadClick}
-                      className="w-100"
-                    >
-                      <div ref={fileUploadRef} className="text-center">
-                        <Image
-                          src={FIleUploadImg}
-                          width="35"
-                          alt="file-upload-svgrepo"
-                        />
-                        <input
-                          className="d-none"
-                          accept="image/jpeg, application/pdf"
-                          type="file"
-                          {...(register("payment.paymentProof", {
-                            required: true,
-                          }) as any)}
-                          onChange={(e) => {
-                            if (e?.target) {
-                              const files = [
-                                ...paymentDocs,
-                                e.target?.files![0],
-                              ];
-                              onPaymentDocumentUpload(files);
-                            }
-                          }}
-                        />
-                        <GreenFormHeading>
-                          Drag and drop, or browse your files
-                        </GreenFormHeading>
-                        <p className="grey-text">
-                          Only PNG, JPEG and PDF files with max size of 2MB
-                        </p>
-                        <div
-                          onClick={(e) => e.stopPropagation()}
-                          className="d-flex flex-wrap"
-                        >
-                          {paymentDocs &&
-                            paymentDocs.map((file, idx) => (
-                              <span
-                                style={{
-                                  color: file?.error ? "red" : "#000",
-                                  wordBreak: "break-all",
-                                }}
-                                className="w-100"
-                                key={file.lastModified}
-                              >
-                                {file?.name}{" "}
-                                <DeleteIcon onClick={() => deleteFile(idx)} />
-                              </span>
-                            ))}
-                        </div>
-                        {paymentDocs.length > 0 && isInvalidFiles && (
-                          <div className="invalid-feedback">
-                            Only "PDF" or "JPEG" file can be upload.
-                          </div>
-                        )}
-                      </div>
-                    </UploadPaymentDocsContainer>
-                  </div>
-                </div>
-              </PaymentContainer>
-              <div className="container">
-                <div className="row">
-                  <div className="col align-self-center text-center ">
-                    <StyledButton
-                      disabled={
-                        isInvalidFiles ||
-                        paymentDocs.length === 0 ||
-                        isPaymentDocSubmit
-                      }
-                      onClick={() => submitPaymentDocs()}
-                      title="Submit"
-                    />
-                  </div>
-                </div>
+          {!props?.isManagementStudentType && (
+            <>
+              <div className="col-md-6">
+                <PaymentOption navigateNext={props?.navigateNext} />
               </div>
-            </MainContainer>
-          </div>
+              <div className="col-md-1">
+                <StyledDiv>Or</StyledDiv>
+              </div>
+              <div className="col-md-5">
+                <MainContainer>
+                  <PaymentHeading>
+                    <div className="col-md-12">
+                      <StyleHeading>
+                        <GreenFormHeading style={{ fontSize: "20px" }}>
+                          Upload Payment Proof
+                        </GreenFormHeading>
+                      </StyleHeading>
+                    </div>
+                  </PaymentHeading>
+                  <PaymentContainer>
+                    <div className="d-flex justify-content-center w-100">
+                      <div className="">
+                        <UploadPaymentDocsContainer
+                          onClick={onDocUploadClick}
+                          className="w-100"
+                        >
+                          <div ref={fileUploadRef} className="text-center">
+                            <Image
+                              src={FIleUploadImg}
+                              width="35"
+                              alt="file-upload-svgrepo"
+                            />
+                            <input
+                              className="d-none"
+                              accept="image/jpeg, application/pdf"
+                              type="file"
+                              {...(register("payment.paymentProof", {
+                                required: true,
+                              }) as any)}
+                              onChange={(e) => {
+                                if (e?.target) {
+                                  const files = [
+                                    ...paymentDocs,
+                                    e.target?.files![0],
+                                  ];
+                                  onPaymentDocumentUpload(files);
+                                }
+                              }}
+                            />
+                            <GreenFormHeading>
+                              Drag and drop, or browse your files
+                            </GreenFormHeading>
+                            <p className="grey-text">
+                              Only PNG, JPEG and PDF files with max size of 2MB
+                            </p>
+                            <div
+                              onClick={(e) => e.stopPropagation()}
+                              className="d-flex flex-wrap"
+                            >
+                              {paymentDocs &&
+                                paymentDocs.map((file, idx) => (
+                                  <span
+                                    style={{
+                                      color: file?.error ? "red" : "#000",
+                                      wordBreak: "break-all",
+                                    }}
+                                    className="w-100"
+                                    key={file.lastModified}
+                                  >
+                                    {file?.name}{" "}
+                                    <DeleteIcon
+                                      onClick={() => deleteFile(idx)}
+                                    />
+                                  </span>
+                                ))}
+                            </div>
+                            {paymentDocs.length > 0 && isInvalidFiles && (
+                              <div className="invalid-feedback">
+                                Only "PDF" or "JPEG" file can be upload.
+                              </div>
+                            )}
+                          </div>
+                        </UploadPaymentDocsContainer>
+                      </div>
+                    </div>
+                  </PaymentContainer>
+                  <div className="container">
+                    <div className="row">
+                      <div className="col align-self-center text-center ">
+                        <StyledButton
+                          disabled={
+                            isInvalidFiles ||
+                            paymentDocs.length === 0 ||
+                            isPaymentDocSubmit
+                          }
+                          onClick={() => submitPaymentDocs()}
+                          title="Submit"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </MainContainer>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

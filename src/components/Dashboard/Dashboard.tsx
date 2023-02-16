@@ -141,10 +141,8 @@ export const ApplicationDashboard = (props: any) => {
 
   const onDownloadAcceptence = (
     documentDetail: IDocument[],
-    applicationCode: string
   ) => {
     const { name, documentTypeCode } = documentDetail[0];
-    // const fileType = name.split(".").pop();
     getCommonUploadDocumentUrl(name).then((res) => {
       if (res?.statusCode === 200) {
         downloadDocument(res?.data, name);
@@ -405,7 +403,7 @@ function ApplicationCard({
             {isAcceptedApplication && (
               <StyledButton
                 onClick={() =>
-                  onDownloadAcceptence(document, applicationNumber)
+                  onDownloadAcceptence(document)
                 }
                 isGreenWhiteCombination
                 isDownloadBtn
