@@ -308,7 +308,10 @@ const Payment = (props: any) => {
                             Programme Fee
                           </StyledLabel>
                           <div>
-                            <strong>INR {programFee}</strong>
+                            <strong>
+                              {allFields?.payment?.currency || "INR"}{" "}
+                              {programFee}
+                            </strong>
                           </div>
                         </div>
                       </div>
@@ -318,12 +321,15 @@ const Payment = (props: any) => {
                     <div className="w-100 p-4 promo-card">
                       <div className="mb-4 d-flex justify-content-between">
                         <div>
-                          <h6>Subtotal (INR)</h6>
+                          <h6>
+                            Subtotal ({allFields?.payment?.currency || "INR"})
+                          </h6>
                         </div>
                         <div>
                           {" "}
                           <h6>
-                            Total Application INR -{" "}
+                            Total Application{" "}
+                            {allFields?.payment?.currency || "INR"} -{" "}
                             {isManagementPromoCode
                               ? allFields?.payment?.discountedFee
                               : programFee}
@@ -331,8 +337,8 @@ const Payment = (props: any) => {
                           {!isManagementPromoCode && (
                             <>
                               <h6>
-                                Discount INR -{" "}
-                                {allFields?.payment?.discountAmount}
+                                Discount {allFields?.payment?.currency || "INR"}{" "}
+                                - {allFields?.payment?.discountAmount}
                               </h6>
                               <h6>
                                 Total Amount -
