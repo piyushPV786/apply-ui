@@ -7,12 +7,14 @@ interface IOtpInputProps {
   value: string;
   valueLength: number;
   onChange: (value: string) => void;
+  onKeypress: (event?: any) => void | any;
 }
 
 export default function OtpInput({
   value,
   valueLength,
   onChange,
+  onKeypress,
 }: IOtpInputProps) {
   const valueItems = useMemo(() => {
     const valueArray = value.split("");
@@ -146,6 +148,7 @@ export default function OtpInput({
             onChange={(e: any) => inputOnChange(e, idx)}
             onKeyDown={inputOnKeyDown}
             onFocus={inputOnFocus}
+            onKeyPress={onKeypress}
           />
         </>
       ))}

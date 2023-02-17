@@ -142,3 +142,17 @@ export const getSponsorAddressLabel = (
     return "Employer Bursary Address";
   } else return "Address";
 };
+
+export const MsgComponent = ({
+  success,
+  message,
+}: {
+  success: boolean;
+  message: string;
+}) => {
+  return (
+    <>
+      <p style={{ color: success ? "#0EB276" : "#FF0000" }}>{message}</p>
+    </>
+  );
+};

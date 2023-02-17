@@ -77,6 +77,8 @@ const Payment = (props: any) => {
     ? parseInt(allFields?.payment?.discountAmount)
     : 0;
 
+  const selectedCurrency = allFields?.payment?.currency || 'INR';
+
   useEffect(() => {
     const programDetails =
       JSON.parse(sessionStorage.getItem("activeLeadDetail")!)
@@ -305,11 +307,11 @@ const Payment = (props: any) => {
                       <div className="col-md-6">
                         <div className="mb-4">
                           <StyledLabel style={{ fontSize: "16px" }}>
-                            Programme Fee
+                            Application Fee
                           </StyledLabel>
                           <div>
                             <strong>
-                              {allFields?.payment?.currency || "INR"}{" "}
+                              {selectedCurrency}{" "}
                               {programFee}
                             </strong>
                           </div>
@@ -322,14 +324,14 @@ const Payment = (props: any) => {
                       <div className="mb-4 d-flex justify-content-between">
                         <div>
                           <h6>
-                            Subtotal ({allFields?.payment?.currency || "INR"})
+                            Subtotal ({selectedCurrency})
                           </h6>
                         </div>
                         <div>
                           {" "}
                           <h6>
                             Total Application{" "}
-                            {allFields?.payment?.currency || "INR"} -{" "}
+                            {selectedCurrency} -{" "}
                             {isManagementPromoCode
                               ? allFields?.payment?.discountedFee
                               : programFee}
@@ -337,7 +339,7 @@ const Payment = (props: any) => {
                           {!isManagementPromoCode && (
                             <>
                               <h6>
-                                Discount {allFields?.payment?.currency || "INR"}{" "}
+                                Discount {selectedCurrency}{" "}
                                 - {allFields?.payment?.discountAmount}
                               </h6>
                               <h6>
@@ -412,7 +414,7 @@ const Payment = (props: any) => {
                               src={CircleTick}
                               alt="circle"
                             />
-                            You have saved {discountAmount} on this application
+                            You have saved {selectedCurrency}{discountAmount} on this application
                           </GreenText>
                         </div>
                       )}

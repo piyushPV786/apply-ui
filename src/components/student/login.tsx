@@ -21,12 +21,14 @@ import {
 } from "./style";
 import styled from "styled-components";
 import { CommonApi, RoutePaths } from "../common/constant";
+import { MsgComponent } from "../common/common";
 
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState<any>("ZA");
   const [otp, setOtp] = useState<string>("");
   const [isProceed, setProceed] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<any>(null);
   const [showToast, setToast] = useState<boolean>(false);
   const [toastMsg, setToastMsg] = useState<any>({
     message: "",
@@ -66,18 +68,14 @@ const StudentLogin = () => {
         };
         sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
         setProceed(true);
-        setToastMsg((prevState: any) => ({
-          ...prevState,
-          message: "OTP number sent successfully",
-        }));
+        // setToastMsg((prevState: any) => ({
+        //   ...prevState,
+        //   message: "OTP number sent successfully",
+        // }));
         setToast(true);
       })
       .catch(({ response }) => {
-        setToastMsg(() => ({
-          success: false,
-          message: response?.data?.message,
-        }));
-        setToast(true);
+        console.error(response);
       });
   };
   const onCountryChange = (value: string | any) => {
@@ -166,9 +164,26 @@ const StudentLogin = () => {
                 onChange={(e) => {
                   onchangeOtp(e);
                 }}
+                onKeypress={(e: any) => {
+                  if (e.key === "Enter" && otp.length === 4) {
+                    verifyNumber();
+                  }
+                }}
               />
             </Item>
           </Grid>
+          {errorMsg && (
+            <Grid item xs={12}>
+              <Item>
+                <div className="mb-2">
+                  <MsgComponent
+                    message={errorMsg?.message}
+                    success={errorMsg?.success}
+                  />
+                </div>
+              </Item>
+            </Grid>
+          )}
           <Grid item xs={12}>
             <Item>
               <StyledButton
@@ -178,9 +193,14 @@ const StudentLogin = () => {
                 }}
                 title="Verify"
               />
-              <StyledLink className="link-text" onClick={resendOtp}>Resend OTP</StyledLink>
+              <StyledLink className="link-text" onClick={resendOtp}>
+                Resend OTP
+              </StyledLink>
               <br />
-              <StyledLink className="link-text" onClick={() => setProceed(!isProceed)}>
+              <StyledLink
+                className="link-text"
+                onClick={() => setProceed(!isProceed)}
+              >
                 Change Mobile Number
               </StyledLink>
             </Item>
@@ -191,7 +211,7 @@ const StudentLogin = () => {
   };
 
   const verifyNumber = () => {
-    setToast(true);
+    // setToast(true);
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
@@ -202,10 +222,11 @@ const StudentLogin = () => {
         mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
       })
       .then(({ data }) => {
-        setToastMsg(() => ({
-          success: true,
-          message: data?.message,
-        }));
+        setErrorMsg(null);
+        // setToastMsg(() => ({
+        //   success: true,
+        //   message: data?.message,
+        // }));
         sessionStorage.setItem(
           "studentId",
           JSON.stringify({ leadCode: data?.data?.leadCode })
@@ -213,23 +234,23 @@ const StudentLogin = () => {
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
         setTimeout(() => {
           router.push(RoutePaths.Dashboard);
-        }, 2500);
+        }, 1500);
       })
       .catch(({ response }) => {
-        setToastMsg(() => ({
+        setErrorMsg({
           success: false,
-          message: response?.data?.message,
-        }));
-        setToast(true);
+          message: "Sorry! The entered OTP is invalid. Please try again",
+        });
       });
   };
 
   const resendOtp = () => {
-    setToastMsg(() => ({
-      success: true,
-      message: "OTP re-sent successfully",
-    }));
-    setToast(true);
+    // setToastMsg(() => ({
+    //   success: true,
+    //   message: "OTP re-sent successfully",
+    // }));
+    // setToast(true);
+    setErrorMsg({ success: true, message: "OTP re-sent successfully" });
     setOtp("");
   };
 
@@ -237,21 +258,22 @@ const StudentLogin = () => {
   const year = today.getFullYear();
 
   const { message, success } = toastMsg;
+
   return (
     <>
       <ImageContainer>
         <>
-        <div className="login-spacing">
-          <Heading>
-            <div>
-              <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
-            </div>
-            Regenesys Application Form
-          </Heading>
-          <ApplicationFormContainer isProceed={isProceed}>
-            {!isProceed && <EnterMobNumber />}
-            {isProceed && <EnterOtp />}
-          </ApplicationFormContainer>
+          <div className="login-spacing">
+            <Heading>
+              <div>
+                <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
+              </div>
+              Regenesys Application Form
+            </Heading>
+            <ApplicationFormContainer isProceed={isProceed}>
+              {!isProceed && <EnterMobNumber />}
+              {isProceed && <EnterOtp />}
+            </ApplicationFormContainer>
           </div>
           <StyleFooter>
             <span className="footer-text">
@@ -259,7 +281,7 @@ const StudentLogin = () => {
               <a href="https://www.regenesys.net/">Regenesys Business School</a>
             </span>
           </StyleFooter>
-          <Snackbar
+          {/* <Snackbar
             autoHideDuration={2000}
             anchorOrigin={{
               vertical: "bottom",
@@ -291,7 +313,7 @@ const StudentLogin = () => {
                 </StyledLink>
               </SuccessMsgContainer>
             </ToasterContainer>
-          </Snackbar>
+          </Snackbar> */}
         </>
       </ImageContainer>
     </>
