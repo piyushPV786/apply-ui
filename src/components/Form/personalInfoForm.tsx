@@ -358,6 +358,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="radio"
                     name="isInternational"
                     onClick={() => handleInternationAccordian("yes")}
+                    checked={nationalityId !== "" && nationalityId !== "SA"}
                   />
                   <label className="form-check-label">Yes</label>
                 </div>
@@ -367,6 +368,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="radio"
                     name="isInternational"
                     onClick={() => handleInternationAccordian("no")}
+                    checked={nationalityId == "SA"}
                   />
                   <label className="form-check-label">No</label>
                 </div>
