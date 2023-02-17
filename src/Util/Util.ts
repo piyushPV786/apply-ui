@@ -306,6 +306,7 @@ export const mapFormDefaultValue = (
   studentData: object,
   setValue: UseFormSetValue<FieldValues>
 ) => {
+  let valueCode;
   for (let [key, value] of Object.entries(studentData)) {
     if (
       (key === "kin" && isObjectEmpty(studentData[key])) ||
@@ -316,15 +317,15 @@ export const mapFormDefaultValue = (
     }
     if (acceptedKeysToMap.includes(key)) {
       if (key === "education" && studentData[key]) {
-        const valueCode = studentData[key]?.socialMediaCode
+        valueCode = studentData[key]?.socialMediaCode
           ? "SOCIALMEDIA"
           : studentData[key]?.agentCode
           ? "AGENT"
           : "";
         setValue(key, value, formOptions);
-        setValue(`${key}.referredById`, valueCode, formOptions);
       }
       setValue(key, value, formOptions);
     }
+    setValue("education.referredById", valueCode, formOptions);
   }
 };
