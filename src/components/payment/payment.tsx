@@ -74,9 +74,9 @@ const Payment = (props: any) => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
   };
-  const discountAmount = allFields?.payment?.discountAmount
-    ? parseInt(allFields?.payment?.discountAmount)
-    : 0;
+  const discountAmount =
+    Number(allFields?.payment?.discountAmount) *
+      allFields?.payment?.conversionRate || 0;
   const selectedNationality = allFields?.lead?.nationality;
   const selectedCurrency = selectedNationality?.includes("SA")
     ? CommonEnums?.SOUTH_AFRICA_CURRENCY
@@ -114,7 +114,10 @@ const Payment = (props: any) => {
           setValue("payment.selectedCurrency", res?.data?.currencySymbol);
         } else {
           setValue("payment.conversionRate", null);
-          setValue("payment.selectedCurrency", CommonEnums?.SOUTH_AFRICA_CURRENCY);
+          setValue(
+            "payment.selectedCurrency",
+            CommonEnums?.SOUTH_AFRICA_CURRENCY
+          );
         }
       })
       .catch((err) => {
@@ -331,12 +334,19 @@ const Payment = (props: any) => {
                           <StyledLabel style={{ fontSize: "16px" }}>
                             Application Fee{" "}
                             <strong>
-                              ({`${Math.trunc(+programFee)} ${CommonEnums.SOUTH_AFRICA_CURRENCY}`})
+                              (
+                              {`${Math.trunc(+programFee)} ${
+                                CommonEnums.SOUTH_AFRICA_CURRENCY
+                              }`}
+                              )
                             </strong>
                           </StyledLabel>
                           <div>
                             <strong>
-                              {selectedCurrency} {conertedProgramFee} <span className="fw-normal fs-6">( Non-refundable )</span>
+                              {selectedCurrency} {conertedProgramFee}{" "}
+                              <span className="fw-normal fs-6">
+                                ( Non-refundable )
+                              </span>
                             </strong>
                           </div>
                         </div>
@@ -360,8 +370,7 @@ const Payment = (props: any) => {
                           {!isManagementPromoCode && (
                             <>
                               <h6>
-                                Discount {selectedCurrency} -{" "}
-                                {allFields?.payment?.discountAmount}
+                                Discount {selectedCurrency} - {discountAmount}
                               </h6>
                               <h6>
                                 Total Amount - &nbsp;{selectedCurrency}
