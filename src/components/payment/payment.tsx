@@ -80,7 +80,7 @@ const Payment = (props: any) => {
   const selectedNationality = allFields?.lead?.nationality;
   const selectedCurrency = selectedNationality?.includes("SA")
     ? CommonEnums?.SOUTH_AFRICA_CURRENCY
-    : selectedNationality;
+    : allFields?.payment?.selectedCurrency;
   const conertedProgramFee = String(
     +programFee * allFields?.payment?.conversionRate || programFee
   );
@@ -111,8 +111,10 @@ const Payment = (props: any) => {
       .then(({ data: res }) => {
         if (res.data) {
           setValue("payment.conversionRate", res?.data?.rate);
+          setValue("payment.selectedCurrency", res?.data?.currencySymbol);
         } else {
           setValue("payment.conversionRate", null);
+          setValue("payment.selectedCurrency", CommonEnums?.SOUTH_AFRICA_CURRENCY);
         }
       })
       .catch((err) => {
@@ -362,7 +364,7 @@ const Payment = (props: any) => {
                                 {allFields?.payment?.discountAmount}
                               </h6>
                               <h6>
-                                Total Amount - &nbsp;
+                                Total Amount - &nbsp;{selectedCurrency}
                                 {parseInt(conertedProgramFee) - discountAmount}
                               </h6>
                             </>
