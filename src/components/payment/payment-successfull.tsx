@@ -204,7 +204,8 @@ const PaymentSuccessFull = (props: any) => {
             <ApplicationEnrolledSuccess />
           )}
           {(props?.pageType === "success" ||
-            props?.pageType === "application-enrolled-success") && (
+            props?.pageType === "application-enrolled-success" ||
+            props?.pageType === "document-upload-success") && (
             <div>
               <StyledButton
                 onClick={() => router.push(RoutePaths.Dashboard)}
@@ -212,7 +213,7 @@ const PaymentSuccessFull = (props: any) => {
                 isGreenWhiteCombination
                 className="me-2"
               />
-              {props?.pageType === "document-upload-success" && (
+              {props?.pageType !== "document-upload-success" && (
                 <StyledButton
                   onClick={() => onUploadDocument()}
                   title="Upload Documents"
