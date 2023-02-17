@@ -22,8 +22,9 @@ import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com
 import Image from "next/image";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import { GreenText } from "../student/style";
-import { CommonEnums } from "../common/constant";
+import { CommonApi, CommonEnums } from "../common/constant";
 import CircleTick from "../../../public/assets/images/circle-tick.svg";
+import { CommonAPI, FinanceApi } from "../../service/Axios";
 const Currency = [
   {
     countryId: 1,
@@ -76,9 +77,13 @@ const Payment = (props: any) => {
   const discountAmount = allFields?.payment?.discountAmount
     ? parseInt(allFields?.payment?.discountAmount)
     : 0;
-
-  const selectedCurrency = allFields?.payment?.currency || 'INR';
-
+  const selectedNationality = allFields?.lead?.nationality;
+  const selectedCurrency = selectedNationality?.includes("SA")
+    ? CommonEnums?.SOUTH_AFRICA_CURRENCY
+    : selectedNationality;
+  const conertedProgramFee = String(
+    +programFee * allFields?.payment?.conversionRate || programFee
+  );
   useEffect(() => {
     const programDetails =
       JSON.parse(sessionStorage.getItem("activeLeadDetail")!)
@@ -99,7 +104,22 @@ const Payment = (props: any) => {
         setValue("education.applicationFees", applicationDetail?.fees[0]?.fee);
       })();
     }
+    selectedNationality && getCurrencyConversion();
   }, [selectedProgram]);
+  const getCurrencyConversion = () => {
+    FinanceApi.get(`${CommonApi.GETCURRENCYCONVERSION}${selectedNationality}`)
+      .then(({ data: res }) => {
+        if (res.data) {
+          setValue("payment.conversionRate", res?.data?.rate);
+        } else {
+          setValue("payment.conversionRate", null);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {}, [selectedProgram]);
 
   const uploadPaymentDocument = (fileUrl: string, file: File) => {
     return uploadDocuments(fileUrl, file)
@@ -269,14 +289,14 @@ const Payment = (props: any) => {
                                   <label className="form-check-label">
                                     {feeMode}
                                     <br />
-                                    <GreenText>{fee}</GreenText>
+                                    <GreenText>R {fee}</GreenText>
                                   </label>
                                 </>
                               </div>
                             ))}
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      {/* <div className="col-md-6">
                         <div className="mb-4 w-75">
                           <StyledLabel required style={{ fontSize: "16px" }}>
                             Currency Selection
@@ -303,16 +323,18 @@ const Payment = (props: any) => {
                               )}
                           </select>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="col-md-6">
                         <div className="mb-4">
                           <StyledLabel style={{ fontSize: "16px" }}>
-                            Application Fee
+                            Application Fee{" "}
+                            <strong>
+                              ({`${Math.trunc(+programFee)} ${CommonEnums.SOUTH_AFRICA_CURRENCY}`})
+                            </strong>
                           </StyledLabel>
                           <div>
                             <strong>
-                              {selectedCurrency}{" "}
-                              {programFee}
+                              {selectedCurrency} {conertedProgramFee} <span className="fw-normal fs-6">( Non-refundable )</span>
                             </strong>
                           </div>
                         </div>
@@ -323,28 +345,25 @@ const Payment = (props: any) => {
                     <div className="w-100 p-4 promo-card">
                       <div className="mb-4 d-flex justify-content-between">
                         <div>
-                          <h6>
-                            Subtotal ({selectedCurrency})
-                          </h6>
+                          <h6>Subtotal ({selectedCurrency})</h6>
                         </div>
                         <div>
                           {" "}
                           <h6>
-                            Total Application{" "}
-                            {selectedCurrency} -{" "}
+                            Total Application {selectedCurrency} -{" "}
                             {isManagementPromoCode
                               ? allFields?.payment?.discountedFee
-                              : programFee}
+                              : conertedProgramFee}
                           </h6>
                           {!isManagementPromoCode && (
                             <>
                               <h6>
-                                Discount {selectedCurrency}{" "}
-                                - {allFields?.payment?.discountAmount}
+                                Discount {selectedCurrency} -{" "}
+                                {allFields?.payment?.discountAmount}
                               </h6>
                               <h6>
-                                Total Amount -
-                                {parseInt(programFee) - discountAmount}
+                                Total Amount - &nbsp;
+                                {parseInt(conertedProgramFee) - discountAmount}
                               </h6>
                             </>
                           )}
@@ -414,7 +433,8 @@ const Payment = (props: any) => {
                               src={CircleTick}
                               alt="circle"
                             />
-                            You have saved {selectedCurrency}{discountAmount} on this application
+                            You have saved {selectedCurrency}
+                            {discountAmount} on this application
                           </GreenText>
                         </div>
                       )}

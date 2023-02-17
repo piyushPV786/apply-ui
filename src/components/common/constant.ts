@@ -11,6 +11,7 @@ export enum CommonEnums {
   EMPLOYEE_BURSARY = "EMPBURSARY",
   REGULAR = "regular",
   GUARDIAN = "guardian",
+  SOUTH_AFRICA_CURRENCY = "RAND"
 }
 export enum AlertEnums {
   INFO = "info",
@@ -47,6 +48,7 @@ export const CommonApi = {
   GETDOCUMENTURL: "global/file",
   GETCOMMONDOCUMENTURL: "/document",
   GETDOCUMENT: "/document/upload",
+  GETCURRENCYCONVERSION: "/programs-fee/fee-conversion-rate/",
 };
 
 export const RoutePaths = {
