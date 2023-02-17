@@ -108,13 +108,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     if (state === "yes") {
       setNationality(false);
       setDocument(true);
-      setValue(nationalityIdKey, formOptions);
+      setValue(nationalityIdKey, nationalityId, formOptions);
       setValue(identificationDocumentTypeKey, "PA", formOptions);
     } else {
       setNationality(true);
       setDocument(false);
       setValue(nationalityIdKey, "SA", formOptions);
-      setValue(identificationDocumentTypeKey, formOptions);
+      setValue(identificationDocumentTypeKey, identificationDocumentType, formOptions);
     }
   };
 
@@ -334,6 +334,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     name={raceIdKey}
                     register={register}
                     options={race}
+
                   />
                   {TouchFields?.race && Errors?.race && (
                     <div className="invalid-feedback">Please select Race</div>
