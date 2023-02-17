@@ -20,57 +20,7 @@ import {
   CommonApi,
   CommonEnums,
 } from "../common/constant";
-const mockStudyModeData = [
-  {
-    programCode: "BBA-PROG-501",
-    programName: "Bachelor of Business Administration",
-    studyModes: [
-      {
-        studyModeCode: "DISTANCE-ONLINE",
-        fees: [
-          {
-            fee: "21000.00",
-            feeMode: "SEMESTER",
-          },
-          {
-            fee: "3670.00",
-            feeMode: "MONTHLY",
-          },
-          {
-            fee: "40000.00",
-            feeMode: "ANNUALLY",
-          },
-        ],
-      },
-      {
-        studyModeCode: "FULL-TIME",
-        fees: [
-          {
-            fee: "52500.00",
-            feeMode: "SEMESTER",
-          },
-          {
-            fee: "9170.00",
-            feeMode: "MONTHLY",
-          },
-          {
-            fee: "100000.00",
-            feeMode: "ANNUALLY",
-          },
-        ],
-      },
-      {
-        studyModeCode: "undefined",
-        fees: [
-          {
-            fee: "13000.00",
-            feeMode: "APPLICATION",
-          },
-        ],
-      },
-    ],
-  },
-];
+
 const parentKey = "education";
 const program = `${parentKey}.programCode`;
 const studyMode = `${parentKey}.studyModeCode`;
@@ -94,7 +44,6 @@ interface IEducationProps {
 
 const FeeCard = (props: any) => {
   const { setSelectedMode = () => {}, ...rest } = { ...props };
-  const selectedData = { ...rest };
   return (
     <>
       <StyleFeeCards
@@ -104,9 +53,8 @@ const FeeCard = (props: any) => {
               ? "2px solid green"
               : "2px solid #dde1e3",
         }}
-        // onClick={() => props.setSelectedMode(selectedData)}
       >
-        <span>{props?.fee}</span>
+        <span>R {props?.fee}</span>
         <br />
         <span style={{ color: `${Green}` }}>{props?.feeMode}</span>
       </StyleFeeCards>
@@ -121,13 +69,6 @@ export const EducationForm = (props: IEducationProps) => {
     watch,
     formState: { errors, touchedFields },
   } = useFormContext();
-  const [selectedStudyMode, setSelectedStudyMode] = useState<
-    number | null | any
-  >({
-    studyIdx: null,
-    studyId: null,
-    parentIdx: null,
-  });
   const [studyModeQualification, setStudyModeQualification] = useState<
     IStudyModeQualification[]
   >([]);
@@ -264,11 +205,6 @@ export const EducationForm = (props: IEducationProps) => {
                                               e.target.value,
                                               formOptions
                                             );
-                                            setSelectedStudyMode({
-                                              studyIdx: studyIdx,
-                                              studyId: studyModeCode,
-                                              parentIdx: parentIndex,
-                                            });
                                           }}
                                           value={studyModeCode}
                                           checked={
@@ -559,7 +495,6 @@ export const EducationForm = (props: IEducationProps) => {
 const StyleFeeCards = styled.div`
   background: ${DefaultGrey};
   padding: 6px 10px;
-  // cursor: pointer;
   font-size: 14px;
   font-family: roboto;
   font-weight: 600;
