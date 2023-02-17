@@ -1,13 +1,16 @@
 import { Accordion } from "@material-ui/core";
 import styled from "styled-components";
-export const GreenText = styled.span`
-  color: #008554;
-  font-weight: 700;
-  font-size: 14px;
-`;
+import {
+  StyledLink,
+  SuccessMsgContainer,
+  ToasterContainer,
+} from "../student/style";
+import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
+import { Snackbar } from "@material-ui/core";
+import { CommonEnums } from "./constant";
 
 export const GreenFormHeading = styled.p`
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
   color: #008554;
   margin: 0;
@@ -49,3 +52,107 @@ export const StyledAccordion = styled(Accordion)`
     }
   }
 `;
+
+export const Toaster = ({ success, message, setShowToast, show }) => (
+  <Snackbar
+    autoHideDuration={1000}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    open={show}
+    onClose={() => {
+      setShowToast(!show);
+    }}
+    key={"bottom"}
+  >
+    <ToasterContainer success={success}>
+      <CheckCircleRoundedIcon style={{ color: "#0eb276", fontSize: "30px" }} />
+      <SuccessMsgContainer>
+        <StyledLink>
+          {success ? "Success" : "Error"}
+          <br />
+          <span
+            style={{
+              color: "black",
+              fontSize: "14px",
+              fontWeight: 600,
+            }}
+          >
+            {message}
+          </span>
+        </StyledLink>
+      </SuccessMsgContainer>
+    </ToasterContainer>
+  </Snackbar>
+);
+
+//sponsor field Keys ///
+const SponsorCandidateDetail = "sponsor";
+
+const sponsorMode = `${SponsorCandidateDetail}.sponsorModeCode`;
+const sponsorName = `${SponsorCandidateDetail}.name`;
+const sponsorEmail = `${SponsorCandidateDetail}.email`;
+const sponsorAddress = `${SponsorCandidateDetail}.address`;
+const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
+const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
+const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
+
+export const getSponsorNameLabel = (
+  studentType: string,
+  sponsorType: string
+) => {
+  if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
+    return "Guardian Name";
+  }
+  if (studentType === "bursary") {
+    return "Employer Bursary Name";
+  } else return "Sponsor Name";
+};
+export const getSponsorEmailLabel = (
+  studentType: string,
+  sponsorType: string
+) => {
+  if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
+    return "Guardian Email Address";
+  }
+  if (studentType === "bursary") {
+    return "Employer Bursary Email Address";
+  } else return "Email Address";
+};
+export const getSponsorMobileLabel = (
+  studentType: string,
+  sponsorType: string
+) => {
+  if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
+    return "Guardian Phone Number";
+  }
+  if (studentType === "bursary") {
+    return "Employer Bursary Phone Number";
+  } else return "Phone Number";
+};
+export const getSponsorAddressLabel = (
+  studentType: string,
+  sponsorType: string
+) => {
+  if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
+    return "Guardian Address";
+  }
+  if (studentType === "bursary") {
+    return "Employer Bursary Address";
+  } else return "Address";
+};
+
+export const MsgComponent = ({
+  success,
+  message,
+}: {
+  success: boolean;
+  message: string;
+}) => {
+  return (
+    <>
+      <p style={{ color: success ? "#0EB276" : "#FF0000" }}>{message}</p>
+    </>
+  );
+};

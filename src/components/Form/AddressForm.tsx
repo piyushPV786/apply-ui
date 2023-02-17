@@ -10,6 +10,7 @@ import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import AdvanceDropDown from "../dropdown/Dropdown";
+import { formOptions, onlyAlphabets, sortAscending } from "../../Util/Util";
 const Address = "address";
 const resPostalAddress = `${Address}[1].street`;
 const resCountry = `${Address}[1].country`;
@@ -24,7 +25,7 @@ const postalState = `${Address}[0].state`;
 const isSameAsPostalAddress = `${Address}.isSameAsPostalAddress`;
 const addressType = `${Address}[0].addressType`;
 const addressTypeResidential = `${Address}[1].addressType`;
-export const AddressForm = ({ countryData = [] }: any) => {
+export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
   const CountryData = countryData;
   const {
     setValue,
@@ -46,9 +47,9 @@ export const AddressForm = ({ countryData = [] }: any) => {
   const postalCityVal: string = watch(postalCity);
   const postalStateVal: string = watch(postalState);
   useEffect(() => {
-    setValue(`${addressType}`, "POSTAL");
+    setValue(`${addressType}`, "POSTAL",);
     setValue(`${addressTypeResidential}`, "RESIDENTIAL");
-  }, []);
+  }, [leadId]);
 
   return (
     <>
@@ -66,7 +67,7 @@ export const AddressForm = ({ countryData = [] }: any) => {
           </GreenFormHeading>
         </AccordionSummary>
         <AccordionDetails>
-          <div className="container">
+          <div className="container-fluid form-padding">
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
@@ -94,16 +95,16 @@ export const AddressForm = ({ countryData = [] }: any) => {
                 <div className="mb-4">
                   <AdvanceDropDown
                     value={postalCountryVal}
-                    options={CountryData}
+                    options={CountryData.sort((a, b) =>
+                      sortAscending(a, b, "name")
+                    )}
                     register={register}
+                    mapKey="name"
                     name={postalCountry}
                     onChange={(e: any) => {
                       const value = e.target.value;
-                      setValue(postalCountry, value);
-                      // onDropDownChange(value, AddressEnums.COUNTRY, 1);
+                      setValue(postalCountry, value,formOptions);
                     }}
-                    displayItem="name"
-                    mapKey="isoCode"
                     label="Country"
                   />
 
@@ -125,6 +126,7 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     {...register(`${postalZipCode}`, {
                       required: true,
                       maxLength: 6,
+                      minLength: 5,
                     })}
                     type="number"
                     maxLength={6}
@@ -139,6 +141,8 @@ export const AddressForm = ({ countryData = [] }: any) => {
                       <div className="invalid-feedback">
                         {error[0]?.zipcode.type === "maxLength"
                           ? "Max length exceeded"
+                          : error[0]?.zipcode.type === "minLength"
+                          ? "Minimum length should be 5"
                           : "Please enter Zip/Postal Code"}
                       </div>
                     )}
@@ -156,6 +160,13 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     {...register(`${postalCity}`, {
                       required: true,
                     })}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphabets(value)) {
+                        setValue(name, value, formOptions);
+                      }
+                    }}
                   />
                   {touchedField &&
                     error &&
@@ -175,6 +186,13 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     className="form-control"
                     value={postalStateVal}
                     defaultValue={postalStateVal}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphabets(value)) {
+                        setValue(name, value, formOptions);
+                      }
+                    }}
                   />
                   {touchedField &&
                     error &&
@@ -196,44 +214,20 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     id="flexCheckDefault"
                     checked={isSameAsPostalAddressVal}
                     {...register(`${isSameAsPostalAddress}`, {
-                      required: true,
+                      required: false,
                     })}
                     onClick={(e) => {
                       setValue(
                         `${isSameAsPostalAddress}`,
                         e?.currentTarget?.checked,
-                        {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        }
+                        formOptions
                       );
                       if (e?.currentTarget?.checked) {
-                        setValue(`${resPostalAddress}`, postalAddressVal, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
-                        setValue(`${resPostalCode}`, postalZipCodeVal, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
-                        setValue(`${resCity}`, postalCityVal, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
-                        setValue(`${resState}`, postalStateVal, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
-                        setValue(`${resCountry}`, postalCountryVal, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(`${resPostalAddress}`, postalAddressVal, formOptions);
+                        setValue(`${resPostalCode}`, postalZipCodeVal, formOptions);
+                        setValue(`${resCity}`, postalCityVal, formOptions);
+                        setValue(`${resState}`, postalStateVal, formOptions);
+                        setValue(`${resCountry}`, postalCountryVal, formOptions);
                       }
                     }}
                   />
@@ -251,8 +245,8 @@ export const AddressForm = ({ countryData = [] }: any) => {
                     <input
                       type="text"
                       {...register(`${resPostalAddress}`, {
-                      required: true,
-                    })}
+                        required: true,
+                      })}
                       value={resPostalAddressVal}
                       className="form-control"
                       id="postalAddress"
@@ -272,15 +266,16 @@ export const AddressForm = ({ countryData = [] }: any) => {
                   <div className="mb-4">
                     <AdvanceDropDown
                       value={resCountryVal}
-                      label="country"
-                      options={CountryData}
+                      label="Country"
+                      options={CountryData?.sort((a, b) =>
+                        sortAscending(a, b, "name")
+                      )}
                       name={resCountry}
                       register={register}
-                      mapKey="isoCode"
-                      displayItem="name"
+                      mapKey="name"
                       onChange={(e: any) => {
                         const value = e.target.value;
-                        setValue(resCountry, value);
+                        setValue(resCountry, value,formOptions);
                       }}
                     />
                     {touchedField &&
@@ -302,6 +297,7 @@ export const AddressForm = ({ countryData = [] }: any) => {
                       {...register(`${resPostalCode}`, {
                         required: true,
                         maxLength: 6,
+                        minLength: 5,
                       })}
                       type="number"
                       className="form-control"
@@ -315,6 +311,8 @@ export const AddressForm = ({ countryData = [] }: any) => {
                         <div className="invalid-feedback">
                           {error[1]?.zipcode.type === "maxLength"
                             ? "Max length exceeded"
+                            : error[1]?.zipcode.type === "minLength"
+                            ? "Minimum length should be 5"
                             : "Please enter Zip/Postal Code"}
                         </div>
                       )}
@@ -332,6 +330,13 @@ export const AddressForm = ({ countryData = [] }: any) => {
                       className="form-control"
                       value={resCityVal}
                       defaultValue={resCityVal}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, formOptions);
+                        }
+                      }}
                     />
                     {touchedField &&
                       error &&
@@ -354,9 +359,12 @@ export const AddressForm = ({ countryData = [] }: any) => {
                       value={resStateVal}
                       defaultValue={resStateVal}
                       name={resState}
-                      onChange={(e: any) => {
+                      onChange={(e) => {
                         const value = e.target.value;
-                        setValue(resState, value);
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(name, value, formOptions);
+                        }
                       }}
                     />
                     {touchedField &&

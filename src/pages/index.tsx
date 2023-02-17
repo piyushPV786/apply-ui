@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Apply-UI</title>
+        <title>Regenesys- Student Application Form</title>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0"

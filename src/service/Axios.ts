@@ -13,3 +13,6 @@ export const AcadmicApi = axios.create({
 export const FinanceApi = axios.create({
   baseURL: `${process.env.Finance_Url}`,
 });
+export const CommonAPI = axios.create({
+  baseURL: `${process.env.Common_Url}`,
+});

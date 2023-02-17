@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { Grid } from "@material-ui/core";
 import { StyledLink } from "../student/login";
 import { useRouter } from "next/router";
-import RbsLogo from '../../../public/assets/images/RBS_logo_2_white.png';
+import RbsLogo from "../../../public/assets/images/RBS_logo_2_white.png";
 import Image from "next/image";
+import { RoutePaths } from "./constant";
 
 const Header = (props: any) => {
   const [studentMob, setStudentMob] = useState<string>("");
@@ -22,16 +23,21 @@ const Header = (props: any) => {
   }, [props]);
   const exitApp = () => {
     sessionStorage.clear();
-    router.push("/");
+    localStorage.clear();
+    setTimeout(() => {
+      router.push("/");
+    }, 1000);
   };
   return (
     <>
       <Grid>
-        <CommonHeader>
+        <CommonHeader className="header">
           <>
-            <div className="row">
+            <div className="row align-items-center">
               <div className="col-md-6">
-                <LogoContainer>
+                <LogoContainer
+                  onClick={() => router.push(RoutePaths.Dashboard)}
+                >
                   <div
                     style={{
                       borderRight: "3px solid white",
@@ -39,11 +45,7 @@ const Header = (props: any) => {
                       paddingRight: "0.5rem",
                     }}
                   >
-                    <Image
-                      src={RbsLogo}
-                      width="180"
-                      alt={'RbsLogo'}
-                    />
+                    <Image src={RbsLogo} width="180" alt={"RbsLogo"} />
                   </div>
                   <div>
                     <CustomStyledLink>
@@ -57,11 +59,10 @@ const Header = (props: any) => {
                   <div className="mobNum" style={{ color: "white" }}>
                     Hi {studentMob}
                   </div>
-                  <div  onClick={exitApp}>
-                    <CustomStyledLink  className="mobNum">
+                  <div onClick={exitApp}>
+                    <CustomStyledLink className="logout-text">
                       Logout
                     </CustomStyledLink>
-                  
                   </div>
                 </UserInfoConatiner>
               </div>
@@ -106,8 +107,9 @@ const UserInfoConatiner = styled.div`
 `;
 
 const CustomStyledLink = styled(StyledLink)`
-  font-size: 24px;
-  font-weight: 700px;
+  font-size: 20px;
+  font-weight: 500;
+  font-family: Roboto;
   color: #ffd600 !important;
   @media (max-width: 510px) {
     font-size: 15px;

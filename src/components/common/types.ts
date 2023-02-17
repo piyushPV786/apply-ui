@@ -59,6 +59,7 @@ export interface IFee {
 
 export interface IMasterData {
   languageData: IOption[];
+  relationData: IOption[];
   nationalityData: IOption[];
   programs: IOption[];
   raceData: IOption[];
@@ -75,6 +76,7 @@ export interface IMasterData {
   countryData: IOption[];
   disablityData: IOption[];
   agentData: IOption[];
+  studentTypeData: IOption[];
 }
 
 export interface IOption {
@@ -99,9 +101,26 @@ export interface IApplication {
   isActive: boolean;
   id: number;
   applicationCode: string;
+  programName?: string;
+  updatedAt?: string;
   status: string;
+  enrolmentCode?: string;
+  education: IEducation;
   lead: ILead;
-  education: null;
+  document: IDocument;
+}
+
+export interface IDocument {
+  id: number;
+  documentTypeCode: string;
+  name: string;
+  status: string;
+  comments: null;
+}
+
+export interface IEducation {
+  programCode: string;
+  [key: string]: any;
 }
 export interface ILead {
   isActive: boolean;
@@ -119,4 +138,5 @@ export interface ILead {
   nationality: null;
   language: string;
   race: null;
+  enrollmentCode?: string;
 }

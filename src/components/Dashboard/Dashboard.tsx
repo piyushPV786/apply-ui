@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Green, GreenFormHeading } from "../common/common";
+import { Green, GreenFormHeading, Toaster } from "../common/common";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer } from "../payment/payment";
 import Header from "../common/header";
@@ -7,57 +7,175 @@ import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import Image from "next/image";
-import ApplicationIcon from "../../../public/assets/images/application-icon.svg";
-import { CommonApi, RoutePaths } from "../common/constant";
-import { AuthApi } from "../../service/Axios";
-import { IApplication } from "../common/types";
+import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
+import { CommonApi, CommonEnums, RoutePaths } from "../common/constant";
+import { AcadmicApi, AuthApi } from "../../service/Axios";
+import { IApplication, IDocument, IOption } from "../common/types";
+import {
+  downloadDocument,
+  getCommonUploadDocumentUrl,
+  transformDate,
+} from "../../Util/Util";
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
   const [studentApplications, setStudentApplications] = useState<
     IApplication[]
   >([]);
+  const [showToast, setToast] = useState<{
+    success: boolean;
+    message: string;
+    show: boolean;
+  }>({ success: false, message: "", show: false });
   const router = useRouter();
-
 
   useEffect(() => {
     const studentId = JSON.parse(
       sessionStorage?.getItem("studentId") as any
     )?.leadCode;
-    if (studentId) {
+    if (studentId && studentApplications.length === 0) {
       getStudentApplications(studentId);
       setStudenId(studentId);
     }
   }, []);
   const getStudentApplications = (studentId) => {
     AuthApi.get(`${CommonApi.SAVEUSER}/${studentId}/application`)
-      .then(({ data: response }) => {
-        setStudentApplications(response?.data);
-      })
+      .then(({ data: response }) =>
+        getIntrestedQualificationPrograms(response?.data)
+      )
       .catch((err) => {
         console.log(err);
       });
   };
+  const getIntrestedQualificationPrograms = (application: [IApplication]) => {
+    AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
+      .then(({ data: response }: any) => {
+        if (application.length > 0 && response.data.length > 0) {
+          const applications = [...application];
+          applications.forEach((app: IApplication) => {
+            response?.data.forEach((element: IOption) => {
+              if (element?.code === app.education?.programCode) {
+                app.programName = element.name;
+              }
+            });
+          });
+          setStudentApplications(applications);
+        } else setStudentApplications(application);
+      })
+      .catch((err) => console.log(err));
+  };
   const onApplyNow = () => {
+    clearRoute();
+    const leadId = JSON.parse(sessionStorage.getItem("studentId")!)
+      ?.leadCode as any;
+    const leadDetail = {
+      leadCode: leadId,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    if (leadId) {
+      router.push(RoutePaths.Application_Form);
+    }
+  };
+  const clearRoute = () => {
+    sessionStorage.setItem("routeTo", "");
+  };
+  const onEdit = (
+    applicationCode: string | number,
+    leadCode: string,
+    status,
+    educationDetail
+  ) => {
+    clearRoute();
+    const isdraftSave =
+      status === (CommonEnums.DRAFT_STATUS || "DRAFT") ? true : false;
+    const leadDetail = {
+      applicationCode,
+      leadCode,
+      isdraftSave,
+      educationDetail,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    const url = status.includes(CommonEnums.APP_ENROLLED_ACCEPTED)
+      ? `${RoutePaths.Application_Form}?status=${CommonEnums.APP_ENROLLED_ACCEPTED}`
+      : RoutePaths.Application_Form;
+    router.push(url);
+  };
+  const onPay = (
+    applicationCode: string | number,
+    leadCode: string,
+    status,
+    educationDetail
+  ) => {
+    clearRoute();
+    const isdraftSave = false;
+    const isPaymentPending = status;
+    const leadDetail = {
+      applicationCode,
+      leadCode,
+      isPaymentPending,
+      isdraftSave,
+      educationDetail,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     router.push(RoutePaths.Application_Form);
   };
+  const onUploadDocuments = (
+    applicationCode: string | number,
+    leadCode: string,
+    status
+  ) => {
+    clearRoute();
+    const isdraftSave = false;
+    const isPaymentPending = false;
+    const isDocumentPending = true;
+    const leadDetail = {
+      applicationCode,
+      leadCode,
+      isPaymentPending,
+      isdraftSave,
+      isDocumentPending,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    router.push(RoutePaths.Application_Form);
+  };
+
+  const onDownloadAcceptence = (
+    documentDetail: IDocument[],
+  ) => {
+    const { name, documentTypeCode } = documentDetail[0];
+    getCommonUploadDocumentUrl(name).then((res) => {
+      if (res?.statusCode === 200) {
+        downloadDocument(res?.data, name);
+        setTimeout(() => {
+          setToast({
+            show: true,
+            message: "Acceptance Letter Downloaded Successfully",
+            success: true,
+          });
+        }, 1000);
+      } else {
+        setToast({ show: true, message: res?.message, success: false });
+      }
+    });
+  };
+
+  const onToast = () => {
+    setToast((prevState) => ({ ...prevState, show: !prevState?.show }));
+  };
+  const { message, show, success } = showToast;
   return (
     <>
       <ParentContainer>
         <Header />
-        <div className="container-fluid mt-5">
+        <div className="container-fluid application-page mt-5">
           <div style={{ paddingBottom: "1rem" }}>
             <PaymentContainer>
               {studentId && studentApplications.length > 0 ? (
                 <div>
                   <div className="row">
                     <div className="col">
-                      <GreenFormHeading
-                        style={{ fontSize: "24px", color: "#000" }}
-                      >
-                        My Applications
-                      </GreenFormHeading>
-                      <p>
+                      <h2 className="app-header">My Applications</h2>
+                      <p className="grey-text">
                         Here are all applications that you've applied through
                         Regenesys
                       </p>
@@ -76,16 +194,38 @@ export const ApplicationDashboard = (props: any) => {
                       (
                         {
                           status,
-                          lead: { firstName, lastName, middleName = "" },
+                          applicationCode,
+                          programName,
+                          updatedAt,
+                          enrolmentCode,
+                          lead: {
+                            firstName,
+                            lastName,
+                            middleName = "",
+                            leadCode,
+                          },
+                          education,
+                          document,
                         },
                         idx
                       ) => (
-                        <div className="col-md-4 mb-2">
+                        <div key={applicationCode} className="col-md-4 mb-2">
                           <ApplicationCard
+                            key={applicationCode}
                             status={status}
-                            applicationNumber={idx + 1}
+                            applicationNumber={applicationCode}
                             name={`${firstName} ${middleName} ${lastName}`}
-                            // lasUpdated={}
+                            programName={programName}
+                            onEdit={onEdit}
+                            onPay={onPay}
+                            onDownloadAcceptence={onDownloadAcceptence}
+                            onUploadDocuments={onUploadDocuments}
+                            leadCode={leadCode}
+                            studyModeCode={education?.studyModeCode}
+                            updatedAt={updatedAt}
+                            educationDetail={education}
+                            document={document}
+                            enrolmentCode={enrolmentCode}
                           />
                         </div>
                       )
@@ -105,10 +245,10 @@ export const ApplicationDashboard = (props: any) => {
                           }}
                         >
                           <Image
-                            width="85"
-                            height="85"
+                            width="60"
+                            height="60"
                             src={ApplicationIcon}
-                            alt="application-icon.svg"
+                            alt="Application Icon"
                           />
                         </div>
                       </div>
@@ -118,7 +258,7 @@ export const ApplicationDashboard = (props: any) => {
                         >
                           No application yet
                         </GreenFormHeading>
-                        <p>
+                        <p className="grey-text mt-2">
                           Thank you for trusting Regenesys as your Educational
                           Institution. Please Apply for your interested
                           qualification now.
@@ -132,80 +272,170 @@ export const ApplicationDashboard = (props: any) => {
             </PaymentContainer>
           </div>
         </div>
+        <Toaster
+          key={"id"}
+          message={message}
+          show={show}
+          success={success}
+          setShowToast={onToast}
+        />
       </ParentContainer>
     </>
   );
 };
 
-function ApplicationCard({ name, applicationNumber, status }) {
+function ApplicationCard({
+  name,
+  applicationNumber,
+  enrolmentCode,
+  status = "",
+  programName,
+  leadCode,
+  onEdit = (...args) => {},
+  onPay = (...args) => {},
+  onUploadDocuments = (...args) => {},
+  onDownloadAcceptence = (...args) => {},
+  studyModeCode,
+  updatedAt = "",
+  educationDetail,
+  document,
+}) {
+  const isAcceptedApplication = status.includes(
+    CommonEnums.APP_ENROLLED_ACCEPTED
+  );
+  const showEditBtn =
+    status.includes(CommonEnums.FEES_PENDING_STATUS) ||
+    status.includes(CommonEnums.APP_FEE_DOC_VER_PEND) ||
+    status.includes(CommonEnums.DRAFT_STATUS) ||
+    isAcceptedApplication;
+  const showDocumentUploadBtn =
+    status.includes(CommonEnums.RESUB_APP_DOC) ||
+    status.includes(CommonEnums.APP_ENROLLED_STATUS);
+  const showPayBtn =
+    status.includes(CommonEnums.RESUB_APP_FEE_PROOF) ||
+    status.includes(CommonEnums.APP_FEE_DOC_VER_PEND) ||
+    status.includes(CommonEnums.FEES_PENDING_STATUS) ||
+    isAcceptedApplication;
+  const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
+    ? enrolmentCode
+    : "";
   return (
     <>
-      <div className="container bg-white p-3 border rounded">
+      <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
         <div className="d-flex justify-content-end">
-          <StyledStatusBedge status={status.toLowerCase()}>
-            Payment Pending
-          </StyledStatusBedge>
+          <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
         </div>
         <ContentCard>
           <div className="w-100">
-            <GreenFormHeading className="fs-4">
-              Application Number - {applicationNumber}
+            <GreenFormHeading className="application-number">
+              {!enrollmentNumber && `Application Number - ${applicationNumber}`}
+              {enrollmentNumber
+                ? ` Enrollment Number - ${enrollmentNumber}`
+                : ""}
             </GreenFormHeading>
           </div>
-          <div className="mt-2">
+          {enrollmentNumber && (
+            <div className="mt-2 w-100 app-card-block">
+              <p className="mb-0" style={{ color: `#5a636a` }}>
+                Application Number
+              </p>
+              <strong>{applicationNumber}</strong>
+            </div>
+          )}
+          <div className="mt-2 w-100 app-card-block">
             <p className="mb-0" style={{ color: `#5a636a` }}>
               Name
             </p>
             <strong>{name}</strong>
           </div>
-          <div className="mt-2">
+          <div className="mt-2 w-100 app-card-block">
             <p className="mb-0" style={{ color: `#5a636a` }}>
-              Intrested Qualification
+              Intrested Program
             </p>
-            <strong>Bachelor of Business Administration</strong>
+            <strong>{programName}</strong>
           </div>
-          <div className="mt-2 d-flex justify-content-between w-100">
+          <div className="mt-2 d-flex justify-content-between w-100 app-card-block">
             <div>
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Study Mode
               </p>
-              <strong>Online/ Distance</strong>
+              <strong>{studyModeCode}</strong>
             </div>
             <div>
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Last updated
               </p>
-              <strong>11th Aug 2022</strong>
+              <strong>{transformDate(new Date(updatedAt))}</strong>
             </div>
           </div>
-          <div className=" w-100 text-center d-flex justify-content-evenly mt-5">
-            <StyledButton
-              isEditBtn
-              className="w-25"
-              isGreenWhiteCombination={true}
-              title="Edit"
-            />
-            <StyledButton isPayBtn className="w-25" title="pay" />
+          <div className="w-100 text-center d-flex justify-content-center mt-4 card-group-button">
+            {showEditBtn && (
+              <StyledButton
+                isEditBtn
+                className="card-button"
+                isGreenWhiteCombination={true}
+                title="Edit"
+                onClick={() =>
+                  onEdit(applicationNumber, leadCode, status, educationDetail)
+                }
+              />
+            )}
+            {showPayBtn && (
+              <StyledButton
+                onClick={() =>
+                  onPay(applicationNumber, leadCode, true, educationDetail)
+                }
+                isPayBtn
+                className="card-button"
+                title="Pay Program Fee"
+              />
+            )}
+            {showDocumentUploadBtn && (
+              <StyledButton
+                onClick={() =>
+                  onUploadDocuments(applicationNumber, leadCode, true)
+                }
+                isUploadBtn
+                className="card-button"
+                title="Upload Document"
+              />
+            )}
+            {isAcceptedApplication && (
+              <StyledButton
+                onClick={() =>
+                  onDownloadAcceptence(document)
+                }
+                isGreenWhiteCombination
+                isDownloadBtn
+                className="card-button"
+                title="Acceptence Letter"
+              />
+            )}
           </div>
         </ContentCard>
-      </div>
+      </ApplicationContainer>
     </>
   );
 }
 
 const StyledStatusBedge = styled.div<any>`
   background: ${({ status }) => {
-    if (status === "pending") return "#ffde9e";
-    if (status === "draft") return "#c1c1c1";
-    if (status === "pendingDocuments") return "#b7fffa";
-    if (status === "submitted") return "#e0f8ef";
+    if (status === CommonEnums.FEES_PENDING_STATUS) return "#ffde9e";
+    if (status === (CommonEnums.DRAFT_STATUS || "DRAFT")) return "#c1c1c1";
+    if (
+      status === (CommonEnums.RESUB_APP_DOC || CommonEnums.RESUB_APP_FEE_PROOF)
+    )
+      return "#b7fffa";
+    if (status === CommonEnums.APP_ENROLLED_STATUS) return "#e0f8ef";
+    else return "#ffde9e";
   }};
-  border-radius: 10px;
+  border-radius: 5px;
   color: #2d3d54;
   padding: 2px 5px;
   border: 1px solid;
 `;
 
+const ApplicationContainer = styled.div``;
 const ContentCard = styled.div`
   display: flex;
   flex-wrap: wrap;
