@@ -31,12 +31,9 @@ const PaymentOption = (props: any) => {
       return "payuForm";
     }
   };
-
   const onPayuPayment = () => {
     const payload = {
-      amount:
-        +allFields?.education?.applicationFees -
-        +(allFields?.payment?.discountAmount || 0),
+      amount: props?.totalAmount || 0,
       email: allFields?.lead?.email || "test@test.com",
       firstname: allFields?.lead?.firstName || "Vivek Kumar Gupta",
       phone: allFields?.lead?.mobileNumber || "7566410079",
