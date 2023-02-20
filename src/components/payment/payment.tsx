@@ -74,9 +74,9 @@ const Payment = (props: any) => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
   };
+  const normalDiscountAmount = allFields?.payment?.discountAmount;
   const discountAmount =
-    Number(allFields?.payment?.discountAmount) *
-      allFields?.payment?.conversionRate || 0;
+    Number(normalDiscountAmount) * allFields?.payment?.conversionRate || 0;
   const selectedNationality = allFields?.lead?.nationality;
   const selectedCurrency = selectedNationality?.includes("SA")
     ? CommonEnums?.SOUTH_AFRICA_CURRENCY
@@ -191,7 +191,8 @@ const Payment = (props: any) => {
     const result: any = await applyDiscountCode(
       appCode,
       promoCode,
-      allFields?.education?.studentTypeCode
+      allFields?.education?.studentTypeCode,
+      props?.isManagementStudentType
     );
     if (
       result?.statusCode === 200 &&
@@ -206,6 +207,7 @@ const Payment = (props: any) => {
       setValue("payment.discountedFee", "0.00");
       props.showToast(true, "Management Code Applied");
     } else if (result?.statusCode === 200 && result?.data?.percent) {
+      setManagementPromoCode(false);
       const { agentCode, percent, discountCode } = result?.data;
       setValue("payment.agentCode", agentCode);
       setValue("payment.discountCode", discountCode);
@@ -370,11 +372,11 @@ const Payment = (props: any) => {
                           {!isManagementPromoCode && (
                             <>
                               <h6>
-                                Discount {selectedCurrency} - {discountAmount}
+                                Discount {selectedCurrency} - {isManagementPromoCode ? discountAmount : normalDiscountAmount}
                               </h6>
                               <h6>
                                 Total Amount - &nbsp;{selectedCurrency}
-                                {parseInt(conertedProgramFee) - discountAmount}
+                                {isManagementPromoCode ? (parseInt(conertedProgramFee) - discountAmount) : parseInt(programFee) - +normalDiscountAmount}
                               </h6>
                             </>
                           )}
