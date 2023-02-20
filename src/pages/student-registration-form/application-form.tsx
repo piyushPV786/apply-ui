@@ -92,10 +92,10 @@ const ApplicationForm = (props: any) => {
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
 
   const navigateBack = () => {
-    if (leadDetail?.isPaymentPending || leadDetail?.isDocumentPending) {
-      router.back();
-      return;
-    }
+    // if (leadDetail?.isPaymentPending || leadDetail?.isDocumentPending) {
+    //   router.back();
+    //   return;
+    // }
     setSubmitted(false);
     setActiveStep((prevState: number) => prevState - 1);
   };
@@ -666,7 +666,7 @@ const ApplicationForm = (props: any) => {
                       onClick={() => {
                         onManagementStudentSubmit();
                       }}
-                      disabled={Number(allFields?.payment?.discountAmount) === 0}
+                      disabled={!allFields?.payment?.discountAmount || Number(allFields?.payment?.discountAmount) === 0}
                       title={"Submit"}
                     />
                   )}
