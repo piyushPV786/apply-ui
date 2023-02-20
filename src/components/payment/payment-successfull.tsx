@@ -13,11 +13,21 @@ import { DocumentSuccess } from "../document/DocumentUploadSuccess";
 
 const PaymentSuccessFull = (props: any) => {
   const router = useRouter();
+
   const onTryAgain = () => {
-    router.push({
-      pathname: RoutePaths.Application_Form,
-      query: { isFormSubmittedAlready: true, isPaymentFail: true },
-    });
+    const isdraftSave = false;
+    const isPaymentPending = true;
+    const leadDetails = JSON.parse(sessionStorage.getItem("activeLeadDetail")!);
+    const leadDetail = {
+      applicationCode: leadDetails?.applicationCode,
+      leadCode: leadDetails?.leadCode,
+      isPaymentPending,
+      isdraftSave,
+      educationDetail:leadDetails?.educationDetail
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    sessionStorage.setItem("routeTo", "payment");
+    router.push(RoutePaths.Application_Form);
   };
 
   const OnlinePaymentSuccess = () => {

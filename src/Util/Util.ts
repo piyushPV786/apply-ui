@@ -199,9 +199,10 @@ export const uploadDocuments = async (uploadFileUrl: string, file: File) => {
 export const applyDiscountCode = async (
   appCode: string,
   disCode: string,
-  studentType: string
+  studentType: string,
+  isManagement?: boolean,
 ) => {
-  const url = process.env.base_Url;
+  const url =  process.env.base_Url;
   try {
     const response = await axios.get(
       `${url}application/${appCode}/discount/${disCode}?studentType=${studentType}`
@@ -210,6 +211,10 @@ export const applyDiscountCode = async (
   } catch (err: any) {
     return err;
   }
+};
+
+export const clearRoute = () => {
+  sessionStorage.setItem("routeTo", "");
 };
 
 export const transformDate = (date: Date, transformCustom?: boolean) => {

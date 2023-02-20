@@ -389,7 +389,7 @@ const ApplicationForm = (props: any) => {
           const truncateFormData = transformFormData(formData);
           mapFormDefaultValue(formData, setValue);
           setStudentData(response?.data);
-          if (leadDetail?.isPaymentPending && routeTo !== "Document") {
+          if (leadDetail?.isPaymentPending && routeTo !== "document") {
             setActiveStep(1);
             setSubmitted(true);
             setPaymentDone(true);
@@ -530,6 +530,7 @@ const ApplicationForm = (props: any) => {
                   onSkipForNowOnPayment={onSkipForNowOnPayment}
                   showToast={showToast}
                   isManagementStudentType={isManagementStudentType}
+                  isApplicationEnrolled={isApplicationEnrolled}
                 />
               </>
             )}
@@ -666,7 +667,7 @@ const ApplicationForm = (props: any) => {
                       onClick={() => {
                         onManagementStudentSubmit();
                       }}
-                      disabled={Number(allFields?.payment?.discountedFee) !== 0}
+                      disabled={Number(allFields?.payment?.discountAmount) === 0}
                       title={"Submit"}
                     />
                   )}
@@ -736,8 +737,6 @@ const FooterConatiner = styled.div`
   .form-check-input:checked {
     background-color: ${Green};
     border-color: #0d6efd;
-  }
-  .form-check-input:checked[type="checkbox"] {
   }
   @media screen and (min-width: 600px) and (max-width: 950px) {
     width: 100%;
