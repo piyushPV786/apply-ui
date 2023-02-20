@@ -472,7 +472,12 @@ const Payment = (props: any) => {
           {!props?.isManagementStudentType && (
             <>
               <div className="col-md-6">
-                <PaymentOption navigateNext={props?.navigateNext} />
+                <PaymentOption
+                  totalAmount={
+                    isNaN(totalAmount) ? conertedProgramFee : totalAmount
+                  }
+                  navigateNext={props?.navigateNext}
+                />
               </div>
               <div className="col-md-1">
                 <StyledDiv>Or</StyledDiv>
