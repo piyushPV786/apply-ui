@@ -12,6 +12,7 @@ import { CommonApi, CommonEnums, RoutePaths } from "../common/constant";
 import { AcadmicApi, AuthApi } from "../../service/Axios";
 import { IApplication, IDocument, IOption } from "../common/types";
 import {
+  clearRoute,
   downloadDocument,
   getCommonUploadDocumentUrl,
   transformDate,
@@ -76,9 +77,7 @@ export const ApplicationDashboard = (props: any) => {
       router.push(RoutePaths.Application_Form);
     }
   };
-  const clearRoute = () => {
-    sessionStorage.setItem("routeTo", "");
-  };
+
   const onEdit = (
     applicationCode: string | number,
     leadCode: string,
@@ -139,9 +138,7 @@ export const ApplicationDashboard = (props: any) => {
     router.push(RoutePaths.Application_Form);
   };
 
-  const onDownloadAcceptence = (
-    documentDetail: IDocument[],
-  ) => {
+  const onDownloadAcceptence = (documentDetail: IDocument[]) => {
     const { name, documentTypeCode } = documentDetail[0];
     getCommonUploadDocumentUrl(name).then((res) => {
       if (res?.statusCode === 200) {
@@ -319,6 +316,9 @@ function ApplicationCard({
   const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
     ? enrolmentCode
     : "";
+  const payBtnTitle = isAcceptedApplication
+    ? "Pay Program Fee"
+    : "Pay Application Fee";
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
@@ -387,9 +387,9 @@ function ApplicationCard({
                 }
                 isPayBtn
                 className="card-button"
-                title="Pay Program Fee"
+                title={payBtnTitle}
               />
-            )}
+            )}{" "}
             {showDocumentUploadBtn && (
               <StyledButton
                 onClick={() =>
@@ -402,9 +402,7 @@ function ApplicationCard({
             )}
             {isAcceptedApplication && (
               <StyledButton
-                onClick={() =>
-                  onDownloadAcceptence(document)
-                }
+                onClick={() => onDownloadAcceptence(document)}
                 isGreenWhiteCombination
                 isDownloadBtn
                 className="card-button"

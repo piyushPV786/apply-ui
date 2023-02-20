@@ -658,7 +658,6 @@ const ApplicationForm = (props: any) => {
                     className="me-2"
                     onClick={navigateBack}
                     type="button"
-                    disabled={!isDirty}
                     isGreenWhiteCombination={true}
                     title={"Back"}
                   />
