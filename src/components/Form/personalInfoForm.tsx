@@ -48,7 +48,7 @@ const genderIdKey = `${parentKey}.gender`;
 const dateOfBirthKey = `${parentKey}.dateOfBirth`;
 const emailKey = `${parentKey}.email`;
 const nationalityIdKey = `${parentKey}.nationality`;
-const identificationPassportNumberKey = `${parentKey}.identificationNumber`;
+const identificationNumberKey = `${parentKey}.identificationNumber`;
 const raceIdKey = `${parentKey}.race`;
 const identificationDocumentTypeKey = `${parentKey}.identificationDocumentType`;
 const homeLanguageIdKey = `${parentKey}.language`;
@@ -86,7 +86,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const dateOfBirth = watch(dateOfBirthKey);
   const email = watch(emailKey);
   const nationalityId = watch(nationalityIdKey);
-  const identificationPassportNumber = watch(identificationPassportNumberKey);
+  const identificationNumber = watch(identificationNumberKey);
   const raceId = watch(raceIdKey);
   const identificationDocumentType = watch(identificationDocumentTypeKey);
   const homeLanguageId = watch(homeLanguageIdKey);
@@ -110,11 +110,16 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       setDocument(true);
       setValue(nationalityIdKey, nationalityId, formOptions);
       setValue(identificationDocumentTypeKey, "PA", formOptions);
+      setValue(nationalityIdKey, "", formOptions);
     } else {
       setNationality(true);
       setDocument(false);
       setValue(nationalityIdKey, "SA", formOptions);
-      setValue(identificationDocumentTypeKey, identificationDocumentType, formOptions);
+      setValue(
+        identificationDocumentTypeKey,
+        identificationDocumentType,
+        formOptions
+      );
     }
   };
 
@@ -334,7 +339,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     name={raceIdKey}
                     register={register}
                     options={race}
-
                   />
                   {TouchFields?.race && Errors?.race && (
                     <div className="invalid-feedback">Please select Race</div>
@@ -359,7 +363,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="radio"
                     name="isInternational"
                     onClick={() => handleInternationAccordian("yes")}
-                    checked={nationalityId !== "" && nationalityId !== "SA"}
+                    checked={nationalityId !== "SA"}
                   />
                   <label className="form-check-label">Yes</label>
                 </div>
@@ -401,9 +405,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           Identification Number
                         </StyledLabel>
                         <input
-                          value={identificationPassportNumber}
-                          defaultValue={identificationPassportNumber}
-                          {...register(identificationPassportNumberKey, {
+                          value={identificationNumber}
+                          defaultValue={identificationNumber}
+                          {...register(identificationNumberKey, {
                             required: true,
                           })}
                           type="text"
