@@ -24,7 +24,7 @@ import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import { GreenText } from "../student/style";
 import { CommonApi, CommonEnums } from "../common/constant";
 import CircleTick from "../../../public/assets/images/circle-tick.svg";
-import { CommonAPI, FinanceApi } from "../../service/Axios";
+import {  FinanceApi } from "../../service/Axios";
 const Currency = [
   {
     countryId: 1,
@@ -123,8 +123,12 @@ const Payment = (props: any) => {
       .catch((err) => {
         console.log(err);
       });
+      const existingPromoCode = sessionStorage.getItem("lastPromoCode");
+    if (existingPromoCode) {
+      setPromoCode(existingPromoCode);
+      applyDiscount();
+    }
   };
-  useEffect(() => {}, [selectedProgram]);
 
   const uploadPaymentDocument = (fileUrl: string, file: File) => {
     return uploadDocuments(fileUrl, file)
@@ -213,6 +217,7 @@ const Payment = (props: any) => {
       setValue("payment.discountCode", discountCode);
       setValue("payment.percent", percent);
       setValue("payment.discountAmount", (+programFee * percent) / 100);
+      sessionStorage.setItem("lastPromoCode", promoCode);
       props.showToast(true, result?.message);
     } else {
       props.showToast(false, "Invalid Code");
@@ -264,7 +269,7 @@ const Payment = (props: any) => {
                         </div>
                       </div>
 
-                      <div className="col-md-6">
+                      {props?.isApplicationEnrolled && <div className="col-md-6">
                         <div className="mb-4 ">
                           {feeOptions.length > 0 &&
                             feeOptions.map(({ fee, feeMode }, index) => (
@@ -302,7 +307,7 @@ const Payment = (props: any) => {
                               </div>
                             ))}
                         </div>
-                      </div>
+                      </div>}
                       {/* <div className="col-md-6">
                         <div className="mb-4 w-75">
                           <StyledLabel required style={{ fontSize: "16px" }}>
@@ -372,11 +377,18 @@ const Payment = (props: any) => {
                           {!isManagementPromoCode && (
                             <>
                               <h6>
-                                Discount {selectedCurrency} - {isManagementPromoCode ? discountAmount : normalDiscountAmount}
+                                Discount {selectedCurrency} -{" "}
+                                {isManagementPromoCode
+                                  ? discountAmount
+                                  : normalDiscountAmount}
                               </h6>
                               <h6>
                                 Total Amount - &nbsp;{selectedCurrency}
-                                {isManagementPromoCode ? (parseInt(conertedProgramFee) - discountAmount) : parseInt(programFee) - +normalDiscountAmount}
+                                {isManagementPromoCode
+                                  ? parseInt(conertedProgramFee) -
+                                    discountAmount
+                                  : parseInt(programFee) -
+                                    +normalDiscountAmount}
                               </h6>
                             </>
                           )}
@@ -399,6 +411,7 @@ const Payment = (props: any) => {
                               <input
                                 type="text"
                                 className="form-control"
+                                value={promoCode}
                                 placeholder="Enter promo code"
                                 onChange={(e) => setPromoCode(e?.target?.value)}
                               />
