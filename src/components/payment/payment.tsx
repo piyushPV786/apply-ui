@@ -24,7 +24,7 @@ import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import { GreenText } from "../student/style";
 import { CommonApi, CommonEnums } from "../common/constant";
 import CircleTick from "../../../public/assets/images/circle-tick.svg";
-import {  FinanceApi } from "../../service/Axios";
+import { FinanceApi } from "../../service/Axios";
 const Currency = [
   {
     countryId: 1,
@@ -75,8 +75,9 @@ const Payment = (props: any) => {
     fileElement.click() as any;
   };
   const normalDiscountAmount = allFields?.payment?.discountAmount;
-  const discountAmount =
-    Number(normalDiscountAmount) * allFields?.payment?.conversionRate || 0;
+  const discountAmount = allFields?.payment?.conversionRate
+    ? Number(normalDiscountAmount) * (allFields?.payment?.conversionRate || 0)
+    : normalDiscountAmount;
   const selectedNationality = allFields?.lead?.nationality;
   const selectedCurrency = selectedNationality?.includes("SA")
     ? CommonEnums?.SOUTH_AFRICA_CURRENCY
@@ -84,6 +85,7 @@ const Payment = (props: any) => {
   const conertedProgramFee = String(
     +programFee * allFields?.payment?.conversionRate || programFee
   );
+  const totalAmount = +conertedProgramFee - +discountAmount;
   useEffect(() => {
     const programDetails =
       JSON.parse(sessionStorage.getItem("activeLeadDetail")!)
@@ -113,7 +115,6 @@ const Payment = (props: any) => {
           setValue("payment.conversionRate", res?.data?.rate);
           setValue("payment.selectedCurrency", res?.data?.currencySymbol);
         } else {
-          setValue("payment.conversionRate", null);
           setValue(
             "payment.selectedCurrency",
             CommonEnums?.SOUTH_AFRICA_CURRENCY
@@ -123,7 +124,7 @@ const Payment = (props: any) => {
       .catch((err) => {
         console.log(err);
       });
-      const existingPromoCode = sessionStorage.getItem("lastPromoCode");
+    const existingPromoCode = sessionStorage.getItem("lastPromoCode");
     if (existingPromoCode) {
       setPromoCode(existingPromoCode);
       applyDiscount();
@@ -269,45 +270,47 @@ const Payment = (props: any) => {
                         </div>
                       </div>
 
-                      {props?.isApplicationEnrolled && <div className="col-md-6">
-                        <div className="mb-4 ">
-                          {feeOptions.length > 0 &&
-                            feeOptions.map(({ fee, feeMode }, index) => (
-                              <div className="form-check form-check-inline">
-                                <>
-                                  <input
-                                    key={index}
-                                    className="form-check-input me-2"
-                                    type="radio"
-                                    {...(register(`payment.selectedFeeMode`, {
-                                      required: true,
-                                    }) as any)}
-                                    onChange={() => {
-                                      setValue(
-                                        "payment.selectedFeeMode",
-                                        feeMode
-                                      );
-                                      setValue(
-                                        "payment.selectedFeeModeFee",
-                                        fee
-                                      );
-                                    }}
-                                    value={feeMode}
-                                    checked={
-                                      feeMode ==
-                                      allFields?.payment?.selectedFeeMode
-                                    }
-                                  />
-                                  <label className="form-check-label">
-                                    {feeMode}
-                                    <br />
-                                    <GreenText>R {fee}</GreenText>
-                                  </label>
-                                </>
-                              </div>
-                            ))}
+                      {props?.isApplicationEnrolled && (
+                        <div className="col-md-6">
+                          <div className="mb-4 ">
+                            {feeOptions.length > 0 &&
+                              feeOptions.map(({ fee, feeMode }, index) => (
+                                <div className="form-check form-check-inline">
+                                  <>
+                                    <input
+                                      key={index}
+                                      className="form-check-input me-2"
+                                      type="radio"
+                                      {...(register(`payment.selectedFeeMode`, {
+                                        required: true,
+                                      }) as any)}
+                                      onChange={() => {
+                                        setValue(
+                                          "payment.selectedFeeMode",
+                                          feeMode
+                                        );
+                                        setValue(
+                                          "payment.selectedFeeModeFee",
+                                          fee
+                                        );
+                                      }}
+                                      value={feeMode}
+                                      checked={
+                                        feeMode ==
+                                        allFields?.payment?.selectedFeeMode
+                                      }
+                                    />
+                                    <label className="form-check-label">
+                                      {feeMode}
+                                      <br />
+                                      <GreenText>R {fee}</GreenText>
+                                    </label>
+                                  </>
+                                </div>
+                              ))}
+                          </div>
                         </div>
-                      </div>}
+                      )}
                       {/* <div className="col-md-6">
                         <div className="mb-4 w-75">
                           <StyledLabel required style={{ fontSize: "16px" }}>
@@ -378,17 +381,13 @@ const Payment = (props: any) => {
                             <>
                               <h6>
                                 Discount {selectedCurrency} -{" "}
-                                {isManagementPromoCode
-                                  ? discountAmount
-                                  : normalDiscountAmount}
+                                {isNaN(discountAmount) ? 0 : discountAmount}
                               </h6>
                               <h6>
                                 Total Amount - &nbsp;{selectedCurrency}
-                                {isManagementPromoCode
-                                  ? parseInt(conertedProgramFee) -
-                                    discountAmount
-                                  : parseInt(programFee) -
-                                    +normalDiscountAmount}
+                                {isNaN(totalAmount)
+                                  ? conertedProgramFee
+                                  : totalAmount}
                               </h6>
                             </>
                           )}
