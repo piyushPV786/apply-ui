@@ -8,7 +8,7 @@ export enum CommonEnums {
   RESUB_APP_DOC = "RESUB-APP-DOC",
   MANAGEMENT = "management",
   BURSARY = "bursary",
-  EMPLOYEE_BURSARY = "EMPBURSARY",
+  EMPLOYEE_BURSARY = "empbursary",
   REGULAR = "regular",
   GUARDIAN = "guardian",
   SOUTH_AFRICA_CURRENCY = "RAND"
