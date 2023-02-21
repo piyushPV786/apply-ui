@@ -25,29 +25,7 @@ import { GreenText } from "../student/style";
 import { CommonApi, CommonEnums } from "../common/constant";
 import CircleTick from "../../../public/assets/images/circle-tick.svg";
 import { FinanceApi } from "../../service/Axios";
-const Currency = [
-  {
-    countryId: 1,
-    label: "South Africa",
-    value: "sa",
-    currency: "sa",
-    symbol: "R",
-  },
-  {
-    countryId: 2,
-    label: "India",
-    value: "ind",
-    currency: "inr",
-    symbol: "₹",
-  },
-  {
-    countryId: 3,
-    label: "Nigeria",
-    value: "ng",
-    currency: "ng",
-    symbol: "₦",
-  },
-];
+
 const Payment = (props: any) => {
   const fileUploadRef = useRef<any>(null);
   const { watch, register, setValue } = useFormContext();
@@ -67,7 +45,9 @@ const Payment = (props: any) => {
       (item: IOption) => item?.code == allFields?.education?.programCode
     );
   const selectedStudyMode: string = allFields?.education?.studyModeCode;
-  const programFee: string = allFields?.education?.applicationFees || "0";
+  const programFee: string = props?.isApplicationEnrolled
+    ? allFields?.payment?.selectedFeeModeFee
+    : allFields?.education?.applicationFees || "0";
 
   const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
   const onDocUploadClick = () => {
@@ -311,38 +291,12 @@ const Payment = (props: any) => {
                           </div>
                         </div>
                       )}
-                      {/* <div className="col-md-6">
-                        <div className="mb-4 w-75">
-                          <StyledLabel required style={{ fontSize: "16px" }}>
-                            Currency Selection
-                          </StyledLabel>
-                          <select
-                            className="form-select"
-                            {...register(`payment.currency`, {
-                              required: true,
-                            })}
-                          >
-                            {Currency &&
-                              Currency.map(
-                                ({ currency, label, symbol, value }) => (
-                                  <option
-                                    selected={
-                                      symbol === allFields?.payment?.currency
-                                    }
-                                    key={symbol}
-                                    value={symbol}
-                                  >
-                                    {symbol}
-                                  </option>
-                                )
-                              )}
-                          </select>
-                        </div>
-                      </div> */}
                       <div className="col-md-6">
                         <div className="mb-4">
                           <StyledLabel style={{ fontSize: "16px" }}>
-                            Application Fee{" "}
+                            {props?.isApplicationEnrolled
+                              ? "Course Fee"
+                              : "Application Fee"}{' '}
                             <strong>
                               (
                               {`${Math.trunc(+programFee)} ${
