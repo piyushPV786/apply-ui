@@ -53,7 +53,7 @@ const ApplicationForm = (props: any) => {
     show: false,
   });
   const [leadId, setLeadId] = useState<string>("");
-  const [activeStep, setActiveStep] = useState<number>(0);
+  const [activeStep, setActiveStep] = useState<any>(0);
   const [isDocumentUploadDone, setDocumentUploadDone] =
     useState<boolean>(false);
   const [masterData, setMasterData] = useState<IMasterData | null>(null);
@@ -461,6 +461,14 @@ const ApplicationForm = (props: any) => {
   //   allFields,
   //   errors,
   // });
+  const isValidForm = () => {
+    if (activeStep === 0) {
+      return activeStep === MagicNumbers.ZERO && !isValid;
+    } else {
+      return activeStep === MagicNumbers.TWO && !isValid && !isValidDocument;
+    }
+  };
+
   return (
     <MainContainer>
       <Header />
@@ -612,7 +620,7 @@ const ApplicationForm = (props: any) => {
                                   (data) => onSubmit(data, false) as any
                                 )();
                           }}
-                          disabled={!isValid && !isValidDocument}
+                          disabled={isValidForm()}
                           title={activeStep < 2 ? "Save & Next" : "Submit"}
                         />
                       </>
@@ -666,7 +674,10 @@ const ApplicationForm = (props: any) => {
                       onClick={() => {
                         onManagementStudentSubmit();
                       }}
-                      disabled={!allFields?.payment?.discountAmount || Number(allFields?.payment?.discountAmount) === 0}
+                      disabled={
+                        !allFields?.payment?.discountAmount ||
+                        Number(allFields?.payment?.discountAmount) === 0
+                      }
                       title={"Submit"}
                     />
                   )}

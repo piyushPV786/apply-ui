@@ -128,7 +128,7 @@ export const EducationForm = (props: IEducationProps) => {
 
   return (
     <>
-      <StyledAccordion key="education" id="education">
+      <StyledAccordion expanded key="education" id="education">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
