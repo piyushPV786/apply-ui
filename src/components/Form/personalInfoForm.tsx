@@ -383,6 +383,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
+                        onChange={()=> setValue(identificationNumberKey, "", formOptions)}
                           disabled={isDocument}
                           options={identityDocuments}
                           value={identificationDocumentType}
