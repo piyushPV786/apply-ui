@@ -53,7 +53,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
 
   return (
     <>
-      <StyledAccordion>
+      <StyledAccordion expanded>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"

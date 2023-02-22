@@ -286,10 +286,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
             </div>
             <div className="row">
               <div className="col-md-4">
-                <div className="mb-4 pe-none">
+                <div className="mb-4 pe-none disabled">
                   <StyledLabel required>Mobile Number</StyledLabel>
                   <PhoneInput
-                    disabled={true}
                     id="1"
                     international
                     countryCallingCodeEditable={false}

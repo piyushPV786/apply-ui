@@ -73,7 +73,10 @@ export const SponsoredForm = (props: ISponsorProps) => {
     .includes(CommonEnums.BURSARY);
   const isStudentAndSponsorBursary =
     studentType?.toLowerCase().includes(CommonEnums.BURSARY) &&
-    sponsorModeVal?.toLowerCase() === CommonEnums.EMPLOYEE_BURSARY;
+    sponsorModeVal?.toLowerCase() === CommonEnums.BURSARY;
+  const isStudentAndSponsorEmpBursary = sponsorModeVal
+    ?.toLowerCase()
+    .includes(CommonEnums.EMPLOYEE_BURSARY);
   const disableSponsorForm =
     studentType?.toLowerCase() === CommonEnums.MANAGEMENT;
   useEffect(() => {
@@ -162,7 +165,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     </select>
                   </div>
 
-                  {isStudentAndSponsorBursary && (
+                  {isStudentAndSponsorEmpBursary && (
                     <div className="mb-4">
                       <AlertBox severity={AlertEnums.INFO}>
                         {bursaryWarning}
