@@ -200,9 +200,9 @@ export const applyDiscountCode = async (
   appCode: string,
   disCode: string,
   studentType: string,
-  isManagement?: boolean,
+  isManagement?: boolean
 ) => {
-  const url =  process.env.base_Url;
+  const url = process.env.base_Url;
   try {
     const response = await axios.get(
       `${url}application/${appCode}/discount/${disCode}?studentType=${studentType}`
@@ -227,7 +227,21 @@ export const transformDate = (date: Date, transformCustom?: boolean) => {
   if (transformCustom) {
     return `${year}-${month < 10 ? `0${month}` : month}-${day}`;
   }
-  return `${day}th ${month} ${year}`;
+  return `${day}${getDateNth(day)} ${month} ${year}`;
+};
+
+const getDateNth = (date: number) => {
+  if (date > 3 && date < 21) return "th";
+  switch (date % 10) {
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
+  }
 };
 
 export function sortAscending(a, b, key: string) {
