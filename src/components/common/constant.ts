@@ -11,7 +11,7 @@ export enum CommonEnums {
   EMPLOYEE_BURSARY = "empbursary",
   REGULAR = "regular",
   GUARDIAN = "guardian",
-  SOUTH_AFRICA_CURRENCY = "RAND"
+  SOUTH_AFRICA_CURRENCY = "RAND",
 }
 export enum AlertEnums {
   INFO = "info",
@@ -78,6 +78,15 @@ export const studentType = [
   { name: "Bursary", code: "BURSARY" },
 
   { name: "Management", code: "MANAGEMENT" },
+];
+
+export const identityDocuments = [
+  {
+    code: "SI",
+    name: "Smart ID",
+  },
+  { code: "DL", name: "Driving License" },
+  { code: "PA", name: "Passport" },
 ];
 
 export const acceptedKeysToMap = [

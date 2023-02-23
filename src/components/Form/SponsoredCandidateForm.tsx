@@ -95,6 +95,15 @@ export const SponsoredForm = (props: ISponsorProps) => {
     studentType?.toLowerCase() === CommonEnums.BURSARY
       ? sponsorModeArr.filter((item) => item.name !== "Guardian")
       : sponsorModeArr.filter((item) => item.name === "Guardian");
+
+  const getEmailValidation = (value: string) => {
+    if (isSponserNeed) {
+      return isValidEmail(value);
+    } else {
+      return true;
+    }
+  };
+
   return (
     <>
       <StyledAccordion>
@@ -250,35 +259,32 @@ export const SponsoredForm = (props: ISponsorProps) => {
                           sponsorModeVal?.toLowerCase()
                         )}
                       </StyledLabel>
-                      <div className="mb-4">
-                        <input
-                          disabled={isSelfSponsored}
-                          className="form-control"
-                          aria-label="Default select example"
-                          value={sponserEmailVal}
-                          {...register(`${sponsorEmail}`, {
-                            required:
-                              !isSelfSponsored && isSponserNeed && isRequired,
-                            validate: (value) =>
-                              !isSponsoredVal ||
-                              !isSponserNeed ||
-                              isSelfSponsored
-                                ? true
-                                : isValidEmail(value),
-                          })}
-                        />
-                        {touchedField?.email &&
-                          error?.email &&
-                          !isSelfSponsored &&
-                          isSponserNeed &&
-                          isRequired && (
-                            <div className="invalid-feedback">
-                              {error?.email?.type == "validate"
-                                ? "you have entered an invalid email address. Please try again"
-                                : "Please enter sponser email"}
-                            </div>
-                          )}
-                      </div>
+                      {isSponserNeed && (
+                        <div className="mb-4">
+                          <input
+                            disabled={isSelfSponsored}
+                            className="form-control"
+                            aria-label="Default select example"
+                            value={sponserEmailVal}
+                            {...register(`${sponsorEmail}`, {
+                              required:
+                                !isSelfSponsored && isSponserNeed && isRequired,
+                              validate: (value) => getEmailValidation(value),
+                            })}
+                          />
+
+                          {touchedField?.email &&
+                            error?.email &&
+                            !isSelfSponsored &&
+                            isSponserNeed && (
+                              <div className="invalid-feedback">
+                                {error?.email?.type == "validate"
+                                  ? "you have entered an invalid email address. Please try again"
+                                  : "Please enter sponser email"}
+                              </div>
+                            )}
+                        </div>
+                      )}
                     </div>
                   </>
                 )}

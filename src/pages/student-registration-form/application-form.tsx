@@ -89,6 +89,7 @@ const ApplicationForm = (props: any) => {
   const allFields = watch();
 
   const isValidDocument =
+    allFields?.document?.uploadedDocs.length > 0 &&
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
 
   const navigateBack = () => {
@@ -228,14 +229,17 @@ const ApplicationForm = (props: any) => {
     let request = mapFormData({
       ...rest,
     });
-    const leadCode = JSON.parse(
-      sessionStorage?.getItem("studentId") as any
-    )?.leadCode;
     const appCode = JSON.parse(sessionStorage?.getItem("leadData") as any)
       ?.applicationData?.applicationCode;
     const activeLeadDetail = JSON.parse(
       sessionStorage?.getItem("activeLeadDetail") as any
     );
+    const leadCode =
+      sessionStorage?.getItem("studentId") &&
+      sessionStorage?.getItem("studentId") !== "undefined" &&
+      sessionStorage?.getItem("studentId") !== "{}"
+        ? JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
+        : activeLeadDetail?.leadCode;
     const draftUpdateCode = activeLeadDetail?.applicationCode || appCode;
     if (leadCode && !isDraftSave) {
       setSubmitted(true);
@@ -468,7 +472,6 @@ const ApplicationForm = (props: any) => {
       return activeStep === MagicNumbers.TWO && !isValid && !isValidDocument;
     }
   };
-
   return (
     <MainContainer>
       <Header />
@@ -549,6 +552,7 @@ const ApplicationForm = (props: any) => {
                   isValidDocument={isValidDocument}
                   documentType={documentType}
                   leadId={leadId}
+                  isApplicationEnrolled={isApplicationEnrolled}
                 />
               </>
             )}

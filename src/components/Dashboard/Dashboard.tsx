@@ -137,6 +137,25 @@ export const ApplicationDashboard = (props: any) => {
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     router.push(RoutePaths.Application_Form);
   };
+  const onUploadBursaryDocuments = (
+    applicationCode: string | number,
+    leadCode: string,
+    status
+  ) => {
+    clearRoute();
+    const isdraftSave = false;
+    const isPaymentPending = false;
+    const isDocumentPending = true;
+    const leadDetail = {
+      applicationCode,
+      leadCode,
+      isPaymentPending,
+      isdraftSave,
+      isDocumentPending,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    router.push(RoutePaths.Application_Form);
+  };
 
   const onDownloadAcceptence = (documentDetail: IDocument[]) => {
     const { name, documentTypeCode } = documentDetail[0];
@@ -217,6 +236,7 @@ export const ApplicationDashboard = (props: any) => {
                             onPay={onPay}
                             onDownloadAcceptence={onDownloadAcceptence}
                             onUploadDocuments={onUploadDocuments}
+                            onUploadBursaryDocuments={onUploadBursaryDocuments}
                             leadCode={leadCode}
                             studyModeCode={education?.studyModeCode}
                             updatedAt={updatedAt}
@@ -292,6 +312,7 @@ function ApplicationCard({
   onPay = (...args) => {},
   onUploadDocuments = (...args) => {},
   onDownloadAcceptence = (...args) => {},
+  onUploadBursaryDocuments = (...args) => {},
   studyModeCode,
   updatedAt = "",
   educationDetail,
@@ -407,6 +428,16 @@ function ApplicationCard({
                 isDownloadBtn
                 className="card-button"
                 title="Acceptence Letter"
+              />
+            )}
+            {isAcceptedApplication && (
+              <StyledButton
+                onClick={() =>
+                  onUploadBursaryDocuments(applicationNumber, leadCode, true)
+                }
+                isUploadBtn
+                className="card-button"
+                title="Upload Employee Bursary Letter"
               />
             )}
           </div>
