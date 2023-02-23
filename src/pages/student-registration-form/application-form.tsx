@@ -235,10 +235,11 @@ const ApplicationForm = (props: any) => {
       sessionStorage?.getItem("activeLeadDetail") as any
     );
     const leadCode =
-    sessionStorage?.getItem("studentId") &&
-    sessionStorage?.getItem("studentId") !== "undefined"
-      ? JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
-      : activeLeadDetail?.leadCode;
+      sessionStorage?.getItem("studentId") &&
+      sessionStorage?.getItem("studentId") !== "undefined" &&
+      sessionStorage?.getItem("studentId") !== "{}"
+        ? JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
+        : activeLeadDetail?.leadCode;
     const draftUpdateCode = activeLeadDetail?.applicationCode || appCode;
     if (leadCode && !isDraftSave) {
       setSubmitted(true);
