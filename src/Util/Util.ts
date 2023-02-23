@@ -118,12 +118,18 @@ export const GetPaymentImage = (type: string) => {
 
 export const getApplicationCode = () => {
   let appCode = "";
-  const leadData: any = JSON.parse(window.localStorage.getItem("leadData")!)
-    ?.applicationData?.applicationCode;
+  const leadData: any =
+    window.localStorage.getItem("leadData") &&
+    window.localStorage.getItem("leadData") !== "undefined"
+      ? window.localStorage.getItem("leadData")
+      : "";
+  const applicationCode = leadData
+    ? JSON.parse(leadData)?.applicationData?.applicationCode
+    : JSON.parse(window.sessionStorage.getItem("activeLeadDetail")!)?.applicationCode;
   const activeLeadDetail = JSON.parse(
     sessionStorage?.getItem("activeLeadDetail") as any
   )?.applicationCode;
-  const leadCode = activeLeadDetail || leadData;
+  const leadCode = activeLeadDetail || applicationCode;
   if (leadCode) {
     appCode = leadCode;
   }

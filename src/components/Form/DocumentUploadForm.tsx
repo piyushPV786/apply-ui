@@ -16,11 +16,13 @@ import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
 import ViewIcon from "../../../public/assets/images/view-svgrepo-com.svg";
 import TrashIcon from "../../../public/assets/images/trash-svgrepo-com.svg";
 import FileUpload from "../../../public/assets/images/file-upload-svgrepo-com.svg";
+import { IOption } from "../common/types";
 
 interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
-  documentType: any;
+  isApplicationEnrolled: boolean;
+  documentType: IOption[];
   leadId: string;
 }
 const imgUrl = "/assets/images";
@@ -30,6 +32,7 @@ const DocumentUploadForm = ({
   isValidDocument,
   documentType,
   leadId,
+  isApplicationEnrolled,
 }: IDocumentUploadProps) => {
   const fileUploadRef = useRef<any>(null);
   const { register, setValue } = useFormContext();
@@ -37,10 +40,9 @@ const DocumentUploadForm = ({
     (File & { error: boolean; typeCode: string })[]
   >([]);
   const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
-  const documentTypeList = [
-    ...(documentType || []),
-    ...[{ name: "Other", code: "other" }],
-  ];
+  const documentTypeList = isApplicationEnrolled
+    ? [...(documentType || []), ...[{ name: "Other", code: "other" }]]
+    : [...(documentType || [])].filter((doc) => doc.code === "BURSARYLETTER");
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
     if (existingPaymentProof && existingPaymentProof.length > 0) {
@@ -71,9 +73,13 @@ const DocumentUploadForm = ({
     const uploadedFiles = files;
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
-      if (!item?.typeCode) {
+      if (!item?.typeCode && isApplicationEnrolled) {
+        item.typeCode = "BURSARYLETTER";
+      }
+      if (!item?.typeCode && !isApplicationEnrolled) {
         item.typeCode = "other";
       }
+     
     });
     setUploadDocs(uploadedFiles as any);
     setValue("document.uploadedDocs", uploadedFiles);
@@ -174,8 +180,7 @@ const DocumentUploadForm = ({
                       </thead>
                       <tbody>
                         {uploadDocs?.map((item, index) => (
-                          <tr
-                          >
+                          <tr>
                             <td>
                               <div className="w-75">
                                 <img
@@ -190,11 +195,13 @@ const DocumentUploadForm = ({
                                 )}
                               </div>
                             </td>
-                            <td  className={
-                              item?.typeCode === "PAYMENTPROOF"
-                                ? "disabled"
-                                : ""
-                            }>
+                            <td
+                              className={
+                                item?.typeCode === "PAYMENTPROOF"
+                                  ? "disabled"
+                                  : ""
+                              }
+                            >
                               {" "}
                               <select
                                 className="form-select"
@@ -207,7 +214,7 @@ const DocumentUploadForm = ({
                                     selected={
                                       item?.code === uploadDocs[index]?.typeCode
                                     }
-                                    key={item.id}
+                                    key={item.code}
                                     value={item?.code}
                                   >
                                     {item?.name}
@@ -255,11 +262,6 @@ const DocumentUploadForm = ({
                       </tbody>
                     </table>
                   </UploadedFilesContainer>
-                  {!isValidDocument && (
-                    <h3 style={{ color: "red" }} className="fs-4  mt-5">
-                      Please remove invalid files
-                    </h3>
-                  )}
                 </div>
               </div>
             </PaymentContainer>
