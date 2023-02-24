@@ -65,6 +65,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const [isDocument, setDocument] = useState<boolean>(false);
   const [isNationality, setNationality] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isyes, setIsYes] = useState<boolean>(false);
+
   useEffect(() => {
     const userNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
@@ -105,10 +107,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       setDocument(true);
       
       setValue(identificationDocumentTypeKey, "PA", formOptions);
-
-      
-      setValue(nationalityIdKey, "", formOptions);
-      
+      setValue(nationalityIdKey, "",{shouldDirty:true});
+      setIsYes(true)
       
     } else {
       setNationality(true);
@@ -117,7 +117,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       setValue(
         identificationDocumentTypeKey,
        "",
-        formOptions
+       {shouldDirty:true}
       );
     }
   };
@@ -358,7 +358,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="radio"
                     name="isInternational"
                     onClick={() => handleInternationAccordian("yes")}
-                    checked={nationalityId !== "SA"&& nationalityId!==""}
+                    checked={nationalityId !== "SA"&& nationalityId!==""||isyes}
                   />
                   <label className="form-check-label">Yes</label>
                 </div>
