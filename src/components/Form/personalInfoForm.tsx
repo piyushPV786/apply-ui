@@ -30,10 +30,7 @@ interface IPersonalInfoProps {
   homeLanguage: IOption[];
   race: IOption[];
 }
-export enum nationalityCheck {
-  soutAfrica = "Graduate",
-  empty = "",
-}
+
 
 
 const parentKey = "lead";
