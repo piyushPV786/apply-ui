@@ -23,14 +23,17 @@ import {
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { identityDocuments } from "../common/constant";
-
+import {NationalityEnum} from "src/components/common/types";
 interface IPersonalInfoProps {
   genders: IOption[];
   nationalities: IOption[];
   homeLanguage: IOption[];
   race: IOption[];
 }
-
+export enum nationalityCheck{
+  soutAfrica= "Graduate",
+  empty = "",
+}
 
 
 const parentKey = "lead";
@@ -65,6 +68,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const [isDocument, setDocument] = useState<boolean>(false);
   const [isNationality, setNationality] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isYes, setIsYes] = useState<boolean>(false);
+
   useEffect(() => {
     const userNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
@@ -103,17 +108,19 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     if (state === "yes") {
       setNationality(false);
       setDocument(true);
-      setValue(nationalityIdKey, nationalityId, formOptions);
+      
       setValue(identificationDocumentTypeKey, "PA", formOptions);
-      setValue(nationalityIdKey, "", formOptions);
+      setValue(nationalityIdKey, "",{shouldDirty:true});
+      setIsYes(true)
+      
     } else {
       setNationality(true);
       setDocument(false);
       setValue(nationalityIdKey, "SA", formOptions);
       setValue(
         identificationDocumentTypeKey,
-        identificationDocumentType,
-        formOptions
+       "",
+       {shouldDirty:true}
       );
     }
   };
@@ -337,7 +344,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                 </div>
               </div>
             </div>
-            <StyledAccordion expanded={isExpanded} defaultExpanded={true}>
+            <StyledAccordion expanded={isExpanded||nationalityId!==""} defaultExpanded={true}>
               <AccordionSummary>
                 <span className="me-2">
                   <Image src={AddressImg} alt="user" />
@@ -354,7 +361,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="radio"
                     name="isInternational"
                     onClick={() => handleInternationAccordian("yes")}
-                    checked={nationalityId !== "SA"}
+                    checked={nationalityId !== NationalityEnum.southAfrica && nationalityId!==""||isYes}
                   />
                   <label className="form-check-label">Yes</label>
                 </div>
