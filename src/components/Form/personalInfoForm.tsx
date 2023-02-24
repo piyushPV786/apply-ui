@@ -108,16 +108,20 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     if (state === "yes") {
       setNationality(false);
       setDocument(true);
-      setValue(nationalityIdKey, nationalityId, formOptions);
+      
       setValue(identificationDocumentTypeKey, "PA", formOptions);
+
+      
       setValue(nationalityIdKey, "", formOptions);
+      
+      
     } else {
       setNationality(true);
       setDocument(false);
       setValue(nationalityIdKey, "SA", formOptions);
       setValue(
         identificationDocumentTypeKey,
-        identificationDocumentType,
+       "",
         formOptions
       );
     }
@@ -345,7 +349,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                 </div>
               </div>
             </div>
-            <StyledAccordion expanded={isExpanded} defaultExpanded={true}>
+            <StyledAccordion expanded={isExpanded||nationalityId!==""} defaultExpanded={true}>
               <AccordionSummary>
                 <span className="me-2">
                   <Image src={AddressImg} alt="user" />
@@ -362,7 +366,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="radio"
                     name="isInternational"
                     onClick={() => handleInternationAccordian("yes")}
-                    checked={nationalityId !== "SA"}
+                    checked={nationalityId !== "SA"&& nationalityId!==""}
                   />
                   <label className="form-check-label">Yes</label>
                 </div>
