@@ -22,6 +22,7 @@ import {
   transformDate,
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
+import { identityDocuments } from "../common/constant";
 
 interface IPersonalInfoProps {
   genders: IOption[];
@@ -30,14 +31,7 @@ interface IPersonalInfoProps {
   race: IOption[];
 }
 
-const identityDocuments = [
-  {
-    code: "SI",
-    name: "Smart ID",
-  },
-  { code: "DL", name: "Driving License" },
-  { code: "PA", name: "Passport" },
-];
+
 
 const parentKey = "lead";
 
@@ -68,6 +62,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const Errors = errors[parentKey] as any;
   const [countryCodeRef, setCountryCode] = useState<any>();
   const [mobNum, setMobile] = useState<any>("");
+  const [isDocument, setDocument] = useState<boolean>(false);
+  const [isNationality, setNationality] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   useEffect(() => {
     const userNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
@@ -99,9 +96,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     ...[{ name: "Other", code: "other", id: 21 }],
   ];
 
-  const [isDocument, setDocument] = useState<boolean>(false);
-  const [isNationality, setNationality] = useState<boolean>(false);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
 
   const handleInternationAccordian = (state: string) => {
     setIsExpanded(true);
@@ -290,31 +285,28 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
             </div>
             <div className="row">
               <div className="col-md-4">
-                <div className="mb-4 pe-none disabled">
+                <div className="mb-4 pe-none ">
                   <StyledLabel required>Mobile Number</StyledLabel>
-                  <PhoneInput
-                    id="1"
-                    international
-                    countryCallingCodeEditable={false}
-                    defaultCountry={countryCodeRef}
-                    placeholder="Select Country Code*"
-                    {...register(studentNumberKey, { required: false })}
-                    onCountryChange={(value: any) => {
-                      return;
-                      setCountryCode(value);
-                    }}
-                    onBlur={(e) => {
-                      return;
-                      e.stopPropagation();
-                      e.preventDefault();
-                      uppdateMobNumber();
-                    }}
-                    onChange={(value) => {
-                      return;
-                      setValue("mobileNumber", value);
-                    }}
-                    value={mobNum as any}
-                  />
+                  <div className="disabled">
+                    <PhoneInput
+                      id="1"
+                      international
+                      countryCallingCodeEditable={false}
+                      defaultCountry={countryCodeRef}
+                      placeholder="Select Country Code*"
+                      {...register(studentNumberKey, { required: false })}
+                      onCountryChange={(value: any) => {
+                        return;
+                      }}
+                      onBlur={() => {
+                        return;
+                      }}
+                      onChange={() => {
+                        return;
+                      }}
+                      value={mobNum as any}
+                    />
+                  </div>
                 </div>
               </div>
 
