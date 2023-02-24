@@ -8,6 +8,10 @@ export enum QualificationEnum {
   PostGraduation = "Post Graduation",
 }
 
+export enum NationalityEnum {
+ soutAfrica="SA"
+}
+
 interface ICountry {
   name: string;
   isoCode: string;

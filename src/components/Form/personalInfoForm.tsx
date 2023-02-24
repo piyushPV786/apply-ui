@@ -23,14 +23,17 @@ import {
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { identityDocuments } from "../common/constant";
-
+import {NationalityEnum} from "src/components/common/types";
 interface IPersonalInfoProps {
   genders: IOption[];
   nationalities: IOption[];
   homeLanguage: IOption[];
   race: IOption[];
 }
-
+export enum nationalityCheck{
+  soutAfrica= "Graduate",
+  empty = "",
+}
 
 
 const parentKey = "lead";
@@ -358,7 +361,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="radio"
                     name="isInternational"
                     onClick={() => handleInternationAccordian("yes")}
-                    checked={nationalityId !== "SA"&& nationalityId!==""||isYes}
+                    checked={nationalityId !== NationalityEnum.southAfrica && nationalityId!==""||isYes}
                   />
                   <label className="form-check-label">Yes</label>
                 </div>
