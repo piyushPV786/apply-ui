@@ -608,9 +608,7 @@ const ApplicationForm = (props: any) => {
                           <StyledButton
                             onClick={() => onSubmit(getValues(), true)}
                             type="button"
-                            disabled={
-                              (!isDirty && !isValidDocument) || !isValidDocument
-                            }
+                            disabled={!isDirty}
                             isGreenWhiteCombination={true}
                             title={"Save as Draft"}
                           />

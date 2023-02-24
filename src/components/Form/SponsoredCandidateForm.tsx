@@ -276,6 +276,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                           {touchedField?.email &&
                             error?.email &&
                             !isSelfSponsored &&
+                            sponserEmailVal.length > 0 &&
                             isSponserNeed && (
                               <div className="invalid-feedback">
                                 {error?.email?.type == "validate"
