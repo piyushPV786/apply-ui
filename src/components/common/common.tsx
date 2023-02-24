@@ -105,7 +105,10 @@ export const getSponsorNameLabel = (
   if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Name";
   }
-  if (studentType === "bursary") {
+  if (
+    studentType === "bursary" &&
+    sponsorType === CommonEnums.EMPLOYEE_BURSARY
+  ) {
     return "Employer Bursary Name";
   } else return "Sponsor Name";
 };
@@ -116,7 +119,10 @@ export const getSponsorEmailLabel = (
   if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Email Address";
   }
-  if (studentType === "bursary") {
+  if (
+    studentType === "bursary" &&
+    sponsorType === CommonEnums.EMPLOYEE_BURSARY
+  ) {
     return "Employer Bursary Email Address";
   } else return "Email Address";
 };
@@ -127,7 +133,10 @@ export const getSponsorMobileLabel = (
   if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Phone Number";
   }
-  if (studentType === "bursary") {
+  if (
+    studentType === "bursary" &&
+    sponsorType === CommonEnums.EMPLOYEE_BURSARY
+  ) {
     return "Employer Bursary Phone Number";
   } else return "Phone Number";
 };
@@ -138,7 +147,10 @@ export const getSponsorAddressLabel = (
   if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Address";
   }
-  if (studentType === "bursary") {
+  if (
+    studentType === "bursary" &&
+    sponsorType === CommonEnums.EMPLOYEE_BURSARY
+  ) {
     return "Employer Bursary Address";
   } else return "Address";
 };
