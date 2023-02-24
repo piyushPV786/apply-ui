@@ -65,7 +65,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const [isDocument, setDocument] = useState<boolean>(false);
   const [isNationality, setNationality] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [isyes, setIsYes] = useState<boolean>(false);
+  const [isYes, setIsYes] = useState<boolean>(false);
 
   useEffect(() => {
     const userNumberDetail = JSON.parse(
@@ -358,7 +358,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="radio"
                     name="isInternational"
                     onClick={() => handleInternationAccordian("yes")}
-                    checked={nationalityId !== "SA"&& nationalityId!==""||isyes}
+                    checked={nationalityId !== "SA"&& nationalityId!==""||isYes}
                   />
                   <label className="form-check-label">Yes</label>
                 </div>
