@@ -33,10 +33,10 @@ const PaymentOption = (props: any) => {
   };
   const onPayuPayment = () => {
     const payload = {
-      amount: props?.totalAmount || 0,
-      email: allFields?.lead?.email || "test@test.com",
-      firstname: allFields?.lead?.firstName || "Vivek Kumar Gupta",
-      phone: allFields?.lead?.mobileNumber || "7566410079",
+      amount: Number(props?.totalAmount) || 0,
+      email: allFields?.lead?.email,
+      firstname: allFields?.lead?.firstName,
+      phone: allFields?.lead?.mobileNumber,
       productinfo: "test",
       discountCode: allFields?.payment?.discountCode,
       discountAmount: allFields?.payment?.discountAmount,
