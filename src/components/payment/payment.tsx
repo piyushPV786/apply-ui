@@ -37,6 +37,7 @@ const Payment = (props: any) => {
   const [isManagementPromoCode, setManagementPromoCode] =
     useState<boolean>(false);
   const [showPromoCode, setShowPromoCOde] = useState<boolean>(false);
+  const [isCouponApplied, setCouponApplied] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
   const selectedProgram =
@@ -186,6 +187,7 @@ const Payment = (props: any) => {
       allFields?.education?.studentTypeCode?.toLowerCase() ===
         CommonEnums.MANAGEMENT
     ) {
+      setCouponApplied(true);
       setManagementPromoCode(true);
       setValue("payment.discountCode", promoCode);
       setValue("payment.discountAmount", (+programFee * 100) / 100);
@@ -193,6 +195,7 @@ const Payment = (props: any) => {
       props.showToast(true, "Management Code Applied");
     } else if (result?.statusCode === 200 && result?.data?.percent) {
       setManagementPromoCode(false);
+      setCouponApplied(true);
       const { agentCode, percent, discountCode } = result?.data;
       setValue("payment.agentCode", agentCode);
       setValue("payment.discountCode", discountCode);
@@ -296,7 +299,7 @@ const Payment = (props: any) => {
                           <StyledLabel style={{ fontSize: "16px" }}>
                             {props?.isApplicationEnrolled
                               ? "Course Fee"
-                              : "Application Fee"}{' '}
+                              : "Application Fee"}{" "}
                             <strong>
                               (
                               {`${Math.trunc(+programFee)} ${
@@ -378,7 +381,12 @@ const Payment = (props: any) => {
                                         : `${Green}`,
                                     padding: "0.47rem 0.75rem",
                                   }}
-                                  className="input-group-text"
+                                  className={
+                                    "input-group-text" +
+                                    (!isCouponApplied || !promoCode
+                                      ? ""
+                                      : "disabled")
+                                  }
                                   id="basic-addon2"
                                 >
                                   Apply
@@ -399,6 +407,7 @@ const Payment = (props: any) => {
                                   onClick={() => {
                                     setManagementPromoCode(false);
                                     setPromoCode("");
+                                    setCouponApplied(false);
                                     setValue("payment.discountedFee", "0.00");
                                     setValue("payment.discountAmount", "0.00");
                                   }}

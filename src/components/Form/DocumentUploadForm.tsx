@@ -40,7 +40,7 @@ const DocumentUploadForm = ({
     (File & { error: boolean; typeCode: string })[]
   >([]);
   const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
-  const documentTypeList = isApplicationEnrolled
+  const documentTypeList = !isApplicationEnrolled
     ? [...(documentType || []), ...[{ name: "Other", code: "other" }]]
     : [...(documentType || [])].filter((doc) => doc.code === "BURSARYLETTER");
   useEffect(() => {
