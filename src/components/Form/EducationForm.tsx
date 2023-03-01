@@ -72,6 +72,7 @@ export const EducationForm = (props: IEducationProps) => {
     register,
     watch,
     formState: { errors, touchedFields },
+    unregister,
   } = useFormContext();
   const [studyModeQualification, setStudyModeQualification] = useState<
     IStudyModeQualification[]
@@ -320,12 +321,16 @@ export const EducationForm = (props: IEducationProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       setValue(name, value, formOptions);
-                      if (value === "AGENT") {
-                        setValue(socialMediaId, "", formOptions);
-                      }
-                      if (value === "SOCIALMEDIA") {
-                        setValue(agentName, "", formOptions);
-                      }
+                      setTimeout(() => {
+                        if (value === "AGENT") {
+                          setValue(socialMediaId, "", formOptions);
+                          unregister(socialMediaId, { keepError: false,keepIsValid:true });
+                        }
+                        if (value === "SOCIALMEDIA") {
+                          setValue(agentName, "", formOptions);
+                          unregister(agentName, { keepError: false,keepIsValid:true });
+                        }
+                      }, 0);
                     }}
                   >
                     <option value={""}>Select Social Media</option>
@@ -349,15 +354,15 @@ export const EducationForm = (props: IEducationProps) => {
                     )}
                 </div>
 
-                {AgentandSocialMedia?.find(
-                  (item) => item?.code == referredByeVal
-                )?.name === "Agent" && (
+                {referredByeVal === "AGENT" && (
                   <div className="">
                     <div className="mb-4">
                       <StyledLabel required>Agent Name</StyledLabel>
                       <select
                         className="form-select"
-                        {...register(`${agentName}`, { required: true })}
+                        {...register(`${agentName}`, {
+                          required: referredByeVal === "AGENT",
+                        })}
                         value={agentNameVal}
                       >
                         <option value={""}>Select Agent</option>
@@ -381,16 +386,16 @@ export const EducationForm = (props: IEducationProps) => {
                     </div>
                   </div>
                 )}
-                {AgentandSocialMedia?.find(
-                  (item) => item?.code == referredByeVal
-                )?.name === "Social Media" && (
+                {referredByeVal === "SOCIALMEDIA" && (
                   <div className="">
                     <div className="mb-4">
                       <StyledLabel required>Social Media</StyledLabel>
                       <select
                         className="form-select"
                         value={socialMediaVal}
-                        {...register(`${socialMediaId}`, { required: true })}
+                        {...register(`${socialMediaId}`, {
+                          required: referredByeVal === "SOCIALMEDIA",
+                        })}
                       >
                         <option value={""}>Select Social Media</option>
 

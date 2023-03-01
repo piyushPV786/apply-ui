@@ -41,8 +41,10 @@ const DocumentUploadForm = ({
   >([]);
   const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
   const documentTypeList = !isApplicationEnrolled
-    ? [...(documentType || []), ...[{ name: "Other", code: "other" }]]
-    : [...(documentType || [])].filter((doc) => doc.code === "BURSARYLETTER");
+    ? [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
+        (doc) => doc.code !== "BURSARYLETTER"
+      )
+    : [...(documentType || [])]?.filter((doc) => doc.code === "BURSARYLETTER");
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
     if (existingPaymentProof && existingPaymentProof.length > 0) {
