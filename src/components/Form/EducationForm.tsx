@@ -11,7 +11,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import { IFee, IOption, IStudyModeQualification } from "../common/types";
 import styled from "styled-components";
-import { formOptions, onlyAlphaNumericSpace } from "../../Util/Util";
+import {
+  formOptions,
+  onlyAlphaNumericSpace,
+  sortAscending,
+} from "../../Util/Util";
 import EducationImg from "../../../public/assets/images/education-svgrepo-com.svg";
 import Image from "next/image";
 import { FinanceApi } from "../../service/Axios";
@@ -91,7 +95,6 @@ export const EducationForm = (props: IEducationProps) => {
   const educationFormError = errors[parentKey] as any;
   const touchFields = touchedFields[parentKey];
   useEffect(() => {
-   
     if (
       programVal &&
       programVal.length > 0 &&
@@ -100,7 +103,6 @@ export const EducationForm = (props: IEducationProps) => {
       getQualificationStudyModeData(programVal);
     }
   }, [programVal]);
-
   const getQualificationStudyModeData = async (programCode: string) => {
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
       .then((res) => {
@@ -125,7 +127,10 @@ export const EducationForm = (props: IEducationProps) => {
         console.log(err);
       });
   };
-
+  const selectedStudyModeIndex =
+    studyModeQualification[0]?.studyModes.findIndex(
+      (item) => item?.studyModeCode === studyModeVal
+    );
   return (
     <>
       <StyledAccordion expanded key="education" id="education">
@@ -225,30 +230,19 @@ export const EducationForm = (props: IEducationProps) => {
                       )}
                     <StyleContainer>
                       {studyModeQualification &&
-                        studyModeQualification[0]?.studyModes[0]?.fees?.map(
-                          ({ fee, feeMode }: IFee) => (
+                        studyModeQualification[0]?.studyModes[
+                          selectedStudyModeIndex
+                        ]?.fees
+                          ?.sort((a, b) => sortAscending(a, b, "feeMode"))
+                          .map(({ fee, feeMode }: IFee) => (
                             <FeeCard
-                              // setSelectedMode={setSelectedMode}
                               key={fee}
                               fee={fee}
                               feeMode={feeMode}
                               uniqueId={fee}
-                              // selected={programFeeVal}
                             />
-                          )
-                        )}
+                          ))}
                     </StyleContainer>
-                    {/* {touchFields?.studyModeCode &&
-                      educationFormError?.studyModeCode && (
-                        <div className="invalid-feedback">
-                          Please select Study Mode
-                        </div>
-                      )}
-                    {educationFormError?.programFees && (
-                      <div className="invalid-feedback">
-                        Please select Fees and Semester
-                      </div>
-                    )} */}
                   </div>
                 </div>
               )}
@@ -326,27 +320,15 @@ export const EducationForm = (props: IEducationProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       setValue(name, value, formOptions);
-                    }}
-                    onBlur={() => {
-                      setTimeout(() => {
-                        if (
-                          AgentandSocialMedia?.find(
-                            (item) => item?.code == referredByeVal
-                          )?.name === "Agent"
-                        ) {
-                          setValue(`${socialMediaId}`, "", formOptions);
-                        }
-                        if (
-                          AgentandSocialMedia?.find(
-                            (item) => item?.code == referredByeVal
-                          )?.name === "Social Media"
-                        ) {
-                          setValue(`${agentName}`, "", formOptions);
-                        }
-                      }, 2000);
+                      if (value === "AGENT") {
+                        setValue(socialMediaId, "", formOptions);
+                      }
+                      if (value === "SOCIALMEDIA") {
+                        setValue(agentName, "", formOptions);
+                      }
                     }}
                   >
-                    <option value={""}>Select</option>
+                    <option value={""}>Select Social Media</option>
 
                     {AgentandSocialMedia &&
                       AgentandSocialMedia.map(({ code, name }) => (

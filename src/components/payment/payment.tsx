@@ -16,6 +16,7 @@ import {
   getQualificationStudyModeData,
   getUploadDocumentUrl,
   isInvalidFileType,
+  sortAscending,
   uploadDocuments,
 } from "../../Util/Util";
 import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
@@ -257,40 +258,45 @@ const Payment = (props: any) => {
                         <div className="col-md-6">
                           <div className="mb-4 ">
                             {feeOptions.length > 0 &&
-                              feeOptions.map(({ fee, feeMode }, index) => (
-                                <div className="form-check form-check-inline">
-                                  <>
-                                    <input
-                                      key={index}
-                                      className="form-check-input me-2"
-                                      type="radio"
-                                      {...(register(`payment.selectedFeeMode`, {
-                                        required: true,
-                                      }) as any)}
-                                      onChange={() => {
-                                        setValue(
-                                          "payment.selectedFeeMode",
-                                          feeMode
-                                        );
-                                        setValue(
-                                          "payment.selectedFeeModeFee",
-                                          fee
-                                        );
-                                      }}
-                                      value={feeMode}
-                                      checked={
-                                        feeMode ==
-                                        allFields?.payment?.selectedFeeMode
-                                      }
-                                    />
-                                    <label className="form-check-label">
-                                      {feeMode}
-                                      <br />
-                                      <GreenText>R {fee}</GreenText>
-                                    </label>
-                                  </>
-                                </div>
-                              ))}
+                              feeOptions
+                                .sort((a, b) => sortAscending(a, b, "feeMode"))
+                                .map(({ fee, feeMode }, index) => (
+                                  <div className="form-check form-check-inline">
+                                    <>
+                                      <input
+                                        key={index}
+                                        className="form-check-input me-2"
+                                        type="radio"
+                                        {...(register(
+                                          `payment.selectedFeeMode`,
+                                          {
+                                            required: true,
+                                          }
+                                        ) as any)}
+                                        onChange={() => {
+                                          setValue(
+                                            "payment.selectedFeeMode",
+                                            feeMode
+                                          );
+                                          setValue(
+                                            "payment.selectedFeeModeFee",
+                                            fee
+                                          );
+                                        }}
+                                        value={feeMode}
+                                        checked={
+                                          feeMode ==
+                                          allFields?.payment?.selectedFeeMode
+                                        }
+                                      />
+                                      <label className="form-check-label">
+                                        {feeMode}
+                                        <br />
+                                        <GreenText>R {fee}</GreenText>
+                                      </label>
+                                    </>
+                                  </div>
+                                ))}
                           </div>
                         </div>
                       )}
