@@ -39,7 +39,7 @@ const studentTypeName = `${parentKey}.studentTypeCode`;
 const applicationFeesKey = `${parentKey}.applicationFees`;
 interface IEducationProps {
   highestQualifications: IOption[];
-  programs: IOption[];
+  programs: [];
   socialMedias: IOption[];
   agentArr: IOption[];
   studyTypeData: IOption[];
@@ -163,13 +163,13 @@ export const EducationForm = (props: IEducationProps) => {
                   >
                     <option value={""}>Select Interested Qualification</option>
                     {programs &&
-                      programs.map(({ code, name }) => (
+                      programs.map(({ programCode, programName }) => (
                         <option
-                          selected={code === programVal}
-                          key={code}
-                          value={code}
+                          selected={programCode === programVal}
+                          key={programCode}
+                          value={programCode}
                         >
-                          {name}
+                          {programName}
                         </option>
                       ))}
                   </select>
