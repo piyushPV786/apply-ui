@@ -131,7 +131,6 @@ export const EducationForm = (props: IEducationProps) => {
     studyModeQualification[0]?.studyModes.findIndex(
       (item) => item?.studyModeCode === studyModeVal
     );
-
   return (
     <>
       <StyledAccordion expanded key="education" id="education">
@@ -321,27 +320,15 @@ export const EducationForm = (props: IEducationProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       setValue(name, value, formOptions);
-                    }}
-                    onBlur={() => {
-                      setTimeout(() => {
-                        if (
-                          AgentandSocialMedia?.find(
-                            (item) => item?.code == referredByeVal
-                          )?.name === "Agent"
-                        ) {
-                          setValue(`${socialMediaId}`, "", formOptions);
-                        }
-                        if (
-                          AgentandSocialMedia?.find(
-                            (item) => item?.code == referredByeVal
-                          )?.name === "Social Media"
-                        ) {
-                          setValue(`${agentName}`, "", formOptions);
-                        }
-                      }, 2000);
+                      if (value === "AGENT") {
+                        setValue(socialMediaId, "", formOptions);
+                      }
+                      if (value === "SOCIALMEDIA") {
+                        setValue(agentName, "", formOptions);
+                      }
                     }}
                   >
-                    <option value={""}>Select</option>
+                    <option value={""}>Select Social Media</option>
 
                     {AgentandSocialMedia &&
                       AgentandSocialMedia.map(({ code, name }) => (

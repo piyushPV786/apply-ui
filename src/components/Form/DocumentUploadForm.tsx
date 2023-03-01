@@ -79,7 +79,6 @@ const DocumentUploadForm = ({
       if (!item?.typeCode && !isApplicationEnrolled) {
         item.typeCode = "other";
       }
-     
     });
     setUploadDocs(uploadedFiles as any);
     setValue("document.uploadedDocs", uploadedFiles);
@@ -242,11 +241,7 @@ const DocumentUploadForm = ({
                                 )}
                                 <span
                                   onClick={() => deleteDocs(index)}
-                                  className={
-                                    item?.typeCode === "PAYMENTPROOF"
-                                      ? "disabled"
-                                      : "cursor-pointer"
-                                  }
+                                  className={"cursor-pointer"}
                                 >
                                   <Image
                                     className="me-2 ms-2"
