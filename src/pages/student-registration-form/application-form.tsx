@@ -66,7 +66,7 @@ const ApplicationForm = (props: any) => {
   });
   const {
     register,
-    formState: { isValid, isDirty, errors, touchedFields },
+    formState: { isValid, isDirty, errors, },
     watch,
     setValue,
     getValues,
@@ -129,7 +129,6 @@ const ApplicationForm = (props: any) => {
       uploadStudentDocs();
       return;
     }
-
     const methodType = applicationCode
       ? AuthApi.put(
           `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}?isDraft=false`,
@@ -153,7 +152,10 @@ const ApplicationForm = (props: any) => {
         activeLeadDetail &&
           sessionStorage.setItem(
             "activeLeadDetail",
-            JSON.stringify({ ...activeLeadDetail })
+            JSON.stringify({
+              ...activeLeadDetail,
+              applicationCode: response?.data?.applicationData?.applicationCode,
+            })
           );
 
         setShowDraftSaveToast({
@@ -229,7 +231,7 @@ const ApplicationForm = (props: any) => {
     let request = mapFormData({
       ...rest,
     });
-    const appCode = JSON.parse(sessionStorage?.getItem("leadData") as any)
+    const appCode = JSON.parse(localStorage?.getItem("leadData") as any)
       ?.applicationData?.applicationCode;
     const activeLeadDetail = JSON.parse(
       sessionStorage?.getItem("activeLeadDetail") as any
@@ -240,7 +242,9 @@ const ApplicationForm = (props: any) => {
       sessionStorage?.getItem("studentId") !== "{}"
         ? JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
         : activeLeadDetail?.leadCode;
-    const draftUpdateCode = activeLeadDetail?.applicationCode || appCode;
+    const draftUpdateCode = activeLeadDetail?.applicationCode
+      ? activeLeadDetail?.applicationCode
+      : appCode;
     if (leadCode && !isDraftSave) {
       setSubmitted(true);
       request.lead.leadCode = leadCode;
@@ -466,6 +470,7 @@ const ApplicationForm = (props: any) => {
   //   errors,
   // });
   const isValidForm = () => {
+    console.log(activeStep === MagicNumbers.ZERO && !isValid,{isValid})
     if (activeStep === 0) {
       return activeStep === MagicNumbers.ZERO && !isValid;
     } else {
