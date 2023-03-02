@@ -39,7 +39,7 @@ const studentTypeName = `${parentKey}.studentTypeCode`;
 const applicationFeesKey = `${parentKey}.applicationFees`;
 interface IEducationProps {
   highestQualifications: IOption[];
-  programs: any[];
+  programs: IOption[];
   socialMedias: IOption[];
   agentArr: IOption[];
   studyTypeData: IOption[];
@@ -161,16 +161,18 @@ export const EducationForm = (props: IEducationProps) => {
                       getQualificationStudyModeData(e.target.value);
                     }}
                     disabled={isApplicationEnrolled}
+                    value={programVal}
+                    defaultValue={programVal}
                   >
                     <option value={""}>Select Interested Qualification</option>
                     {programs &&
-                      programs.map(({ programCode, programName }) => (
+                      programs.map(({ code, name }) => (
                         <option
-                          selected={programCode === programVal}
-                          key={programCode}
-                          value={programCode}
+                          selected={code === programVal}
+                          key={code}
+                          value={code}
                         >
-                          {programName}
+                          {name}
                         </option>
                       ))}
                   </select>
@@ -324,11 +326,17 @@ export const EducationForm = (props: IEducationProps) => {
                       setTimeout(() => {
                         if (value === "AGENT") {
                           setValue(socialMediaId, "", formOptions);
-                          unregister(socialMediaId, { keepError: false,keepIsValid:true });
+                          unregister(socialMediaId, {
+                            keepError: false,
+                            keepIsValid: true,
+                          });
                         }
                         if (value === "SOCIALMEDIA") {
                           setValue(agentName, "", formOptions);
-                          unregister(agentName, { keepError: false,keepIsValid:true });
+                          unregister(agentName, {
+                            keepError: false,
+                            keepIsValid: true,
+                          });
                         }
                       }, 0);
                     }}
