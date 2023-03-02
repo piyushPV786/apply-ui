@@ -39,7 +39,7 @@ const studentTypeName = `${parentKey}.studentTypeCode`;
 const applicationFeesKey = `${parentKey}.applicationFees`;
 interface IEducationProps {
   highestQualifications: IOption[];
-  programs: [];
+  programs: any[];
   socialMedias: IOption[];
   agentArr: IOption[];
   studyTypeData: IOption[];

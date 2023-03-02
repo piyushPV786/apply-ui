@@ -121,7 +121,7 @@ export const getApplicationCode = () => {
   let appCode = "";
   const leadData: any =
     window.localStorage.getItem("leadData") &&
-    window.localStorage.getItem("leadData") !== "undefined"
+    window.localStorage.getItem("leadData") !== "undefined" && window.localStorage.getItem("leadData") !== "{}"
       ? window.localStorage.getItem("leadData")
       : "";
   const applicationCode = leadData

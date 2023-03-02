@@ -66,7 +66,7 @@ const ApplicationForm = (props: any) => {
   });
   const {
     register,
-    formState: { isValid, isDirty, errors, },
+    formState: { isValid, isDirty, errors },
     watch,
     setValue,
     getValues,
@@ -440,7 +440,7 @@ const ApplicationForm = (props: any) => {
   const relationData = masterData?.relationData as IOption[];
   const highestQualifications =
     masterData?.highestQualificationData as IOption[];
-  const programs = masterData?.programs as IOption[];
+  const programs = masterData?.programs as any[];
   const race = masterData?.raceData as IOption[];
   const socialMedias = masterData?.socialMediaData as IOption[];
   const sponsorModes = masterData?.sponsorModeData as IOption[];
@@ -470,7 +470,6 @@ const ApplicationForm = (props: any) => {
   //   errors,
   // });
   const isValidForm = () => {
-    console.log(activeStep === MagicNumbers.ZERO && !isValid,{isValid})
     if (activeStep === 0) {
       return activeStep === MagicNumbers.ZERO && !isValid;
     } else {
