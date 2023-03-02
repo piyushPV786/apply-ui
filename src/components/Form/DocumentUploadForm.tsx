@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, SyntheticEvent } from "react";
 import { MainContainer, PaymentContainer } from "../payment/payment";
 import { useFormContext } from "react-hook-form";
 import DoneIcon from "@material-ui/icons/Done";
@@ -86,7 +86,8 @@ const DocumentUploadForm = ({
     setValue("document.uploadedDocs", uploadedFiles);
   };
 
-  const showPdf = (item: File) => {
+  const showPdf = (e:SyntheticEvent, item: File) => {
+    e.preventDefault();
     const file = new Blob([item], {
       type: item?.type.includes("pdf") ? "application/pdf" : "image/jpeg",
     });
@@ -228,7 +229,7 @@ const DocumentUploadForm = ({
                                 {!item.error && (
                                   <Link
                                     passHref
-                                    onClick={() => showPdf(item)}
+                                    onClick={(e) => showPdf(e, item)}
                                     rel="noopener noreferrer"
                                     target="_blank"
                                     href={""}

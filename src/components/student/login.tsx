@@ -1,10 +1,12 @@
-import { Grid, Snackbar } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import OtpInput from "../Input/otpInput";
-import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
-import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
+import PhoneInput, {
+  parsePhoneNumber,
+  isValidPhoneNumber,
+} from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import axios from "../../service/Axios";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
@@ -30,10 +32,7 @@ const StudentLogin = () => {
   const [isProceed, setProceed] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<any>(null);
   const [showToast, setToast] = useState<boolean>(false);
-  const [toastMsg, setToastMsg] = useState<any>({
-    message: "",
-    success: true,
-  });
+  
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
@@ -48,9 +47,9 @@ const StudentLogin = () => {
   }, []);
   const isNumberValid =
     mobileNumber &&
-    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 8 &&
-    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! <= 14;
-
+    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 6 &&
+    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! <= 15;
+  const isValidNumber = isValidPhoneNumber(mobileNumber, countryCode);
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = () => {
     setProceed(true);
@@ -60,7 +59,7 @@ const StudentLogin = () => {
         mobileNumber: number?.nationalNumber,
         mobileCountryCode: number?.countryCallingCode,
       })
-      .then(({ data }) => {
+      .then(({}) => {
         const studentDetail = {
           mobileNumber: number?.nationalNumber,
           countryCodeNumber: number?.countryCallingCode,
@@ -68,10 +67,6 @@ const StudentLogin = () => {
         };
         sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
         setProceed(true);
-        // setToastMsg((prevState: any) => ({
-        //   ...prevState,
-        //   message: "OTP number sent successfully",
-        // }));
         setToast(true);
       })
       .catch(({ response }) => {
@@ -223,10 +218,6 @@ const StudentLogin = () => {
       })
       .then(({ data }) => {
         setErrorMsg(null);
-        // setToastMsg(() => ({
-        //   success: true,
-        //   message: data?.message,
-        // }));
         sessionStorage.setItem(
           "studentId",
           JSON.stringify({ leadCode: data?.data?.leadCode })
@@ -236,7 +227,7 @@ const StudentLogin = () => {
           router.push(RoutePaths.Dashboard);
         }, 1500);
       })
-      .catch(({ response }) => {
+      .catch(({  }) => {
         setErrorMsg({
           success: false,
           message: "Sorry! The entered OTP is invalid. Please try again",
@@ -245,11 +236,6 @@ const StudentLogin = () => {
   };
 
   const resendOtp = () => {
-    // setToastMsg(() => ({
-    //   success: true,
-    //   message: "OTP re-sent successfully",
-    // }));
-    // setToast(true);
     setErrorMsg({ success: true, message: "OTP re-sent successfully" });
     setOtp("");
   };
@@ -257,7 +243,6 @@ const StudentLogin = () => {
   const today = new Date();
   const year = today.getFullYear();
 
-  const { message, success } = toastMsg;
 
   return (
     <>

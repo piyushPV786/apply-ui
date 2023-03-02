@@ -66,6 +66,7 @@ export const isValidDate = (value) => {
   const year = value.split("-")[0];
   const age = currentYear - +year;
   if (age < 16) return false;
+  if (age > 100) return false;
   if (age > currentYear) return false;
   else return true;
 };
