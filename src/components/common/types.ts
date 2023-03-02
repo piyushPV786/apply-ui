@@ -9,7 +9,7 @@ export enum QualificationEnum {
 }
 
 export enum NationalityEnum {
-  southAfrica = "SA"
+  southAfrica = "SA",
 }
 
 interface ICountry {
