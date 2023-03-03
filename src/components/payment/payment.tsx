@@ -375,7 +375,13 @@ const Payment = (props: any) => {
                                 className="form-control"
                                 value={promoCode}
                                 placeholder="Enter promo code"
-                                onChange={(e) => setPromoCode(e?.target?.value)}
+                                onChange={(e) => {
+                                  setPromoCode(e?.target?.value);
+                                  setValue(
+                                    "payment.managementDiscountCode",
+                                    e.target.value
+                                  );
+                                }}
                               />
                               <div className="input-group-append cursor-pointer">
                                 <span

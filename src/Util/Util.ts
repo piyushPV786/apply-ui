@@ -5,6 +5,7 @@ import {
   CommonApi,
   removedKeysToMap,
 } from "../components/common/constant";
+import { ILeadFormValues } from "../components/common/types";
 import { AuthApi, CommonAPI, FinanceApi } from "../service/Axios";
 const ignorKeys = {
   createdAt: "",
@@ -121,12 +122,14 @@ export const getApplicationCode = () => {
   let appCode = "";
   const leadData: any =
     window.localStorage.getItem("leadData") &&
-    window.localStorage.getItem("leadData") !== "undefined" && window.localStorage.getItem("leadData") !== "{}"
+    window.localStorage.getItem("leadData") !== "undefined" &&
+    window.localStorage.getItem("leadData") !== "{}"
       ? window.localStorage.getItem("leadData")
       : "";
   const applicationCode = leadData
     ? JSON.parse(leadData)?.applicationData?.applicationCode
-    : JSON.parse(window.sessionStorage.getItem("activeLeadDetail")!)?.applicationCode;
+    : JSON.parse(window.sessionStorage.getItem("activeLeadDetail")!)
+        ?.applicationCode;
   const activeLeadDetail = JSON.parse(
     sessionStorage?.getItem("activeLeadDetail") as any
   )?.applicationCode;
@@ -330,7 +333,7 @@ export const downloadDocument = (url, fileName: string) => {
 
 export const mapFormDefaultValue = (
   studentData: object,
-  setValue: UseFormSetValue<FieldValues>
+  setValue: UseFormSetValue<ILeadFormValues>
 ) => {
   let valueCode;
   for (let [key, value] of Object.entries(studentData)) {
