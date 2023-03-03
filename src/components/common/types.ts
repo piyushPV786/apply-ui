@@ -61,6 +61,66 @@ export interface IFee {
   feeMode: string;
 }
 
+export interface ILeadFormValues {
+  isAgreedTermsAndConditions: boolean;
+  lead: Lead;
+  address: Address[];
+  education: Education;
+  payment?: Payment;
+  sponsor?: any;
+  employment?: any;
+  document?: any;
+  kin?: any;
+  [key: string]: any;
+}
+
+interface Education {
+  programCode: string;
+  qualificationCode: string;
+  highSchoolName: string;
+  referredById: string;
+  studentTypeCode: string;
+  applicationFees: string;
+  studyModeCode: string;
+  socialMediaCode: string;
+  agentCode: string;
+  studyModeDetail?: any;
+}
+export interface Payment {
+  paymentProof: File[];
+  paymentType: null;
+  selectedCurrency: string;
+  managementDiscountCode: string;
+  selectedFeeModeFee?: string;
+  discountAmount?: string | number;
+  [key: string]: any;
+}
+interface Address {
+  street: string;
+  zipcode: string;
+  city: string;
+  state: string;
+  country: string;
+  addressType: string;
+}
+
+interface Lead {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  dateOfBirth: string;
+  email: string;
+  mobileNumber: string;
+  identificationNumber: string;
+  gender: string;
+  language: string;
+  race: string;
+  identificationDocumentType: string;
+  nationality: string;
+  mobileCountryCode: string;
+  leadCode: string;
+}
+
 export interface IMasterData {
   languageData: IOption[];
   relationData: IOption[];

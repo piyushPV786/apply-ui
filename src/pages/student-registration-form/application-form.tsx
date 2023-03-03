@@ -12,7 +12,11 @@ import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
 import { AcadmicApi, AuthApi } from "../../service/Axios";
-import { IMasterData, IOption } from "../../components/common/types";
+import {
+  ILeadFormValues,
+  IMasterData,
+  IOption,
+} from "../../components/common/types";
 import {
   getUploadDocumentUrl,
   mapFormData,
@@ -41,6 +45,7 @@ const isValidFileType = (files: any[]) => {
   if (!files || files.length === 0) return [];
   return files.filter((file) => file?.error === true);
 };
+
 const ApplicationForm = (props: any) => {
   const router = useRouter();
 
@@ -60,7 +65,7 @@ const ApplicationForm = (props: any) => {
   const [leadDetail, setLeadDetail] = useState<any>(null);
   const [isApplicationEnrolled, setApllicationEnrolled] =
     useState<boolean>(false);
-  const methods = useForm({
+  const methods = useForm<ILeadFormValues>({
     mode: "all",
     reValidateMode: "onBlur",
   });
@@ -394,7 +399,7 @@ const ApplicationForm = (props: any) => {
       )
         .then(({ data: response }) => {
           const formData = { ...response?.data };
-          const truncateFormData = transformFormData(formData);
+          transformFormData(formData);
           mapFormDefaultValue(formData, setValue);
           setStudentData(response?.data);
           if (leadDetail?.isPaymentPending && routeTo !== "document") {
@@ -430,9 +435,37 @@ const ApplicationForm = (props: any) => {
   };
 
   const onManagementStudentSubmit = () => {
-    router.push(RoutePaths.APPLICATION_ENROLLED_SUCCESS);
-    setActiveStep(0);
-    setPaymentDone(true);
+    const applicationCode = JSON.parse(
+      sessionStorage.getItem("activeLeadDetail")!
+    )?.applicationCode;
+    const programFee = isApplicationEnrolled
+      ? allFields?.payment?.selectedFeeModeFee!
+      : allFields?.education?.applicationFees || "0";
+    const normalDiscountAmount = allFields?.payment?.discountAmount;
+    const discountAmount = allFields?.payment?.conversionRate
+      ? Number(normalDiscountAmount) * (allFields?.payment?.conversionRate || 0)
+      : normalDiscountAmount;
+    const payload = {
+      discountCode: allFields?.payment?.managementDiscountCode,
+      amount: +programFee,
+      phone: allFields?.lead?.mobileNumber,
+      email: allFields?.lead?.email,
+      discountAmount: discountAmount,
+    };
+    AuthApi.post(`application/${applicationCode}/payment/management`, {
+      payload,
+    })
+      .then(({ data }) => {
+        console.log({ data });
+        console.log({ discountAmount });
+
+        router.push(RoutePaths.APPLICATION_ENROLLED_SUCCESS);
+        setActiveStep(0);
+        setPaymentDone(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const language = masterData?.languageData as IOption[];
