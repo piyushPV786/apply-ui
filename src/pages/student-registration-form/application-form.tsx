@@ -450,15 +450,12 @@ const ApplicationForm = (props: any) => {
       amount: +programFee,
       phone: allFields?.lead?.mobileNumber,
       email: allFields?.lead?.email,
-      discountAmount: discountAmount,
+      discountAmount: String(discountAmount),
     };
     AuthApi.post(`application/${applicationCode}/payment/management`, {
-      payload,
+      ...payload,
     })
       .then(({ data }) => {
-        console.log({ data });
-        console.log({ discountAmount });
-
         router.push(RoutePaths.APPLICATION_ENROLLED_SUCCESS);
         setActiveStep(0);
         setPaymentDone(true);
