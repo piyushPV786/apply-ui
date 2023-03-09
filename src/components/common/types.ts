@@ -10,6 +10,7 @@ export enum QualificationEnum {
 
 export enum NationalityEnum {
   southAfrica = "SA",
+  India = "IND"
 }
 
 interface ICountry {

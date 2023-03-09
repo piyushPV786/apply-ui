@@ -6,6 +6,7 @@ import StyledButton from "../button/button";
 import { CommonApi, PaymentTypes } from "../common/constant";
 import { getApplicationCode, GetPaymentImage } from "../../Util/Util";
 import { AuthApi } from "../../service/Axios";
+import { NationalityEnum } from "../common/types";
 const IPaymentType = PaymentTypes.map((item) => item.name);
 const PaymentCard = (props: any) => {
   return (
@@ -31,6 +32,13 @@ const PaymentOption = (props: any) => {
       return "payuForm";
     }
   };
+
+  const filteredPaymentTypes = Object.values(
+    NationalityEnum
+  ).includes(allFields?.lead?.nationality)
+    ? PaymentTypes
+    : PaymentTypes.filter((item) => item.name === "Payu");
+
   const onPayuPayment = () => {
     const payload = {
       amount: Number(props?.totalAmount) || 0,
@@ -67,7 +75,7 @@ const PaymentOption = (props: any) => {
         </PaymentHeading>
         <PaymentContainer>
           <div className="row">
-            {PaymentTypes.map(({ name, value }) => (
+            {filteredPaymentTypes?.map(({ name, value }) => (
               <div className="col-md-4 mb-2">
                 <PaymentCardContainer>
                   <PaymentCard
@@ -85,12 +93,12 @@ const PaymentOption = (props: any) => {
                           >
                             {paymentPayload &&
                               Object.keys(paymentPayload).map((item) => (
-                                <input
-                                  key={item}
-                                  type="hidden"
-                                  name={item}
-                                  value={paymentPayload[item]}
-                                />
+                                  <input
+                                    key={item}
+                                    type="hidden"
+                                    name={item}
+                                    value={paymentPayload[item]}
+                                  />
                               ))}
                           </form>
                         </>
