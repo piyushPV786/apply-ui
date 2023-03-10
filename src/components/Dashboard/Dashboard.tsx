@@ -340,6 +340,7 @@ function ApplicationCard({
   const payBtnTitle = isAcceptedApplication
     ? "Pay Program Fee"
     : "Pay Application Fee";
+  const [showRAMTBtn, setShowRAMTBtn] = useState<Boolean>(true);
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
@@ -399,6 +400,13 @@ function ApplicationCard({
                 onClick={() =>
                   onEdit(applicationNumber, leadCode, status, educationDetail)
                 }
+              />
+            )}
+            {showRAMTBtn && (
+              <StyledButton
+                isPayBtn
+                //onClick={onApplyNow}
+                title="Take RAMT Test"
               />
             )}
             {showPayBtn && (
