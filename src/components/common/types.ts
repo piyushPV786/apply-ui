@@ -10,7 +10,7 @@ export enum QualificationEnum {
 
 export enum NationalityEnum {
   southAfrica = "SA",
-  India = "IND"
+  India = "IND",
 }
 
 interface ICountry {
@@ -86,6 +86,7 @@ interface Education {
   socialMediaCode: string;
   agentCode: string;
   studyModeDetail?: any;
+  internationDegreeVal: string;
 }
 export interface Payment {
   paymentProof: File[];

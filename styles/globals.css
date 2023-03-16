@@ -37,6 +37,10 @@ input[type="number"]::-webkit-inner-spin-button {
   padding: 5px;
   background: #dde1e3;
 }
+.PhoneInputCountry select:disabled {
+  opacity: 0 !important;
+}
+
 .form-check .form-check-input {
   float: none !important;
 }

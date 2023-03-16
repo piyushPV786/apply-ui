@@ -23,7 +23,7 @@ import {
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { identityDocuments } from "../common/constant";
-import { NationalityEnum } from "../common/types"
+import { NationalityEnum } from "../common/types";
 interface IPersonalInfoProps {
   genders: IOption[];
   nationalities: IOption[];
@@ -109,18 +109,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       setValue(identificationDocumentTypeKey, "PA", formOptions);
       setValue(nationalityIdKey, "", { shouldDirty: true });
       setIsYes(true);
-      setValue(identificationNumberKey, "", formOptions)
-
+      setValue(identificationNumberKey, "", formOptions);
     } else {
-      setValue(identificationNumberKey, "", formOptions)
+      setValue(identificationNumberKey, "", formOptions);
       setNationality(true);
       setDocument(false);
       setValue(nationalityIdKey, "SA", formOptions);
-      setValue(
-        identificationDocumentTypeKey,
-        "",
-        { shouldDirty: true }
-      );
+      setValue(identificationDocumentTypeKey, "", { shouldDirty: true });
     }
   };
 
@@ -293,6 +288,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <PhoneInput
                       id="1"
                       international
+                      disabled
                       countryCallingCodeEditable={false}
                       defaultCountry={countryCodeRef}
                       placeholder="Select Country Code*"
@@ -343,7 +339,10 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                 </div>
               </div>
             </div>
-            <StyledAccordion expanded={isExpanded || nationalityId !== ""} defaultExpanded={true}>
+            <StyledAccordion
+              expanded={isExpanded || nationalityId !== ""}
+              defaultExpanded={true}
+            >
               <AccordionSummary>
                 <span className="me-2">
                   <Image src={AddressImg} alt="user" />
@@ -360,7 +359,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="radio"
                     name="isInternational"
                     onClick={() => handleInternationAccordian("yes")}
-                    checked={nationalityId !== NationalityEnum.southAfrica && nationalityId !== "" || isYes}
+                    checked={
+                      (nationalityId !== NationalityEnum.southAfrica &&
+                        nationalityId !== "") ||
+                      isYes
+                    }
                   />
                   <label className="form-check-label">Yes</label>
                 </div>
@@ -381,7 +384,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
-                          onChange={() => setValue(identificationNumberKey, "", formOptions)}
+                          onChange={() =>
+                            setValue(identificationNumberKey, "", formOptions)
+                          }
                           disabled={isDocument}
                           options={identityDocuments}
                           value={identificationDocumentType}
