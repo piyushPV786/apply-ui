@@ -495,10 +495,7 @@ const ApplicationForm = (props: any) => {
   const { message, success, show } = showDraftSavedToast;
   const today = new Date();
   const year = today.getFullYear();
-  // console.log({
-  //   allFields,
-  //   errors,
-  // });
+
   const isValidForm = () => {
     if (activeStep === 0) {
       return activeStep === MagicNumbers.ZERO && !isValid;
