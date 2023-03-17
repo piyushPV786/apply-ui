@@ -555,7 +555,7 @@ const ApplicationForm = (props: any) => {
                         employmentStatusArr={employmentStatus}
                         employmentIndustries={employmentIndustries}
                       />
-                      <KinDetailsForm leadId={leadId} key="KinDetailsForm" />
+                      <KinDetailsForm  relationData={relationData} leadId={leadId} key="KinDetailsForm" />
                     </form>
                   </div>
                 </div>
