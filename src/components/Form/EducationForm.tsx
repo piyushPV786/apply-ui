@@ -24,6 +24,7 @@ import {
   CommonApi,
   CommonEnums,
 } from "../common/constant";
+import { GreenText } from "../student/style";
 
 const parentKey = "education";
 const program = `${parentKey}.programCode`;
@@ -33,10 +34,9 @@ const highSchoolName = `${parentKey}.highSchoolName`;
 const referredBy = `${parentKey}.referredById`;
 const agentName = `${parentKey}.agentCode`;
 const socialMediaId = `${parentKey}.socialMediaCode`;
-const programMode = `${parentKey}.programMode`;
-const programFees = `${parentKey}.programFees`;
 const studentTypeName = `${parentKey}.studentTypeCode`;
 const applicationFeesKey = `${parentKey}.applicationFees`;
+const internationDegree = `${parentKey}.isInternationDegree`;
 interface IEducationProps {
   highestQualifications: IOption[];
   programs: IOption[];
@@ -93,6 +93,7 @@ export const EducationForm = (props: IEducationProps) => {
   const agentNameVal = watch(agentName);
   const socialMediaVal = watch(socialMediaId);
   const studentTypeVal = watch(studentTypeName);
+  const internationDegreeVal = watch(internationDegree);
   const educationFormError = errors[parentKey] as any;
   const touchFields = touchedFields[parentKey];
   useEffect(() => {
@@ -280,6 +281,60 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
             </div>
             <div className="row">
+              <div className="col-md-4">
+                <div className="mb-4">
+                  <StyledLabel required>
+                    Are you an international degree holder?
+                  </StyledLabel>
+                  <div className="form-check form-check-inline">
+                    <input
+                      key={`${internationDegreeVal}yes`}
+                      className="form-check-input me-2"
+                      type="radio"
+                      {...(register(internationDegree, {
+                        required: true,
+                      }) as any)}
+                      value="yes"
+                      checked={internationDegreeVal === "yes"}
+                    />
+                    <label className="form-check-label">
+                      {internationDegreeVal === "yes" ? (
+                        <GreenText>Yes</GreenText>
+                      ) : (
+                        "Yes"
+                      )}
+                      <br />
+                    </label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <input
+                      key={`${internationDegreeVal}no`}
+                      className="form-check-input me-2"
+                      type="radio"
+                      {...(register(internationDegree, {
+                        required: true,
+                      }) as any)}
+                      value="no"
+                      checked={internationDegreeVal === "no"}
+                    />
+                    <label className="form-check-label">
+                      {internationDegreeVal === "No" ? (
+                        <GreenText>No</GreenText>
+                      ) : (
+                        "No"
+                      )}
+                      <br />
+                    </label>
+                  </div>
+
+                  {touchFields?.isInternationDegree &&
+                    educationFormError?.isInternationDegree && (
+                      <div className="invalid-feedback">
+                        International is required
+                      </div>
+                    )}
+                </div>
+              </div>
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel required>High School Name</StyledLabel>
