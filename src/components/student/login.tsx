@@ -50,7 +50,7 @@ const StudentLogin = () => {
     if (isProceed && isResendOtp) {
       timer = setTimeout(() => {
         setShowResendBtn(true);
-      }, 2000);
+      }, 60000);
     }
   }, [isProceed,isResendOtp]);
 
@@ -59,7 +59,6 @@ const StudentLogin = () => {
     parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 6 &&
     parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! <= 15;
   const onchangeOtp = (value: string) => setOtp(value);
-
   const onProceed = () => {
     setProceed(true);
     const number = parsePhoneNumber(mobileNumber, countryCode);

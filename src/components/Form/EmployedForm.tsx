@@ -11,10 +11,10 @@ import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
 import {
   formOptions,
-  isEmpty,
   isObjectEmpty,
   onlyAlphabets,
   onlyAlphaNumericSpace,
+  validateNumber,
 } from "../../Util/Util";
 import Image from "next/image";
 import EmployeeImg from "../../../public/assets/images/employeee.svg";
@@ -64,13 +64,15 @@ export const EmployedForm = (props: IEmployeProps) => {
   };
   const touchField = touchedFields[EmployementDetails] as any;
   const error = errors[EmployementDetails] as any;
-  const isEmployedNeed = isEmployed === "yes";
+  const isEmployedNeed = isEmployedVal === "yes";
   const isSelfEmployed = employmentStatusVal === "SELFEMPLOYED";
+
   useEffect(() => {
     if (!isObjectEmpty(isEmployerDetailExist) && props?.leadId) {
       setValue(isEmployed, "yes");
     }
   }, [isEmployerDetailExist]);
+
   return (
     <>
       <StyledAccordion>
@@ -265,6 +267,8 @@ export const EmployedForm = (props: IEmployeProps) => {
                       placeholder="Select Country Code*"
                       {...register(`${officeNumber}`, {
                         required: isEmployedNeed,
+                        validate: () =>
+                          validateNumber(officeNumberVal, countryCodeRef),
                       })}
                       onCountryChange={(value: any) => {
                         setCountryCode(value);
@@ -275,14 +279,16 @@ export const EmployedForm = (props: IEmployeProps) => {
                         uppdateMobNumber();
                       }}
                       onChange={(value) => {
-                        setValue(`${officeNumber}`, value);
+                        setValue(officeNumber, value, formOptions);
                       }}
                       value={officeNumberVal}
                     />
                     {touchField?.officeMobileNumber &&
                       error?.officeMobileNumber && (
                         <div className="invalid-feedback">
-                          Please enter office number
+                          {error?.officeMobileNumber.type === "validate"
+                            ? "you have entered an invalid number"
+                            : "Please enter office number"}
                         </div>
                       )}
                   </div>

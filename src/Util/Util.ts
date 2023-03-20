@@ -7,6 +7,7 @@ import {
 } from "../components/common/constant";
 import { ILeadFormValues } from "../components/common/types";
 import { AuthApi, CommonAPI, FinanceApi } from "../service/Axios";
+import { parsePhoneNumber } from "react-phone-number-input";
 const ignorKeys = {
   createdAt: "",
   deletedAt: "",
@@ -227,8 +228,14 @@ export const clearRoute = () => {
   sessionStorage.setItem("routeTo", "");
 };
 
+export const validateNumber = (number, countryCodeRef) =>
+  number &&
+  parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! >= 6 &&
+  parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! <= 15;
+
+
 export const transformDate = (date: Date, transformCustom?: boolean) => {
-  const month = transformCustom
+  const month:any = transformCustom
     ? date.getMonth()
     : date.toLocaleString("default", { month: "short" });
 
