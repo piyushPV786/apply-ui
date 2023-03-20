@@ -18,6 +18,8 @@ import {
 import Image from "next/image";
 import KinImg from "../../../public/assets/images/kin.svg";
 import _ from "lodash";
+import AdvanceDropDown from "../dropdown/Dropdown";
+import { IOption } from "../common/types";
 const KinDetails = "kin";
 const isKin = `${KinDetails}.isKin`;
 const fullName = `${KinDetails}.fullName`;
@@ -27,8 +29,9 @@ const phoneNumber = `${KinDetails}.mobileNumber`;
 const mobileCountryCode = `${KinDetails}.mobileCountryCode`;
 interface IKinForm {
   leadId: string;
+  relationData: IOption[];
 }
-export const KinDetailsForm = ({ leadId }: IKinForm) => {
+export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
   const {
     setValue,
     register,
@@ -121,20 +124,13 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
                 </div>
               </div>
               <div className="col-md-4">
-                <StyledLabel required>RelationShip</StyledLabel>
                 <div className="mb-4">
-                  <input
-                    className="form-control"
+                  <AdvanceDropDown
+                    options={relationData}
+                    label={"RelationShip"}
                     value={relationShipVal}
-                    defaultValue={relationShipVal}
-                    {...register(`${relationShip}`, { required: isKinNeed })}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const name = e.target.name;
-                      if (onlyAlphabets(value)) {
-                        setValue(name, value, formOptions);
-                      }
-                    }}
+                    name={relationShip}
+                    register={register}
                   />
                   {touchedField?.relation && error?.relation && (
                     <div className="invalid-feedback">
