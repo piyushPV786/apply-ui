@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Green, GreenFormHeading, Toaster } from "../common/common";
+import {
+  Green,
+  GreenFormHeading,
+  LoaderComponent,
+  Toaster,
+} from "../common/common";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer } from "../payment/payment";
 import Header from "../common/header";
@@ -20,6 +25,7 @@ import {
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [studentApplications, setStudentApplications] = useState<
     IApplication[]
   >([]);
@@ -28,6 +34,7 @@ export const ApplicationDashboard = (props: any) => {
     message: string;
     show: boolean;
   }>({ success: false, message: "", show: false });
+
   const router = useRouter();
 
   useEffect(() => {
@@ -40,12 +47,16 @@ export const ApplicationDashboard = (props: any) => {
     }
   }, []);
   const getStudentApplications = (studentId) => {
+    setLoading(true);
     AuthApi.get(`${CommonApi.SAVEUSER}/${studentId}/application`)
       .then(({ data: response }) =>
         getIntrestedQualificationPrograms(response?.data)
       )
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
   const getIntrestedQualificationPrograms = (application: [IApplication]) => {
@@ -181,122 +192,131 @@ export const ApplicationDashboard = (props: any) => {
   const { message, show, success } = showToast;
   return (
     <>
-      <ParentContainer>
-        <Header />
-        <div className="container-fluid application-page mt-5">
-          <div style={{ paddingBottom: "1rem" }}>
-            <PaymentContainer>
-              {studentId && studentApplications.length > 0 ? (
-                <div>
-                  <div className="row">
-                    <div className="col">
-                      <h2 className="app-header">My Applications</h2>
-                      <p className="grey-text">
-                        Here are all applications that you've applied through
-                        Regenesys
-                      </p>
-                    </div>
-                    <div className="col pe-0">
-                      <div className="d-flex justify-content-end">
-                        <StyledButton
-                          onClick={onApplyNow}
-                          title="Apply New Course"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    {studentApplications.map(
-                      (
-                        {
-                          status,
-                          applicationCode,
-                          programName,
-                          updatedAt,
-                          enrolmentCode,
-                          lead: {
-                            firstName,
-                            lastName,
-                            middleName = "",
-                            leadCode,
-                          },
-                          education,
-                          document,
-                        },
-                        idx
-                      ) => (
-                        <div key={applicationCode} className="col-md-4 mb-2">
-                          <ApplicationCard
-                            key={applicationCode}
-                            status={status}
-                            applicationNumber={applicationCode}
-                            name={`${firstName} ${middleName} ${lastName}`}
-                            programName={programName}
-                            onEdit={onEdit}
-                            onPay={onPay}
-                            onDownloadAcceptence={onDownloadAcceptence}
-                            onUploadDocuments={onUploadDocuments}
-                            onUploadBursaryDocuments={onUploadBursaryDocuments}
-                            leadCode={leadCode}
-                            studyModeCode={education?.studyModeCode}
-                            updatedAt={updatedAt}
-                            educationDetail={education}
-                            document={document}
-                            enrolmentCode={enrolmentCode}
-                          />
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="row">
-                    <div className="col-sm-12 col-lg-12 col-md-12">
-                      <div className=" d-flex justify-content-center text-center mb-2">
-                        <div
-                          style={{
-                            background: `${Green}`,
-                            borderRadius: "50%",
-                            padding: "1.5rem",
-                          }}
-                        >
-                          <Image
-                            width="60"
-                            height="60"
-                            src={ApplicationIcon}
-                            alt="Application Icon"
-                          />
-                        </div>
-                      </div>
-                      <div className="text-center w-100">
-                        <GreenFormHeading
-                          style={{ fontSize: "24px", color: "#000" }}
-                        >
-                          No application yet
-                        </GreenFormHeading>
-                        <p className="grey-text mt-2">
-                          Thank you for trusting Regenesys as your Educational
-                          Institution. Please Apply for your interested
-                          qualification now.
+      {isLoading ? (
+        <LoaderComponent />
+      ) : (
+        <ParentContainer>
+          <Header />
+          <div className="container-fluid application-page mt-5">
+            <div style={{ paddingBottom: "1rem" }}>
+              <PaymentContainer>
+                {studentId && studentApplications.length > 0 ? (
+                  <div>
+                    <div className="row">
+                      <div className="col">
+                        <h2 className="app-header">My Applications</h2>
+                        <p className="grey-text">
+                          Here are all applications that you've applied through
+                          Regenesys
                         </p>
-                        <StyledButton onClick={onApplyNow} title="Apply Now" />
+                      </div>
+                      <div className="col pe-0">
+                        <div className="d-flex justify-content-end">
+                          <StyledButton
+                            onClick={onApplyNow}
+                            title="Apply New Course"
+                          />
+                        </div>
                       </div>
                     </div>
+                    <div className="row">
+                      {studentApplications.map(
+                        (
+                          {
+                            status,
+                            applicationCode,
+                            programName,
+                            updatedAt,
+                            enrolmentCode,
+                            lead: {
+                              firstName,
+                              lastName,
+                              middleName = "",
+                              leadCode,
+                            },
+                            education,
+                            document,
+                          },
+                          idx
+                        ) => (
+                          <div key={applicationCode} className="col-md-4 mb-2">
+                            <ApplicationCard
+                              key={applicationCode}
+                              status={status}
+                              applicationNumber={applicationCode}
+                              name={`${firstName} ${middleName} ${lastName}`}
+                              programName={programName}
+                              onEdit={onEdit}
+                              onPay={onPay}
+                              onDownloadAcceptence={onDownloadAcceptence}
+                              onUploadDocuments={onUploadDocuments}
+                              onUploadBursaryDocuments={
+                                onUploadBursaryDocuments
+                              }
+                              leadCode={leadCode}
+                              studyModeCode={education?.studyModeCode}
+                              updatedAt={updatedAt}
+                              educationDetail={education}
+                              document={document}
+                              enrolmentCode={enrolmentCode}
+                            />
+                          </div>
+                        )
+                      )}
+                    </div>
                   </div>
-                </>
-              )}
-            </PaymentContainer>
+                ) : (
+                  <>
+                    <div className="row">
+                      <div className="col-sm-12 col-lg-12 col-md-12">
+                        <div className=" d-flex justify-content-center text-center mb-2">
+                          <div
+                            style={{
+                              background: `${Green}`,
+                              borderRadius: "50%",
+                              padding: "1.5rem",
+                            }}
+                          >
+                            <Image
+                              width="60"
+                              height="60"
+                              src={ApplicationIcon}
+                              alt="Application Icon"
+                            />
+                          </div>
+                        </div>
+                        <div className="text-center w-100">
+                          <GreenFormHeading
+                            style={{ fontSize: "24px", color: "#000" }}
+                          >
+                            No application yet
+                          </GreenFormHeading>
+                          <p className="grey-text mt-2">
+                            Thank you for trusting Regenesys as your Educational
+                            Institution. Please Apply for your interested
+                            qualification now.
+                          </p>
+                          <StyledButton
+                            onClick={onApplyNow}
+                            title="Apply Now"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </PaymentContainer>
+            </div>
           </div>
-        </div>
-        <Toaster
-          key={"id"}
-          message={message}
-          show={show}
-          success={success}
-          setShowToast={onToast}
-        />
-      </ParentContainer>
+          <Toaster
+            key={"id"}
+            message={message}
+            show={show}
+            success={success}
+            setShowToast={onToast}
+          />
+        </ParentContainer>
+      )}
     </>
   );
 };
