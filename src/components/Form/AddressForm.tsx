@@ -10,7 +10,7 @@ import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import AdvanceDropDown from "../dropdown/Dropdown";
-import { formOptions, onlyAlphabets, sortAscending } from "../../Util/Util";
+import { formOptions, onlyAlphaNumericSpace, onlyAlphabets, sortAscending } from "../../Util/Util";
 const Address = "address";
 const resPostalAddress = `${Address}[1].street`;
 const resCountry = `${Address}[1].country`;
@@ -80,6 +80,13 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     className="form-control"
                     id="postalAddress"
                     placeholder="e.g 10 church street"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphaNumericSpace(value)) {
+                        setValue(name, value, formOptions);
+                      }
+                    }}
                   />
                   {touchedField &&
                     error &&
@@ -251,6 +258,13 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       className="form-control"
                       id="postalAddress"
                       placeholder="e.g 10 church street"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphaNumericSpace(value)) {
+                          setValue(name, value, formOptions);
+                        }
+                      }}
                     />
                     {touchedField &&
                       error &&

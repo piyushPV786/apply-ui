@@ -44,6 +44,8 @@ interface IEducationProps {
   agentArr: IOption[];
   studyTypeData: IOption[];
   isApplicationEnrolled: boolean;
+  leadId: string;
+  setLoading: (loading: boolean) => void;
 }
 
 const FeeCard = (props: any) => {
@@ -84,6 +86,8 @@ export const EducationForm = (props: IEducationProps) => {
     socialMedias,
     studyTypeData,
     isApplicationEnrolled,
+    setLoading,
+    leadId,
   } = props;
   const programVal = watch(program);
   const studyModeVal = watch(studyMode);
@@ -98,6 +102,7 @@ export const EducationForm = (props: IEducationProps) => {
   const touchFields = touchedFields[parentKey];
   useEffect(() => {
     if (
+      leadId &&
       programVal &&
       programVal.length > 0 &&
       studyModeQualification.length === 0
@@ -105,13 +110,15 @@ export const EducationForm = (props: IEducationProps) => {
       getQualificationStudyModeData(programVal);
     }
   }, [programVal]);
+
   const getQualificationStudyModeData = async (programCode: string) => {
+    setLoading(true);
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
       .then((res) => {
         const courseFeesDetail = res?.data?.data;
         let applicationFees;
         courseFeesDetail.forEach((item) =>
-          item.studyModes.forEach((application, index) => {
+          item.studyModes.forEach((application) => {
             if (application.studyModeCode === "APPLICATION") {
               applicationFees = application;
             }
@@ -127,6 +134,9 @@ export const EducationForm = (props: IEducationProps) => {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
   const selectedStudyModeIndex =

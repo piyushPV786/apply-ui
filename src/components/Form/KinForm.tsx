@@ -14,6 +14,7 @@ import {
   isObjectEmpty,
   isValidEmail,
   onlyAlphabets,
+  validateNumber,
 } from "../../Util/Util";
 import Image from "next/image";
 import KinImg from "../../../public/assets/images/kin.svg";
@@ -170,7 +171,11 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                     countryCallingCodeEditable={false}
                     defaultCountry={countryCodeRef}
                     placeholder="Select Country Code*"
-                    {...register(`${phoneNumber}`, { required: isKinNeed })}
+                    {...register(`${phoneNumber}`, {
+                      required: isKinNeed,
+                      validate: () =>
+                        validateNumber(phoneNumberVal, countryCodeRef),
+                    })}
                     onCountryChange={(value: any) => {
                       setCountryCode(value);
                     }}
@@ -189,8 +194,9 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                   />
                   {touchedField?.mobileNumber && error?.mobileNumber && (
                     <div className="invalid-feedback">
-                      {error?.mobileNumber &&
-                        "you have entered an invalid number"}
+                      {error?.mobileNumber.type === "validate"
+                        ? "you have entered an invalid number"
+                        : " Please enter phone number"}
                     </div>
                   )}
                 </div>
