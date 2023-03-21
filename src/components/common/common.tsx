@@ -8,6 +8,8 @@ import {
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import { Snackbar } from "@material-ui/core";
 import { CommonEnums } from "./constant";
+import Image from "next/image";
+import Spinner from "../../../public/assets/images/spinner.svg";
 
 export const GreenFormHeading = styled.p`
   font-size: 17px;
@@ -168,3 +170,28 @@ export const MsgComponent = ({
     </>
   );
 };
+
+export const LoaderComponent = () => {
+  return (
+    <>
+      <LoadinContainer>
+        <div>
+          <Image src={Spinner} alt="spinner" />
+        </div>
+      </LoadinContainer>
+    </>
+  );
+};
+
+const LoadinContainer = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  cursor: pointer;
+  opacity: 0.6;
+  z-index: 999;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

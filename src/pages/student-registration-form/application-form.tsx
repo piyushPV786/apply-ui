@@ -4,7 +4,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import styled from "styled-components";
 import { Container, Snackbar } from "@material-ui/core";
 import StepperComponent from "../../components/stepper/stepper";
-import { Green } from "../../components/common/common";
+import { Green, LoaderComponent } from "../../components/common/common";
 import StyledButton from "../../components/button/button";
 import { AddressForm } from "../../components/Form/AddressForm";
 import { EducationForm } from "../../components/Form/EducationForm";
@@ -19,6 +19,7 @@ import {
 } from "../../components/common/types";
 import {
   getUploadDocumentUrl,
+  isValidFileType,
   mapFormData,
   mapFormDefaultValue,
   transformFormData,
@@ -41,15 +42,9 @@ import {
   RoutePaths,
 } from "../../components/common/constant";
 
-const isValidFileType = (files: any[]) => {
-  if (!files || files.length === 0) return [];
-  return files.filter((file) => file?.error === true);
-};
-
-const ApplicationForm = (props: any) => {
+const ApplicationForm = () => {
   const router = useRouter();
 
-  const [studentData, setStudentData] = useState<any>(null);
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
   const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
@@ -57,12 +52,10 @@ const ApplicationForm = (props: any) => {
     success: false,
     show: false,
   });
+  const [loading, setLoading] = useState<boolean>(false);
   const [leadId, setLeadId] = useState<string>("");
   const [activeStep, setActiveStep] = useState<any>(0);
-  const [isDocumentUploadDone, setDocumentUploadDone] =
-    useState<boolean>(false);
   const [masterData, setMasterData] = useState<IMasterData | null>(null);
-  const [leadDetail, setLeadDetail] = useState<any>(null);
   const [isApplicationEnrolled, setApllicationEnrolled] =
     useState<boolean>(false);
   const methods = useForm<ILeadFormValues>({
@@ -98,10 +91,6 @@ const ApplicationForm = (props: any) => {
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
 
   const navigateBack = () => {
-    // if (leadDetail?.isPaymentPending || leadDetail?.isDocumentPending) {
-    //   router.back();
-    //   return;
-    // }
     setSubmitted(false);
     setActiveStep((prevState: number) => prevState - 1);
   };
@@ -130,6 +119,7 @@ const ApplicationForm = (props: any) => {
     applicationCode: string,
     activeLeadDetail: any
   ) => {
+    setLoading(true);
     if (activeStep === MagicNumbers.TWO) {
       uploadStudentDocs();
       return;
@@ -179,9 +169,13 @@ const ApplicationForm = (props: any) => {
           show: true,
         });
         setSubmitted(false);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
   const updateUserAsDraft = (request, appCode: string) => {
+    setLoading(true);
     AuthApi.put(`${CommonApi.SAVEDRAFT}/${appCode}`, {
       ...request,
     })
@@ -200,9 +194,13 @@ const ApplicationForm = (props: any) => {
           message: err?.message,
           show: true,
         });
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
   const createDraft = (request, leadCode) => {
+    setLoading(true);
     request.lead.leadCode = leadCode;
     AuthApi.post(`${CommonApi.SAVEDRAFT}`, {
       ...request,
@@ -222,6 +220,9 @@ const ApplicationForm = (props: any) => {
           message: err?.message,
           show: true,
         });
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
   const submitFormData = (data: object, isDraftSave?: boolean) => {
@@ -344,7 +345,6 @@ const ApplicationForm = (props: any) => {
           showToast(true, "Docuuments Successfully Uploaded");
           setSubmitted(false);
           setActiveStep(2);
-          setDocumentUploadDone(true);
           setPaymentDone(true);
           setTimeout(() => {
             router.push(RoutePaths.Document_Success);
@@ -368,6 +368,7 @@ const ApplicationForm = (props: any) => {
   };
 
   const getMasterData = () => {
+    setLoading(true);
     AuthApi.get(CommonApi.GETMASTERDATA)
       .then(({ data }: any) => {
         setMasterData({ ...masterData, ...data?.data });
@@ -375,10 +376,13 @@ const ApplicationForm = (props: any) => {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
-
   const getUserDetail = () => {
+    setLoading(true);
     const isAuthenticate = JSON.parse(
       sessionStorage?.getItem("authenticate") as any
     );
@@ -401,7 +405,6 @@ const ApplicationForm = (props: any) => {
           const formData = { ...response?.data };
           transformFormData(formData);
           mapFormDefaultValue(formData, setValue);
-          setStudentData(response?.data);
           if (leadDetail?.isPaymentPending && routeTo !== "document") {
             setActiveStep(1);
             setSubmitted(true);
@@ -415,15 +418,18 @@ const ApplicationForm = (props: any) => {
           if (routeTo === "Document") {
             routeIfStepDone(routeTo); /// calling this if user coming back from payment success screen
           }
-          setLeadDetail(leadDetail);
         })
         .catch((err) => {
           console.log(err);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
 
   const getIntrestedQualificationPrograms = () => {
+    setLoading(true);
     AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
       .then(({ data }: any) => {
         setMasterData((prevState: any) => ({
@@ -431,10 +437,14 @@ const ApplicationForm = (props: any) => {
           programs: data.data as IOption[],
         }));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const onManagementStudentSubmit = () => {
+    setLoading(true);
     const applicationCode = JSON.parse(
       sessionStorage.getItem("activeLeadDetail")!
     )?.applicationCode;
@@ -462,6 +472,9 @@ const ApplicationForm = (props: any) => {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -503,262 +516,281 @@ const ApplicationForm = (props: any) => {
       return activeStep === MagicNumbers.TWO && !isValid && !isValidDocument;
     }
   };
-  return (
-    <MainContainer>
-      <Header />
-      <StepperContainer>
-        <StepperComponent
-          isFormSubmitted={isFormSubmitted}
-          isPaymentDone={isPaymentDone}
-          active={activeStep}
-        />
-      </StepperContainer>
-      <>
-        <FormProvider {...methods}>
-          <FormContainer>
-            {" "}
-            {activeStep === MagicNumbers.ZERO && (
-              <>
-                <div className="application-form">
-                  <div className="row">
-                    <form onSubmit={(data) => onSubmit(data, false)}>
-                      <PersonalInfoForm
-                        key="personalForm"
-                        genders={genders}
-                        nationalities={nationalities}
-                        homeLanguage={language}
-                        race={race}
-                      />
-                      <AddressForm
-                        key="AddressForm"
-                        leadId={leadId}
-                        countryData={countryData}
-                      />
-                      <EducationForm
-                        key="EducationForm"
-                        highestQualifications={highestQualifications}
-                        programs={programs}
-                        socialMedias={socialMedias}
-                        agentArr={agentData}
-                        studyTypeData={studyTypeData}
-                        isApplicationEnrolled={isApplicationEnrolled}
-                      />
-                      <SponsoredForm
-                        leadId={leadId}
-                        key="SponsoredForm"
-                        sponsorModeArr={sponsorModes}
-                        relationData={relationData}
-                      />
-                      <EmployedForm
-                        leadId={leadId}
-                        key="EmployedForm"
-                        employmentStatusArr={employmentStatus}
-                        employmentIndustries={employmentIndustries}
-                      />
-                      <KinDetailsForm  relationData={relationData} leadId={leadId} key="KinDetailsForm" />
-                    </form>
-                  </div>
-                </div>
-              </>
-            )}
-          </FormContainer>
-          <FormContainer>
-            {activeStep === MagicNumbers.ONE && (
-              <>
-                <Payment
-                  programs={programs}
-                  studyMode={studyModes}
-                  navigateNext={navigateNext}
-                  onSkipForNowOnPayment={onSkipForNowOnPayment}
-                  showToast={showToast}
-                  isManagementStudentType={isManagementStudentType}
-                  isApplicationEnrolled={isApplicationEnrolled}
-                />
-              </>
-            )}
-            {activeStep === MagicNumbers.TWO && (
-              <>
-                <DocumentUploadForm
-                  allFields={allFields}
-                  isValidDocument={isValidDocument}
-                  documentType={documentType}
-                  leadId={leadId}
-                  isApplicationEnrolled={isApplicationEnrolled}
-                />
-              </>
-            )}
-          </FormContainer>
-        </FormProvider>
-        <FooterConatiner className="container-fluid d-flex justify-content-center mt-1">
-          <div className="row">
-            <div className="col-md-12">
-              <>
-                {activeStep === MagicNumbers.ZERO && (
-                  <div className="form-check text-center">
-                    <input
-                      className="form-check-input me-2"
-                      type="checkbox"
-                      checked={allFields?.isAgreedTermsAndConditions}
-                      id="flexCheckDefault"
-                      {...register("isAgreedTermsAndConditions", {
-                        required: true,
-                      })}
-                    />
-                    <label className="form-check-label">
-                      <strong className="me-1">I have read and agreed</strong>
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: Green }}
-                        href="https://www.regenesys.net/terms-and-conditions/"
-                      >
-                        {" "}
-                        terms and condition?
-                      </a>
-                    </label>
-                  </div>
-                )}
 
-                {(activeStep === MagicNumbers.ZERO ||
-                  activeStep === MagicNumbers.TWO) && (
-                  <div className="mt-4 text-center">
-                    {!isApplicationEnrolled && (
-                      <>
-                        <>
-                          {activeStep == 2 && (
-                            <StyledButton
-                              onClick={onSkipForNowOnDocument}
-                              type="button"
-                              className="me-2 mb-1"
-                              isGreenWhiteCombination={true}
-                              title={"Skip for Now"}
-                            />
-                          )}
-                        </>
-                        {activeStep !== 2 && (
-                          <StyledButton
-                            onClick={() => onSubmit(getValues(), true)}
-                            type="button"
-                            disabled={!isDirty}
-                            isGreenWhiteCombination={true}
-                            title={"Save as Draft"}
+  const handleLoading = (loading: boolean) => {
+    setLoading(loading);
+  };
+  return (
+    <>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <MainContainer>
+          <Header />
+          <StepperContainer>
+            <StepperComponent
+              isFormSubmitted={isFormSubmitted}
+              isPaymentDone={isPaymentDone}
+              active={activeStep}
+            />
+          </StepperContainer>
+          <>
+            <FormProvider {...methods}>
+              <FormContainer>
+                {" "}
+                {activeStep === MagicNumbers.ZERO && (
+                  <>
+                    <div className="application-form">
+                      <div className="row">
+                        <form onSubmit={(data) => onSubmit(data, false)}>
+                          <PersonalInfoForm
+                            key="personalForm"
+                            genders={genders}
+                            nationalities={nationalities}
+                            homeLanguage={language}
+                            race={race}
                           />
+                          <AddressForm
+                            key="AddressForm"
+                            leadId={leadId}
+                            countryData={countryData}
+                          />
+                          <EducationForm
+                            key="EducationForm"
+                            highestQualifications={highestQualifications}
+                            programs={programs}
+                            socialMedias={socialMedias}
+                            agentArr={agentData}
+                            studyTypeData={studyTypeData}
+                            isApplicationEnrolled={isApplicationEnrolled}
+                            setLoading={handleLoading}
+                            leadId={leadId}
+                          />
+                          <SponsoredForm
+                            leadId={leadId}
+                            key="SponsoredForm"
+                            sponsorModeArr={sponsorModes}
+                            relationData={relationData}
+                          />
+                          <EmployedForm
+                            leadId={leadId}
+                            key="EmployedForm"
+                            employmentStatusArr={employmentStatus}
+                            employmentIndustries={employmentIndustries}
+                          />
+                          <KinDetailsForm
+                            relationData={relationData}
+                            leadId={leadId}
+                            key="KinDetailsForm"
+                          />
+                        </form>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </FormContainer>
+              <FormContainer>
+                {activeStep === MagicNumbers.ONE && (
+                  <>
+                    <Payment
+                      programs={programs}
+                      studyMode={studyModes}
+                      navigateNext={navigateNext}
+                      onSkipForNowOnPayment={onSkipForNowOnPayment}
+                      showToast={showToast}
+                      isManagementStudentType={isManagementStudentType}
+                      isApplicationEnrolled={isApplicationEnrolled}
+                      setLoading={handleLoading}
+                    />
+                  </>
+                )}
+                {activeStep === MagicNumbers.TWO && (
+                  <>
+                    <DocumentUploadForm
+                      allFields={allFields}
+                      isValidDocument={isValidDocument}
+                      documentType={documentType}
+                      leadId={leadId}
+                      isApplicationEnrolled={isApplicationEnrolled}
+                    />
+                  </>
+                )}
+              </FormContainer>
+            </FormProvider>
+            <FooterConatiner className="container-fluid d-flex justify-content-center mt-1">
+              <div className="row">
+                <div className="col-md-12">
+                  <>
+                    {activeStep === MagicNumbers.ZERO && (
+                      <div className="form-check text-center">
+                        <input
+                          className="form-check-input me-2"
+                          type="checkbox"
+                          checked={allFields?.isAgreedTermsAndConditions}
+                          id="flexCheckDefault"
+                          {...register("isAgreedTermsAndConditions", {
+                            required: true,
+                          })}
+                        />
+                        <label className="form-check-label">
+                          <strong className="me-1">
+                            I have read and agreed
+                          </strong>
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: Green }}
+                            href="https://www.regenesys.net/terms-and-conditions/"
+                          >
+                            {" "}
+                            terms and condition?
+                          </a>
+                        </label>
+                      </div>
+                    )}
+
+                    {(activeStep === MagicNumbers.ZERO ||
+                      activeStep === MagicNumbers.TWO) && (
+                      <div className="mt-4 text-center">
+                        {!isApplicationEnrolled && (
+                          <>
+                            <>
+                              {activeStep == 2 && (
+                                <StyledButton
+                                  onClick={onSkipForNowOnDocument}
+                                  type="button"
+                                  className="me-2 mb-1"
+                                  isGreenWhiteCombination={true}
+                                  title={"Skip for Now"}
+                                />
+                              )}
+                            </>
+                            {activeStep !== 2 && (
+                              <StyledButton
+                                onClick={() => onSubmit(getValues(), true)}
+                                type="button"
+                                disabled={!isDirty}
+                                isGreenWhiteCombination={true}
+                                title={"Save as Draft"}
+                              />
+                            )}
+                            &nbsp;&nbsp;&nbsp;
+                            <StyledButton
+                              onClick={() => {
+                                activeStep === 2
+                                  ? (submitFormData(allFields, false) as any)
+                                  : methods.handleSubmit(
+                                      (data) => onSubmit(data, false) as any
+                                    )();
+                              }}
+                              disabled={isValidForm()}
+                              title={activeStep < 2 ? "Save & Next" : "Submit"}
+                            />
+                          </>
                         )}
-                        &nbsp;&nbsp;&nbsp;
-                        <StyledButton
-                          onClick={() => {
-                            activeStep === 2
-                              ? (submitFormData(allFields, false) as any)
-                              : methods.handleSubmit(
+                        {isApplicationEnrolled && (
+                          <>
+                            <StyledButton
+                              onClick={() => {
+                                router.push(RoutePaths.Dashboard);
+                              }}
+                              isGreenWhiteCombination
+                              title={"Back to Dashboard"}
+                              className="me-3"
+                            />
+                            <StyledButton
+                              onClick={() => {
+                                methods.handleSubmit(
                                   (data) => onSubmit(data, false) as any
                                 )();
-                          }}
-                          disabled={isValidForm()}
-                          title={activeStep < 2 ? "Save & Next" : "Submit"}
-                        />
-                      </>
+                              }}
+                              disabled={!isValid}
+                              title={"Save"}
+                            />
+                          </>
+                        )}
+                        <StyleFooter>
+                          <span
+                            className="footer-text"
+                            style={{ color: "#131718" }}
+                          >
+                            Copyright @ 2015 - {year}{" "}
+                            <a href="https://www.regenesys.net/">
+                              Regenesys Business School
+                            </a>
+                          </span>
+                        </StyleFooter>
+                      </div>
                     )}
-                    {isApplicationEnrolled && (
-                      <>
+                  </>
+                  {activeStep === MagicNumbers.ONE && (
+                    <div className="mt-5 text-center">
+                      <StyledButton
+                        className="me-2"
+                        onClick={navigateBack}
+                        type="button"
+                        isGreenWhiteCombination={true}
+                        title={"Back"}
+                      />
+                      {isManagementStudentType && (
                         <StyledButton
                           onClick={() => {
-                            router.push(RoutePaths.Dashboard);
+                            onManagementStudentSubmit();
                           }}
-                          isGreenWhiteCombination
-                          title={"Back to Dashboard"}
-                          className="me-3"
+                          disabled={
+                            !allFields?.payment?.discountAmount ||
+                            Number(allFields?.payment?.discountAmount) === 0
+                          }
+                          title={"Submit"}
                         />
-                        <StyledButton
-                          onClick={() => {
-                            methods.handleSubmit(
-                              (data) => onSubmit(data, false) as any
-                            )();
-                          }}
-                          disabled={!isValid}
-                          title={"Save"}
-                        />
-                      </>
-                    )}
-                    <StyleFooter>
-                      <span
-                        className="footer-text"
-                        style={{ color: "#131718" }}
-                      >
-                        Copyright @ 2015 - {year}{" "}
-                        <a href="https://www.regenesys.net/">
-                          Regenesys Business School
-                        </a>
-                      </span>
-                    </StyleFooter>
-                  </div>
-                )}
-              </>
-              {activeStep === MagicNumbers.ONE && (
-                <div className="mt-5 text-center">
-                  <StyledButton
-                    className="me-2"
-                    onClick={navigateBack}
-                    type="button"
-                    isGreenWhiteCombination={true}
-                    title={"Back"}
-                  />
-                  {isManagementStudentType && (
-                    <StyledButton
-                      onClick={() => {
-                        onManagementStudentSubmit();
-                      }}
-                      disabled={
-                        !allFields?.payment?.discountAmount ||
-                        Number(allFields?.payment?.discountAmount) === 0
-                      }
-                      title={"Submit"}
-                    />
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
-          </div>
-        </FooterConatiner>
-      </>
-      {show && (
-        <Snackbar
-          autoHideDuration={1000}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          open={show}
-          onClose={() => {
-            setShowDraftSaveToast((prevState) => ({
-              ...prevState,
-              show: !show,
-            }));
-          }}
-          key={"bottom"}
-        >
-          <ToasterContainer success={success}>
-            <CheckCircleRoundedIcon
-              style={{ color: "#0eb276", fontSize: "30px" }}
-            />
-            <SuccessMsgContainer>
-              <StyledLink>
-                {success ? "Success" : "Error"}
-                <br />
-                <span
-                  style={{
-                    color: "black",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                  }}
-                >
-                  {message}
-                </span>
-              </StyledLink>
-            </SuccessMsgContainer>
-          </ToasterContainer>
-        </Snackbar>
+              </div>
+            </FooterConatiner>
+          </>
+          {show && (
+            <Snackbar
+              autoHideDuration={1000}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              open={show}
+              onClose={() => {
+                setShowDraftSaveToast((prevState) => ({
+                  ...prevState,
+                  show: !show,
+                }));
+              }}
+              key={"bottom"}
+            >
+              <ToasterContainer success={success}>
+                <CheckCircleRoundedIcon
+                  style={{ color: "#0eb276", fontSize: "30px" }}
+                />
+                <SuccessMsgContainer>
+                  <StyledLink>
+                    {success ? "Success" : "Error"}
+                    <br />
+                    <span
+                      style={{
+                        color: "black",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {message}
+                    </span>
+                  </StyledLink>
+                </SuccessMsgContainer>
+              </ToasterContainer>
+            </Snackbar>
+          )}
+        </MainContainer>
       )}
-    </MainContainer>
+    </>
   );
 };
 

@@ -99,7 +99,10 @@ export const isInvalidFileType = (type: string) => {
 export const uniqueArrayOfObject = (array: any[], key: string) => [
   ...(new Map(array.map((item) => [item[key], item])).values() as any),
 ];
-
+export const isValidFileType = (files: any[]) => {
+  if (!files || files.length === 0) return [];
+  return files.filter((file) => file?.error === true);
+};
 export const onlyAlphabets = (value: string) => /^[a-zA-Z ]*$/.test(value);
 export const onlyAlphaNumeric = (value: string) =>
   /^(?![0-9]*$)[a-zA-Z0-9]+$/.test(value);
