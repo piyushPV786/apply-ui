@@ -45,6 +45,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     setValue,
     register,
     watch,
+    unregister,
     formState: { errors, touchedFields },
   } = useFormContext();
 
@@ -73,6 +74,14 @@ export const EmployedForm = (props: IEmployeProps) => {
     }
   }, [isEmployerDetailExist]);
 
+  useEffect(() => {
+    if (!isEmployedNeed) {
+      unregister(officeNumber, {
+        keepError: false,
+        keepIsValid: true,
+      });
+    }
+  }, [isEmployedNeed]);
   return (
     <>
       <StyledAccordion>

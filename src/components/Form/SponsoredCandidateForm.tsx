@@ -46,6 +46,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     setValue,
     register,
     watch,
+    unregister,
     formState: { errors, touchedFields },
   } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
@@ -89,6 +90,15 @@ export const SponsoredForm = (props: ISponsorProps) => {
       setValue(isSponsored, "yes", formOptions);
     }
   }, [isSponserDetailExist]);
+
+  useEffect(() => {
+    if (!isSponserNeed) {
+      unregister(sponsorPhoneNumber, {
+        keepError: false,
+        keepIsValid: true,
+      });
+    }
+  }, [isSponserNeed]);
   const isRequired =
     sponsorModeVal?.toLowerCase() === CommonEnums.EMPLOYEE_BURSARY;
   const isGuardian = sponsorModeVal?.toLowerCase() === CommonEnums.GUARDIAN;
@@ -320,7 +330,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                           disabled={disablePhoneOnSelfSponser}
                           onCountryChange={(value: any) => {
                             !disablePhoneOnSelfSponser && setCountryCode(value);
-                        }}
+                          }}
                           onBlur={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
