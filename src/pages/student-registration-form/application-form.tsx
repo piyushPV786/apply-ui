@@ -563,7 +563,6 @@ const ApplicationForm = () => {
                             agentArr={agentData}
                             studyTypeData={studyTypeData}
                             isApplicationEnrolled={isApplicationEnrolled}
-                            setLoading={handleLoading}
                             leadId={leadId}
                           />
                           <SponsoredForm

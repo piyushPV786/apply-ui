@@ -25,6 +25,7 @@ import {
   CommonEnums,
 } from "../common/constant";
 import { GreenText } from "../student/style";
+import Spinner from "../../../public/assets/images/spinner.svg";
 
 const parentKey = "education";
 const program = `${parentKey}.programCode`;
@@ -45,7 +46,6 @@ interface IEducationProps {
   studyTypeData: IOption[];
   isApplicationEnrolled: boolean;
   leadId: string;
-  setLoading: (loading: boolean) => void;
 }
 
 const FeeCard = (props: any) => {
@@ -79,6 +79,7 @@ export const EducationForm = (props: IEducationProps) => {
   const [studyModeQualification, setStudyModeQualification] = useState<
     IStudyModeQualification[]
   >([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     agentArr,
     highestQualifications,
@@ -86,7 +87,6 @@ export const EducationForm = (props: IEducationProps) => {
     socialMedias,
     studyTypeData,
     isApplicationEnrolled,
-    setLoading,
     leadId,
   } = props;
   const programVal = watch(program);
@@ -194,6 +194,16 @@ export const EducationForm = (props: IEducationProps) => {
                   )}
                 </div>
               </div>
+              {loading && (
+                <div className="col-md-4">
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: "100px" }}
+                  >
+                    <Image src={Spinner} alt="spinner" />
+                  </div>
+                </div>
+              )}
               {studyModeQualification.length > 0 && (
                 <div className="col-md-4">
                   <StyledLabel required>Courses & Fee</StyledLabel>
