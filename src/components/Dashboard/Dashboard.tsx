@@ -360,6 +360,8 @@ function ApplicationCard({
   const payBtnTitle = isAcceptedApplication
     ? "Pay Program Fee"
     : "Pay Application Fee";
+
+  const showUploadBtn = status.includes(CommonEnums.APP_FEE_VER_PEND);
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
@@ -431,6 +433,16 @@ function ApplicationCard({
                 title={payBtnTitle}
               />
             )}{" "}
+            {showUploadBtn && (
+              <StyledButton
+                onClick={() =>
+                  onUploadDocuments(applicationNumber, leadCode, true)
+                }
+                isUploadBtn
+                className="card-button"
+                title="Upload Document"
+              />
+            )}
             {showDocumentUploadBtn && (
               <StyledButton
                 onClick={() =>
