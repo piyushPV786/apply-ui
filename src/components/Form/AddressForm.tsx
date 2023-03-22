@@ -10,7 +10,12 @@ import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import AdvanceDropDown from "../dropdown/Dropdown";
-import { formOptions, onlyAlphaNumericSpace, onlyAlphabets, sortAscending } from "../../Util/Util";
+import {
+  formOptions,
+  onlyAlphabetsOrNumbers,
+  onlyAlphabets,
+  sortAscending,
+} from "../../Util/Util";
 const Address = "address";
 const resPostalAddress = `${Address}[1].street`;
 const resCountry = `${Address}[1].country`;
@@ -47,7 +52,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
   const postalCityVal: string = watch(postalCity);
   const postalStateVal: string = watch(postalState);
   useEffect(() => {
-    setValue(`${addressType}`, "POSTAL",);
+    setValue(`${addressType}`, "POSTAL");
     setValue(`${addressTypeResidential}`, "RESIDENTIAL");
   }, [leadId]);
 
@@ -83,7 +88,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
-                      if (onlyAlphaNumericSpace(value)) {
+                      if (onlyAlphabetsOrNumbers(value)) {
                         setValue(name, value, formOptions);
                       }
                     }}
@@ -110,7 +115,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     name={postalCountry}
                     onChange={(e: any) => {
                       const value = e.target.value;
-                      setValue(postalCountry, value,formOptions);
+                      setValue(postalCountry, value, formOptions);
                     }}
                     label="Country"
                   />
@@ -230,11 +235,23 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                         formOptions
                       );
                       if (e?.currentTarget?.checked) {
-                        setValue(`${resPostalAddress}`, postalAddressVal, formOptions);
-                        setValue(`${resPostalCode}`, postalZipCodeVal, formOptions);
+                        setValue(
+                          `${resPostalAddress}`,
+                          postalAddressVal,
+                          formOptions
+                        );
+                        setValue(
+                          `${resPostalCode}`,
+                          postalZipCodeVal,
+                          formOptions
+                        );
                         setValue(`${resCity}`, postalCityVal, formOptions);
                         setValue(`${resState}`, postalStateVal, formOptions);
-                        setValue(`${resCountry}`, postalCountryVal, formOptions);
+                        setValue(
+                          `${resCountry}`,
+                          postalCountryVal,
+                          formOptions
+                        );
                       }
                     }}
                   />
@@ -261,7 +278,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;
-                        if (onlyAlphaNumericSpace(value)) {
+                        if (onlyAlphabetsOrNumbers(value)) {
                           setValue(name, value, formOptions);
                         }
                       }}
@@ -289,7 +306,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       mapKey="name"
                       onChange={(e: any) => {
                         const value = e.target.value;
-                        setValue(resCountry, value,formOptions);
+                        setValue(resCountry, value, formOptions);
                       }}
                     />
                     {touchedField &&
