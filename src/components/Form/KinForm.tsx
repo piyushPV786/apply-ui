@@ -14,10 +14,13 @@ import {
   isObjectEmpty,
   isValidEmail,
   onlyAlphabets,
+  validateNumber,
 } from "../../Util/Util";
 import Image from "next/image";
 import KinImg from "../../../public/assets/images/kin.svg";
 import _ from "lodash";
+import AdvanceDropDown from "../dropdown/Dropdown";
+import { IOption } from "../common/types";
 const KinDetails = "kin";
 const isKin = `${KinDetails}.isKin`;
 const fullName = `${KinDetails}.fullName`;
@@ -27,8 +30,9 @@ const phoneNumber = `${KinDetails}.mobileNumber`;
 const mobileCountryCode = `${KinDetails}.mobileCountryCode`;
 interface IKinForm {
   leadId: string;
+  relationData: IOption[];
 }
-export const KinDetailsForm = ({ leadId }: IKinForm) => {
+export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
   const {
     setValue,
     register,
@@ -121,20 +125,13 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
                 </div>
               </div>
               <div className="col-md-4">
-                <StyledLabel required>RelationShip</StyledLabel>
                 <div className="mb-4">
-                  <input
-                    className="form-control"
+                  <AdvanceDropDown
+                    options={relationData}
+                    label={"RelationShip"}
                     value={relationShipVal}
-                    defaultValue={relationShipVal}
-                    {...register(`${relationShip}`, { required: isKinNeed })}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const name = e.target.name;
-                      if (onlyAlphabets(value)) {
-                        setValue(name, value, formOptions);
-                      }
-                    }}
+                    name={relationShip}
+                    register={register}
                   />
                   {touchedField?.relation && error?.relation && (
                     <div className="invalid-feedback">
@@ -174,7 +171,11 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
                     countryCallingCodeEditable={false}
                     defaultCountry={countryCodeRef}
                     placeholder="Select Country Code*"
-                    {...register(`${phoneNumber}`, { required: isKinNeed })}
+                    {...register(`${phoneNumber}`, {
+                      required: isKinNeed,
+                      validate: () =>
+                        validateNumber(phoneNumberVal, countryCodeRef),
+                    })}
                     onCountryChange={(value: any) => {
                       setCountryCode(value);
                     }}
@@ -193,8 +194,9 @@ export const KinDetailsForm = ({ leadId }: IKinForm) => {
                   />
                   {touchedField?.mobileNumber && error?.mobileNumber && (
                     <div className="invalid-feedback">
-                      {error?.mobileNumber &&
-                        "you have entered an invalid number"}
+                      {error?.mobileNumber.type === "validate"
+                        ? "you have entered an invalid number"
+                        : " Please enter phone number"}
                     </div>
                   )}
                 </div>

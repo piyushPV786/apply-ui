@@ -7,6 +7,7 @@ import {
 } from "../components/common/constant";
 import { ILeadFormValues } from "../components/common/types";
 import { AuthApi, CommonAPI, FinanceApi } from "../service/Axios";
+import { parsePhoneNumber } from "react-phone-number-input";
 const ignorKeys = {
   createdAt: "",
   deletedAt: "",
@@ -98,7 +99,10 @@ export const isInvalidFileType = (type: string) => {
 export const uniqueArrayOfObject = (array: any[], key: string) => [
   ...(new Map(array.map((item) => [item[key], item])).values() as any),
 ];
-
+export const isValidFileType = (files: any[]) => {
+  if (!files || files.length === 0) return [];
+  return files.filter((file) => file?.error === true);
+};
 export const onlyAlphabets = (value: string) => /^[a-zA-Z ]*$/.test(value);
 export const onlyAlphaNumeric = (value: string) =>
   /^(?![0-9]*$)[a-zA-Z0-9]+$/.test(value);
@@ -227,8 +231,14 @@ export const clearRoute = () => {
   sessionStorage.setItem("routeTo", "");
 };
 
+export const validateNumber = (number, countryCodeRef) =>
+  number &&
+  parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! >= 6 &&
+  parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! <= 15;
+
+
 export const transformDate = (date: Date, transformCustom?: boolean) => {
-  const month = transformCustom
+  const month:any = transformCustom
     ? date.getMonth()
     : date.toLocaleString("default", { month: "short" });
 

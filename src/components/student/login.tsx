@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import OtpInput from "../Input/otpInput";
 import PhoneInput, {
   parsePhoneNumber,
-  isValidPhoneNumber,
 } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import axios from "../../service/Axios";
@@ -17,9 +16,7 @@ import {
   Heading,
   Item,
   StyleFooter,
-  SuccessMsgContainer,
   Title,
-  ToasterContainer,
 } from "./style";
 import styled from "styled-components";
 import { CommonApi, RoutePaths } from "../common/constant";
@@ -32,7 +29,9 @@ const StudentLogin = () => {
   const [isProceed, setProceed] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<any>(null);
   const [showToast, setToast] = useState<boolean>(false);
-  
+  const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
+  const [isResendOtp, setResend] = useState<boolean>(false);
+
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
@@ -45,11 +44,20 @@ const StudentLogin = () => {
       router.push(RoutePaths.Dashboard);
     }
   }, []);
+
+  useEffect(() => {
+    let timer;
+    if (isProceed && isResendOtp) {
+      timer = setTimeout(() => {
+        setShowResendBtn(true);
+      }, 60000);
+    }
+  }, [isProceed,isResendOtp]);
+
   const isNumberValid =
     mobileNumber &&
     parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 6 &&
     parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! <= 15;
-  const isValidNumber = isValidPhoneNumber(mobileNumber, countryCode);
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = () => {
     setProceed(true);
@@ -66,6 +74,7 @@ const StudentLogin = () => {
           countryCode: countryCode,
         };
         sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
+        setResend(true);
         setProceed(true);
         setToast(true);
       })
@@ -134,6 +143,7 @@ const StudentLogin = () => {
       </div>
     );
   };
+
   const EnterOtp = () => {
     return (
       <div>
@@ -188,13 +198,19 @@ const StudentLogin = () => {
                 }}
                 title="Verify"
               />
-              <StyledLink className="link-text" onClick={resendOtp}>
-                Resend OTP
-              </StyledLink>
+              {showResendBtn && (
+                <StyledLink className="link-text" onClick={resendOtp}>
+                  Resend OTP
+                </StyledLink>
+              )}
               <br />
               <StyledLink
                 className="link-text"
-                onClick={() => setProceed(!isProceed)}
+                onClick={() => {
+                  setProceed(!isProceed);
+                  setResend(false);
+                  setShowResendBtn(false);
+                }}
               >
                 Change Mobile Number
               </StyledLink>
@@ -206,7 +222,6 @@ const StudentLogin = () => {
   };
 
   const verifyNumber = () => {
-    // setToast(true);
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
@@ -227,7 +242,7 @@ const StudentLogin = () => {
           router.push(RoutePaths.Dashboard);
         }, 1500);
       })
-      .catch(({  }) => {
+      .catch(({}) => {
         setErrorMsg({
           success: false,
           message: "Sorry! The entered OTP is invalid. Please try again",
@@ -238,11 +253,12 @@ const StudentLogin = () => {
   const resendOtp = () => {
     setErrorMsg({ success: true, message: "OTP re-sent successfully" });
     setOtp("");
+    setShowResendBtn(true);
+    setResend(true);
   };
 
   const today = new Date();
   const year = today.getFullYear();
-
 
   return (
     <>
@@ -266,39 +282,6 @@ const StudentLogin = () => {
               <a href="https://www.regenesys.net/">Regenesys Business School</a>
             </span>
           </StyleFooter>
-          {/* <Snackbar
-            autoHideDuration={2000}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            open={showToast}
-            onClose={() => {
-              setToast(!showToast);
-            }}
-            key={"bottom"}
-          >
-            <ToasterContainer success={success}>
-              <CheckCircleRoundedIcon
-                style={{ color: "#0eb276", fontSize: "30px" }}
-              />
-              <SuccessMsgContainer>
-                <StyledLink>
-                  {success ? "Success" : "Error"}
-                  <br />
-                  <span
-                    style={{
-                      color: "black",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {message}
-                  </span>
-                </StyledLink>
-              </SuccessMsgContainer>
-            </ToasterContainer>
-          </Snackbar> */}
         </>
       </ImageContainer>
     </>

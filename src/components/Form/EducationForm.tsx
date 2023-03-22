@@ -25,6 +25,7 @@ import {
   CommonEnums,
 } from "../common/constant";
 import { GreenText } from "../student/style";
+import Spinner from "../../../public/assets/images/spinner.svg";
 
 const parentKey = "education";
 const program = `${parentKey}.programCode`;
@@ -44,6 +45,7 @@ interface IEducationProps {
   agentArr: IOption[];
   studyTypeData: IOption[];
   isApplicationEnrolled: boolean;
+  leadId: string;
 }
 
 const FeeCard = (props: any) => {
@@ -77,6 +79,7 @@ export const EducationForm = (props: IEducationProps) => {
   const [studyModeQualification, setStudyModeQualification] = useState<
     IStudyModeQualification[]
   >([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     agentArr,
     highestQualifications,
@@ -84,6 +87,7 @@ export const EducationForm = (props: IEducationProps) => {
     socialMedias,
     studyTypeData,
     isApplicationEnrolled,
+    leadId,
   } = props;
   const programVal = watch(program);
   const studyModeVal = watch(studyMode);
@@ -98,6 +102,7 @@ export const EducationForm = (props: IEducationProps) => {
   const touchFields = touchedFields[parentKey];
   useEffect(() => {
     if (
+      leadId &&
       programVal &&
       programVal.length > 0 &&
       studyModeQualification.length === 0
@@ -105,13 +110,15 @@ export const EducationForm = (props: IEducationProps) => {
       getQualificationStudyModeData(programVal);
     }
   }, [programVal]);
+
   const getQualificationStudyModeData = async (programCode: string) => {
+    setLoading(true);
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
       .then((res) => {
         const courseFeesDetail = res?.data?.data;
         let applicationFees;
         courseFeesDetail.forEach((item) =>
-          item.studyModes.forEach((application, index) => {
+          item.studyModes.forEach((application) => {
             if (application.studyModeCode === "APPLICATION") {
               applicationFees = application;
             }
@@ -127,6 +134,9 @@ export const EducationForm = (props: IEducationProps) => {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
   const selectedStudyModeIndex =
@@ -184,6 +194,16 @@ export const EducationForm = (props: IEducationProps) => {
                   )}
                 </div>
               </div>
+              {loading && (
+                <div className="col-md-4">
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: "100px" }}
+                  >
+                    <Image src={Spinner} alt="spinner" />
+                  </div>
+                </div>
+              )}
               {studyModeQualification.length > 0 && (
                 <div className="col-md-4">
                   <StyledLabel required>Courses & Fee</StyledLabel>
@@ -286,7 +306,7 @@ export const EducationForm = (props: IEducationProps) => {
                   <StyledLabel required>
                     Are you an international degree holder?
                   </StyledLabel>
-                  <div className="form-check form-check-inline">
+                  <div className=" ms-3 form-check form-check-inline">
                     <input
                       key={`${internationDegreeVal}yes`}
                       className="form-check-input me-2"

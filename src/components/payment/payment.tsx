@@ -77,6 +77,7 @@ const Payment = (props: any) => {
         const selectedProgramCode = await getQualificationStudyModeData(
           programDetails?.programCode
         );
+
         setFeeOptions(
           selectedProgramCode[0]?.studyModes.find(
             (item) => item.studyModeCode === selectedStudyMode
@@ -91,6 +92,7 @@ const Payment = (props: any) => {
     selectedNationality && getCurrencyConversion();
   }, [selectedProgram]);
   const getCurrencyConversion = () => {
+    props.setLoading(true);
     FinanceApi.get(`${CommonApi.GETCURRENCYCONVERSION}${selectedNationality}`)
       .then(({ data: res }) => {
         if (res.data) {
@@ -105,6 +107,9 @@ const Payment = (props: any) => {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        props.setLoading(false);
       });
     const existingPromoCode = sessionStorage.getItem("lastPromoCode");
     if (existingPromoCode) {
@@ -127,6 +132,7 @@ const Payment = (props: any) => {
   };
   const submitPaymentDocs = async () => {
     let count = 0;
+    props.setLoading(true);
     setPaymentDocSubmit(true);
     await Promise.all(
       paymentDocs.map((file) => {
@@ -163,6 +169,9 @@ const Payment = (props: any) => {
         setPaymentDocSubmit(false);
         props.showToast(false, "Something went wrong");
         console.log(err);
+      })
+      .finally(() => {
+        props.setLoading(false);
       });
   };
   const onPaymentDocumentUpload = (files: any) => {
@@ -174,6 +183,8 @@ const Payment = (props: any) => {
     setValue("payment.paymentProof", uploadedFiles);
   };
   const applyDiscount = async () => {
+    props.setLoading(true);
+
     const appCode = getApplicationCode();
     const result: any = await applyDiscountCode(
       appCode,
@@ -188,6 +199,7 @@ const Payment = (props: any) => {
       allFields?.education?.studentTypeCode?.toLowerCase() ===
         CommonEnums.MANAGEMENT
     ) {
+      props.setLoading(false);
       setCouponApplied(true);
       setManagementPromoCode(true);
       setValue("payment.discountCode", promoCode);
@@ -195,6 +207,7 @@ const Payment = (props: any) => {
       setValue("payment.discountedFee", "0.00");
       props.showToast(true, "Management Code Applied");
     } else if (result?.statusCode === 200 && result?.data?.percent) {
+      props.setLoading(false);
       setManagementPromoCode(false);
       setCouponApplied(true);
       const { agentCode, percent, discountCode } = result?.data;
@@ -205,6 +218,7 @@ const Payment = (props: any) => {
       sessionStorage.setItem("lastPromoCode", promoCode);
       props.showToast(true, result?.message);
     } else {
+      props.setLoading(false);
       props.showToast(false, "Invalid Code");
     }
   };

@@ -18,6 +18,7 @@ import {
   isObjectEmpty,
   isValidEmail,
   onlyAlphabets,
+  validateNumber,
 } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
@@ -307,6 +308,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                           {...register(`${sponsorPhoneNumber}`, {
                             required:
                               !isSelfSponsored && isSponserNeed && isRequired,
+                            validate: () =>
+                              validateNumber(
+                                sponsorPhoneNumberVal,
+                                countryCodeRef
+                              ),
                           })}
                           countryCallingCodeEditable={false}
                           defaultCountry={countryCodeRef}
@@ -314,21 +320,27 @@ export const SponsoredForm = (props: ISponsorProps) => {
                           disabled={disablePhoneOnSelfSponser}
                           onCountryChange={(value: any) => {
                             !disablePhoneOnSelfSponser && setCountryCode(value);
-                          }}
+                        }}
                           onBlur={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
                             uppdateMobNumber();
                           }}
                           onChange={(value) => {
-                            setValue(`${sponsorPhoneNumber}`, value);
+                            setValue(
+                              `${sponsorPhoneNumber}`,
+                              value,
+                              formOptions
+                            );
                           }}
                           value={sponsorPhoneNumberVal}
                         />
                         {touchedField?.sponsorMobileNumber &&
                           error?.sponsorMobileNumber && (
                             <div className="invalid-feedback">
-                              Please enter phone number
+                              {error?.sponsorMobileNumber.type === "validate"
+                                ? "you have entered an invalid number"
+                                : " Please enter phone number"}
                             </div>
                           )}
                       </div>
