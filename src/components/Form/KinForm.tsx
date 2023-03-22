@@ -37,6 +37,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
     setValue,
     register,
     watch,
+    unregister,
     formState: { errors, touchedFields },
   } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
@@ -57,6 +58,15 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
   useEffect(() => {
     if (!isObjectEmpty(isKinDetailExist) && leadId) {
       setValue(isKin, "yes", formOptions);
+    }
+  }, [isKinDetailExist]);
+
+  useEffect(() => {
+    if (!isKinNeed) {
+      unregister(phoneNumber, {
+        keepError: false,
+        keepIsValid: true,
+      });
     }
   }, [isKinDetailExist]);
   return (
@@ -132,6 +142,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                     value={relationShipVal}
                     name={relationShip}
                     register={register}
+                    required={isKinNeed}
                   />
                   {touchedField?.relation && error?.relation && (
                     <div className="invalid-feedback">
