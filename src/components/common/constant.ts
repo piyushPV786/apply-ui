@@ -7,7 +7,7 @@ export enum CommonEnums {
   APP_FEE_DOC_VER_PEND = "APP-FEE-DOC-VER-PEND",
   APP_FEE_VER_PEND="APP-FEE-VER-PEND",
   RESUB_APP_DOC = "RESUB-APP-DOC",
-  RMAT_PENDING ="RMAT_PENDING",
+  RMAT_PENDING ="RMAT-PENDING",
   MANAGEMENT = "management",
   BURSARY = "bursary",
   EMPLOYEE_BURSARY = "empbursary",
