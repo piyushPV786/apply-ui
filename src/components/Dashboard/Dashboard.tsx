@@ -361,6 +361,8 @@ function ApplicationCard({
     ? "Pay Program Fee"
     : "Pay Application Fee";
 
+  const showRAMTBtn = status.includes(CommonEnums.RMAT_PENDING);
+
   const showUploadBtn = status.includes(CommonEnums.APP_FEE_VER_PEND);
   return (
     <>
@@ -423,6 +425,7 @@ function ApplicationCard({
                 }
               />
             )}
+            {showRAMTBtn && <StyledButton isRMATBtn title="Take RMAT Test" />}
             {showPayBtn && (
               <StyledButton
                 onClick={() =>
