@@ -108,6 +108,8 @@ export const onlyAlphaNumeric = (value: string) =>
   /^(?![0-9]*$)[a-zA-Z0-9]+$/.test(value);
 export const onlyAlphaNumericSpace = (value: string) =>
   /^(?![0-9]*$)[a-zA-Z0-9 ]+$/.test(value);
+export const onlyAlphabetsOrNumbers = (value: string) =>
+  /^[A-Za-z0-9 ]*$/.test(value);
 
 export const GetPaymentImage = (type: string) => {
   const imgUrl = "/assets/images";
@@ -236,9 +238,8 @@ export const validateNumber = (number, countryCodeRef) =>
   parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! >= 6 &&
   parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! <= 15;
 
-
 export const transformDate = (date: Date, transformCustom?: boolean) => {
-  const month:any = transformCustom
+  const month: any = transformCustom
     ? date.getMonth()
     : date.toLocaleString("default", { month: "short" });
 

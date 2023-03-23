@@ -306,7 +306,8 @@ export const EducationForm = (props: IEducationProps) => {
                   <StyledLabel required>
                     Are you an international degree holder?
                   </StyledLabel>
-                  <div className=" ms-3 form-check form-check-inline">
+                  <br />
+                  <div className="form-check form-check-inline">
                     <input
                       key={`${internationDegreeVal}yes`}
                       className="form-check-input me-2"
