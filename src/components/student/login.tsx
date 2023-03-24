@@ -210,6 +210,7 @@ const StudentLogin = () => {
                   setProceed(!isProceed);
                   setResend(false);
                   setShowResendBtn(false);
+                  setOtp("")
                 }}
               >
                 Change Mobile Number
