@@ -92,10 +92,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
   }, [isSponserDetailExist]);
 
   useEffect(() => {
-    const userNumberDetail = JSON.parse(
-      sessionStorage.getItem("studentMobile") as any
-    );
-    setCountryCode(userNumberDetail?.countryCode);
+    if (!props?.leadId) {
+      const userNumberDetail = JSON.parse(
+        sessionStorage.getItem("studentMobile") as any
+      );
+      setCountryCode(userNumberDetail?.countryCode);
+    }
     if (!isSponserNeed) {
       unregister(sponsorPhoneNumber, {
         keepError: false,
