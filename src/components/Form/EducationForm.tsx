@@ -111,6 +111,19 @@ export const EducationForm = (props: IEducationProps) => {
     }
   }, [programVal]);
 
+  useEffect(() => {
+    setValue(internationDegree, internationDegreeVal, formOptions);
+  }, [internationDegreeVal]);
+
+  const handleInternationAccordian = (state: string) => {
+    if (state === "yes") {
+      setValue(internationDegree, "true", formOptions);
+    } else if (state === "no") {
+      setValue(internationDegree, "false", formOptions);
+      console.log("no", internationDegreeVal);
+    }
+  };
+
   const getQualificationStudyModeData = async (programCode: string) => {
     setLoading(true);
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
@@ -311,15 +324,16 @@ export const EducationForm = (props: IEducationProps) => {
                     <input
                       key={`${internationDegreeVal}yes`}
                       className="form-check-input me-2"
+                      onClick={() => handleInternationAccordian("yes")}
                       type="radio"
                       {...(register(internationDegree, {
                         required: true,
                       }) as any)}
-                      value="yes"
-                      checked={internationDegreeVal === "yes"}
+                      value="true"
+                      checked={internationDegreeVal === "true"}
                     />
                     <label className="form-check-label">
-                      {internationDegreeVal === "yes" ? (
+                      {internationDegreeVal === "true" ? (
                         <GreenText>Yes</GreenText>
                       ) : (
                         "Yes"
@@ -331,15 +345,16 @@ export const EducationForm = (props: IEducationProps) => {
                     <input
                       key={`${internationDegreeVal}no`}
                       className="form-check-input me-2"
+                      onClick={() => handleInternationAccordian("no")}
                       type="radio"
                       {...(register(internationDegree, {
                         required: true,
                       }) as any)}
-                      value="no"
-                      checked={internationDegreeVal === "no"}
+                      value="false"
+                      checked={internationDegreeVal === "false"}
                     />
                     <label className="form-check-label">
-                      {internationDegreeVal === "No" ? (
+                      {internationDegreeVal === "false" ? (
                         <GreenText>No</GreenText>
                       ) : (
                         "No"

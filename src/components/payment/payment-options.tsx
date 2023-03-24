@@ -33,13 +33,14 @@ const PaymentOption = (props: any) => {
     }
   };
 
-  const filteredPaymentTypes = Object.values(
-    NationalityEnum
-  ).includes(allFields?.lead?.nationality)
+  const filteredPaymentTypes = Object.values(NationalityEnum).includes(
+    allFields?.lead?.nationality
+  )
     ? PaymentTypes
     : PaymentTypes.filter((item) => item.name === "Payu");
 
   const onPayuPayment = () => {
+    props.setLoading(true);
     const payload = {
       amount: Number(props?.totalAmount) || 0,
       email: allFields?.lead?.email,
@@ -58,6 +59,9 @@ const PaymentOption = (props: any) => {
       })
       .catch((err) => {
         console.error(err, "errreererer");
+      })
+      .finally(() => {
+        props.setLoading(false);
       });
   };
   return (
@@ -93,12 +97,12 @@ const PaymentOption = (props: any) => {
                           >
                             {paymentPayload &&
                               Object.keys(paymentPayload).map((item) => (
-                                  <input
-                                    key={item}
-                                    type="hidden"
-                                    name={item}
-                                    value={paymentPayload[item]}
-                                  />
+                                <input
+                                  key={item}
+                                  type="hidden"
+                                  name={item}
+                                  value={paymentPayload[item]}
+                                />
                               ))}
                           </form>
                         </>
@@ -127,7 +131,7 @@ const PaymentOption = (props: any) => {
               <StyledButton
                 form={getSelectedFormId() as any}
                 type="submit"
-                disabled={!allFields?.payment?.paymentType}
+                disabled={!allFields?.payment?.paymentType && !paymentPayload}
                 onClick={() => {}}
                 title="Pay Now"
               />
