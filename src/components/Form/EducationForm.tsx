@@ -111,6 +111,16 @@ export const EducationForm = (props: IEducationProps) => {
     }
   }, [programVal]);
 
+  useEffect(() => {
+    if (internationDegreeVal && leadId) {
+      setValue(
+        internationDegree,
+        internationDegreeVal ? "true" : "false",
+        formOptions
+      );
+    }
+  }, [studyModeVal, internationDegreeVal]);
+
   const getQualificationStudyModeData = async (programCode: string) => {
     setLoading(true);
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
@@ -315,11 +325,11 @@ export const EducationForm = (props: IEducationProps) => {
                       {...(register(internationDegree, {
                         required: true,
                       }) as any)}
-                      value="yes"
-                      checked={internationDegreeVal === "yes"}
+                      value="true"
+                      checked={internationDegreeVal === "true"}
                     />
                     <label className="form-check-label">
-                      {internationDegreeVal === "yes" ? (
+                      {internationDegreeVal === "true" ? (
                         <GreenText>Yes</GreenText>
                       ) : (
                         "Yes"
@@ -335,11 +345,11 @@ export const EducationForm = (props: IEducationProps) => {
                       {...(register(internationDegree, {
                         required: true,
                       }) as any)}
-                      value="no"
-                      checked={internationDegreeVal === "no"}
+                      value="false"
+                      checked={internationDegreeVal === "false"}
                     />
                     <label className="form-check-label">
-                      {internationDegreeVal === "No" ? (
+                      {internationDegreeVal === "false" ? (
                         <GreenText>No</GreenText>
                       ) : (
                         "No"
