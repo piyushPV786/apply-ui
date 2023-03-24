@@ -24,6 +24,8 @@ interface ICountry {
   timezones: ITimezone[];
 }
 
+interface ICountry {}
+
 interface ITimezone {
   zoneName: string;
   gmtOffset: number;
