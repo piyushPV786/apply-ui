@@ -226,6 +226,13 @@ const ApplicationForm = () => {
       });
   };
   const submitFormData = (data: object, isDraftSave?: boolean) => {
+    if (data.education.isInternationDegree === "true") {
+      data.education.isInternationDegree = true;
+    } else {
+      data.education.isInternationDegree = false;
+    }
+
+    console.log("da", data);
     const formData = { ...data };
 
     const {
@@ -395,7 +402,7 @@ const ApplicationForm = () => {
     );
     const routeTo: string = sessionStorage.getItem("routeTo")! || "";
     setLeadId(leadDetail?.applicationCode);
-    if (leadDetail) {
+    if (leadDetail && leadDetail.applicationCode) {
       AuthApi.get(
         `lead/${leadDetail?.leadCode}/application/${
           leadDetail?.applicationCode

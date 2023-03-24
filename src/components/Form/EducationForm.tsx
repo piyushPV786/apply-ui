@@ -112,14 +112,17 @@ export const EducationForm = (props: IEducationProps) => {
   }, [programVal]);
 
   useEffect(() => {
-    if (internationDegreeVal && leadId) {
-      setValue(
-        internationDegree,
-        internationDegreeVal ? "true" : "false",
-        formOptions
-      );
+    setValue(internationDegree, internationDegreeVal, formOptions);
+  }, [internationDegreeVal]);
+
+  const handleInternationAccordian = (state: string) => {
+    if (state === "yes") {
+      setValue(internationDegree, "true", formOptions);
+    } else if (state === "no") {
+      setValue(internationDegree, "false", formOptions);
+      console.log("no", internationDegreeVal);
     }
-  }, [studyModeVal, internationDegreeVal]);
+  };
 
   const getQualificationStudyModeData = async (programCode: string) => {
     setLoading(true);
@@ -321,6 +324,7 @@ export const EducationForm = (props: IEducationProps) => {
                     <input
                       key={`${internationDegreeVal}yes`}
                       className="form-check-input me-2"
+                      onClick={() => handleInternationAccordian("yes")}
                       type="radio"
                       {...(register(internationDegree, {
                         required: true,
@@ -341,6 +345,7 @@ export const EducationForm = (props: IEducationProps) => {
                     <input
                       key={`${internationDegreeVal}no`}
                       className="form-check-input me-2"
+                      onClick={() => handleInternationAccordian("no")}
                       type="radio"
                       {...(register(internationDegree, {
                         required: true,
