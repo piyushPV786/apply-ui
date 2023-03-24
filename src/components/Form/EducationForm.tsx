@@ -312,93 +312,59 @@ export const EducationForm = (props: IEducationProps) => {
                     )}
                 </div>
               </div>
+              <div className="col-md-4">
+                <div className="mb-4">
+                  <StyledLabel required>Student Type</StyledLabel>
+
+                  <select
+                    defaultValue={studentTypeVal}
+                    value={studentTypeVal}
+                    className="form-select"
+                    {...register(`${studentTypeName}`, { required: true })}
+                    onChange={({ target: { value } }) => {
+                      setValue(studentTypeName, value, formOptions);
+                      if (
+                        value?.toLowerCase().includes(CommonEnums.MANAGEMENT)
+                      ) {
+                        setValue("sponsor.isSponsored", "no", formOptions);
+                        return;
+                      }
+                      if (value?.toLowerCase().includes(CommonEnums.REGULAR)) {
+                        setValue("sponsor.isSponsored", "no", formOptions);
+                        return;
+                      }
+                      if (value?.toLowerCase().includes(CommonEnums.BURSARY)) {
+                        setValue("sponsor.isSponsored", "yes", formOptions);
+                        return;
+                      } else setValue("sponsor.isSponsored", "", formOptions);
+                      return;
+                    }}
+                  >
+                    {" "}
+                    <option value={""}>Select Type</option>
+                    {studyTypeData &&
+                      studyTypeData
+                        .filter((item) => item.code !== "MGMTBURSARY")
+                        .map(({ code, name }) => (
+                          <option
+                            selected={code === studentTypeVal}
+                            key={code}
+                            value={code}
+                          >
+                            {name}
+                          </option>
+                        ))}
+                  </select>
+                  {touchFields?.studentTypeCode &&
+                    educationFormError?.studentTypeCode && (
+                      <div className="invalid-feedback">
+                        Please select study type
+                      </div>
+                    )}
+                </div>
+              </div>
             </div>
             <div className="row">
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>
-                    Are you an international degree holder?
-                  </StyledLabel>
-                  <br />
-                  <div className="form-check form-check-inline">
-                    <input
-                      key={`${internationDegreeVal}yes`}
-                      className="form-check-input me-2"
-                      onClick={() => handleInternationAccordian("yes")}
-                      type="radio"
-                      {...(register(internationDegree, {
-                        required: true,
-                      }) as any)}
-                      value="true"
-                      checked={internationDegreeVal === "true"}
-                    />
-                    <label className="form-check-label">
-                      {internationDegreeVal === "true" ? (
-                        <GreenText>Yes</GreenText>
-                      ) : (
-                        "Yes"
-                      )}
-                      <br />
-                    </label>
-                  </div>
-                  <div className="form-check form-check-inline">
-                    <input
-                      key={`${internationDegreeVal}no`}
-                      className="form-check-input me-2"
-                      onClick={() => handleInternationAccordian("no")}
-                      type="radio"
-                      {...(register(internationDegree, {
-                        required: true,
-                      }) as any)}
-                      value="false"
-                      checked={internationDegreeVal === "false"}
-                    />
-                    <label className="form-check-label">
-                      {internationDegreeVal === "false" ? (
-                        <GreenText>No</GreenText>
-                      ) : (
-                        "No"
-                      )}
-                      <br />
-                    </label>
-                  </div>
-
-                  {touchFields?.isInternationDegree &&
-                    educationFormError?.isInternationDegree && (
-                      <div className="invalid-feedback">
-                        International is required
-                      </div>
-                    )}
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>High School Name</StyledLabel>
-
-                  <input
-                    value={highSchoolNameVal}
-                    defaultValue={highSchoolNameVal}
-                    type="text"
-                    {...register(`${highSchoolName}`, { required: true })}
-                    className="form-control"
-                    id="highSchoolName"
-                    placeholder=""
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const name = e.target.name;
-                      if (onlyAlphaNumericSpace(value) || !value) {
-                        setValue(name, value, formOptions);
-                      }
-                    }}
-                  />
-                  {touchFields?.highSchoolName &&
-                    educationFormError?.highSchoolName && (
-                      <div className="invalid-feedback">
-                        Please enter High School Name
-                      </div>
-                    )}
-                </div>
-              </div>
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel required>
@@ -521,51 +487,83 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Student Type</StyledLabel>
+                  <StyledLabel required>
+                    Are you an international degree holder?
+                  </StyledLabel>
+                  <br />
+                  <div className="form-check form-check-inline">
+                    <input
+                      key={`${internationDegreeVal}yes`}
+                      className="form-check-input me-2"
+                      type="radio"
+                      {...(register(internationDegree, {
+                        required: true,
+                      }) as any)}
+                      value="yes"
+                      checked={internationDegreeVal === "yes"}
+                    />
+                    <label className="form-check-label">
+                      {internationDegreeVal === "yes" ? (
+                        <GreenText>Yes</GreenText>
+                      ) : (
+                        "Yes"
+                      )}
+                      <br />
+                    </label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <input
+                      key={`${internationDegreeVal}no`}
+                      className="form-check-input me-2"
+                      type="radio"
+                      {...(register(internationDegree, {
+                        required: true,
+                      }) as any)}
+                      value="no"
+                      checked={internationDegreeVal === "no"}
+                    />
+                    <label className="form-check-label">
+                      {internationDegreeVal === "No" ? (
+                        <GreenText>No</GreenText>
+                      ) : (
+                        "No"
+                      )}
+                      <br />
+                    </label>
+                  </div>
 
-                  <select
-                    defaultValue={studentTypeVal}
-                    value={studentTypeVal}
-                    className="form-select"
-                    {...register(`${studentTypeName}`, { required: true })}
-                    onChange={({ target: { value } }) => {
-                      setValue(studentTypeName, value, formOptions);
-                      if (
-                        value?.toLowerCase().includes(CommonEnums.MANAGEMENT)
-                      ) {
-                        setValue("sponsor.isSponsored", "no", formOptions);
-                        return;
-                      }
-                      if (value?.toLowerCase().includes(CommonEnums.REGULAR)) {
-                        setValue("sponsor.isSponsored", "no", formOptions);
-                        return;
-                      }
-                      if (value?.toLowerCase().includes(CommonEnums.BURSARY)) {
-                        setValue("sponsor.isSponsored", "yes", formOptions);
-                        return;
-                      } else setValue("sponsor.isSponsored", "", formOptions);
-                      return;
-                    }}
-                  >
-                    {" "}
-                    <option value={""}>Select Type</option>
-                    {studyTypeData &&
-                      studyTypeData
-                        .filter((item) => item.code !== "MGMTBURSARY")
-                        .map(({ code, name }) => (
-                          <option
-                            selected={code === studentTypeVal}
-                            key={code}
-                            value={code}
-                          >
-                            {name}
-                          </option>
-                        ))}
-                  </select>
-                  {touchFields?.studentTypeCode &&
-                    educationFormError?.studentTypeCode && (
+                  {touchFields?.isInternationDegree &&
+                    educationFormError?.isInternationDegree && (
                       <div className="invalid-feedback">
-                        Please select study type
+                        International is required
+                      </div>
+                    )}
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="mb-4">
+                  <StyledLabel required>High School Name</StyledLabel>
+
+                  <input
+                    value={highSchoolNameVal}
+                    defaultValue={highSchoolNameVal}
+                    type="text"
+                    {...register(`${highSchoolName}`, { required: true })}
+                    className="form-control"
+                    id="highSchoolName"
+                    placeholder=""
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphaNumericSpace(value) || !value) {
+                        setValue(name, value, formOptions);
+                      }
+                    }}
+                  />
+                  {touchFields?.highSchoolName &&
+                    educationFormError?.highSchoolName && (
+                      <div className="invalid-feedback">
+                        Please enter High School Name
                       </div>
                     )}
                 </div>
