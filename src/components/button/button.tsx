@@ -7,6 +7,7 @@ import EditIcon from "../../../public/assets/images/edit-icon.svg";
 import UploadIcon from "../../../public/assets/images/upload.svg";
 import PayIcon from "../../../public/assets/images/pay-pay.svg";
 import UploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
+import RmatImg from "../../../public/assets/images/rmat.png";
 interface IButoonProps {
   title?: string;
   onClick?: (...args: any) => void;
@@ -20,6 +21,7 @@ interface IButoonProps {
   roundBtn?: boolean;
   isEditBtn?: boolean;
   isPayBtn?: boolean;
+  isRMATBtn?: boolean;
   isUploadBtn?: boolean;
   isDownloadBtn?: boolean;
 }
@@ -34,6 +36,7 @@ const StyledButton = ({
   disabled,
   isEditBtn = false,
   isPayBtn = false,
+  isRMATBtn = false,
   isUploadBtn = false,
   isDownloadBtn = false,
   form = "",
@@ -59,6 +62,11 @@ const StyledButton = ({
       {isPayBtn && (
         <span className="me-3">
           <Image alt="pay" src={PayIcon} />
+        </span>
+      )}
+      {isRMATBtn && (
+        <span className="me-2">
+          <Image alt="pay" src={RmatImg} />
         </span>
       )}
       {isUploadBtn && (
