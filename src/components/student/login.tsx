@@ -239,9 +239,9 @@ const StudentLogin = () => {
           JSON.stringify({ leadCode: data?.data?.leadCode })
         );
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
-        setTimeout(() => {
-          router.push(RoutePaths.Dashboard);
-        }, 1500);
+
+        router.push(RoutePaths.Dashboard);
+
         setLoading(false);
       })
       .catch(({}) => {
@@ -249,6 +249,10 @@ const StudentLogin = () => {
           success: false,
           message: "Sorry! The entered OTP is invalid. Please try again",
         });
+
+        setLoading(false);
+      })
+      .finally(() => {
         setLoading(false);
       });
   };
