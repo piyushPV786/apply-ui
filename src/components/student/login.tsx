@@ -18,7 +18,7 @@ import {
 } from "./style";
 import styled from "styled-components";
 import { CommonApi, RoutePaths } from "../common/constant";
-import { MsgComponent } from "../common/common";
+import { MsgComponent, LoaderComponent } from "../common/common";
 
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
@@ -29,6 +29,7 @@ const StudentLogin = () => {
   const [showToast, setToast] = useState<boolean>(false);
   const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
   const [isResendOtp, setResend] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
   useEffect(() => {
@@ -209,7 +210,7 @@ const StudentLogin = () => {
                   setProceed(!isProceed);
                   setResend(false);
                   setShowResendBtn(false);
-                  setOtp("")
+                  setOtp("");
                 }}
               >
                 Change Mobile Number
@@ -222,6 +223,7 @@ const StudentLogin = () => {
   };
 
   const verifyNumber = () => {
+    setLoading(true);
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
@@ -238,15 +240,21 @@ const StudentLogin = () => {
           JSON.stringify({ leadCode: data?.data?.leadCode })
         );
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
-        setTimeout(() => {
-          router.push(RoutePaths.Dashboard);
-        }, 1500);
+
+        router.push(RoutePaths.Dashboard);
+
+        setLoading(false);
       })
       .catch(({}) => {
         setErrorMsg({
           success: false,
           message: "Sorry! The entered OTP is invalid. Please try again",
         });
+
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -262,28 +270,34 @@ const StudentLogin = () => {
 
   return (
     <>
-      <ImageContainer>
-        <>
-          <div className="login-spacing">
-            <Heading>
-              <div>
-                <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
-              </div>
-              Regenesys Application Form
-            </Heading>
-            <ApplicationFormContainer isProceed={isProceed}>
-              {!isProceed && <EnterMobNumber />}
-              {isProceed && <EnterOtp />}
-            </ApplicationFormContainer>
-          </div>
-          <StyleFooter>
-            <span className="footer-text">
-              Copyright @ 2015 - {year}{" "}
-              <a href="https://www.regenesys.net/">Regenesys Business School</a>
-            </span>
-          </StyleFooter>
-        </>
-      </ImageContainer>
+      {isLoading ? (
+        <LoaderComponent />
+      ) : (
+        <ImageContainer>
+          <>
+            <div className="login-spacing">
+              <Heading>
+                <div>
+                  <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
+                </div>
+                Regenesys Application Form
+              </Heading>
+              <ApplicationFormContainer isProceed={isProceed}>
+                {!isProceed && <EnterMobNumber />}
+                {isProceed && <EnterOtp />}
+              </ApplicationFormContainer>
+            </div>
+            <StyleFooter>
+              <span className="footer-text">
+                Copyright @ 2015 - {year}{" "}
+                <a href="https://www.regenesys.net/">
+                  Regenesys Business School
+                </a>
+              </span>
+            </StyleFooter>
+          </>
+        </ImageContainer>
+      )}
     </>
   );
 };
