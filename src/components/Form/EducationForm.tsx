@@ -314,7 +314,7 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Student Type</StyledLabel>
+                  <StyledLabel required>Study Type</StyledLabel>
 
                   <select
                     defaultValue={studentTypeVal}
