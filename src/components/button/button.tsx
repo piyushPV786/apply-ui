@@ -76,7 +76,7 @@ const StyledButton = ({
       )}
       {isDownloadBtn && (
         <StyledDownloadIcon className="me-3 icon-additinal">
-          <Image alt="download" src={UploadImg} />
+          <Image alt="download" src={UploadImg} width={15} />
         </StyledDownloadIcon>
       )}
       {title}
