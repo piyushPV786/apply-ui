@@ -56,6 +56,12 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
     setValue(`${mobileCountryCode}`, `+${countryCode}`);
   };
   useEffect(() => {
+    if (!leadId) {
+      const userNumberDetail = JSON.parse(
+        sessionStorage.getItem("studentMobile") as any
+      );
+      setCountryCode(userNumberDetail?.countryCode);
+    }
     if (!isObjectEmpty(isKinDetailExist) && leadId) {
       setValue(isKin, "yes", formOptions);
     }
