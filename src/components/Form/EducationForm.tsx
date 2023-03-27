@@ -110,9 +110,12 @@ export const EducationForm = (props: IEducationProps) => {
       getQualificationStudyModeData(programVal);
     }
   }, [programVal]);
-
   useEffect(() => {
-    setValue(internationDegree, internationDegreeVal, formOptions);
+      setValue(
+        internationDegree,
+        internationDegreeVal ? "true" : "false",
+        formOptions
+      );
   }, [internationDegreeVal]);
 
   const handleInternationAccordian = (state: string) => {
@@ -120,7 +123,6 @@ export const EducationForm = (props: IEducationProps) => {
       setValue(internationDegree, "true", formOptions);
     } else if (state === "no") {
       setValue(internationDegree, "false", formOptions);
-      console.log("no", internationDegreeVal);
     }
   };
 
