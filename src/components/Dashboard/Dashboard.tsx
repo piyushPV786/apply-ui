@@ -3,7 +3,7 @@ import {
   Green,
   GreenFormHeading,
   LoaderComponent,
-  Toaster,
+  Toaster
 } from "../common/common";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer } from "../payment/payment";
@@ -22,6 +22,7 @@ import {
   getCommonUploadDocumentUrl,
   transformDate,
 } from "../../Util/Util";
+import { Grid } from "@material-ui/core";
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
@@ -372,12 +373,16 @@ function ApplicationCard({
         </div>
         <ContentCard>
           <div className="w-100">
-            <GreenFormHeading className="application-number">
-              {!enrollmentNumber && `Application Number - ${applicationNumber}`}
-              {enrollmentNumber
-                ? ` Enrollment Number - ${enrollmentNumber}`
-                : ""}
-            </GreenFormHeading>
+            {applicationNumber && (
+              <GreenFormHeading className="application-number">
+                Application Number - {applicationNumber}
+              </GreenFormHeading>
+            )}
+            {enrolmentCode ? (
+              <GreenFormHeading className="application-number">
+                Enrollment Number - {enrolmentCode}
+              </GreenFormHeading>
+            ) : null}
           </div>
           {enrollmentNumber && (
             <div className="mt-2 w-100 app-card-block">
@@ -395,7 +400,7 @@ function ApplicationCard({
           </div>
           <div className="mt-2 w-100 app-card-block">
             <p className="mb-0" style={{ color: `#5a636a` }}>
-              Intrested Program
+              Interested Program
             </p>
             <strong>{programName}</strong>
           </div>
@@ -413,68 +418,91 @@ function ApplicationCard({
               <strong>{transformDate(new Date(updatedAt))}</strong>
             </div>
           </div>
-          <div className="w-100 text-center d-flex justify-content-center mt-4 card-group-button">
-            {showEditBtn && (
-              <StyledButton
-                isEditBtn
-                className="card-button"
-                isGreenWhiteCombination={true}
-                title="Edit"
-                onClick={() =>
-                  onEdit(applicationNumber, leadCode, status, educationDetail)
-                }
-              />
-            )}
-            {showRAMTBtn && <StyledButton isRMATBtn title="Take RMAT Test" />}
-            {showPayBtn && (
-              <StyledButton
-                onClick={() =>
+          <div className="w-100 mt-4 ">
+            <Grid container spacing={1}>
+              {showEditBtn && (
+                <Grid item>
+                  <StyledButton
+                    isEditBtn
+                    className="card-button"
+                    isGreenWhiteCombination={true}
+                    title="Edit"
+                    onClick={() =>
+                      onEdit(
+                        applicationNumber,
+                        leadCode,
+                        status,
+                        educationDetail
+                      )
+                    }
+                  />
+                </Grid>
+              )}
+              {showRAMTBtn && (
+                <Grid item>
+                  <StyledButton isRMATBtn title="Take RMAT Test" />
+                </Grid>
+              )}
+              {showPayBtn && (
+                <Grid item>
+                  <StyledButton
+                    onClick={() =>
                   onPay(applicationNumber, leadCode, true, educationDetail)
-                }
-                isPayBtn
-                className="card-button"
-                title={payBtnTitle}
-              />
-            )}{" "}
-            {showUploadBtn && (
-              <StyledButton
-                onClick={() =>
+                    }
+                    isPayBtn
+                    className="card-button"
+                    title={payBtnTitle}
+                  />
+                </Grid>
+              )}
+              {showUploadBtn && (
+                <Grid item>
+                  <StyledButton
+                    onClick={() =>
                   onUploadDocuments(applicationNumber, leadCode, true)
-                }
-                isUploadBtn
-                className="card-button"
-                title="Upload Document"
-              />
-            )}
-            {showDocumentUploadBtn && (
-              <StyledButton
-                onClick={() =>
+                    }
+                    isUploadBtn
+                    className="card-button"
+                    title="Upload Document"
+                  />
+                </Grid>
+              )}
+              {showDocumentUploadBtn && (
+                <Grid item>
+                  <StyledButton
+                    onClick={() =>
                   onUploadDocuments(applicationNumber, leadCode, true)
-                }
-                isUploadBtn
-                className="card-button"
-                title="Upload Document"
-              />
-            )}
-            {isAcceptedApplication && (
-              <StyledButton
-                onClick={() => onDownloadAcceptence(document)}
-                isGreenWhiteCombination
-                isDownloadBtn
-                className="card-button"
-                title="Acceptence Letter"
-              />
-            )}
-            {isAcceptedApplication && (
-              <StyledButton
-                onClick={() =>
+                    }
+                    isUploadBtn
+                    className="card-button"
+                    title="Upload Document"
+                  />
+                </Grid>
+              )}
+              {isAcceptedApplication && (
+                <Grid item>
+                  <StyledButton
+                    onClick={() => onDownloadAcceptence(document)}
+                    isGreenWhiteCombination
+                    isDownloadBtn
+                    className="card-button"
+                    title="Acceptence Letter"
+                  />
+                </Grid>
+              )}
+              {isAcceptedApplication && (
+                <Grid item>
+                  <StyledButton
+                    onClick={() =>
                   onUploadBursaryDocuments(applicationNumber, leadCode, true)
-                }
-                isUploadBtn
-                className="card-button"
-                title="Upload Employee Bursary Letter"
-              />
-            )}
+                    }
+                    isUploadBtn
+                    className="card-button"
+                    title="Upload Employee Bursary Letter"
+                  />
+                </Grid>
+              )}
+            </Grid>
           </div>
         </ContentCard>
       </ApplicationContainer>

@@ -3,9 +3,7 @@ import React, { useEffect, useState } from "react";
 import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import OtpInput from "../Input/otpInput";
-import PhoneInput, {
-  parsePhoneNumber,
-} from "react-phone-number-input";
+import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import axios from "../../service/Axios";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
@@ -20,7 +18,7 @@ import {
 } from "./style";
 import styled from "styled-components";
 import { CommonApi, RoutePaths } from "../common/constant";
-import { MsgComponent } from "../common/common";
+import { MsgComponent, LoaderComponent } from "../common/common";
 
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
@@ -31,6 +29,7 @@ const StudentLogin = () => {
   const [showToast, setToast] = useState<boolean>(false);
   const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
   const [isResendOtp, setResend] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
   useEffect(() => {
@@ -52,12 +51,13 @@ const StudentLogin = () => {
         setShowResendBtn(true);
       }, 60000);
     }
-  }, [isProceed,isResendOtp]);
+  }, [isProceed, isResendOtp]);
 
   const isNumberValid =
     mobileNumber &&
     parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 6 &&
-    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! <= 15;
+    mobileNumber.length! <= 15;
+
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = () => {
     setProceed(true);
@@ -210,7 +210,7 @@ const StudentLogin = () => {
                   setProceed(!isProceed);
                   setResend(false);
                   setShowResendBtn(false);
-                  setOtp("")
+                  setOtp("");
                 }}
               >
                 Change Mobile Number
@@ -223,6 +223,7 @@ const StudentLogin = () => {
   };
 
   const verifyNumber = () => {
+    setLoading(true);
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
@@ -239,15 +240,21 @@ const StudentLogin = () => {
           JSON.stringify({ leadCode: data?.data?.leadCode })
         );
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
-        setTimeout(() => {
-          router.push(RoutePaths.Dashboard);
-        }, 1500);
+
+        router.push(RoutePaths.Dashboard);
+
+        setLoading(false);
       })
       .catch(({}) => {
         setErrorMsg({
           success: false,
           message: "Sorry! The entered OTP is invalid. Please try again",
         });
+
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -263,28 +270,34 @@ const StudentLogin = () => {
 
   return (
     <>
-      <ImageContainer>
-        <>
-          <div className="login-spacing">
-            <Heading>
-              <div>
-                <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
-              </div>
-              Regenesys Application Form
-            </Heading>
-            <ApplicationFormContainer isProceed={isProceed}>
-              {!isProceed && <EnterMobNumber />}
-              {isProceed && <EnterOtp />}
-            </ApplicationFormContainer>
-          </div>
-          <StyleFooter>
-            <span className="footer-text">
-              Copyright @ 2015 - {year}{" "}
-              <a href="https://www.regenesys.net/">Regenesys Business School</a>
-            </span>
-          </StyleFooter>
-        </>
-      </ImageContainer>
+      {isLoading ? (
+        <LoaderComponent />
+      ) : (
+        <ImageContainer>
+          <>
+            <div className="login-spacing">
+              <Heading>
+                <div>
+                  <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
+                </div>
+                Regenesys Application Form
+              </Heading>
+              <ApplicationFormContainer isProceed={isProceed}>
+                {!isProceed && <EnterMobNumber />}
+                {isProceed && <EnterOtp />}
+              </ApplicationFormContainer>
+            </div>
+            <StyleFooter>
+              <span className="footer-text">
+                Copyright @ 2015 - {year}{" "}
+                <a href="https://www.regenesys.net/">
+                  Regenesys Business School
+                </a>
+              </span>
+            </StyleFooter>
+          </>
+        </ImageContainer>
+      )}
     </>
   );
 };

@@ -49,7 +49,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     unregister,
     formState: { errors, touchedFields },
   } = useFormContext();
-  const [countryCodeRef, setCountryCode] = useState<any>("SA");
+  const [countryCodeRef, setCountryCode] = useState<any>();
 
   const isSponsoredVal = watch(isSponsored);
   const sponsorModeVal = watch(sponsorMode);
@@ -92,6 +92,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
   }, [isSponserDetailExist]);
 
   useEffect(() => {
+    if (!props?.leadId) {
+      const userNumberDetail = JSON.parse(
+        sessionStorage.getItem("studentMobile") as any
+      );
+      setCountryCode(userNumberDetail?.countryCode);
+    }
     if (!isSponserNeed) {
       unregister(sponsorPhoneNumber, {
         keepError: false,
