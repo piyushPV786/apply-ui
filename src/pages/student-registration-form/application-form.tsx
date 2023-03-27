@@ -136,22 +136,25 @@ const ApplicationForm = () => {
         });
     methodType
       .then(({ data: response }) => {
-        sessionStorage.setItem(
-          "studentId",
-          JSON.stringify({
-            id: response?.data?.leadData?.id,
-            leadCode: response?.data?.leadData?.leadCode,
-          })
-        );
-        localStorage.setItem("leadData", JSON.stringify(response?.data));
-        activeLeadDetail &&
+        if (!applicationCode) {
           sessionStorage.setItem(
-            "activeLeadDetail",
+            "studentId",
             JSON.stringify({
-              ...activeLeadDetail,
-              applicationCode: response?.data?.applicationData?.applicationCode,
+              id: response?.data?.leadData?.id,
+              leadCode: response?.data?.leadData?.leadCode,
             })
           );
+          localStorage.setItem("leadData", JSON.stringify(response?.data));
+          activeLeadDetail &&
+            sessionStorage.setItem(
+              "activeLeadDetail",
+              JSON.stringify({
+                ...activeLeadDetail,
+                applicationCode:
+                  response?.data?.applicationData?.applicationCode,
+              })
+            );
+        }
 
         setShowDraftSaveToast({
           success: true,
@@ -232,7 +235,6 @@ const ApplicationForm = () => {
       data.education.isInternationDegree = false;
     }
 
-    console.log("da", data);
     const formData = { ...data };
 
     const {
