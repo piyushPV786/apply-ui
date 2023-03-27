@@ -563,7 +563,7 @@ export const EducationForm = (props: IEducationProps) => {
                   {touchFields?.highSchoolName &&
                     educationFormError?.highSchoolName && (
                       <div className="invalid-feedback">
-                        Please enter High School Name
+                        Please enter high school name
                       </div>
                     )}
                 </div>
