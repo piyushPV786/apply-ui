@@ -3,9 +3,7 @@ import React, { useEffect, useState } from "react";
 import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import OtpInput from "../Input/otpInput";
-import PhoneInput, {
-  parsePhoneNumber,
-} from "react-phone-number-input";
+import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import axios from "../../service/Axios";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
@@ -52,12 +50,13 @@ const StudentLogin = () => {
         setShowResendBtn(true);
       }, 60000);
     }
-  }, [isProceed,isResendOtp]);
+  }, [isProceed, isResendOtp]);
 
   const isNumberValid =
     mobileNumber &&
     parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 6 &&
-    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! <= 15;
+    mobileNumber.length! <= 15;
+
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = () => {
     setProceed(true);
