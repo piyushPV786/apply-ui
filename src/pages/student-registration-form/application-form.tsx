@@ -233,9 +233,9 @@ const ApplicationForm = () => {
       });
   };
   const submitFormData = (data: any, isDraftSave?: boolean) => {
-    if (data.education.isInternationDegree === "true") {
+    if (data.education.isInternationDegree === "yes") {
       data.education.isInternationDegree = true;
-    } else {
+    } else if (data.education.isInternationDegree === "no") {
       data.education.isInternationDegree = false;
     }
 

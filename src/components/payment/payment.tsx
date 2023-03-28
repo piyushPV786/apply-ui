@@ -167,6 +167,7 @@ const Payment = (props: any) => {
         props.showToast(false, "Something went wrong");
         console.log(err);
       });
+    sessionStorage.removeItem("lastPromoCode");
   };
   const onPaymentDocumentUpload = (files: any) => {
     const uploadedFiles = files;
@@ -205,7 +206,6 @@ const Payment = (props: any) => {
       setValue("payment.discountCode", discountCode);
       setValue("payment.percent", percent);
       setValue("payment.discountAmount", (+programFee * percent) / 100);
-      sessionStorage.setItem("lastPromoCode", promoCode);
       props.showToast(true, result?.message);
     } else {
       props.showToast(false, "Invalid Code");
