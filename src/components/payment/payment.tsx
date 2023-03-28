@@ -206,7 +206,6 @@ const Payment = (props: any) => {
       setValue("payment.discountCode", discountCode);
       setValue("payment.percent", percent);
       setValue("payment.discountAmount", (+programFee * percent) / 100);
-      sessionStorage.setItem("lastPromoCode", promoCode);
       props.showToast(true, result?.message);
     } else {
       props.showToast(false, "Invalid Code");
