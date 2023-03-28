@@ -111,9 +111,9 @@ export const EducationForm = (props: IEducationProps) => {
     }
   }, [programVal]);
   useEffect(() => {
-    if (internationDegreeVal == true) {
+    if (internationDegreeVal === true) {
       setValue(internationDegree, "yes", formOptions);
-    } else if (internationDegreeVal == false) {
+    } else if (internationDegreeVal === false) {
       setValue(internationDegree, "no", formOptions);
     }
   }, [internationDegreeVal]);
