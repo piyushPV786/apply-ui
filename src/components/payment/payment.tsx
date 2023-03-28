@@ -167,6 +167,7 @@ const Payment = (props: any) => {
         props.showToast(false, "Something went wrong");
         console.log(err);
       });
+    sessionStorage.removeItem("lastPromoCode");
   };
   const onPaymentDocumentUpload = (files: any) => {
     const uploadedFiles = files;
