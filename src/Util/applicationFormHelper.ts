@@ -1,5 +1,5 @@
 import { SetStateAction } from "react";
-import { CommonApi } from "../components/common/constant";
+import { CommonApi, CommonEnums } from "../components/common/constant";
 import {
   ILeadFormValues,
   IMasterData,
@@ -9,7 +9,7 @@ import { UseFormSetValue } from "react-hook-form";
 import { AxiosInstance } from "axios";
 
 export const getIntrestedQualificationPrograms = (
-  AcadmicApi:AxiosInstance,
+  AcadmicApi: AxiosInstance,
   setMasterData: (value: SetStateAction<IMasterData | null>) => void
 ) => {
   AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
@@ -20,8 +20,7 @@ export const getIntrestedQualificationPrograms = (
       }));
     })
     .catch((err) => console.log(err))
-    .finally(() => {
-    });
+    .finally(() => {});
 };
 
 export const getUserDetailHelper = (
@@ -34,7 +33,7 @@ export const getUserDetailHelper = (
   setPaymentDone: (value: SetStateAction<boolean>) => void,
   routeIfStepDone: (routeTo: string) => void,
   setValue: UseFormSetValue<ILeadFormValues>,
-  AuthApi:AxiosInstance,
+  AuthApi: AxiosInstance
 ) => {
   AuthApi.get(
     `lead/${leadDetail?.leadCode}/application/${
@@ -45,7 +44,7 @@ export const getUserDetailHelper = (
       const formData = { ...response?.data };
       transformFormData(formData);
       mapFormDefaultValue(formData, setValue);
-      if (leadDetail?.isPaymentPending && routeTo !== "document") {
+      if (leadDetail?.isPaymentPending && routeTo !== CommonEnums.DOCUMENT) {
         setActiveStep(1);
         setSubmitted(true);
         setPaymentDone(true);
@@ -55,11 +54,11 @@ export const getUserDetailHelper = (
         setSubmitted(true);
         setPaymentDone(true);
       }
-      if (routeTo === "Document") {
+      if (routeTo === CommonEnums.DOCUMENT) {
         routeIfStepDone(routeTo); /// calling this if user coming back from payment success screen
       }
     })
     .catch((err) => {
       console.log(err);
-    })
+    });
 };
