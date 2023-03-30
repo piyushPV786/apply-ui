@@ -23,7 +23,10 @@ const useAxiosInterceptor = () => {
   const [loading, setLoading] = useState(false);
 
   const myInterceptor = (config) => {
-    if (!config.url.includes(CommonApi.GETSTUDYMODEPROGRAMS)) {
+    if (
+      !config.url.includes(CommonApi.GETSTUDYMODEPROGRAMS) &&
+      !config.url.includes(CommonApi.GETCURRENCYCONVERSION)
+    ) {
       setLoading(true);
     }
     const token = "";
