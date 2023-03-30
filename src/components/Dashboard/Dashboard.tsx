@@ -346,10 +346,7 @@ function ApplicationCard({
     status.includes(CommonEnums.RESUB_APP_DOC) ||
     status.includes(CommonEnums.APP_ENROLLED_STATUS);
   const showPayBtn =
-    status.includes(CommonEnums.RESUB_APP_FEE_PROOF) ||
-    status.includes(CommonEnums.APP_FEE_DOC_VER_PEND) ||
-    status.includes(CommonEnums.FEES_PENDING_STATUS) ||
-    isAcceptedApplication;
+    status.includes(CommonEnums.RESUB_APP_FEE_PROOF) || isAcceptedApplication;
   const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
     ? enrolmentCode
     : "";
