@@ -567,7 +567,6 @@ const ApplicationForm = () => {
                       documentType={documentType}
                       leadId={leadId}
                       isApplicationEnrolled={isApplicationEnrolled}
-                      isLoading={loading}
                     />
                   </>
                 )}
