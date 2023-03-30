@@ -31,8 +31,6 @@ interface IPersonalInfoProps {
   race: IOption[];
 }
 
-
-
 const parentKey = "lead";
 
 const firstNameKey = `${parentKey}.firstName`;
@@ -97,8 +95,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     ...(genders || []),
     ...[{ name: "Other", code: "other", id: 21 }],
   ];
-
-
 
   const handleInternationAccordian = (state: string) => {
     setIsExpanded(true);
@@ -269,6 +265,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     className="form-control"
                     id="email"
                     placeholder=""
+                    onChange={(e) => {
+                      setValue(emailKey, e.target.value);
+                    }}
                   />
                   {TouchFields?.email && Errors?.email && (
                     <div className="invalid-feedback">
