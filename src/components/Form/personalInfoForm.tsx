@@ -31,8 +31,6 @@ interface IPersonalInfoProps {
   race: IOption[];
 }
 
-
-
 const parentKey = "lead";
 
 const firstNameKey = `${parentKey}.firstName`;
@@ -97,8 +95,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     ...(genders || []),
     ...[{ name: "Other", code: "other", id: 21 }],
   ];
-
-
 
   const handleInternationAccordian = (state: string) => {
     setIsExpanded(true);
