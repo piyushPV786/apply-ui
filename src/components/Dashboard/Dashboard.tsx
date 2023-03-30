@@ -3,7 +3,7 @@ import {
   Green,
   GreenFormHeading,
   LoaderComponent,
-  Toaster
+  Toaster,
 } from "../common/common";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer } from "../payment/payment";
@@ -14,7 +14,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
 import { CommonApi, CommonEnums, RoutePaths } from "../common/constant";
-import { AcadmicApi, AuthApi } from "../../service/Axios";
+import useAxiosInterceptor from "../../service/Axios";
 import { IApplication, IDocument, IOption } from "../common/types";
 import {
   clearRoute,
@@ -26,7 +26,6 @@ import { Grid } from "@material-ui/core";
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
-  const [isLoading, setLoading] = useState<boolean>(false);
   const [studentApplications, setStudentApplications] = useState<
     IApplication[]
   >([]);
@@ -35,7 +34,7 @@ export const ApplicationDashboard = (props: any) => {
     message: string;
     show: boolean;
   }>({ success: false, message: "", show: false });
-
+  const { loading, AuthApi, AcadmicApi } = useAxiosInterceptor();
   const router = useRouter();
 
   useEffect(() => {
@@ -48,7 +47,6 @@ export const ApplicationDashboard = (props: any) => {
     }
   }, []);
   const getStudentApplications = (studentId) => {
-    setLoading(true);
     AuthApi.get(`${CommonApi.SAVEUSER}/${studentId}/application`)
       .then(({ data: response }) =>
         getIntrestedQualificationPrograms(response?.data)
@@ -56,9 +54,6 @@ export const ApplicationDashboard = (props: any) => {
       .catch((err) => {
         console.log(err);
       })
-      .finally(() => {
-        setLoading(false);
-      });
   };
   const getIntrestedQualificationPrograms = (application: [IApplication]) => {
     AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
@@ -170,7 +165,7 @@ export const ApplicationDashboard = (props: any) => {
   };
 
   const onDownloadAcceptence = (documentDetail: IDocument[]) => {
-    const { name, documentTypeCode } = documentDetail[0];
+    const { name } = documentDetail[0];
     getCommonUploadDocumentUrl(name).then((res) => {
       if (res?.statusCode === 200) {
         downloadDocument(res?.data, name);
@@ -193,7 +188,7 @@ export const ApplicationDashboard = (props: any) => {
   const { message, show, success } = showToast;
   return (
     <>
-      {isLoading ? (
+      {loading ? (
         <LoaderComponent />
       ) : (
         <ParentContainer>
@@ -447,7 +442,7 @@ function ApplicationCard({
                 <Grid item>
                   <StyledButton
                     onClick={() =>
-                  onPay(applicationNumber, leadCode, true, educationDetail)
+                      onPay(applicationNumber, leadCode, true, educationDetail)
                     }
                     isPayBtn
                     className="card-button"
@@ -459,7 +454,7 @@ function ApplicationCard({
                 <Grid item>
                   <StyledButton
                     onClick={() =>
-                  onUploadDocuments(applicationNumber, leadCode, true)
+                      onUploadDocuments(applicationNumber, leadCode, true)
                     }
                     isUploadBtn
                     className="card-button"
@@ -471,7 +466,7 @@ function ApplicationCard({
                 <Grid item>
                   <StyledButton
                     onClick={() =>
-                  onUploadDocuments(applicationNumber, leadCode, true)
+                      onUploadDocuments(applicationNumber, leadCode, true)
                     }
                     isUploadBtn
                     className="card-button"
@@ -494,7 +489,11 @@ function ApplicationCard({
                 <Grid item>
                   <StyledButton
                     onClick={() =>
-                  onUploadBursaryDocuments(applicationNumber, leadCode, true)
+                      onUploadBursaryDocuments(
+                        applicationNumber,
+                        leadCode,
+                        true
+                      )
                     }
                     isUploadBtn
                     className="card-button"

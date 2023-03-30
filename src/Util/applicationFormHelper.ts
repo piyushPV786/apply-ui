@@ -1,5 +1,4 @@
 import { SetStateAction } from "react";
-import { AcadmicApi, AuthApi } from "../service/Axios";
 import { CommonApi } from "../components/common/constant";
 import {
   ILeadFormValues,
@@ -7,12 +6,12 @@ import {
   IOption,
 } from "../components/common/types";
 import { UseFormSetValue } from "react-hook-form";
+import { AxiosInstance } from "axios";
 
 export const getIntrestedQualificationPrograms = (
-  setLoading: (value: SetStateAction<boolean>) => void,
+  AcadmicApi:AxiosInstance,
   setMasterData: (value: SetStateAction<IMasterData | null>) => void
 ) => {
-  setLoading(true);
   AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
     .then(({ data }: any) => {
       setMasterData((prevState: any) => ({
@@ -22,7 +21,6 @@ export const getIntrestedQualificationPrograms = (
     })
     .catch((err) => console.log(err))
     .finally(() => {
-      setLoading(false);
     });
 };
 
@@ -34,9 +32,9 @@ export const getUserDetailHelper = (
   setActiveStep: (value: number) => void,
   setSubmitted: (value: SetStateAction<boolean>) => void,
   setPaymentDone: (value: SetStateAction<boolean>) => void,
-  setLoading: (value: SetStateAction<boolean>) => void,
   routeIfStepDone: (routeTo: string) => void,
-  setValue: UseFormSetValue<ILeadFormValues>
+  setValue: UseFormSetValue<ILeadFormValues>,
+  AuthApi:AxiosInstance,
 ) => {
   AuthApi.get(
     `lead/${leadDetail?.leadCode}/application/${
@@ -64,7 +62,4 @@ export const getUserDetailHelper = (
     .catch((err) => {
       console.log(err);
     })
-    .finally(() => {
-      setLoading(false);
-    });
 };

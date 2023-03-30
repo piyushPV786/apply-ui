@@ -110,6 +110,8 @@ export const onlyAlphaNumericSpace = (value: string) =>
   /^(?![0-9]*$)[a-zA-Z0-9 ]+$/.test(value);
 export const onlyAlphabetsOrNumbers = (value: string) =>
   /^[A-Za-z0-9 ]*$/.test(value);
+export const onlyAlphabetsOrNumbersDash = (value: string) =>
+  /^[A-Za-z0-9\-, ]*$/.test(value);
 
 export const GetPaymentImage = (type: string) => {
   const imgUrl = "/assets/images";

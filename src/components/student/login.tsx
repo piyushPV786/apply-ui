@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import OtpInput from "../Input/otpInput";
 import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import axios from "../../service/Axios";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
 import Image from "next/image";
 import {
@@ -19,6 +18,7 @@ import {
 import styled from "styled-components";
 import { CommonApi, RoutePaths } from "../common/constant";
 import { MsgComponent, LoaderComponent } from "../common/common";
+import useAxiosInterceptor from "../../service/Axios";
 
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
@@ -29,8 +29,7 @@ const StudentLogin = () => {
   const [showToast, setToast] = useState<boolean>(false);
   const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
   const [isResendOtp, setResend] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
-
+  const { baseAuth, loading } = useAxiosInterceptor();
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
@@ -62,7 +61,7 @@ const StudentLogin = () => {
   const onProceed = () => {
     setProceed(true);
     const number = parsePhoneNumber(mobileNumber, countryCode);
-    axios
+    baseAuth
       .post(CommonApi.REGISTERUSER, {
         mobileNumber: number?.nationalNumber,
         mobileCountryCode: number?.countryCallingCode,
@@ -223,11 +222,10 @@ const StudentLogin = () => {
   };
 
   const verifyNumber = () => {
-    setLoading(true);
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
-    axios
+    baseAuth
       .post(CommonApi.VERIFYOTP, {
         mobileNumber: mobileNumberDetail?.mobileNumber,
         otp: +otp,
@@ -242,19 +240,12 @@ const StudentLogin = () => {
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
 
         router.push(RoutePaths.Dashboard);
-
-        setLoading(false);
       })
       .catch(({}) => {
         setErrorMsg({
           success: false,
           message: "Sorry! The entered OTP is invalid. Please try again",
         });
-
-        setLoading(false);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
 
@@ -270,7 +261,7 @@ const StudentLogin = () => {
 
   return (
     <>
-      {isLoading ? (
+      {loading ? (
         <LoaderComponent />
       ) : (
         <ImageContainer>
