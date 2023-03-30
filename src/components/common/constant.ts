@@ -14,6 +14,7 @@ export enum CommonEnums {
   REGULAR = "regular",
   GUARDIAN = "guardian",
   SOUTH_AFRICA_CURRENCY = "RAND",
+  DOCUMENT='Document',
 }
 export enum AlertEnums {
   INFO = "info",

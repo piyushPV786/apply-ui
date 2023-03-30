@@ -12,9 +12,9 @@ import AddressImg from "../../../public/assets/images/address-card-outlined-svgr
 import AdvanceDropDown from "../dropdown/Dropdown";
 import {
   formOptions,
-  onlyAlphabetsOrNumbers,
   onlyAlphabets,
   sortAscending,
+  onlyAlphabetsOrNumbersDash,
 } from "../../Util/Util";
 const Address = "address";
 const resPostalAddress = `${Address}[1].street`;
@@ -88,7 +88,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
-                      if (onlyAlphabetsOrNumbers(value)) {
+                      if (onlyAlphabetsOrNumbersDash(value)) {
                         setValue(name, value, formOptions);
                       }
                     }}
@@ -278,7 +278,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       onChange={(e) => {
                         const value = e.target.value;
                         const name = e.target.name;
-                        if (onlyAlphabetsOrNumbers(value)) {
+                        if (onlyAlphabetsOrNumbersDash(value)) {
                           setValue(name, value, formOptions);
                         }
                       }}

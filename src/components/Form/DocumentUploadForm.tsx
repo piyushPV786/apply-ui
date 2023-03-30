@@ -22,6 +22,7 @@ interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
   isApplicationEnrolled: boolean;
+  isLoading?: boolean;
   documentType: IOption[];
   leadId: string;
 }
@@ -86,7 +87,7 @@ const DocumentUploadForm = ({
     setValue("document.uploadedDocs", uploadedFiles);
   };
 
-  const showPdf = (e:SyntheticEvent, item: File) => {
+  const showPdf = (e: SyntheticEvent, item: File) => {
     e.preventDefault();
     const file = new Blob([item], {
       type: item?.type.includes("pdf") ? "application/pdf" : "image/jpeg",

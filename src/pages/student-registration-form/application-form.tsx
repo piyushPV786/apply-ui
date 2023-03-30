@@ -11,7 +11,7 @@ import { EducationForm } from "../../components/Form/EducationForm";
 import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
-import { AcadmicApi, AuthApi } from "../../service/Axios";
+import useAxiosInterceptor from "../../service/Axios";
 import {
   ILeadFormValues,
   IMasterData,
@@ -41,10 +41,14 @@ import {
   MagicNumbers,
   RoutePaths,
 } from "../../components/common/constant";
+import {
+  getIntrestedQualificationPrograms,
+  getUserDetailHelper,
+} from "../../Util/applicationFormHelper";
 
 const ApplicationForm = () => {
   const router = useRouter();
-
+  const { AuthApi, loading, AcadmicApi } = useAxiosInterceptor();
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
   const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
@@ -52,7 +56,6 @@ const ApplicationForm = () => {
     success: false,
     show: false,
   });
-  const [loading, setLoading] = useState<boolean>(false);
   const [leadId, setLeadId] = useState<string>("");
   const [activeStep, setActiveStep] = useState<any>(0);
   const [masterData, setMasterData] = useState<IMasterData | null>(null);
@@ -119,7 +122,6 @@ const ApplicationForm = () => {
     applicationCode: string,
     activeLeadDetail: any
   ) => {
-    setLoading(true);
     if (activeStep === MagicNumbers.TWO) {
       uploadStudentDocs();
       return;
@@ -172,13 +174,9 @@ const ApplicationForm = () => {
           show: true,
         });
         setSubmitted(false);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
   const updateUserAsDraft = (request, appCode: string) => {
-    setLoading(true);
     AuthApi.put(`${CommonApi.SAVEDRAFT}/${appCode}`, {
       ...request,
     })
@@ -197,13 +195,9 @@ const ApplicationForm = () => {
           message: err?.message,
           show: true,
         });
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
   const createDraft = (request, leadCode) => {
-    setLoading(true);
     request.lead.leadCode = leadCode;
     AuthApi.post(`${CommonApi.SAVEDRAFT}`, {
       ...request,
@@ -223,9 +217,6 @@ const ApplicationForm = () => {
           message: err?.message,
           show: true,
         });
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
   const submitFormData = (data: any, isDraftSave?: boolean) => {
@@ -377,21 +368,17 @@ const ApplicationForm = () => {
   };
 
   const getMasterData = () => {
-    setLoading(true);
     AuthApi.get(CommonApi.GETMASTERDATA)
       .then(({ data }: any) => {
         setMasterData({ ...masterData, ...data?.data });
-        getIntrestedQualificationPrograms();
+        getIntrestedQualificationPrograms(AcadmicApi, setMasterData);
       })
       .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoading(false);
+        console.error(err);
       });
   };
+
   const getUserDetail = () => {
-    setLoading(true);
     const isAuthenticate = JSON.parse(
       sessionStorage?.getItem("authenticate") as any
     );
@@ -405,55 +392,22 @@ const ApplicationForm = () => {
     const routeTo: string = sessionStorage.getItem("routeTo")! || "";
     setLeadId(leadDetail?.applicationCode);
     if (leadDetail && leadDetail.applicationCode) {
-      AuthApi.get(
-        `lead/${leadDetail?.leadCode}/application/${
-          leadDetail?.applicationCode
-        }?isDraft=${leadDetail?.isdraftSave || "false"}`
-      )
-        .then(({ data: response }) => {
-          const formData = { ...response?.data };
-          transformFormData(formData);
-          mapFormDefaultValue(formData, setValue);
-          if (leadDetail?.isPaymentPending && routeTo !== "document") {
-            setActiveStep(1);
-            setSubmitted(true);
-            setPaymentDone(true);
-          }
-          if (leadDetail?.isDocumentPending) {
-            setActiveStep(2);
-            setSubmitted(true);
-            setPaymentDone(true);
-          }
-          if (routeTo === "Document") {
-            routeIfStepDone(routeTo); /// calling this if user coming back from payment success screen
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      getUserDetailHelper(
+        leadDetail,
+        transformFormData,
+        mapFormDefaultValue,
+        routeTo,
+        setActiveStep,
+        setSubmitted,
+        setPaymentDone,
+        routeIfStepDone,
+        setValue,
+        AuthApi
+      );
     }
   };
 
-  const getIntrestedQualificationPrograms = () => {
-    setLoading(true);
-    AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
-      .then(({ data }: any) => {
-        setMasterData((prevState: any) => ({
-          ...prevState,
-          programs: data.data as IOption[],
-        }));
-      })
-      .catch((err) => console.log(err))
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
   const onManagementStudentSubmit = () => {
-    setLoading(true);
     const applicationCode = JSON.parse(
       sessionStorage.getItem("activeLeadDetail")!
     )?.applicationCode;
@@ -481,9 +435,6 @@ const ApplicationForm = () => {
       })
       .catch((err) => {
         console.log(err);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
 
@@ -526,9 +477,6 @@ const ApplicationForm = () => {
     }
   };
 
-  const handleLoading = (loading: boolean) => {
-    setLoading(loading);
-  };
   return (
     <>
       {loading ? (
@@ -608,7 +556,6 @@ const ApplicationForm = () => {
                       showToast={showToast}
                       isManagementStudentType={isManagementStudentType}
                       isApplicationEnrolled={isApplicationEnrolled}
-                      setLoading={handleLoading}
                     />
                   </>
                 )}
@@ -620,6 +567,7 @@ const ApplicationForm = () => {
                       documentType={documentType}
                       leadId={leadId}
                       isApplicationEnrolled={isApplicationEnrolled}
+                      isLoading={loading}
                     />
                   </>
                 )}
