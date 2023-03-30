@@ -252,6 +252,12 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                           postalCountryVal,
                           formOptions
                         );
+                      } else if (!e?.currentTarget?.checked) {
+                        setValue(`${resPostalAddress}`, "");
+                        setValue(`${resPostalCode}`, "");
+                        setValue(`${resCity}`, "");
+                        setValue(`${resState}`, "");
+                        setValue(`${resCountry}`, "");
                       }
                     }}
                   />
