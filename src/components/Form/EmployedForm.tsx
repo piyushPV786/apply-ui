@@ -103,7 +103,7 @@ export const EmployedForm = (props: IEmployeProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isEmployed}`)}
+              {...register(`${isEmployed}`,{required:true})}
               value="yes"
               checked={isEmployedVal === "yes"}
             />
@@ -113,7 +113,7 @@ export const EmployedForm = (props: IEmployeProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isEmployed}`)}
+              {...register(`${isEmployed}`,{required:true})}
               value="no"
               checked={isEmployedVal === "no"}
             />
