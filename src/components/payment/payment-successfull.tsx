@@ -23,7 +23,7 @@ const PaymentSuccessFull = (props: any) => {
       leadCode: leadDetails?.leadCode,
       isPaymentPending,
       isdraftSave,
-      educationDetail:leadDetails?.educationDetail
+      educationDetail: leadDetails?.educationDetail,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     sessionStorage.setItem("routeTo", "payment");
@@ -152,7 +152,10 @@ const PaymentSuccessFull = (props: any) => {
               type="button"
               isGreenWhiteCombination={true}
               title={"Skip for Now"}
-              onClick={() => router.push(RoutePaths.Dashboard)}
+              onClick={() => {
+                localStorage.setItem("leadData", "");
+                router.push(RoutePaths.Dashboard);
+              }}
             />
             &nbsp;&nbsp;&nbsp;
             <StyledButton
@@ -218,7 +221,10 @@ const PaymentSuccessFull = (props: any) => {
             props?.pageType === "document-upload-success") && (
             <div>
               <StyledButton
-                onClick={() => router.push(RoutePaths.Dashboard)}
+                onClick={() => {
+                  localStorage.setItem("leadData", "");
+                  router.push(RoutePaths.Dashboard);
+                }}
                 title="Back to Dashboard"
                 isGreenWhiteCombination
                 className="me-2"
