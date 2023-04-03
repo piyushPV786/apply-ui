@@ -163,8 +163,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                 </div>
               </div>
 
-              {employmentStatusVal !== ""
-                ? !isSelfEmployed && (
+              {employmentStatusVal !== "" && (
+                <>
+                  {!isSelfEmployed && (
                     <div className="col-md-4">
                       <StyledLabel required>Employer</StyledLabel>
                       <div className="mb-4">
@@ -183,65 +184,61 @@ export const EmployedForm = (props: IEmployeProps) => {
                         )}
                       </div>
                     </div>
-                  )
-                : null}
+                  )}
 
-              {employmentStatusVal !== "" && (
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <StyledLabel required>Job Title</StyledLabel>
-                    <input
-                      className="form-control"
-                      value={jobTitleVal}
-                      defaultValue={jobTitleVal}
-                      {...register(`${jobTitle}`, {
+                  <div className="col-md-4">
+                    <div className="mb-4">
+                      <StyledLabel required>Job Title</StyledLabel>
+                      <input
+                        className="form-control"
+                        value={jobTitleVal}
+                        defaultValue={jobTitleVal}
+                        {...register(`${jobTitle}`, {
                         required: isEmployedNeed && isSelfEmployed,
-                      })}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        const name = e.target.name;
+                        })}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const name = e.target.name;
                         if (onlyAlphaNumericSpace(value) || !value) {
-                          setValue(name, value, formOptions);
-                        }
-                      }}
-                    />
+                            setValue(name, value, formOptions);
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
-              {employmentStatusVal !== "" && (
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <StyledLabel required>Industry</StyledLabel>
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      {...register(`${industry}`, {
+
+                  <div className="col-md-4">
+                    <div className="mb-4">
+                      <StyledLabel required>Industry</StyledLabel>
+                      <select
+                        className="form-select"
+                        aria-label="Default select example"
+                        {...register(`${industry}`, {
                         required: isEmployedNeed && isSelfEmployed,
-                      })}
-                    >
-                      <option value={""}>Select Industry</option>
-                      {employmentIndustries &&
+                        })}
+                      >
+                        <option value={""}>Select Industry</option>
+                        {employmentIndustries &&
                         employmentIndustries.map(({ code, name }) => (
-                          <option
-                            selected={code === industryVal}
-                            key={code}
-                            value={code}
-                          >
-                            {name}
-                          </option>
+                              <option
+                                selected={code === industryVal}
+                                key={code}
+                                value={code}
+                              >
+                                {name}
+                              </option>
                         ))}
-                    </select>
-                    {touchField?.employmentIndustryCode &&
-                      error?.employmentIndustryCode && (
-                        <div className="invalid-feedback">
-                          Please select industry
-                        </div>
-                      )}
+                      </select>
+                      {touchField?.employmentIndustryCode &&
+                        error?.employmentIndustryCode && (
+                          <div className="invalid-feedback">
+                            Please select industry
+                          </div>
+                        )}
+                    </div>
                   </div>
-                </div>
-              )}
-              {employmentStatusVal !== ""
-                ? !isSelfEmployed && (
+
+                  {!isSelfEmployed && (
                     <div className="col-md-4">
                       <div className="mb-4">
                         <StyledLabel required>Manager Name</StyledLabel>
@@ -265,11 +262,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                         )}
                       </div>
                     </div>
-                  )
-                : null}
+                  )}
 
-              {employmentStatusVal !== ""
-                ? !isSelfEmployed && (
+                  {!isSelfEmployed && (
                     <div className="col-md-4">
                       <div className="mb-4">
                         <StyledLabel required>Office Address</StyledLabel>
@@ -281,12 +276,8 @@ export const EmployedForm = (props: IEmployeProps) => {
                         />
                       </div>
                     </div>
-                  )
-                : null}
-            </div>
-            <div className="row">
-              {employmentStatusVal !== ""
-                ? !isSelfEmployed && (
+                  )}
+                  {!isSelfEmployed && (
                     <div className="col-md-4">
                       <div className="mb-4">
                         <StyledLabel required>Office Number</StyledLabel>
@@ -323,8 +314,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                           )}
                       </div>
                     </div>
-                  )
-                : null}
+                  )}
+                </>
+              )}
             </div>
           </div>
         </AccordionDetails>
