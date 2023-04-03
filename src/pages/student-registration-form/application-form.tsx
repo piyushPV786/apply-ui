@@ -237,8 +237,8 @@ const ApplicationForm = () => {
     let request = mapFormData({
       ...rest,
     });
-    const appCode = JSON.parse(localStorage?.getItem("leadData") as any)
-      ?.applicationData?.applicationCode;
+    const appCode = localStorage?.getItem("leadData") ? JSON.parse(localStorage?.getItem("leadData") as any)
+      ?.applicationData?.applicationCode : null;
     const activeLeadDetail = JSON.parse(
       sessionStorage?.getItem("activeLeadDetail") as any
     );
