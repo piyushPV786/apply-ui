@@ -72,8 +72,8 @@ const Payment = (props: any) => {
   const totalAmount = +conertedProgramFee - +discountAmount;
   useEffect(() => {
     const programDetails =
-      JSON.parse(sessionStorage.getItem("activeLeadDetail")!)
-        ?.educationDetail || null;
+    sessionStorage.getItem("activeLeadDetail") ?  JSON.parse(sessionStorage.getItem("activeLeadDetail")!)
+        ?.educationDetail : null;
     if (selectedProgram && programDetails) {
       (async () => {
         const selectedProgramCode = await getQualificationStudyModeData(
