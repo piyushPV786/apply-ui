@@ -96,7 +96,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isKin}`, { required: isKinNeed })}
+              {...register(`${isKin}`, { required: true })}
               value="yes"
               checked={isNextKinVal === "yes"}
             />
@@ -106,7 +106,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isKin}`, { required: isKinNeed })}
+              {...register(`${isKin}`, { required: true })}
               value="no"
               checked={isNextKinVal === "no"}
             />
