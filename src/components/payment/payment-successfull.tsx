@@ -154,6 +154,7 @@ const PaymentSuccessFull = (props: any) => {
               title={"Skip for Now"}
               onClick={() => {
                 localStorage.setItem("leadData", "");
+                sessionStorage.setItem("activeLeadDetail", "");
                 router.push(RoutePaths.Dashboard);
               }}
             />
@@ -223,6 +224,7 @@ const PaymentSuccessFull = (props: any) => {
               <StyledButton
                 onClick={() => {
                   localStorage.setItem("leadData", "");
+                  sessionStorage.setItem("activeLeadDetail", "");
                   router.push(RoutePaths.Dashboard);
                 }}
                 title="Back to Dashboard"
