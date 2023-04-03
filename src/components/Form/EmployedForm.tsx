@@ -39,7 +39,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     ...props,
   };
 
-  const [countryCodeRef, setCountryCode] = useState<any>("SA");
+  const [countryCodeRef, setCountryCode] = useState<any>();
 
   const {
     setValue,
@@ -58,6 +58,14 @@ export const EmployedForm = (props: IEmployeProps) => {
   const officeAddressVal = watch(officeAddress);
   const officeNumberVal = watch(officeNumber);
   const isEmployerDetailExist = watch(EmployementDetails);
+
+  useEffect(() => {
+    const userNumberDetail = JSON.parse(
+      sessionStorage.getItem("studentMobile") as string
+    );
+
+    setCountryCode(userNumberDetail?.countryCode);
+  }, []);
 
   const uppdateMobNumber = () => {
     const countryCode = getCountryCallingCode(countryCodeRef);
