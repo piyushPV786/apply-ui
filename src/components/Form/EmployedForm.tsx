@@ -61,7 +61,7 @@ export const EmployedForm = (props: IEmployeProps) => {
 
   useEffect(() => {
     const userNumberDetail = JSON.parse(
-      sessionStorage.getItem("studentMobile") as any
+      sessionStorage.getItem("studentMobile") as string
     );
 
     setCountryCode(userNumberDetail?.countryCode);
