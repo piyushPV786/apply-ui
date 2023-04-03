@@ -105,6 +105,62 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
+                  <StyledLabel required>City</StyledLabel>
+                  <input
+                    value={postalCityVal}
+                    defaultValue={postalCityVal}
+                    className="form-control"
+                    {...register(`${postalCity}`, {
+                      required: true,
+                    })}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphabets(value)) {
+                        setValue(name, value, formOptions);
+                      }
+                    }}
+                  />
+                  {touchedField &&
+                    error &&
+                    touchedField[0]?.city &&
+                    error[0]?.city && (
+                      <div className="invalid-feedback">Please enter City</div>
+                    )}
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="mb-4">
+                  <StyledLabel required>State</StyledLabel>
+                  <input
+                    {...register(`${postalState}`, {
+                      required: true,
+                    })}
+                    className="form-control"
+                    value={postalStateVal}
+                    defaultValue={postalStateVal}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const name = e.target.name;
+                      if (onlyAlphabets(value)) {
+                        setValue(name, value, formOptions);
+                      }
+                    }}
+                  />
+                  {touchedField &&
+                    error &&
+                    touchedField[0]?.state &&
+                    error[0]?.state && (
+                      <div className="invalid-feedback">
+                        Please enter Postal State
+                      </div>
+                    )}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-4">
+                <div className="mb-4">
                   <AdvanceDropDown
                     value={postalCountryVal}
                     options={CountryData.sort((a, b) =>
@@ -156,62 +212,6 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                           : error[0]?.zipcode.type === "minLength"
                           ? "Minimum length should be 5"
                           : "Please enter Zip/Postal Code"}
-                      </div>
-                    )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>City</StyledLabel>
-                  <input
-                    value={postalCityVal}
-                    defaultValue={postalCityVal}
-                    className="form-control"
-                    {...register(`${postalCity}`, {
-                      required: true,
-                    })}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const name = e.target.name;
-                      if (onlyAlphabets(value)) {
-                        setValue(name, value, formOptions);
-                      }
-                    }}
-                  />
-                  {touchedField &&
-                    error &&
-                    touchedField[0]?.city &&
-                    error[0]?.city && (
-                      <div className="invalid-feedback">Please enter City</div>
-                    )}
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>State</StyledLabel>
-                  <input
-                    {...register(`${postalState}`, {
-                      required: true,
-                    })}
-                    className="form-control"
-                    value={postalStateVal}
-                    defaultValue={postalStateVal}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const name = e.target.name;
-                      if (onlyAlphabets(value)) {
-                        setValue(name, value, formOptions);
-                      }
-                    }}
-                  />
-                  {touchedField &&
-                    error &&
-                    touchedField[0]?.state &&
-                    error[0]?.state && (
-                      <div className="invalid-feedback">
-                        Please enter Postal State
                       </div>
                     )}
                 </div>
@@ -301,64 +301,6 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <AdvanceDropDown
-                      value={resCountryVal}
-                      label="Country"
-                      options={CountryData?.sort((a, b) =>
-                        sortAscending(a, b, "name")
-                      )}
-                      name={resCountry}
-                      register={register}
-                      mapKey="name"
-                      onChange={(e: any) => {
-                        const value = e.target.value;
-                        setValue(resCountry, value, formOptions);
-                      }}
-                    />
-                    {touchedField &&
-                      error &&
-                      touchedField[1]?.country &&
-                      error[1]?.country && (
-                        <div className="invalid-feedback">
-                          Please enter Residential Country
-                        </div>
-                      )}
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <StyledLabel required>Pin Code</StyledLabel>
-                    <input
-                      value={resPostalCodeVal}
-                      defaultValue={resPostalCodeVal}
-                      {...register(`${resPostalCode}`, {
-                        required: true,
-                        maxLength: 6,
-                        minLength: 5,
-                      })}
-                      type="number"
-                      className="form-control"
-                      id="postalCode"
-                      placeholder="Enter Zip/Postal Code"
-                    />
-                    {touchedField &&
-                      error &&
-                      touchedField[1]?.zipcode &&
-                      error[1]?.zipcode && (
-                        <div className="invalid-feedback">
-                          {error[1]?.zipcode.type === "maxLength"
-                            ? "Max length exceeded"
-                            : error[1]?.zipcode.type === "minLength"
-                            ? "Minimum length should be 5"
-                            : "Please enter Zip/Postal Code"}
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-4">
-                  <div className="mb-4">
                     <StyledLabel required>City</StyledLabel>
                     <input
                       {...register(`${resCity}`, {
@@ -410,6 +352,64 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       error[1]?.state && (
                         <div className="invalid-feedback">
                           Please enter Residential State
+                        </div>
+                      )}
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <AdvanceDropDown
+                      value={resCountryVal}
+                      label="Country"
+                      options={CountryData?.sort((a, b) =>
+                        sortAscending(a, b, "name")
+                      )}
+                      name={resCountry}
+                      register={register}
+                      mapKey="name"
+                      onChange={(e: any) => {
+                        const value = e.target.value;
+                        setValue(resCountry, value, formOptions);
+                      }}
+                    />
+                    {touchedField &&
+                      error &&
+                      touchedField[1]?.country &&
+                      error[1]?.country && (
+                        <div className="invalid-feedback">
+                          Please enter Residential Country
+                        </div>
+                      )}
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <StyledLabel required>Pin Code</StyledLabel>
+                    <input
+                      value={resPostalCodeVal}
+                      defaultValue={resPostalCodeVal}
+                      {...register(`${resPostalCode}`, {
+                        required: true,
+                        maxLength: 6,
+                        minLength: 5,
+                      })}
+                      type="number"
+                      className="form-control"
+                      id="postalCode"
+                      placeholder="Enter Zip/Postal Code"
+                    />
+                    {touchedField &&
+                      error &&
+                      touchedField[1]?.zipcode &&
+                      error[1]?.zipcode && (
+                        <div className="invalid-feedback">
+                          {error[1]?.zipcode.type === "maxLength"
+                            ? "Max length exceeded"
+                            : error[1]?.zipcode.type === "minLength"
+                            ? "Minimum length should be 5"
+                            : "Please enter Zip/Postal Code"}
                         </div>
                       )}
                   </div>
