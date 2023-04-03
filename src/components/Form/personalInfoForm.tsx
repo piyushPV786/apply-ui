@@ -265,10 +265,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     className="form-control"
                     id="email"
                     placeholder=""
+                    onChange={(e) => {
+                      setValue(emailKey, e.target.value);
+                    }}
                   />
                   {TouchFields?.email && Errors?.email && (
                     <div className="invalid-feedback">
-                      {Errors?.email?.type == "validate"
+                      {Errors?.email?.type === "validate"
                         ? "you have entered an invalid email address. Please try again"
                         : "Please enter Email"}
                     </div>
