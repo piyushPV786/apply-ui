@@ -87,10 +87,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const raceId = watch(raceIdKey);
   const identificationDocumentType = watch(identificationDocumentTypeKey);
   const homeLanguageId = watch(homeLanguageIdKey);
-  const uppdateMobNumber = () => {
-    const countryCode = getCountryCallingCode(countryCodeRef);
-    setValue(`${countryCode}`, `+${countryCode}`);
-  };
+
   const genderOption = [
     ...(genders || []),
     ...[{ name: "Other", code: "other", id: 21 }],
@@ -114,6 +111,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       setValue(identificationDocumentTypeKey, "", { shouldDirty: true });
     }
   };
+
 
   return (
     <>
@@ -261,10 +259,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       required: true,
                       validate: isValidEmail,
                     })}
-                    type="email"
+                    type="text"
                     className="form-control"
                     id="email"
-                    placeholder=""
                     onChange={(e) => {
                       setValue(emailKey, e.target.value);
                     }}
