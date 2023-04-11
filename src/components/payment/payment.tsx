@@ -69,11 +69,12 @@ const Payment = (props: any) => {
   const conertedProgramFee = String(
     +programFee * allFields?.payment?.conversionRate || programFee
   );
-  const totalAmount = +conertedProgramFee - +discountAmount;
+  const rmatFee = 250 * Number(allFields?.payment?.conversionRate);
+  const totalAmount = +conertedProgramFee - +discountAmount + rmatFee;
   useEffect(() => {
-    const programDetails =
-    sessionStorage.getItem("activeLeadDetail") ?  JSON.parse(sessionStorage.getItem("activeLeadDetail")!)
-        ?.educationDetail : null;
+    const programDetails = sessionStorage.getItem("activeLeadDetail")
+      ? JSON.parse(sessionStorage.getItem("activeLeadDetail")!)?.educationDetail
+      : null;
     if (selectedProgram && programDetails) {
       (async () => {
         const selectedProgramCode = await getQualificationStudyModeData(
@@ -139,7 +140,8 @@ const Payment = (props: any) => {
           fileType: file.type,
           amount:
             parseInt(programFee) -
-            parseInt(allFields?.payment?.discountAmount || 0),
+            parseInt(allFields?.payment?.discountAmount || 0) +
+            rmatFee,
           paymentModeCode: "OFFLINE",
           discountCode: allFields?.payment?.discountCode,
           discountAmount: allFields?.payment?.discountAmount,
@@ -348,6 +350,15 @@ const Payment = (props: any) => {
                                 ? allFields?.payment?.discountedFee
                                 : conertedProgramFee}
                             </h6>
+                            <h6>
+                              RMAT Fee {selectedCurrency} -{" "}
+                              {isNaN(
+                                250 * Number(allFields?.payment?.conversionRate)
+                              )
+                                ? 0
+                                : 250 *
+                                  Number(allFields?.payment?.conversionRate)}
+                            </h6>
                             {!isManagementPromoCode && (
                               <>
                                 <h6>
@@ -357,7 +368,7 @@ const Payment = (props: any) => {
                                 <h6>
                                   Total Amount - &nbsp;{selectedCurrency}
                                   {isNaN(totalAmount)
-                                    ? conertedProgramFee
+                                    ? rmatFee + +conertedProgramFee
                                     : totalAmount}
                                 </h6>
                               </>
