@@ -53,7 +53,7 @@ export const ApplicationDashboard = (props: any) => {
       )
       .catch((err) => {
         console.log(err);
-      })
+      });
   };
   const getIntrestedQualificationPrograms = (application: [IApplication]) => {
     AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
@@ -99,6 +99,7 @@ export const ApplicationDashboard = (props: any) => {
       leadCode,
       isdraftSave,
       educationDetail,
+      status,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     const url = status.includes(CommonEnums.APP_ENROLLED_ACCEPTED)

@@ -69,7 +69,9 @@ const Payment = (props: any) => {
   const conertedProgramFee = String(
     +programFee * allFields?.payment?.conversionRate || programFee
   );
-  const rmatFee = 250 * Number(allFields?.payment?.conversionRate);
+  const rmatFee = selectedNationality?.includes("SA")
+    ? 250
+    : 250 * Number(allFields?.payment?.conversionRate);
   const totalAmount = +conertedProgramFee - +discountAmount + rmatFee;
   useEffect(() => {
     const programDetails = sessionStorage.getItem("activeLeadDetail")
@@ -352,12 +354,7 @@ const Payment = (props: any) => {
                             </h6>
                             <h6>
                               RMAT Fee {selectedCurrency} -{" "}
-                              {isNaN(
-                                250 * Number(allFields?.payment?.conversionRate)
-                              )
-                                ? 0
-                                : 250 *
-                                  Number(allFields?.payment?.conversionRate)}
+                              {isNaN(rmatFee) ? 0 : rmatFee}
                             </h6>
                             {!isManagementPromoCode && (
                               <>
@@ -368,7 +365,7 @@ const Payment = (props: any) => {
                                 <h6>
                                   Total Amount - &nbsp;{selectedCurrency}
                                   {isNaN(totalAmount)
-                                    ? rmatFee + +conertedProgramFee
+                                    ? +rmatFee + +conertedProgramFee
                                     : totalAmount}
                                 </h6>
                               </>
