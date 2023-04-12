@@ -120,25 +120,27 @@ const ApplicationForm = () => {
     request: any,
     leadCode: string,
     applicationCode: string,
-    activeLeadDetail: any
+    activeLeadDetail: any,
+    status: string
   ) => {
     if (activeStep === MagicNumbers.TWO) {
       uploadStudentDocs();
       return;
     }
-    const methodType = applicationCode
-      ? AuthApi.put(
-          `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}?isDraft=false`,
-          {
+    const methodType =
+      applicationCode && (status !== CommonEnums.DRAFT_STATUS || !status)
+        ? AuthApi.put(
+            `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}?isDraft=false`,
+            {
+              ...request,
+            }
+          )
+        : AuthApi.post(CommonApi.SAVEUSER, {
             ...request,
-          }
-        )
-      : AuthApi.post(CommonApi.SAVEUSER, {
-          ...request,
-        });
+          });
     methodType
       .then(({ data: response }) => {
-        if (!applicationCode) {
+        if (!applicationCode || status === CommonEnums.DRAFT_STATUS) {
           sessionStorage.setItem(
             "studentId",
             JSON.stringify({
@@ -147,7 +149,7 @@ const ApplicationForm = () => {
             })
           );
           localStorage.setItem("leadData", JSON.stringify(response?.data));
-          activeLeadDetail &&
+          if (activeLeadDetail) {
             sessionStorage.setItem(
               "activeLeadDetail",
               JSON.stringify({
@@ -156,6 +158,7 @@ const ApplicationForm = () => {
                   response?.data?.applicationData?.applicationCode,
               })
             );
+          }
         }
 
         setShowDraftSaveToast({
@@ -253,10 +256,17 @@ const ApplicationForm = () => {
     const draftUpdateCode = activeLeadDetail?.applicationCode
       ? activeLeadDetail?.applicationCode
       : appCode;
+    const AppStatus = activeLeadDetail?.status;
     if (leadCode && !isDraftSave) {
       setSubmitted(true);
       request.lead.leadCode = leadCode;
-      updateLead(request, leadCode, draftUpdateCode, activeLeadDetail);
+      updateLead(
+        request,
+        leadCode,
+        draftUpdateCode,
+        activeLeadDetail,
+        AppStatus
+      );
       return;
     }
     if (draftUpdateCode && isDraftSave) {

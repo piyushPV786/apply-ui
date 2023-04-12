@@ -8,6 +8,8 @@ import UploadIcon from "../../../public/assets/images/upload.svg";
 import PayIcon from "../../../public/assets/images/pay-pay.svg";
 import UploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
 import RmatImg from "../../../public/assets/images/rmat.png";
+import useAxiosInterceptor from "../../service/Axios";
+
 interface IButoonProps {
   title?: string;
   onClick?: (...args: any) => void;
@@ -42,44 +44,48 @@ const StyledButton = ({
   form = "",
   ...rest
 }: IButoonProps) => {
+  const { loading } = useAxiosInterceptor();
+
   return (
     <MyButton
       {...rest}
-      disabled={disabled}
+      disabled={loading || disabled}
       roundBtn={roundBtn}
       isGreenWhiteCombination={isGreenWhiteCombination}
       style={style}
       className={className}
       type={type}
-      onClick={onClick}
+      onClick={!loading && onClick}
       form={form}
     >
-      {isEditBtn && (
-        <span className="me-3">
-          <Image alt="edit" width="20" src={EditIcon} />
-        </span>
-      )}
-      {isPayBtn && (
-        <span className="me-3">
-          <Image alt="pay" src={PayIcon} />
-        </span>
-      )}
-      {isRMATBtn && (
-        <span className="me-2">
-          <Image alt="pay" src={RmatImg} />
-        </span>
-      )}
-      {isUploadBtn && (
-        <span className="me-3">
-          <Image alt="upload" src={UploadIcon} />
-        </span>
-      )}
-      {isDownloadBtn && (
-        <StyledDownloadIcon className="me-3 icon-additinal">
-          <Image alt="download" src={UploadImg} width={15} />
-        </StyledDownloadIcon>
-      )}
-      {title}
+      <>
+        {isEditBtn && (
+          <span className="me-3">
+            <Image alt="edit" width="20" src={EditIcon} />
+          </span>
+        )}
+        {isPayBtn && (
+          <span className="me-3">
+            <Image alt="pay" src={PayIcon} />
+          </span>
+        )}
+        {isRMATBtn && (
+          <span className="me-2">
+            <Image alt="pay" src={RmatImg} />
+          </span>
+        )}
+        {isUploadBtn && (
+          <span className="me-3">
+            <Image alt="upload" src={UploadIcon} />
+          </span>
+        )}
+        {isDownloadBtn && (
+          <StyledDownloadIcon className="me-3 icon-additinal">
+            <Image alt="download" src={UploadImg} width={15} />
+          </StyledDownloadIcon>
+        )}
+        {title}
+      </>
     </MyButton>
   );
 };
