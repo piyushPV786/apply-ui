@@ -112,7 +112,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     }
   };
 
-console.log({Errors,TouchFields})
+  console.log({ Errors, TouchFields });
   return (
     <>
       <StyledAccordion defaultExpanded={true}>
@@ -270,14 +270,15 @@ console.log({Errors,TouchFields})
                         : "Please enter Email"}
                     </div>
                   )}
-                    {!TouchFields?.email && email?.length > 1 && Errors?.email && (
-                    <div className="invalid-feedback">
-                      {Errors?.email?.type === "validate"
-                        ? "you have entered an invalid email address. Please try again"
-                        : ""}
-                    </div>
-                  )}
-                  
+                  {TouchFields?.email &&
+                    email?.length > 1 &&
+                    isValidEmail(email) && (
+                      <div className="invalid-feedback">
+                        {Errors?.email?.type === "validate"
+                          ? "you have entered an invalid email address. Please try again"
+                          : ""}
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
