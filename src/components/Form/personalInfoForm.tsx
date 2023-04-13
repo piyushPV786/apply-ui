@@ -272,11 +272,10 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   )}
                   {TouchFields?.email &&
                     email?.length > 1 &&
-                    isValidEmail(email) && (
+                    !isValidEmail(email) && (
                       <div className="invalid-feedback">
-                        {Errors?.email?.type === "validate"
-                          ? "you have entered an invalid email address. Please try again"
-                          : ""}
+                        you have entered an invalid email address. Please try
+                        again
                       </div>
                     )}
                 </div>
