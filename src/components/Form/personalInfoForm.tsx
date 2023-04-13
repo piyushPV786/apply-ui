@@ -262,9 +262,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="text"
                     className="form-control"
                     id="email"
-                    onChange={(e) => {
-                      setValue(emailKey, e.target.value);
-                    }}
                   />
                   {TouchFields?.email && Errors?.email && (
                     <div className="invalid-feedback">
