@@ -19,6 +19,7 @@ import {
 } from "../../components/common/types";
 import {
   getUploadDocumentUrl,
+  isValidEmail,
   isValidFileType,
   mapFormData,
   mapFormDefaultValue,
@@ -45,7 +46,7 @@ import {
   getIntrestedQualificationPrograms,
   getUserDetailHelper,
 } from "../../Util/applicationFormHelper";
-
+const isValidLeadEmail = (value: string) => isValidEmail(value);
 const ApplicationForm = () => {
   const router = useRouter();
   const { AuthApi, loading, AcadmicApi } = useAxiosInterceptor();
@@ -483,9 +484,17 @@ const ApplicationForm = () => {
 
   const isValidForm = () => {
     if (activeStep === 0) {
-      return activeStep === MagicNumbers.ZERO && !isValid;
+      return (
+        activeStep === MagicNumbers.ZERO &&
+        !isValid &&
+        !isValidLeadEmail(allFields?.lead?.email)
+      );
     } else {
-      return activeStep === MagicNumbers.TWO && !isValid && !isValidDocument;
+      return (
+        activeStep === MagicNumbers.TWO &&
+        !isValid &&
+        !isValidLeadEmail(allFields?.lead?.email)
+      );
     }
   };
 

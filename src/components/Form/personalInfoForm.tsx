@@ -112,7 +112,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     }
   };
 
-  console.log({ Errors, TouchFields });
   return (
     <>
       <StyledAccordion defaultExpanded={true}>
