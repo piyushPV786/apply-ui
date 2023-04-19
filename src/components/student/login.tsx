@@ -55,7 +55,7 @@ const StudentLogin = () => {
   const isNumberValid =
     mobileNumber &&
     parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 6 &&
-    mobileNumber.length! <= 15;
+    mobileNumber.length! <= 16;
 
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = () => {
