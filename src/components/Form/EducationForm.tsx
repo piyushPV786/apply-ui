@@ -150,6 +150,7 @@ export const EducationForm = (props: IEducationProps) => {
     studyModeQualification[0]?.studyModes.findIndex(
       (item) => item?.studyModeCode === studyModeVal
     );
+
   return (
     <>
       <StyledAccordion expanded key="education" id="education">
@@ -265,13 +266,15 @@ export const EducationForm = (props: IEducationProps) => {
                           selectedStudyModeIndex
                         ]?.fees
                           ?.sort((a, b) => sortAscending(a, b, "feeMode"))
-                          .map(({ fee, feeMode }: IFee) => (
-                            <FeeCard
-                              key={fee}
-                              fee={fee}
-                              feeMode={feeMode}
-                              uniqueId={fee}
-                            />
+                          .map(({ fee, feeMode }: IFee,index) => (
+                            <div key={index}>
+                              <FeeCard
+                                key={fee}
+                                fee={fee}
+                                feeMode={feeMode}
+                                uniqueId={fee}
+                              />
+                            </div>
                           ))}
                     </StyleContainer>
                   </div>
@@ -479,7 +482,7 @@ export const EducationForm = (props: IEducationProps) => {
                       }, 0);
                     }}
                   >
-                    <option value={""}>Select Social Media</option>
+                    <option value={""}>Select Referred Media</option>
 
                     {AgentandSocialMedia &&
                       AgentandSocialMedia.map(({ code, name }) => (

@@ -8,7 +8,7 @@ import UploadIcon from "../../../public/assets/images/upload.svg";
 import PayIcon from "../../../public/assets/images/pay-pay.svg";
 import UploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
 import RmatImg from "../../../public/assets/images/rmat.png";
-import useAxiosInterceptor from "../../service/Axios";
+import { useIsRouting } from "../../pages/_app";
 
 interface IButoonProps {
   title?: string;
@@ -44,18 +44,17 @@ const StyledButton = ({
   form = "",
   ...rest
 }: IButoonProps) => {
-  const { loading } = useAxiosInterceptor();
-
+  const isRouting = useIsRouting();
   return (
     <MyButton
       {...rest}
-      disabled={loading || disabled}
+      disabled={isRouting || disabled}
       roundBtn={roundBtn}
       isGreenWhiteCombination={isGreenWhiteCombination}
       style={style}
       className={className}
       type={type}
-      onClick={!loading && onClick}
+      onClick={!isRouting && onClick}
       form={form}
     >
       <>
@@ -84,7 +83,7 @@ const StyledButton = ({
             <Image alt="download" src={UploadImg} width={15} />
           </StyledDownloadIcon>
         )}
-        {title}
+        {isRouting ? "Loading..." : title}
       </>
     </MyButton>
   );
