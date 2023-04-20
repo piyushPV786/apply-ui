@@ -257,6 +257,7 @@ const ApplicationForm = () => {
     const draftUpdateCode = activeLeadDetail?.applicationCode
       ? activeLeadDetail?.applicationCode
       : appCode;
+    const draftId = activeLeadDetail?.draftId;
     const AppStatus = activeLeadDetail?.status;
     if (leadCode && !isDraftSave) {
       setSubmitted(true);
@@ -270,8 +271,8 @@ const ApplicationForm = () => {
       );
       return;
     }
-    if (draftUpdateCode && isDraftSave) {
-      updateUserAsDraft(request, draftUpdateCode);
+    if (draftId && isDraftSave) {
+      updateUserAsDraft(request, draftId);
       return;
     }
     if (isDraftSave && checkValidationForDraftSave()) {
@@ -450,7 +451,6 @@ const ApplicationForm = () => {
         console.log(err);
       });
   };
-
   const language = masterData?.languageData as IOption[];
   const nationalities = masterData?.nationalityData as IOption[];
   const relationData = masterData?.relationData as IOption[];

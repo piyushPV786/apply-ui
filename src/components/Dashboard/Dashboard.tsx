@@ -89,7 +89,8 @@ export const ApplicationDashboard = (props: any) => {
     applicationCode: string | number,
     leadCode: string,
     status,
-    educationDetail
+    educationDetail,
+    draftId
   ) => {
     clearRoute();
     const isdraftSave =
@@ -100,6 +101,7 @@ export const ApplicationDashboard = (props: any) => {
       isdraftSave,
       educationDetail,
       status,
+      draftId
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     const url = status.includes(CommonEnums.APP_ENROLLED_ACCEPTED)
@@ -225,6 +227,7 @@ export const ApplicationDashboard = (props: any) => {
                             programName,
                             updatedAt,
                             enrolmentCode,
+                            id,
                             lead: {
                               firstName,
                               lastName,
@@ -251,6 +254,7 @@ export const ApplicationDashboard = (props: any) => {
                                 onUploadBursaryDocuments
                               }
                               leadCode={leadCode}
+                              id={id}
                               studyModeCode={education?.studyModeCode}
                               updatedAt={updatedAt}
                               educationDetail={education}
@@ -334,6 +338,7 @@ function ApplicationCard({
   updatedAt = "",
   educationDetail,
   document,
+  id,
 }) {
   const isAcceptedApplication = status.includes(
     CommonEnums.APP_ENROLLED_ACCEPTED
@@ -425,7 +430,8 @@ function ApplicationCard({
                         applicationNumber,
                         leadCode,
                         status,
-                        educationDetail
+                        educationDetail,
+                        id
                       )
                     }
                   />
