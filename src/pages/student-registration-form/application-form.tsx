@@ -512,7 +512,7 @@ const ApplicationForm = () => {
                             leadId={leadId}
                             countryData={countryData}
                           />
-                          {/* <EducationForm
+                          <EducationForm
                             key="EducationForm"
                             highestQualifications={highestQualifications}
                             programs={programs}
@@ -521,7 +521,7 @@ const ApplicationForm = () => {
                             studyTypeData={studyTypeData}
                             isApplicationEnrolled={isApplicationEnrolled}
                             leadId={leadId}
-                          /> */}
+                          />
                           <SponsoredForm
                             leadId={leadId}
                             key="SponsoredForm"
@@ -638,7 +638,7 @@ const ApplicationForm = () => {
                                       (data) => onSubmit(data, false) as any
                                     )();
                               }}
-                              // disabled={isValidForm()}
+                              disabled={isValidForm()}
                               title={activeStep < 2 ? "Save & Next" : "Submit"}
                             />
                           </>
