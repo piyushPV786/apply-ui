@@ -257,7 +257,6 @@ const ApplicationForm = () => {
     const draftUpdateCode = activeLeadDetail?.applicationCode
       ? activeLeadDetail?.applicationCode
       : appCode;
-    const draftId = activeLeadDetail?.draftId;
     const AppStatus = activeLeadDetail?.status;
     if (leadCode && !isDraftSave) {
       setSubmitted(true);
@@ -271,11 +270,11 @@ const ApplicationForm = () => {
       );
       return;
     }
-    if (draftId && isDraftSave) {
-      updateUserAsDraft(request, draftId);
+    if (draftUpdateCode && isDraftSave) {
+      updateUserAsDraft(request, draftUpdateCode);
       return;
     }
-    if (isDraftSave && checkValidationForDraftSave()) {
+    if (!draftUpdateCode && isDraftSave && checkValidationForDraftSave()) {
       checkValidationForDraftSave() && createDraft(request, leadCode);
       return;
     }
