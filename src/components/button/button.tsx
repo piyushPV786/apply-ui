@@ -83,7 +83,7 @@ const StyledButton = ({
             <Image alt="download" src={UploadImg} width={15} />
           </StyledDownloadIcon>
         )}
-        {title}
+        {isRouting ? "Loading..." : title}
       </>
     </MyButton>
   );
