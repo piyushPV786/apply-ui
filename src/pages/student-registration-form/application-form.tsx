@@ -128,17 +128,24 @@ const ApplicationForm = () => {
       uploadStudentDocs();
       return;
     }
-    const methodType =
-      applicationCode && (status !== CommonEnums.DRAFT_STATUS || !status)
-        ? AuthApi.put(
-            `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}?isDraft=false`,
-            {
-              ...request,
-            }
-          )
-        : AuthApi.post(CommonApi.SAVEUSER, {
-            ...request,
-          });
+    let methodType;
+    if (
+      applicationCode &&
+      applicationCode?.length > 0 &&
+      (status !== CommonEnums.DRAFT_STATUS || !status)
+    ) {
+      methodType = AuthApi.put(
+        `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}?isDraft=false`,
+        {
+          ...request,
+        }
+      );
+    } else {
+      methodType = AuthApi.post(CommonApi.SAVEUSER, {
+        ...request,
+      });
+    }
+
     methodType
       .then(({ data: response }) => {
         if (!applicationCode || status === CommonEnums.DRAFT_STATUS) {

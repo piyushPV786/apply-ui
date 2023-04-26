@@ -22,7 +22,7 @@ import {
   getCommonUploadDocumentUrl,
   transformDate,
 } from "../../Util/Util";
-import { Grid } from "@material-ui/core";
+import { Grid, IconButton, Tooltip } from "@material-ui/core";
 import { CachedOutlined } from "@material-ui/icons";
 
 export const ApplicationDashboard = (props: any) => {
@@ -372,7 +372,12 @@ function ApplicationCard({
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
         <div className="d-flex justify-content-between">
-        <CachedOutlined onClick={getStudentApplications} />
+          <Tooltip title="Refresh Application">
+            <IconButton color="inherit">
+              {" "}
+              <CachedOutlined onClick={getStudentApplications} />
+            </IconButton>
+          </Tooltip>
 
           <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
         </div>
