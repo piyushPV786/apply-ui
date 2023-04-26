@@ -23,6 +23,7 @@ import {
   transformDate,
 } from "../../Util/Util";
 import { Grid } from "@material-ui/core";
+import { CachedOutlined } from "@material-ui/icons";
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
@@ -101,7 +102,7 @@ export const ApplicationDashboard = (props: any) => {
       isdraftSave,
       educationDetail,
       status,
-      draftId
+      draftId,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     const url = status.includes(CommonEnums.APP_ENROLLED_ACCEPTED)
@@ -253,6 +254,9 @@ export const ApplicationDashboard = (props: any) => {
                               onUploadBursaryDocuments={
                                 onUploadBursaryDocuments
                               }
+                              getStudentApplications={() =>
+                                getStudentApplications(studentId)
+                              }
                               leadCode={leadCode}
                               id={id}
                               studyModeCode={education?.studyModeCode}
@@ -330,6 +334,7 @@ function ApplicationCard({
   programName,
   leadCode,
   onEdit = (...args) => {},
+  getStudentApplications = () => {},
   onPay = (...args) => {},
   onUploadDocuments = (...args) => {},
   onDownloadAcceptence = (...args) => {},
@@ -366,7 +371,9 @@ function ApplicationCard({
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
-        <div className="d-flex justify-content-end">
+        <div className="d-flex justify-content-between">
+        <CachedOutlined onClick={getStudentApplications} />
+
           <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
         </div>
         <ContentCard>
