@@ -70,6 +70,7 @@ const DocumentUploadForm = ({
     const remainingDocs = [...uploadDocs.filter((item, idx) => idx !== index)];
     setValue("document.uploadedDocs", remainingDocs, formOptions);
     setUploadDocs(remainingDocs);
+    allFields.document.uploadedDocs = remainingDocs;
   };
 
   const uploadDocuments = (files: any) => {
