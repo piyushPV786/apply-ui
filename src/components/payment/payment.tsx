@@ -43,6 +43,7 @@ const Payment = (props: any) => {
   const [isCouponApplied, setCouponApplied] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
+
   const selectedProgram =
     props?.programs &&
     props.programs?.find(
@@ -62,13 +63,20 @@ const Payment = (props: any) => {
   const discountAmount = allFields?.payment?.conversionRate
     ? Number(normalDiscountAmount) * (allFields?.payment?.conversionRate || 0)
     : normalDiscountAmount;
-  const selectedNationality = allFields?.lead?.nationality;
+  const selectedNationality = allFields?.address[0]?.country;
   const selectedCurrency = selectedNationality?.includes("SA")
     ? CommonEnums?.SOUTH_AFRICA_CURRENCY
     : allFields?.payment?.selectedCurrency;
-  const conertedProgramFee = String(
-    +programFee * allFields?.payment?.conversionRate || programFee
-  );
+
+  console.log(selectedNationality);
+  const conertedProgramFee =
+    selectedNationality == "US" ||
+    selectedNationality == "KY" ||
+    selectedNationality == "IND" ||
+    selectedNationality == "SA" ||
+    selectedNationality == "NIG"
+      ? String(+programFee * allFields?.payment?.conversionRate || programFee)
+      : "1300";
   const rmatFee = selectedNationality?.includes("SA")
     ? 250
     : 250 * Number(allFields?.payment?.conversionRate);
@@ -96,6 +104,7 @@ const Payment = (props: any) => {
     }
     selectedNationality && getCurrencyConversion();
   }, [selectedProgram]);
+
   const getCurrencyConversion = () => {
     FinanceApi.get(`${CommonApi.GETCURRENCYCONVERSION}${selectedNationality}`)
       .then(({ data: res }) => {
@@ -328,7 +337,14 @@ const Payment = (props: any) => {
                             </StyledLabel>
                             <div>
                               <strong>
-                                {selectedCurrency} {conertedProgramFee}{" "}
+                                {selectedCurrency}{" "}
+                                {selectedNationality == "US" ||
+                                "KY" ||
+                                "NIG" ||
+                                "SA" ||
+                                "IND"
+                                  ? conertedProgramFee
+                                  : "1300"}{" "}
                                 <span className="fw-normal fs-6">
                                   ( Non-refundable )
                                 </span>

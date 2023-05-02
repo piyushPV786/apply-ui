@@ -167,7 +167,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       sortAscending(a, b, "name")
                     )}
                     register={register}
-                    mapKey="name"
+                    mapKey="code"
                     name={postalCountry}
                     onChange={(e: any) => {
                       const value = e.target.value;
@@ -368,7 +368,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       )}
                       name={resCountry}
                       register={register}
-                      mapKey="name"
+                      mapKey="code"
                       onChange={(e: any) => {
                         const value = e.target.value;
                         setValue(resCountry, value, formOptions);
