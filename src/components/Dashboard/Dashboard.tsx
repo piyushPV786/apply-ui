@@ -163,9 +163,10 @@ export const ApplicationDashboard = (props: any) => {
       isPaymentPending,
       isdraftSave,
       isDocumentPending,
+      status,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
-    router.push(RoutePaths.Application_Form);
+    router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
 
   const onDownloadAcceptence = (documentDetail: IDocument[]) => {
@@ -501,22 +502,23 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-              {isAcceptedApplication && (
-                <Grid item>
-                  <StyledButton
-                    onClick={() =>
-                      onUploadBursaryDocuments(
-                        applicationNumber,
-                        leadCode,
-                        true
-                      )
-                    }
-                    isUploadBtn
-                    className="card-button"
-                    title="Upload Employee Bursary Letter"
-                  />
-                </Grid>
-              )}
+              {isAcceptedApplication &&
+                educationDetail?.studentTypeCode === "BURSARY" && (
+                  <Grid item>
+                    <StyledButton
+                      onClick={() =>
+                        onUploadBursaryDocuments(
+                          applicationNumber,
+                          leadCode,
+                          status
+                        )
+                      }
+                      isUploadBtn
+                      className="card-button"
+                      title="Upload Employee Bursary Letter"
+                    />
+                  </Grid>
+                )}
             </Grid>
           </div>
         </ContentCard>
