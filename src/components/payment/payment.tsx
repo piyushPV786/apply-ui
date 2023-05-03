@@ -271,7 +271,7 @@ const Payment = (props: any) => {
                             </div>
                           </div>
                         </div>
-                        {console.log(props.isApplicationEnrolled)}
+
                         {props?.isApplicationEnrolled && (
                           <div className="col-md-6">
                             <div className="mb-4 ">
