@@ -210,19 +210,26 @@ const DocumentUploadForm = ({
                               <select
                                 className="form-select"
                                 onChange={(e) =>
+                                  e?.target?.value &&
                                   onFileTypeSelect(e?.target?.value, index)
                                 }
                               >
                                 {documentTypeList?.map((item) => (
-                                  <option
-                                    selected={
-                                      item?.code === uploadDocs[index]?.typeCode
-                                    }
-                                    key={item.code}
-                                    value={item?.code}
-                                  >
-                                    {item?.name}
-                                  </option>
+                                  <>
+                                    <option value={""}>
+                                      Select Document Type
+                                    </option>
+                                    <option
+                                      selected={
+                                        item?.code ===
+                                        uploadDocs[index]?.typeCode
+                                      }
+                                      key={item.code}
+                                      value={item?.code}
+                                    >
+                                      {item?.name}
+                                    </option>
+                                  </>
                                 ))}
                               </select>
                             </td>
