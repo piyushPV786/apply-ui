@@ -324,7 +324,7 @@ const Payment = (props: any) => {
                           <div className="mb-4">
                             <StyledLabel style={{ fontSize: "16px" }}>
                               {props?.isApplicationEnrolled
-                                ? "Course Fee"
+                                ? "Program Fee"
                                 : "Application Fee"}{" "}
                               <strong>
                                 (
