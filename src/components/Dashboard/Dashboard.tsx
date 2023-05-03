@@ -114,7 +114,8 @@ export const ApplicationDashboard = (props: any) => {
     applicationCode: string | number,
     leadCode: string,
     status,
-    educationDetail
+    educationDetail,
+    show
   ) => {
     clearRoute();
     const isdraftSave = false;
@@ -127,7 +128,7 @@ export const ApplicationDashboard = (props: any) => {
       educationDetail,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
-    router.push(RoutePaths.Application_Form);
+    router.push(RoutePaths.Application_Form, { query: `status=${show}` });
   };
   const onUploadDocuments = (
     applicationCode: string | number,
@@ -459,7 +460,21 @@ function ApplicationCard({
                 <Grid item>
                   <StyledButton
                     onClick={() =>
-                      onPay(applicationNumber, leadCode, true, educationDetail)
+                      isAcceptedApplication
+                        ? onPay(
+                            applicationNumber,
+                            leadCode,
+                            true,
+                            educationDetail,
+                            true
+                          )
+                        : onPay(
+                            applicationNumber,
+                            leadCode,
+                            true,
+                            educationDetail,
+                            false
+                          )
                     }
                     isPayBtn
                     className="card-button"

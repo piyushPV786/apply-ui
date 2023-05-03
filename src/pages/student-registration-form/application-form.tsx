@@ -582,7 +582,9 @@ const ApplicationForm = () => {
                       onSkipForNowOnPayment={onSkipForNowOnPayment}
                       showToast={showToast}
                       isManagementStudentType={isManagementStudentType}
-                      isApplicationEnrolled={isApplicationEnrolled}
+                      isApplicationEnrolled={new URLSearchParams(
+                        location?.search
+                      ).get("status")}
                     />
                   </>
                 )}

@@ -68,7 +68,6 @@ const Payment = (props: any) => {
     ? CommonEnums?.SOUTH_AFRICA_CURRENCY
     : allFields?.payment?.selectedCurrency;
 
-  console.log(selectedNationality);
   const conertedProgramFee =
     selectedNationality == "US" ||
     selectedNationality == "KY" ||
@@ -272,7 +271,7 @@ const Payment = (props: any) => {
                             </div>
                           </div>
                         </div>
-
+                        {console.log(props.isApplicationEnrolled)}
                         {props?.isApplicationEnrolled && (
                           <div className="col-md-6">
                             <div className="mb-4 ">
@@ -338,13 +337,9 @@ const Payment = (props: any) => {
                             <div>
                               <strong>
                                 {selectedCurrency}{" "}
-                                {selectedNationality == "US" ||
-                                "KY" ||
-                                "NIG" ||
-                                "SA" ||
-                                "IND"
-                                  ? conertedProgramFee
-                                  : "1300"}{" "}
+                                {props?.isApplicationEnrolled
+                                  ? programFee
+                                  : conertedProgramFee}
                                 <span className="fw-normal fs-6">
                                   ( Non-refundable )
                                 </span>
@@ -362,28 +357,49 @@ const Payment = (props: any) => {
                           </div>
                           <div>
                             {" "}
-                            <h6>
-                              Total Application {selectedCurrency} -{" "}
-                              {isManagementPromoCode
-                                ? allFields?.payment?.discountedFee
-                                : conertedProgramFee}
-                            </h6>
-                            <h6>
-                              RMAT Fee {selectedCurrency} -{" "}
-                              {isNaN(rmatFee) ? 0 : rmatFee}
-                            </h6>
+                            {props?.isApplicationEnrolled ? (
+                              <h6>
+                                Total Program Fees: {selectedCurrency} -{" "}
+                                {isManagementPromoCode
+                                  ? allFields?.payment?.discountedFee
+                                  : programFee}
+                              </h6>
+                            ) : (
+                              <h6>
+                                Total Application {selectedCurrency} -{" "}
+                                {isManagementPromoCode
+                                  ? allFields?.payment?.discountedFee
+                                  : conertedProgramFee}
+                              </h6>
+                            )}
+                            {props?.isApplicationEnrolled === false && (
+                              <h6>
+                                RMAT Fee {selectedCurrency} -{" "}
+                                {isNaN(rmatFee) ? 0 : rmatFee}
+                              </h6>
+                            )}
                             {!isManagementPromoCode && (
                               <>
                                 <h6>
                                   Discount {selectedCurrency} -{" "}
                                   {isNaN(discountAmount) ? 0 : discountAmount}
                                 </h6>
-                                <h6>
-                                  Total Amount - &nbsp;{selectedCurrency}
-                                  {isNaN(totalAmount)
-                                    ? +rmatFee + +conertedProgramFee
-                                    : totalAmount}
-                                </h6>
+
+                                {props?.isApplicationEnrolled ? (
+                                  <h6>
+                                    Total Amount - &nbsp;{selectedCurrency}
+                                    {isNaN(totalAmount)
+                                      ? programFee
+                                      : totalAmount}
+                                  </h6>
+                                ) : (
+                                  <h6>
+                                    Total Amount - &nbsp;{selectedCurrency}
+                                    {isNaN(totalAmount)
+                                      ? +rmatFee + +conertedProgramFee
+                                      : totalAmount}
+                                  </h6>
+                                )}
                               </>
                             )}
                           </div>
