@@ -5,11 +5,12 @@ import {
   LoaderComponent,
   Toaster,
 } from "../common/common";
+import { useRouter } from "next/router";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer } from "../payment/payment";
 import Header from "../common/header";
 import StyledButton from "../button/button";
-import { useRouter } from "next/router";
+
 import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
@@ -350,6 +351,7 @@ function ApplicationCard({
   const isAcceptedApplication = status.includes(
     CommonEnums.APP_ENROLLED_ACCEPTED
   );
+  const router = useRouter();
   const showEditBtn =
     status.includes(CommonEnums.FEES_PENDING_STATUS) ||
     status.includes(CommonEnums.APP_FEE_DOC_VER_PEND) ||
@@ -482,6 +484,16 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
+              <Grid item>
+                <StyledButton
+                  onClick={() =>
+                    router.push("/student-registration-form/credentials")
+                  }
+                  isUploadBtn
+                  className="card-button"
+                  title="Show login credentials"
+                />
+              </Grid>
               {showUploadBtn && (
                 <Grid item>
                   <StyledButton
