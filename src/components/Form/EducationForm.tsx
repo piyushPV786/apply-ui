@@ -218,55 +218,51 @@ export const EducationForm = (props: IEducationProps) => {
 
                   <div className="mb-4">
                     {studyModeQualification &&
-                      studyModeQualification.map(
-                        ({ studyModes }, parentIndex) => {
-                          {
-                            return (
-                              studyModes &&
-                              studyModes.map(({ studyModeCode }, studyIdx) => {
-                                return (
-                                  <>
-                                    {studyModeCode === "APPLICATION" ? null : (
-                                      <div className="form-check form-check-inline">
-                                        <input
-                                          disabled={isApplicationEnrolled}
-                                          key={studyMode}
-                                          className="form-check-input me-2"
-                                          type="radio"
-                                          {...register(`${studyMode}`, {
-                                            required: true,
-                                          })}
-                                          onClick={(e: any) => {
-                                            setValue(
-                                              studyMode,
-                                              e.target.value,
-                                              formOptions
-                                            );
-                                          }}
-                                          value={studyModeCode}
-                                          checked={
-                                            studyModeVal == studyModeCode
-                                          }
-                                        />
-                                        <label className="form-check-label">
-                                          {studyModeCode}
-                                        </label>
-                                      </div>
-                                    )}
-                                  </>
-                                );
-                              })
-                            );
-                          }
+                      studyModeQualification.map(({ studyModes }) => {
+                        {
+                          return (
+                            studyModes &&
+                            studyModes.map(({ studyModeCode }) => {
+                              return (
+                                <>
+                                  {studyModeCode === "APPLICATION" ? null : (
+                                    <div className="form-check form-check-inline">
+                                      <input
+                                        disabled={isApplicationEnrolled}
+                                        key={studyMode}
+                                        className="form-check-input me-2"
+                                        type="radio"
+                                        {...register(`${studyMode}`, {
+                                          required: true,
+                                        })}
+                                        onClick={(e: any) => {
+                                          setValue(
+                                            studyMode,
+                                            e.target.value,
+                                            formOptions
+                                          );
+                                        }}
+                                        value={studyModeCode}
+                                        checked={studyModeVal == studyModeCode}
+                                      />
+                                      <label className="form-check-label">
+                                        {studyModeCode}
+                                      </label>
+                                    </div>
+                                  )}
+                                </>
+                              );
+                            })
+                          );
                         }
-                      )}
+                      })}
                     <StyleContainer>
                       {studyModeQualification &&
                         studyModeQualification[0]?.studyModes[
                           selectedStudyModeIndex
                         ]?.fees
                           ?.sort((a, b) => sortAscending(a, b, "feeMode"))
-                          .map(({ fee, feeMode }: IFee,index) => (
+                          .map(({ fee, feeMode }: IFee, index) => (
                             <div key={index}>
                               <FeeCard
                                 key={fee}
@@ -400,7 +396,7 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Study Type</StyledLabel>
+                  <StyledLabel required>Student Type</StyledLabel>
 
                   <select
                     defaultValue={studentTypeVal}
@@ -409,6 +405,7 @@ export const EducationForm = (props: IEducationProps) => {
                     {...register(`${studentTypeName}`, { required: true })}
                     onChange={({ target: { value } }) => {
                       setValue(studentTypeName, value, formOptions);
+                      setValue("sponsor", null, formOptions);
                       if (
                         value?.toLowerCase().includes(CommonEnums.MANAGEMENT)
                       ) {
@@ -444,7 +441,7 @@ export const EducationForm = (props: IEducationProps) => {
                   {touchFields?.studentTypeCode &&
                     educationFormError?.studentTypeCode && (
                       <div className="invalid-feedback">
-                        Please select study type
+                        Please select Student type
                       </div>
                     )}
                 </div>
