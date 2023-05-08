@@ -239,6 +239,7 @@ export const ApplicationDashboard = (props: any) => {
                             },
                             education,
                             document,
+                            ...rest
                           },
                           idx
                         ) => (
@@ -266,6 +267,7 @@ export const ApplicationDashboard = (props: any) => {
                               educationDetail={education}
                               document={document}
                               enrolmentCode={enrolmentCode}
+                              {...rest}
                             />
                           </div>
                         )
@@ -346,10 +348,13 @@ function ApplicationCard({
   educationDetail,
   document,
   id,
+  ...rest
 }) {
+  const { sponsor = null } = { ...(rest as any) };
   const isAcceptedApplication = status.includes(
     CommonEnums.APP_ENROLLED_ACCEPTED
   );
+  const sponsorModeType = sponsor?.sponsorModeCode;
   const showEditBtn =
     status.includes(CommonEnums.FEES_PENDING_STATUS) ||
     status.includes(CommonEnums.APP_FEE_DOC_VER_PEND) ||
@@ -518,7 +523,8 @@ function ApplicationCard({
                 </Grid>
               )}
               {isAcceptedApplication &&
-                educationDetail?.studentTypeCode === "BURSARY" && (
+                educationDetail?.studentTypeCode === "BURSARY" &&
+                sponsorModeType === "EMPBURSARY" && (
                   <Grid item>
                     <StyledButton
                       onClick={() =>
