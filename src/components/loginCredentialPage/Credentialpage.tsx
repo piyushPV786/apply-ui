@@ -4,22 +4,16 @@ import { PaymentContainer, MainContainer } from "../payment/payment";
 import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
 import Link from "next/link";
+import styled from "styled-components";
+import StyledButton from "../button/button";
 
-import { Button } from "@material-ui/core";
-
-export const DocumentSuccess = (props: any) => {
+export const LoginCredentials = (props: any) => {
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
         <PaymentContainer>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div style={{ width: "70%", backgroundColor: "whitesmoke" }}>
+          <StyledCredentialContainer>
+            <InnerCredentialContainer>
               <div className="text-center mb-2">
                 <Image width="190" height="170" src={PayIcon} alt={"PayIcon"} />
               </div>
@@ -52,34 +46,45 @@ export const DocumentSuccess = (props: any) => {
                   </Link>
                 </div>
               </div>
-              <div style={{ display: "flex", marginTop: "20px" }}>
+              <CredentialContainer>
                 <div className="text-center w-100">
-                  <p style={{ marginBottom: "0%" }}>Username</p>
+                  <p>Username</p>
                   <h5>Karn.Sharma@gmail.com</h5>
                 </div>
                 <div className="text-center w-100">
-                  <p style={{ marginBottom: "0%" }}>Password</p>
+                  <p>Password</p>
                   <h5>wp9dh%sKgK</h5>
                 </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "20px",
-                }}
-              >
-                <button
-                  style={{ color: "#008554", border: "1px solid #008554" }}
-                >
-                  Back to Dashboard
-                </button>
-              </div>
-            </div>
-          </div>
+              </CredentialContainer>
+              <ButtonContainer>
+                <StyledButton title="Back to DashBoard"></StyledButton>
+              </ButtonContainer>
+            </InnerCredentialContainer>
+          </StyledCredentialContainer>
         </PaymentContainer>
       </MainContainer>
     </>
   );
 };
+
+const StyledCredentialContainer = styled.div<any>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const InnerCredentialContainer = styled.div<any>`
+  width: 70%;
+  background-color: whitesmoke;
+`;
+
+const CredentialContainer = styled.div<any>`
+  display: flex;
+  margin-top: 20px;
+`;
+const ButtonContainer = styled.div<any>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+`;
