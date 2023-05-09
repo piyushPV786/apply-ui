@@ -367,6 +367,7 @@ function ApplicationCard({
     status.includes(CommonEnums.APP_ENROLLED_STATUS);
   const showPayBtn =
     status.includes(CommonEnums.RESUB_APP_FEE_PROOF) || isAcceptedApplication;
+  const showCredentialBtn = status.includes(CommonEnums.PROG_ADMITTED);
   const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
     ? enrolmentCode
     : "";
@@ -489,16 +490,18 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-              <Grid item>
-                <StyledButton
-                  onClick={() =>
-                    router.push("/student-registration-form/credentials")
-                  }
-                  isUploadBtn
-                  className="card-button"
-                  title="Show login credentials"
-                />
-              </Grid>
+
+              {showCredentialBtn && (
+                <Grid item>
+                  <StyledButton
+                    onClick={() =>
+                      router.push("/student-registration-form/credentials")
+                    }
+                    className="card-button"
+                    title="view login credentials"
+                  />
+                </Grid>
+              )}
               {showUploadBtn && (
                 <Grid item>
                   <StyledButton
