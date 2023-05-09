@@ -4,7 +4,7 @@ import { PaymentContainer, MainContainer } from "../payment/payment";
 import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
 import Link from "next/link";
-import Styles from "./Credential.module.css";
+
 import { Button } from "@material-ui/core";
 
 export const DocumentSuccess = (props: any) => {
@@ -12,8 +12,14 @@ export const DocumentSuccess = (props: any) => {
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
         <PaymentContainer>
-          <div className={Styles.container}>
-            <div className={Styles.main}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div style={{ width: "70%", backgroundColor: "whitesmoke" }}>
               <div className="text-center mb-2">
                 <Image width="190" height="170" src={PayIcon} alt={"PayIcon"} />
               </div>
@@ -26,11 +32,10 @@ export const DocumentSuccess = (props: any) => {
                   Student Management System (SMS)
                 </p>
               </div>
-              <div className={Styles.links}>
+              <div style={{ display: "flex" }}>
                 <div className="text-center w-100">
                   <h6>ReGenius URL</h6>
                   <Link
-                    className={Styles.link}
                     href={`http://regeniusuat.regenesys.net/`}
                     target="blank"
                   >
@@ -40,7 +45,6 @@ export const DocumentSuccess = (props: any) => {
                 <div className="text-center w-100">
                   <h6>Student Management System URL (SMS)</h6>
                   <Link
-                    className={Styles.link}
                     href={`https://portal.regenesys.net/login/index.php`}
                     target="blank"
                   >
@@ -48,18 +52,29 @@ export const DocumentSuccess = (props: any) => {
                   </Link>
                 </div>
               </div>
-              <div className={Styles.credentials}>
+              <div style={{ display: "flex", marginTop: "20px" }}>
                 <div className="text-center w-100">
-                  <p className={Styles.user}>Username</p>
+                  <p style={{ marginBottom: "0%" }}>Username</p>
                   <h5>Karn.Sharma@gmail.com</h5>
                 </div>
                 <div className="text-center w-100">
-                  <p className={Styles.user}>Password</p>
+                  <p style={{ marginBottom: "0%" }}>Password</p>
                   <h5>wp9dh%sKgK</h5>
                 </div>
               </div>
-              <div className={Styles.divbtn}>
-                <button className={Styles.btn}>Back to Dashboard</button>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "20px",
+                }}
+              >
+                <button
+                  style={{ color: "#008554", border: "1px solid #008554" }}
+                >
+                  Back to Dashboard
+                </button>
               </div>
             </div>
           </div>
