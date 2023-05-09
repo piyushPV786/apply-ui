@@ -129,7 +129,7 @@ export const ApplicationDashboard = (props: any) => {
       educationDetail,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
-    router.push(RoutePaths.Application_Form, { query: `status=${show}` });
+    router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
   const onUploadDocuments = (
     applicationCode: string | number,
@@ -240,6 +240,7 @@ export const ApplicationDashboard = (props: any) => {
                             },
                             education,
                             document,
+                            ...rest
                           },
                           idx
                         ) => (
@@ -267,6 +268,7 @@ export const ApplicationDashboard = (props: any) => {
                               educationDetail={education}
                               document={document}
                               enrolmentCode={enrolmentCode}
+                              {...rest}
                             />
                           </div>
                         )
@@ -347,10 +349,13 @@ function ApplicationCard({
   educationDetail,
   document,
   id,
+  ...rest
 }) {
+  const { sponsor = null } = { ...(rest as any) };
   const isAcceptedApplication = status.includes(
     CommonEnums.APP_ENROLLED_ACCEPTED
   );
+  const sponsorModeType = sponsor?.sponsorModeCode;
   const router = useRouter();
   const showEditBtn =
     status.includes(CommonEnums.FEES_PENDING_STATUS) ||
@@ -372,7 +377,9 @@ function ApplicationCard({
 
   const showRAMTBtn = status.includes(CommonEnums.RMAT_PENDING);
 
-  const showUploadBtn = status.includes(CommonEnums.APP_FEE_VER_PEND);
+  const showUploadBtn =
+    status.includes(CommonEnums.APP_ENROLLED_STATUS) ||
+    status.includes(CommonEnums.APP_FEE_ACCEPTED);
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
@@ -467,16 +474,14 @@ function ApplicationCard({
                         ? onPay(
                             applicationNumber,
                             leadCode,
-                            true,
-                            educationDetail,
-                            true
+                            status,
+                            educationDetail
                           )
                         : onPay(
                             applicationNumber,
                             leadCode,
-                            true,
-                            educationDetail,
-                            false
+                            status,
+                            educationDetail
                           )
                     }
                     isPayBtn
@@ -509,7 +514,7 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-              {showDocumentUploadBtn && (
+              {/* {showDocumentUploadBtn && (
                 <Grid item>
                   <StyledButton
                     onClick={() =>
@@ -520,7 +525,7 @@ function ApplicationCard({
                     title="Upload Document"
                   />
                 </Grid>
-              )}
+              )} */}
               {isAcceptedApplication && (
                 <Grid item>
                   <StyledButton
@@ -533,7 +538,8 @@ function ApplicationCard({
                 </Grid>
               )}
               {isAcceptedApplication &&
-                educationDetail?.studentTypeCode === "BURSARY" && (
+                educationDetail?.studentTypeCode === "BURSARY" &&
+                sponsorModeType === "EMPBURSARY" && (
                   <Grid item>
                     <StyledButton
                       onClick={() =>
