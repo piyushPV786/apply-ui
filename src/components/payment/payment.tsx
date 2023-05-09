@@ -51,9 +51,8 @@ const Payment = (props: any) => {
     );
   const selectedStudyMode: string = allFields?.education?.studyModeCode;
   const programFee: string = props?.isApplicationEnrolled
-    ? allFields?.payment?.selectedFeeModeFee
+    ? allFields?.payment?.selectedFeeModeFee || 0
     : allFields?.education?.applicationFees || "0";
-
   const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
@@ -76,9 +75,10 @@ const Payment = (props: any) => {
     selectedNationality == "NIG"
       ? String(+programFee * allFields?.payment?.conversionRate || programFee)
       : "1300";
-  const rmatFee = selectedNationality?.includes("SA")
-    ? 250
-    : 250 * Number(allFields?.payment?.conversionRate);
+  const rmatFee =
+    selectedNationality?.includes("SA") || selectedCurrency?.includes("RAND")
+      ? 250
+      : 250 * Number(allFields?.payment?.conversionRate);
   const totalAmount = +conertedProgramFee - +discountAmount + rmatFee;
   useEffect(() => {
     const programDetails = sessionStorage.getItem("activeLeadDetail")
@@ -108,12 +108,17 @@ const Payment = (props: any) => {
     FinanceApi.get(`${CommonApi.GETCURRENCYCONVERSION}${selectedNationality}`)
       .then(({ data: res }) => {
         if (res.data) {
-          setValue("payment.conversionRate", res?.data?.rate);
-          setValue("payment.selectedCurrency", res?.data?.currencySymbol);
+          setValue("payment.conversionRate", res?.data?.rate, {
+            shouldDirty: true,
+          });
+          setValue("payment.selectedCurrency", res?.data?.currencySymbol, {
+            shouldDirty: true,
+          });
         } else {
           setValue(
             "payment.selectedCurrency",
-            CommonEnums?.SOUTH_AFRICA_CURRENCY
+            CommonEnums?.SOUTH_AFRICA_CURRENCY,
+            { shouldDirty: true }
           );
         }
       })

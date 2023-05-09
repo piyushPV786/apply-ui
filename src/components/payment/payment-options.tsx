@@ -40,7 +40,6 @@ const PaymentOption = (props: any) => {
     : PaymentTypes.filter((item) => item.name === "Payu");
 
   const onPayuPayment = () => {
-    props.setLoading(true);
     const payload = {
       amount: Number(props?.totalAmount) || 0,
       email: allFields?.lead?.email,
@@ -60,9 +59,6 @@ const PaymentOption = (props: any) => {
       .catch((err) => {
         console.error(err, "errreererer");
       })
-      .finally(() => {
-        props.setLoading(false);
-      });
   };
   return (
     <>
