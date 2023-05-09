@@ -344,12 +344,7 @@ const Payment = (props: any) => {
                                 ? "Program Fee"
                                 : "Application Fee"}{" "}
                               <strong>
-                                (
-                                {`${getConvertedProgramFees(
-                                  conversionRate,
-                                  Math.trunc(+programFee)
-                                )} ${CommonEnums.SOUTH_AFRICA_CURRENCY}`}
-                                )
+                                ({`R ${Math.trunc(+programFee)}`})
                               </strong>
                             </StyledLabel>
                             <div>
