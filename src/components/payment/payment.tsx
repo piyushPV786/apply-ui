@@ -52,8 +52,9 @@ const Payment = (props: any) => {
     props.programs?.find(
       (item: IOption) => item?.code == allFields?.education?.programCode
     );
+  const isApplicationEnrolled = props?.isApplicationEnrolled;
   const selectedStudyMode: string = allFields?.education?.studyModeCode;
-  const programFee: string = props?.isApplicationEnrolled
+  const programFee: string = isApplicationEnrolled
     ? allFields?.payment?.selectedFeeModeFee || 0
     : allFields?.education?.applicationFees || "0";
   const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
@@ -80,10 +81,11 @@ const Payment = (props: any) => {
     selectedNationality == "NIG"
       ? String(+programFee * allFields?.payment?.conversionRate || programFee)
       : "1300";
-  const rmatFee =
+  const rmatFeeAmount =
     selectedNationality?.includes("SA") || selectedCurrency?.includes("RAND")
       ? 250
       : 250 * Number(allFields?.payment?.conversionRate);
+  const rmatFee = !isApplicationEnrolled ? rmatFeeAmount : 0;
   const totalAmount = +conertedProgramFee - +discountAmount + rmatFee;
   useEffect(() => {
     const programDetails = sessionStorage.getItem("activeLeadDetail")
@@ -282,7 +284,7 @@ const Payment = (props: any) => {
                           </div>
                         </div>
 
-                        {props?.isApplicationEnrolled && (
+                        {isApplicationEnrolled && (
                           <div className="col-md-6">
                             <div className="mb-4 ">
                               {feeOptions.length > 0 &&
@@ -340,7 +342,7 @@ const Payment = (props: any) => {
                         <div className="col-md-6">
                           <div className="mb-4">
                             <StyledLabel style={{ fontSize: "16px" }}>
-                              {props?.isApplicationEnrolled
+                              {isApplicationEnrolled
                                 ? "Program Fee"
                                 : "Application Fee"}{" "}
                               <strong>
@@ -350,7 +352,7 @@ const Payment = (props: any) => {
                             <div>
                               <strong>
                                 {selectedCurrency}{" "}
-                                {props?.isApplicationEnrolled
+                                {isApplicationEnrolled
                                   ? getConvertedProgramFees(
                                       conversionRate,
                                       programFee
@@ -374,7 +376,7 @@ const Payment = (props: any) => {
                           </div>
                           <div>
                             {" "}
-                            {props?.isApplicationEnrolled ? (
+                            {isApplicationEnrolled ? (
                               <h6>
                                 Total Program Fees: {selectedCurrency} -{" "}
                                 {isManagementPromoCode
@@ -398,7 +400,7 @@ const Payment = (props: any) => {
                                   : conertedProgramFee}
                               </h6>
                             )}
-                            {!props?.isApplicationEnrolled && (
+                            {!isApplicationEnrolled && (
                               <h6>
                                 RMAT Fee {selectedCurrency} -{" "}
                                 {isNaN(rmatFee) ? 0 : rmatFee}
