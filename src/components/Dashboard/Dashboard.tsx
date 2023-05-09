@@ -5,11 +5,12 @@ import {
   LoaderComponent,
   Toaster,
 } from "../common/common";
+import { useRouter } from "next/router";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer } from "../payment/payment";
 import Header from "../common/header";
 import StyledButton from "../button/button";
-import { useRouter } from "next/router";
+
 import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
@@ -128,7 +129,7 @@ export const ApplicationDashboard = (props: any) => {
       educationDetail,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
-    router.push(RoutePaths.Application_Form, { query: `status=${show}` });
+    router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
   const onUploadDocuments = (
     applicationCode: string | number,
@@ -239,6 +240,7 @@ export const ApplicationDashboard = (props: any) => {
                             },
                             education,
                             document,
+                            ...rest
                           },
                           idx
                         ) => (
@@ -266,6 +268,7 @@ export const ApplicationDashboard = (props: any) => {
                               educationDetail={education}
                               document={document}
                               enrolmentCode={enrolmentCode}
+                              {...rest}
                             />
                           </div>
                         )
@@ -346,10 +349,14 @@ function ApplicationCard({
   educationDetail,
   document,
   id,
+  ...rest
 }) {
+  const { sponsor = null } = { ...(rest as any) };
   const isAcceptedApplication = status.includes(
     CommonEnums.APP_ENROLLED_ACCEPTED
   );
+  const sponsorModeType = sponsor?.sponsorModeCode;
+  const router = useRouter();
   const showEditBtn =
     status.includes(CommonEnums.FEES_PENDING_STATUS) ||
     status.includes(CommonEnums.APP_FEE_DOC_VER_PEND) ||
@@ -369,7 +376,9 @@ function ApplicationCard({
 
   const showRAMTBtn = status.includes(CommonEnums.RMAT_PENDING);
 
-  const showUploadBtn = status.includes(CommonEnums.APP_FEE_VER_PEND);
+  const showUploadBtn =
+    status.includes(CommonEnums.APP_ENROLLED_STATUS) ||
+    status.includes(CommonEnums.APP_FEE_ACCEPTED);
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
@@ -464,16 +473,14 @@ function ApplicationCard({
                         ? onPay(
                             applicationNumber,
                             leadCode,
-                            true,
-                            educationDetail,
-                            true
+                            status,
+                            educationDetail
                           )
                         : onPay(
                             applicationNumber,
                             leadCode,
-                            true,
-                            educationDetail,
-                            false
+                            status,
+                            educationDetail
                           )
                     }
                     isPayBtn
@@ -482,6 +489,16 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
+              <Grid item>
+                <StyledButton
+                  onClick={() =>
+                    router.push("/student-registration-form/credentials")
+                  }
+                  isUploadBtn
+                  className="card-button"
+                  title="Show login credentials"
+                />
+              </Grid>
               {showUploadBtn && (
                 <Grid item>
                   <StyledButton
@@ -494,7 +511,7 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-              {showDocumentUploadBtn && (
+              {/* {showDocumentUploadBtn && (
                 <Grid item>
                   <StyledButton
                     onClick={() =>
@@ -505,7 +522,7 @@ function ApplicationCard({
                     title="Upload Document"
                   />
                 </Grid>
-              )}
+              )} */}
               {isAcceptedApplication && (
                 <Grid item>
                   <StyledButton
@@ -518,7 +535,8 @@ function ApplicationCard({
                 </Grid>
               )}
               {isAcceptedApplication &&
-                educationDetail?.studentTypeCode === "BURSARY" && (
+                educationDetail?.studentTypeCode === "BURSARY" &&
+                sponsorModeType === "EMPBURSARY" && (
                   <Grid item>
                     <StyledButton
                       onClick={() =>

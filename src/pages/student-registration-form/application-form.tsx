@@ -89,7 +89,6 @@ const ApplicationForm = () => {
     }
   }, []);
   const allFields = watch();
-
   const isValidDocument =
     allFields?.document?.uploadedDocs.length > 0 &&
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
@@ -582,9 +581,7 @@ const ApplicationForm = () => {
                       onSkipForNowOnPayment={onSkipForNowOnPayment}
                       showToast={showToast}
                       isManagementStudentType={isManagementStudentType}
-                      isApplicationEnrolled={new URLSearchParams(
-                        location?.search
-                      ).get("status")}
+                      isApplicationEnrolled={isApplicationEnrolled}
                     />
                   </>
                 )}

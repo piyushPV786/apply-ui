@@ -28,6 +28,10 @@ import { CommonApi, CommonEnums } from "../common/constant";
 import CircleTick from "../../../public/assets/images/circle-tick.svg";
 import { FinanceApi } from "../../service/Axios";
 
+const getConvertedProgramFees = (conversionRate: number | null, programFee) => {
+  return conversionRate ? programFee * conversionRate : programFee;
+};
+
 const Payment = (props: any) => {
   const fileUploadRef = useRef<any>(null);
   const { watch, register, setValue } = useFormContext();
@@ -43,7 +47,6 @@ const Payment = (props: any) => {
   const [isCouponApplied, setCouponApplied] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
-
   const selectedProgram =
     props?.programs &&
     props.programs?.find(
@@ -67,6 +70,8 @@ const Payment = (props: any) => {
     ? CommonEnums?.SOUTH_AFRICA_CURRENCY
     : allFields?.payment?.selectedCurrency;
 
+  const conversionRate = allFields?.payment?.conversionRate;
+  const discountPercentage = allFields?.payment?.percent || null;
   const conertedProgramFee =
     selectedNationality == "US" ||
     selectedNationality == "KY" ||
@@ -299,6 +304,7 @@ const Payment = (props: any) => {
                                             }
                                           ) as any)}
                                           onChange={() => {
+                                            getCurrencyConversion();
                                             setValue(
                                               "payment.selectedFeeMode",
                                               feeMode
@@ -317,7 +323,13 @@ const Payment = (props: any) => {
                                         <label className="form-check-label">
                                           {feeMode}
                                           <br />
-                                          <GreenText>R {fee}</GreenText>
+                                          <GreenText>
+                                            {selectedCurrency}&nbsp;
+                                            {getConvertedProgramFees(
+                                              conversionRate,
+                                              Number(fee)
+                                            )}
+                                          </GreenText>
                                         </label>
                                       </>
                                     </div>
@@ -333,9 +345,10 @@ const Payment = (props: any) => {
                                 : "Application Fee"}{" "}
                               <strong>
                                 (
-                                {`${Math.trunc(+programFee)} ${
-                                  CommonEnums.SOUTH_AFRICA_CURRENCY
-                                }`}
+                                {`${getConvertedProgramFees(
+                                  conversionRate,
+                                  Math.trunc(+programFee)
+                                )} ${CommonEnums.SOUTH_AFRICA_CURRENCY}`}
                                 )
                               </strong>
                             </StyledLabel>
@@ -343,8 +356,12 @@ const Payment = (props: any) => {
                               <strong>
                                 {selectedCurrency}{" "}
                                 {props?.isApplicationEnrolled
-                                  ? programFee
+                                  ? getConvertedProgramFees(
+                                      conversionRate,
+                                      programFee
+                                    )
                                   : conertedProgramFee}
+                                &nbsp;
                                 <span className="fw-normal fs-6">
                                   ( Non-refundable )
                                 </span>
@@ -356,7 +373,7 @@ const Payment = (props: any) => {
                     </div>
                     <div className="col-md-4">
                       <div className="w-100 p-4 promo-card">
-                        <div className="mb-4 d-flex justify-content-between">
+                        <div className="mb-4 d-flex justify-content-between flex-column">
                           <div>
                             <h6>Subtotal ({selectedCurrency})</h6>
                           </div>
@@ -366,18 +383,27 @@ const Payment = (props: any) => {
                               <h6>
                                 Total Program Fees: {selectedCurrency} -{" "}
                                 {isManagementPromoCode
-                                  ? allFields?.payment?.discountedFee
-                                  : programFee}
+                                  ? getConvertedProgramFees(
+                                      conversionRate,
+                                      allFields?.payment?.discountedFee
+                                    )
+                                  : getConvertedProgramFees(
+                                      conversionRate,
+                                      programFee
+                                    )}
                               </h6>
                             ) : (
                               <h6>
                                 Total Application {selectedCurrency} -{" "}
                                 {isManagementPromoCode
-                                  ? allFields?.payment?.discountedFee
+                                  ? getConvertedProgramFees(
+                                      conversionRate,
+                                      allFields?.payment?.discountedFee
+                                    )
                                   : conertedProgramFee}
                               </h6>
                             )}
-                            {props?.isApplicationEnrolled === false && (
+                            {!props?.isApplicationEnrolled && (
                               <h6>
                                 RMAT Fee {selectedCurrency} -{" "}
                                 {isNaN(rmatFee) ? 0 : rmatFee}
@@ -388,18 +414,27 @@ const Payment = (props: any) => {
                                 <h6>
                                   Discount {selectedCurrency} -{" "}
                                   {isNaN(discountAmount) ? 0 : discountAmount}
+                                  {discountPercentage && (
+                                    <span className="ms-2">
+                                      ({discountPercentage}%)
+                                    </span>
+                                  )}
                                 </h6>
 
                                 {props?.isApplicationEnrolled ? (
                                   <h6>
                                     Total Amount - &nbsp;{selectedCurrency}
+                                    &nbsp;
                                     {isNaN(totalAmount)
-                                      ? programFee
+                                      ? getConvertedProgramFees(
+                                          conversionRate,
+                                          programFee
+                                        )
                                       : totalAmount}
                                   </h6>
                                 ) : (
                                   <h6>
-                                    Total Amount - &nbsp;{selectedCurrency}
+                                    Total Amount - &nbsp;{selectedCurrency}{" "}
                                     {isNaN(totalAmount)
                                       ? +rmatFee + +conertedProgramFee
                                       : totalAmount}

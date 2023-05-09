@@ -200,11 +200,11 @@ const DocumentUploadForm = ({
                               </div>
                             </td>
                             <td
-                              className={
-                                item?.typeCode === "PAYMENTPROOF"
-                                  ? "disabled"
-                                  : ""
-                              }
+                              // className={
+                              //   item?.typeCode === "PAYMENTPROOF"
+                              //     ? "disabled"
+                              //     : ""
+                              // }
                             >
                               {" "}
                               <select
