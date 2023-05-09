@@ -128,7 +128,7 @@ export const ApplicationDashboard = (props: any) => {
       educationDetail,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
-    router.push(RoutePaths.Application_Form, { query: `status=${show}` });
+    router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
   const onUploadDocuments = (
     applicationCode: string | number,
@@ -374,7 +374,9 @@ function ApplicationCard({
 
   const showRAMTBtn = status.includes(CommonEnums.RMAT_PENDING);
 
-  const showUploadBtn = status.includes(CommonEnums.APP_FEE_VER_PEND);
+  const showUploadBtn =
+    status.includes(CommonEnums.APP_ENROLLED_STATUS) ||
+    status.includes(CommonEnums.APP_FEE_ACCEPTED);
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
@@ -469,16 +471,14 @@ function ApplicationCard({
                         ? onPay(
                             applicationNumber,
                             leadCode,
-                            true,
-                            educationDetail,
-                            true
+                            status,
+                            educationDetail
                           )
                         : onPay(
                             applicationNumber,
                             leadCode,
-                            true,
-                            educationDetail,
-                            false
+                            status,
+                            educationDetail
                           )
                     }
                     isPayBtn
@@ -499,7 +499,7 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-              {showDocumentUploadBtn && (
+              {/* {showDocumentUploadBtn && (
                 <Grid item>
                   <StyledButton
                     onClick={() =>
@@ -510,7 +510,7 @@ function ApplicationCard({
                     title="Upload Document"
                   />
                 </Grid>
-              )}
+              )} */}
               {isAcceptedApplication && (
                 <Grid item>
                   <StyledButton
