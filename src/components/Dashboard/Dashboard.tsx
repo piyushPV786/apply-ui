@@ -60,10 +60,10 @@ export const ApplicationDashboard = (props: any) => {
   const getIntrestedQualificationPrograms = (application: [IApplication]) => {
     AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
       .then(({ data: response }: any) => {
-        if (application.length > 0 && response.data.length > 0) {
+        if (application.length > 0 && response.data?.data?.length > 0) {
           const applications = [...application];
           applications.forEach((app: IApplication) => {
-            response?.data.forEach((element: IOption) => {
+            response?.data?.data?.forEach((element: IOption) => {
               if (element?.code === app.education?.programCode) {
                 app.programName = element.name;
               }
