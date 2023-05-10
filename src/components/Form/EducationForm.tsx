@@ -150,7 +150,6 @@ export const EducationForm = (props: IEducationProps) => {
     studyModeQualification[0]?.studyModes.findIndex(
       (item) => item?.studyModeCode === studyModeVal
     );
-
   return (
     <>
       <StyledAccordion expanded key="education" id="education">
@@ -185,7 +184,7 @@ export const EducationForm = (props: IEducationProps) => {
                   >
                     <option value={""}>Select Interested Qualification</option>
                     {programs &&
-                      programs.map(({ code, name }) => (
+                      programs?.map(({ code, name }) => (
                         <option
                           selected={code === programVal}
                           key={code}
