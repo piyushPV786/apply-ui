@@ -391,6 +391,54 @@ export const SponsoredForm = (props: ISponsorProps) => {
                             />
                           </div>
                         </div>{" "}
+                        <div className="col-md-4">
+                          <div className="mb-4">
+                            <StyledLabel> Country</StyledLabel>
+                            <input
+                              disabled={isSelfSponsored}
+                              className="form-control"
+                              value={sponsorAddressVal}
+                              defaultValue={sponsorAddressVal}
+                              {...register(`${sponsorAddress}`)}
+                            />
+                          </div>
+                        </div>{" "}
+                        <div className="col-md-4">
+                          <div className="mb-4">
+                            <StyledLabel> Pin Code / Zip Code</StyledLabel>
+                            <input
+                              disabled={isSelfSponsored}
+                              className="form-control"
+                              value={sponsorAddressVal}
+                              defaultValue={sponsorAddressVal}
+                              {...register(`${sponsorAddress}`)}
+                            />
+                          </div>
+                        </div>{" "}
+                        <div className="col-md-4">
+                          <div className="mb-4">
+                            <StyledLabel> State/Provinces</StyledLabel>
+                            <input
+                              disabled={isSelfSponsored}
+                              className="form-control"
+                              value={sponsorAddressVal}
+                              defaultValue={sponsorAddressVal}
+                              {...register(`${sponsorAddress}`)}
+                            />
+                          </div>
+                        </div>{" "}
+                        <div className="col-md-4">
+                          <div className="mb-4">
+                            <StyledLabel> City</StyledLabel>
+                            <input
+                              disabled={isSelfSponsored}
+                              className="form-control"
+                              value={sponsorAddressVal}
+                              defaultValue={sponsorAddressVal}
+                              {...register(`${sponsorAddress}`)}
+                            />
+                          </div>
+                        </div>{" "}
                       </>
                     )}
                   </>
