@@ -96,7 +96,6 @@ const Payment = (props: any) => {
         const selectedProgramCode = await getQualificationStudyModeData(
           programDetails?.programCode
         );
-
         setFeeOptions(
           selectedProgramCode[0]?.studyModes.find(
             (item) => item.studyModeCode === selectedStudyMode

@@ -129,7 +129,7 @@ export interface IMasterData {
   languageData: IOption[];
   relationData: IOption[];
   nationalityData: IOption[];
-  programs: { data: IOption[] };
+  programs: IOption[];
   raceData: IOption[];
   genderData: IOption[];
   qualifications: IOption[];

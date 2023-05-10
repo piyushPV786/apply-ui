@@ -50,7 +50,7 @@ const PaymentOption = (props: any) => {
       discountCode: allFields?.payment?.discountCode,
       discountAmount: allFields?.payment?.discountAmount,
       studentTypeCode: allFields?.education?.studentTypeCode,
-      FeeModeCode: props?.isApplicationEnrolled
+      feeModeCode: props?.isApplicationEnrolled
         ? allFields?.payment?.selectedFeeMode
         : "APPLICATION",
     };
