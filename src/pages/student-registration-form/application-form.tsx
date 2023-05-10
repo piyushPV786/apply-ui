@@ -553,12 +553,14 @@ const ApplicationForm = () => {
                             key="SponsoredForm"
                             sponsorModeArr={sponsorModes}
                             relationData={relationData}
+                            countryData={countryData}
                           />
                           <EmployedForm
                             leadId={leadId}
                             key="EmployedForm"
                             employmentStatusArr={employmentStatus}
                             employmentIndustries={employmentIndustries}
+                            countryData={countryData}
                           />
                           <KinDetailsForm
                             relationData={relationData}
