@@ -96,7 +96,6 @@ const Payment = (props: any) => {
         const selectedProgramCode = await getQualificationStudyModeData(
           programDetails?.programCode
         );
-
         setFeeOptions(
           selectedProgramCode[0]?.studyModes.find(
             (item) => item.studyModeCode === selectedStudyMode
@@ -541,6 +540,7 @@ const Payment = (props: any) => {
                     }
                     navigateNext={props?.navigateNext}
                     setLoading={(loading) => setLoading(loading)}
+                    isApplicationEnrolled={isApplicationEnrolled}
                   />
                 </div>
                 <div className="col-md-1">
