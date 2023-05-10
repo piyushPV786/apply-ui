@@ -461,7 +461,7 @@ const ApplicationForm = () => {
   const relationData = masterData?.relationData as IOption[];
   const highestQualifications =
     masterData?.highestQualificationData as IOption[];
-  const programs = masterData?.programs as IOption[];
+  const programs = masterData?.programs?.data as IOption[];
   const race = masterData?.raceData as IOption[];
   const socialMedias = masterData?.socialMediaData as IOption[];
   const sponsorModes = masterData?.sponsorModeData as IOption[];

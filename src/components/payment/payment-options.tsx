@@ -19,10 +19,12 @@ const PaymentCard = (props: any) => {
     </StyledImgCard>
   );
 };
+
 const PaymentOption = (props: any) => {
   const { watch, register } = useFormContext();
   const [paymentPayload, setPaymentTypePayload] = useState<any>(null);
   const allFields = watch();
+
   const onSelectedPaymentOption = (type: "payu" | "razorpay" | "stripe") => {
     if (type === "payu") onPayuPayment();
   };
@@ -38,7 +40,6 @@ const PaymentOption = (props: any) => {
   )
     ? PaymentTypes
     : PaymentTypes.filter((item) => item.name === "Payu");
-
   const onPayuPayment = () => {
     const payload = {
       amount: Number(props?.totalAmount) || 0,
@@ -49,6 +50,9 @@ const PaymentOption = (props: any) => {
       discountCode: allFields?.payment?.discountCode,
       discountAmount: allFields?.payment?.discountAmount,
       studentTypeCode: allFields?.education?.studentTypeCode,
+      FeeModeCode: props?.isApplicationEnrolled
+        ? allFields?.payment?.selectedFeeMode
+        : "APPLICATION",
     };
     const appCode = getApplicationCode();
     AuthApi.post(`application/${appCode}/payment/payu`, payload)
@@ -57,8 +61,8 @@ const PaymentOption = (props: any) => {
         setPaymentTypePayload({ ...rest, hash });
       })
       .catch((err) => {
-        console.error(err, "errreererer");
-      })
+        console.error(err);
+      });
   };
   return (
     <>

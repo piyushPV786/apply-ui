@@ -541,6 +541,7 @@ const Payment = (props: any) => {
                     }
                     navigateNext={props?.navigateNext}
                     setLoading={(loading) => setLoading(loading)}
+                    isApplicationEnrolled={isApplicationEnrolled}
                   />
                 </div>
                 <div className="col-md-1">
