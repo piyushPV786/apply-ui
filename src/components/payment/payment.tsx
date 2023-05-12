@@ -62,9 +62,9 @@ const Payment = (props: any) => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
   };
-  const normalDiscountAmount = allFields?.payment?.discountAmount;
+  const normalDiscountAmount = allFields?.payment?.discountAmount || 0;
   const discountAmount = allFields?.payment?.conversionRate
-    ? Number(normalDiscountAmount) * (allFields?.payment?.conversionRate || 0)
+    ? Number(normalDiscountAmount) * (+allFields?.payment?.conversionRate || 0)
     : normalDiscountAmount;
   const selectedNationality = allFields?.address[0]?.country;
   const selectedCurrency = selectedNationality?.includes("SA")
@@ -73,20 +73,20 @@ const Payment = (props: any) => {
 
   const conversionRate = allFields?.payment?.conversionRate;
   const discountPercentage = allFields?.payment?.percent || null;
-  const conertedProgramFee =
+  const convertedProgramFee =
     selectedNationality == "US" ||
     selectedNationality == "KY" ||
     selectedNationality == "IND" ||
     selectedNationality == "SA" ||
     selectedNationality == "NIG"
-      ? String(+programFee * allFields?.payment?.conversionRate || programFee)
+      ? String(+programFee * +allFields?.payment?.conversionRate || programFee)
       : "1300";
   const rmatFeeAmount =
     selectedNationality?.includes("SA") || selectedCurrency?.includes("RAND")
       ? 250
       : 250 * Number(allFields?.payment?.conversionRate);
   const rmatFee = !isApplicationEnrolled ? rmatFeeAmount : 0;
-  const totalAmount = +conertedProgramFee - +discountAmount + rmatFee;
+  const totalAmount = +convertedProgramFee - +discountAmount + rmatFee;
   useEffect(() => {
     const programDetails = sessionStorage.getItem("activeLeadDetail")
       ? JSON.parse(sessionStorage.getItem("activeLeadDetail")!)?.educationDetail
@@ -96,7 +96,6 @@ const Payment = (props: any) => {
         const selectedProgramCode = await getQualificationStudyModeData(
           programDetails?.programCode
         );
-
         setFeeOptions(
           selectedProgramCode[0]?.studyModes.find(
             (item) => item.studyModeCode === selectedStudyMode
@@ -240,6 +239,12 @@ const Payment = (props: any) => {
     setPaymentDocs([...paymentDocs.filter((_, idx) => idx !== index)]);
   };
 
+  const totalPayuAmount = isApplicationEnrolled
+    ? totalAmount
+    : isNaN(totalAmount)
+    ? +rmatFee + +convertedProgramFee
+    : totalAmount;
+
   return (
     <>
       {loadng ? (
@@ -357,7 +362,7 @@ const Payment = (props: any) => {
                                       conversionRate,
                                       programFee
                                     )
-                                  : conertedProgramFee}
+                                  : convertedProgramFee}
                                 &nbsp;
                                 <span className="fw-normal fs-6">
                                   ( Non-refundable )
@@ -397,7 +402,7 @@ const Payment = (props: any) => {
                                       conversionRate,
                                       allFields?.payment?.discountedFee
                                     )
-                                  : conertedProgramFee}
+                                  : convertedProgramFee}
                               </h6>
                             )}
                             {!isApplicationEnrolled && (
@@ -433,7 +438,7 @@ const Payment = (props: any) => {
                                   <h6>
                                     Total Amount - &nbsp;{selectedCurrency}{" "}
                                     {isNaN(totalAmount)
-                                      ? +rmatFee + +conertedProgramFee
+                                      ? +rmatFee + +convertedProgramFee
                                       : totalAmount}
                                   </h6>
                                 )}
@@ -536,11 +541,10 @@ const Payment = (props: any) => {
               <>
                 <div className="col-md-6">
                   <PaymentOption
-                    totalAmount={
-                      isNaN(totalAmount) ? conertedProgramFee : totalAmount
-                    }
+                    totalAmount={totalPayuAmount}
                     navigateNext={props?.navigateNext}
                     setLoading={(loading) => setLoading(loading)}
+                    isApplicationEnrolled={isApplicationEnrolled}
                   />
                 </div>
                 <div className="col-md-1">
