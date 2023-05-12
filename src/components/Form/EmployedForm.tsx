@@ -370,6 +370,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                           defaultValue={employmentPinCodeVal}
                           {...register(`${employmentPinCode}`)}
                         />
+                        {touchedFields?.employmentPinCode &&
+                          error?.employmentPinCode && (
+                            <div className="invalid-feedback">
+                              Please Enter Pin Code
+                            </div>
+                          )}
                       </div>
                     </div>
                   )}
@@ -384,6 +390,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                           defaultValue={employmentStateVal}
                           {...register(`${employmentState}`)}
                         />
+                        {touchedFields?.employmentState &&
+                          error?.employmentState && (
+                            <div className="invalid-feedback">
+                              Please Enter State Name
+                            </div>
+                          )}
                       </div>
                     </div>
                   )}
@@ -398,6 +410,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                           defaultValue={employmentCityVal}
                           {...register(`${employmentCity}`)}
                         />
+                        {touchedFields?.employmentCity &&
+                          error?.employmentCity && (
+                            <div className="invalid-feedback">
+                              Please Enter City Name
+                            </div>
+                          )}
                       </div>
                     </div>
                   )}

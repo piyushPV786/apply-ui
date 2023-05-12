@@ -431,7 +431,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               touchedField[0]?.country &&
                               error[0]?.country && (
                                 <div className="invalid-feedback">
-                                  Please enter Postal Country
+                                  Please enter Country
                                 </div>
                               )}
                           </div>
@@ -446,6 +446,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               {...register(`${sponsorPinCode}`)}
                             />
                           </div>
+                          {touchedField?.sponsorPinCode &&
+                            error?.sponsorPinCode && (
+                              <div className="invalid-feedback">
+                                Please Enter Pin Code
+                              </div>
+                            )}
                         </div>{" "}
                         <div className="col-md-4">
                           <div className="mb-4">
@@ -456,6 +462,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               defaultValue={sponsorStateVal}
                               {...register(`${sponsorState}`)}
                             />
+                            {touchedField?.sponsorState &&
+                              error?.sponsorState && (
+                                <div className="invalid-feedback">
+                                  Please Enter State Name
+                                </div>
+                              )}
                           </div>
                         </div>{" "}
                         <div className="col-md-4">
@@ -467,6 +479,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               defaultValue={sponsorCityVal}
                               {...register(`${sponsorCity}`)}
                             />
+                            {touchedField?.sponsorCity &&
+                              error?.sponsorCity && (
+                                <div className="invalid-feedback">
+                                  Please Enter City Name
+                                </div>
+                              )}
                           </div>
                         </div>{" "}
                       </>
