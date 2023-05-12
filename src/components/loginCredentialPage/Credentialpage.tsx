@@ -4,10 +4,13 @@ import { PaymentContainer, MainContainer } from "../payment/payment";
 import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 import StyledButton from "../button/button";
+import { RoutePaths } from "../common/constant";
 
 export const LoginCredentials = (props: any) => {
+  const router = useRouter();
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
@@ -57,7 +60,12 @@ export const LoginCredentials = (props: any) => {
                 </div>
               </CredentialContainer>
               <ButtonContainer>
-                <StyledButton title="Back to DashBoard"></StyledButton>
+                <StyledButton
+                  onClick={() => {
+                    router.push(RoutePaths.Dashboard);
+                  }}
+                  title="Back to DashBoard"
+                ></StyledButton>
               </ButtonContainer>
             </InnerCredentialContainer>
           </StyledCredentialContainer>
