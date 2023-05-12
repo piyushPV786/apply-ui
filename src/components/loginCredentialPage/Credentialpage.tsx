@@ -61,7 +61,9 @@ export const LoginCredentials = (props: any) => {
               </CredentialContainer>
               <ButtonContainer>
                 <StyledButton
-                  onClick={router.push(RoutePaths.Dashboard)}
+                  onClick={() => {
+                    router.push(RoutePaths.Dashboard);
+                  }}
                   title="Back to DashBoard"
                 ></StyledButton>
               </ButtonContainer>
