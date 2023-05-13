@@ -22,36 +22,18 @@ export const CommonAPI = axios.create({
 const useAxiosInterceptor = () => {
   const [loading, setLoading] = useState(false);
 
-  const myInterceptor = async (config) => {
+  const myInterceptor = (config) => {
     if (
       !config.url.includes(CommonApi.GETSTUDYMODEPROGRAMS) &&
       !config.url.includes(CommonApi.GETCURRENCYCONVERSION) &&
       !config.url.includes("/payment/payu")
     ) {
       setLoading(true);
-    } // Get JWT token from local storage
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      try {
-        const { exp } = JSON.parse(atob(token.split(".")[1]));
-        if (exp < Date.now() / 1000) {
-          // Token has expired, refresh it
-          const refreshToken = localStorage.getItem("refresh_token");
-          const response = await baseAuth.post("/refresh-token", {
-            refresh_token: refreshToken,
-          });
-          const newToken = response.data.access_token;
-          // Update local storage with new token
-          localStorage.setItem("access_token", newToken);
-          config.headers.Authorization = `Bearer ${newToken}`;
-        } else {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-      } catch (error) {
-        // Handle error
-        console.error(error);
-      }
     }
+    let tokensData = JSON.parse(localStorage.getItem("tokens"));
+    config.headers.common[
+      "Authorization"
+    ] = `bearer ${tokensData.access_token}`;
     return config;
   };
 
@@ -63,12 +45,30 @@ const useAxiosInterceptor = () => {
     return response;
   };
 
-  const myErrorInterceptor = (error) => {
+  const myErrorInterceptor = async (error) => {
     // Update loading state for request end
     setLoading(false);
 
     // Handle error
-    return Promise.reject(error);
+
+    if (error.response.status === 401) {
+      const authData = JSON.parse(localStorage.getItem("tokens"));
+      const payload = {
+        access_token: authData.access_token,
+        refresh_token: authData.refreshToken,
+      };
+
+      let apiResponse = await baseAuth.post("/refresh-token", {
+        payload,
+      });
+      localStorage.setItem("tokens", JSON.stringify(apiResponse.data));
+      error.config.headers[
+        "Authorization"
+      ] = `bearer ${apiResponse.data.access_token}`;
+      return axios(error.config);
+    } else {
+      return Promise.reject(error);
+    }
   };
 
   const addInterceptorToAxiosInstances = (axiosInstance: AxiosInstance) => {
