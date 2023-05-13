@@ -22,19 +22,36 @@ export const CommonAPI = axios.create({
 const useAxiosInterceptor = () => {
   const [loading, setLoading] = useState(false);
 
-  const myInterceptor = (config) => {
+  const myInterceptor = async (config) => {
     if (
       !config.url.includes(CommonApi.GETSTUDYMODEPROGRAMS) &&
       !config.url.includes(CommonApi.GETCURRENCYCONVERSION) &&
       !config.url.includes("/payment/payu")
     ) {
       setLoading(true);
+    } // Get JWT token from local storage
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      try {
+        const { exp } = JSON.parse(atob(token.split(".")[1]));
+        if (exp < Date.now() / 1000) {
+          // Token has expired, refresh it
+          const refreshToken = localStorage.getItem("refresh_token");
+          const response = await baseAuth.post("/refresh-token", {
+            refresh_token: refreshToken,
+          });
+          const newToken = response.data.access_token;
+          // Update local storage with new token
+          localStorage.setItem("access_token", newToken);
+          config.headers.Authorization = `Bearer ${newToken}`;
+        } else {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      } catch (error) {
+        // Handle error
+        console.error(error);
+      }
     }
-    const token = "";
-
-    // Handle request
-    // config.headers.Authorization = `Bearer ${token}`;
-
     return config;
   };
 
