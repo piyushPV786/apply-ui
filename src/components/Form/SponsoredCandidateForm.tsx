@@ -13,12 +13,14 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
+import AdvanceDropDown from "../dropdown/Dropdown";
 import {
   formOptions,
   isObjectEmpty,
   isValidEmail,
   onlyAlphabets,
   validateNumber,
+  sortAscending,
 } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
@@ -31,6 +33,10 @@ const sponsorMode = `${SponsorCandidateDetail}.sponsorModeCode`;
 const sponsorName = `${SponsorCandidateDetail}.name`;
 const sponsorEmail = `${SponsorCandidateDetail}.email`;
 const sponsorAddress = `${SponsorCandidateDetail}.address`;
+const sponsorCountry = `${SponsorCandidateDetail}.country`;
+const sponsorCity = `${SponsorCandidateDetail}.city`;
+const sponsorPinCode = `${SponsorCandidateDetail}.zipCode`;
+const sponsorState = `${SponsorCandidateDetail}.state`;
 const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
 const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
@@ -39,9 +45,17 @@ interface ISponsorProps {
   leadId: string;
   sponsorModeArr: IOption[];
   relationData: IOption[];
+  countryData: any;
 }
 export const SponsoredForm = (props: ISponsorProps) => {
-  const { sponsorModeArr = [], relationData = [] } = { ...props };
+  const {
+    sponsorModeArr = [],
+    relationData = [],
+    countryData = [],
+  } = { ...props };
+  const CountryData = countryData;
+  console.log(CountryData);
+
   const {
     setValue,
     register,
@@ -55,6 +69,10 @@ export const SponsoredForm = (props: ISponsorProps) => {
   const sponsorModeVal = watch(sponsorMode);
   const sponsorNameVal = watch(sponsorName);
   const sponsorAddressVal = watch(sponsorAddress);
+  const sponsorCountryVal = watch(sponsorCountry);
+  const sponsorPinCodeVal = watch(sponsorPinCode);
+  const sponsorStateVal = watch(sponsorState);
+  const sponsorCityVal = watch(sponsorCity);
   const sponsorPhoneNumberVal = watch(sponsorPhoneNumber);
   const sponserEmailVal = watch(sponsorEmail);
   const relationshipVal = watch(relationShip);
@@ -389,6 +407,84 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               defaultValue={sponsorAddressVal}
                               {...register(`${sponsorAddress}`)}
                             />
+                          </div>
+                        </div>{" "}
+                        <div className="col-md-4">
+                          <div className="mb-4">
+                            <AdvanceDropDown
+                              value={sponsorCountryVal}
+                              options={CountryData.sort((a, b) =>
+                                sortAscending(a, b, "name")
+                              )}
+                              register={register}
+                              mapKey="code"
+                              name={sponsorCountry}
+                              onChange={(e: any) => {
+                                const value = e.target.value;
+                                setValue(sponsorCountry, value, formOptions);
+                              }}
+                              label="Country"
+                            />
+
+                            {touchedField &&
+                              error &&
+                              touchedField[0]?.country &&
+                              error[0]?.country && (
+                                <div className="invalid-feedback">
+                                  Please enter Country
+                                </div>
+                              )}
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="mb-4">
+                            <StyledLabel> Pin Code / Zip Code</StyledLabel>
+                            <input
+                              className="form-control"
+                              value={sponsorPinCodeVal}
+                              defaultValue={sponsorPinCodeVal}
+                              {...register(`${sponsorPinCode}`)}
+                            />
+                          </div>
+                          {touchedField?.sponsorPinCode &&
+                            error?.sponsorPinCode && (
+                              <div className="invalid-feedback">
+                                Please Enter Pin Code
+                              </div>
+                            )}
+                        </div>{" "}
+                        <div className="col-md-4">
+                          <div className="mb-4">
+                            <StyledLabel> State/Provinces</StyledLabel>
+                            <input
+                              className="form-control"
+                              value={sponsorStateVal}
+                              defaultValue={sponsorStateVal}
+                              {...register(`${sponsorState}`)}
+                            />
+                            {touchedField?.sponsorState &&
+                              error?.sponsorState && (
+                                <div className="invalid-feedback">
+                                  Please Enter State Name
+                                </div>
+                              )}
+                          </div>
+                        </div>{" "}
+                        <div className="col-md-4">
+                          <div className="mb-4">
+                            <StyledLabel> City</StyledLabel>
+                            <input
+                              className="form-control"
+                              value={sponsorCityVal}
+                              defaultValue={sponsorCityVal}
+                              {...register(`${sponsorCity}`)}
+                            />
+                            {touchedField?.sponsorCity &&
+                              error?.sponsorCity && (
+                                <div className="invalid-feedback">
+                                  Please Enter City Name
+                                </div>
+                              )}
                           </div>
                         </div>{" "}
                       </>
