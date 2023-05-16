@@ -6,7 +6,7 @@ import Image from "next/image";
 import EditIcon from "../../../public/assets/images/edit-icon.svg";
 import UploadIcon from "../../../public/assets/images/upload.svg";
 import PayIcon from "../../../public/assets/images/pay-pay.svg";
-import UploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
+import DownloadIcon from "../../../public/assets/images/download-white-icon.svg";
 import RmatImg from "../../../public/assets/images/rmat.png";
 import { useIsRouting } from "../../pages/_app";
 
@@ -80,7 +80,7 @@ const StyledButton = ({
         )}
         {isDownloadBtn && (
           <StyledDownloadIcon className="me-3 icon-additinal">
-            <Image alt="download" src={UploadImg} width={15} />
+            <Image alt="download" src={DownloadIcon} width={18} height={18} />
           </StyledDownloadIcon>
         )}
         {isRouting ? "Loading..." : title}
