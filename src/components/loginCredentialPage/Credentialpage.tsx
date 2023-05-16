@@ -42,7 +42,7 @@ export const LoginCredentials = (props: any) => {
                     href={`https://portal.regenesys.net/login/index.php`}
                     target="blank"
                   >
-                    https://portal.regenesys.net/login/index.php
+                    https://dev-rms.regenesys.net/student/dashboard/
                   </Link>
                 </div>
               </div>
