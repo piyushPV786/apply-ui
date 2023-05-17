@@ -8,6 +8,7 @@ import {
 import { ILeadFormValues } from "../components/common/types";
 import { AuthApi, CommonAPI, FinanceApi } from "../service/Axios";
 import { parsePhoneNumber } from "react-phone-number-input";
+import { toast } from "react-toastify";
 const ignorKeys = {
   createdAt: "",
   deletedAt: "",
@@ -370,4 +371,22 @@ export const mapFormDefaultValue = (
     }
     setValue("education.referredById", valueCode, formOptions);
   }
+};
+
+export const showSuccessToast = (message) => {
+  toast.success(message, {
+    className: "toast-success",
+  });
+};
+
+export const showErrorToast = (message) => {
+  toast.error(message, {
+    className: "toast-error",
+  });
+};
+
+export const showWarningToast = (message) => {
+  toast.warning(message, {
+    className: "toast-warning",
+  });
 };

@@ -17,7 +17,11 @@ export enum CommonEnums {
   SOUTH_AFRICA_CURRENCY = "RAND",
   DOCUMENT = "Document",
   PROG_ADMITTED = "PROG-ADMITTED",
+  ACCEPTANCE_LETTER = "ACCEPTANCE-LETTER",
+  CONFIRMATION_LETTER = "CONFIRMATION-LETTER",
 }
+
+export const ErrorMessage = "Something went wrong please try again later";
 export enum AlertEnums {
   INFO = "info",
   DANGER = "danger",
