@@ -483,12 +483,7 @@ const Payment = (props: any) => {
                                           : `${Green}`,
                                       padding: "0.47rem 0.75rem",
                                     }}
-                                    className={
-                                      "input-group-text" +
-                                      (!isCouponApplied || !promoCode
-                                        ? ""
-                                        : "disabled")
-                                    }
+                                    className={"input-group-text"}
                                     id="basic-addon2"
                                   >
                                     Apply
