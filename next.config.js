@@ -9,6 +9,7 @@ const nextConfig = {
     Academic_Url: process.env.NEXT_PUBLIC_ACADEMIC_BASE_URL,
     Finance_Url: process.env.NEXT_PUBLIC_FINANCE_BASE_URL,
     Common_Url: process.env.NEXT_COMMON_BASE_URL,
+    Credential_Url: process.env.NEXT_PUBLIC_CREDENTIAL_BASE_URL,
   },
 };
 

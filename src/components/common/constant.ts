@@ -66,6 +66,7 @@ export const RoutePaths = {
   Document_Success: "/payment/document-upload-success",
   APPLICATION_ENROLLED_SUCCESS: "/payment/application-enrolled-success",
   Dashboard: "/student-registration-form/dashboard",
+  StudentDashboard: "/dashboard",
 };
 
 export const PaymentTypes = [

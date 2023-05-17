@@ -261,7 +261,9 @@ export const ApplicationDashboard = (props: any) => {
                               leadCode,
                             },
                             education,
+                            studentCode,
                             document,
+
                             ...rest
                           },
                           idx
@@ -290,6 +292,7 @@ export const ApplicationDashboard = (props: any) => {
                               educationDetail={education}
                               document={document}
                               enrolmentCode={enrolmentCode}
+                              studentCode={studentCode}
                               {...rest}
                             />
                           </div>
@@ -370,6 +373,7 @@ function ApplicationCard({
   updatedAt = "",
   educationDetail,
   document,
+  studentCode,
   id,
   ...rest
 }) {
@@ -416,18 +420,24 @@ function ApplicationCard({
           <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
         </div>
         <ContentCard>
-          <div className="w-100">
-            {applicationNumber && (
-              <GreenFormHeading className="application-number">
-                Application Number - {applicationNumber}
-              </GreenFormHeading>
-            )}
-            {enrolmentCode ? (
-              <GreenFormHeading className="application-number">
-                Enrollment Number - {enrolmentCode}
-              </GreenFormHeading>
-            ) : null}
-          </div>
+          {!showCredentialBtn ? (
+            <div className="w-100">
+              {applicationNumber && (
+                <GreenFormHeading className="application-number">
+                  Application Number - {applicationNumber}
+                </GreenFormHeading>
+              )}
+              {enrolmentCode ? (
+                <GreenFormHeading className="application-number">
+                  Enrollment Number - {enrolmentCode}
+                </GreenFormHeading>
+              ) : null}
+            </div>
+          ) : (
+            <GreenFormHeading className="application-number">
+              Student Id - {studentCode}
+            </GreenFormHeading>
+          )}
           {enrollmentNumber && (
             <div className="mt-2 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
