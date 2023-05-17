@@ -11,6 +11,7 @@ import { RoutePaths } from "../common/constant";
 
 export const LoginCredentials = (props: any) => {
   const router = useRouter();
+  const url: string | undefined = process.env.Credential_Url;
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
@@ -41,11 +42,8 @@ export const LoginCredentials = (props: any) => {
                 </div>
                 <div className="text-center w-100">
                   <h6>Student Management System URL (SMS)</h6>
-                  <Link
-                    href={`https://portal.regenesys.net/login/index.php`}
-                    target="blank"
-                  >
-                    https://dev-rms.regenesys.net/student/dashboard/
+                  <Link href={url} target="blank">
+                    {process.env.Credential_Url}
                   </Link>
                 </div>
               </div>

@@ -176,6 +176,7 @@ export interface IApplication {
   education: IEducation;
   lead: ILead;
   document: IDocument;
+  studentCode: string;
 }
 
 export interface IDocument {
