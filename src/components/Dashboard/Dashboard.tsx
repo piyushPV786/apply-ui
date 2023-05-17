@@ -14,13 +14,19 @@ import StyledButton from "../button/button";
 import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
-import { CommonApi, CommonEnums, RoutePaths } from "../common/constant";
+import {
+  CommonApi,
+  CommonEnums,
+  ErrorMessage,
+  RoutePaths,
+} from "../common/constant";
 import useAxiosInterceptor from "../../service/Axios";
 import { IApplication, IDocument, IOption } from "../common/types";
 import {
   clearRoute,
   downloadDocument,
   getCommonUploadDocumentUrl,
+  showErrorToast,
   transformDate,
 } from "../../Util/Util";
 import { Grid, IconButton, Tooltip } from "@material-ui/core";
@@ -171,15 +177,35 @@ export const ApplicationDashboard = (props: any) => {
     router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
 
-  const onDownloadAcceptence = (documentDetail: IDocument[]) => {
-    const { name } = documentDetail[0];
+  const onDownloadAcceptence = (
+    documentDetail: IDocument[],
+    documentTypeCode:
+      | CommonEnums.CONFIRMATION_LETTER
+      | CommonEnums.ACCEPTANCE_LETTER
+  ) => {
+    console.log({
+      documentDetail,
+      conf: documentDetail?.find(
+        (doc) => doc?.documentTypeCode === documentTypeCode
+      ),
+    });
+    const { name } = {
+      ...documentDetail?.find(
+        (doc) => doc?.documentTypeCode === documentTypeCode
+      )!,
+    };
+    if (!name) return showErrorToast(ErrorMessage);
     getCommonUploadDocumentUrl(name).then((res) => {
       if (res?.statusCode === 200) {
         downloadDocument(res?.data, name);
         setTimeout(() => {
           setToast({
             show: true,
-            message: "Acceptance Letter Downloaded Successfully",
+            message: `${
+              documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
+                ? "Acceptance"
+                : "Confirmation"
+            } Letter Downloaded Successfully`,
             success: true,
           });
         }, 1000);
@@ -504,9 +530,12 @@ function ApplicationCard({
                 <Grid item>
                   <StyledButton
                     isDownloadBtn
-                    // onClick={() =>
-                    //   // router.push("/student-registration-form/credentials")
-                    // }
+                    onClick={() =>
+                      onDownloadAcceptence(
+                        document,
+                        CommonEnums.CONFIRMATION_LETTER
+                      )
+                    }
                     className="card-button"
                     title="Confirmation Letter"
                   />
@@ -551,7 +580,12 @@ function ApplicationCard({
               {isAcceptedApplication && (
                 <Grid item>
                   <StyledButton
-                    onClick={() => onDownloadAcceptence(document)}
+                    onClick={() =>
+                      onDownloadAcceptence(
+                        document,
+                        CommonEnums.CONFIRMATION_LETTER
+                      )
+                    }
                     isGreenWhiteCombination
                     isDownloadBtn
                     className="card-button"
