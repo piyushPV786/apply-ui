@@ -201,7 +201,11 @@ export const ApplicationDashboard = (props: any) => {
         setTimeout(() => {
           setToast({
             show: true,
-            message: "Acceptance Letter Downloaded Successfully",
+            message: `${
+              documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
+                ? "Acceptance"
+                : "Confirmation"
+            } Letter Downloaded Successfully`,
             success: true,
           });
         }, 1000);
