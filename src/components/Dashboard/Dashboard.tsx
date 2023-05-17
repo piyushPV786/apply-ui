@@ -412,9 +412,16 @@ function ApplicationCard({
               ) : null}
             </div>
           ) : (
-            <GreenFormHeading className="application-number">
-              Student Id - {studentCode}
-            </GreenFormHeading>
+            <div className="w-100">
+              <GreenFormHeading className="application-number">
+                Student Id - {studentCode}
+              </GreenFormHeading>
+              {enrolmentCode ? (
+                <GreenFormHeading className="application-number">
+                  Enrollment Number - {enrolmentCode}
+                </GreenFormHeading>
+              ) : null}
+            </div>
           )}
           {enrollmentNumber && (
             <div className="mt-2 w-100 app-card-block">
