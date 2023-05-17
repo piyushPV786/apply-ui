@@ -500,6 +500,18 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
+              {showCredentialBtn && (
+                <Grid item>
+                  <StyledButton
+                    isDownloadBtn
+                    // onClick={() =>
+                    //   // router.push("/student-registration-form/credentials")
+                    // }
+                    className="card-button"
+                    title="Confirmation Letter"
+                  />
+                </Grid>
+              )}
 
               {showCredentialBtn && (
                 <Grid item>
