@@ -5,21 +5,28 @@ import {
   LoaderComponent,
   Toaster,
 } from "../common/common";
+import { useRouter } from "next/router";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { PaymentContainer } from "../payment/payment";
 import Header from "../common/header";
 import StyledButton from "../button/button";
-import { useRouter } from "next/router";
+
 import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
-import { CommonApi, CommonEnums, RoutePaths } from "../common/constant";
+import {
+  CommonApi,
+  CommonEnums,
+  ErrorMessage,
+  RoutePaths,
+} from "../common/constant";
 import useAxiosInterceptor from "../../service/Axios";
 import { IApplication, IDocument, IOption } from "../common/types";
 import {
   clearRoute,
   downloadDocument,
   getCommonUploadDocumentUrl,
+  showErrorToast,
   transformDate,
 } from "../../Util/Util";
 import { Grid, IconButton, Tooltip } from "@material-ui/core";
@@ -59,10 +66,10 @@ export const ApplicationDashboard = (props: any) => {
   const getIntrestedQualificationPrograms = (application: [IApplication]) => {
     AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
       .then(({ data: response }: any) => {
-        if (application.length > 0 && response.data.length > 0) {
+        if (application.length > 0 && response.data?.data?.length > 0) {
           const applications = [...application];
           applications.forEach((app: IApplication) => {
-            response?.data.forEach((element: IOption) => {
+            response?.data?.data?.forEach((element: IOption) => {
               if (element?.code === app.education?.programCode) {
                 app.programName = element.name;
               }
@@ -128,7 +135,7 @@ export const ApplicationDashboard = (props: any) => {
       educationDetail,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
-    router.push(RoutePaths.Application_Form, { query: `status=${show}` });
+    router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
   const onUploadDocuments = (
     applicationCode: string | number,
@@ -170,15 +177,35 @@ export const ApplicationDashboard = (props: any) => {
     router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
 
-  const onDownloadAcceptence = (documentDetail: IDocument[]) => {
-    const { name } = documentDetail[0];
+  const onDownloadAcceptence = (
+    documentDetail: IDocument[],
+    documentTypeCode:
+      | CommonEnums.CONFIRMATION_LETTER
+      | CommonEnums.ACCEPTANCE_LETTER
+  ) => {
+    console.log({
+      documentDetail,
+      conf: documentDetail?.find(
+        (doc) => doc?.documentTypeCode === documentTypeCode
+      ),
+    });
+    const { name } = {
+      ...documentDetail?.find(
+        (doc) => doc?.documentTypeCode === documentTypeCode
+      )!,
+    };
+    if (!name) return showErrorToast(ErrorMessage);
     getCommonUploadDocumentUrl(name).then((res) => {
       if (res?.statusCode === 200) {
         downloadDocument(res?.data, name);
         setTimeout(() => {
           setToast({
             show: true,
-            message: "Acceptance Letter Downloaded Successfully",
+            message: `${
+              documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
+                ? "Acceptance"
+                : "Confirmation"
+            } Letter Downloaded Successfully`,
             success: true,
           });
         }, 1000);
@@ -238,7 +265,10 @@ export const ApplicationDashboard = (props: any) => {
                               leadCode,
                             },
                             education,
+                            studentCode,
                             document,
+
+                            ...rest
                           },
                           idx
                         ) => (
@@ -266,6 +296,8 @@ export const ApplicationDashboard = (props: any) => {
                               educationDetail={education}
                               document={document}
                               enrolmentCode={enrolmentCode}
+                              studentCode={studentCode}
+                              {...rest}
                             />
                           </div>
                         )
@@ -345,11 +377,16 @@ function ApplicationCard({
   updatedAt = "",
   educationDetail,
   document,
+  studentCode,
   id,
+  ...rest
 }) {
+  const { sponsor = null } = { ...(rest as any) };
   const isAcceptedApplication = status.includes(
     CommonEnums.APP_ENROLLED_ACCEPTED
   );
+  const sponsorModeType = sponsor?.sponsorModeCode;
+  const router = useRouter();
   const showEditBtn =
     status.includes(CommonEnums.FEES_PENDING_STATUS) ||
     status.includes(CommonEnums.APP_FEE_DOC_VER_PEND) ||
@@ -360,6 +397,7 @@ function ApplicationCard({
     status.includes(CommonEnums.APP_ENROLLED_STATUS);
   const showPayBtn =
     status.includes(CommonEnums.RESUB_APP_FEE_PROOF) || isAcceptedApplication;
+  const showCredentialBtn = status.includes(CommonEnums.PROG_ADMITTED);
   const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
     ? enrolmentCode
     : "";
@@ -369,7 +407,9 @@ function ApplicationCard({
 
   const showRAMTBtn = status.includes(CommonEnums.RMAT_PENDING);
 
-  const showUploadBtn = status.includes(CommonEnums.APP_FEE_VER_PEND);
+  const showUploadBtn =
+    status.includes(CommonEnums.APP_ENROLLED_STATUS) ||
+    status.includes(CommonEnums.APP_FEE_ACCEPTED);
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
@@ -384,18 +424,31 @@ function ApplicationCard({
           <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
         </div>
         <ContentCard>
-          <div className="w-100">
-            {applicationNumber && (
+          {!showCredentialBtn ? (
+            <div className="w-100">
+              {applicationNumber && (
+                <GreenFormHeading className="application-number">
+                  Application Number - {applicationNumber}
+                </GreenFormHeading>
+              )}
+              {enrolmentCode ? (
+                <GreenFormHeading className="application-number">
+                  Enrollment Number - {enrolmentCode}
+                </GreenFormHeading>
+              ) : null}
+            </div>
+          ) : (
+            <div className="w-100">
               <GreenFormHeading className="application-number">
-                Application Number - {applicationNumber}
+                Student Id - {studentCode}
               </GreenFormHeading>
-            )}
-            {enrolmentCode ? (
-              <GreenFormHeading className="application-number">
-                Enrollment Number - {enrolmentCode}
-              </GreenFormHeading>
-            ) : null}
-          </div>
+              {enrolmentCode ? (
+                <GreenFormHeading className="application-number">
+                  Enrollment Number - {enrolmentCode}
+                </GreenFormHeading>
+              ) : null}
+            </div>
+          )}
           {enrollmentNumber && (
             <div className="mt-2 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
@@ -464,21 +517,46 @@ function ApplicationCard({
                         ? onPay(
                             applicationNumber,
                             leadCode,
-                            true,
-                            educationDetail,
-                            true
+                            status,
+                            educationDetail
                           )
                         : onPay(
                             applicationNumber,
                             leadCode,
-                            true,
-                            educationDetail,
-                            false
+                            status,
+                            educationDetail
                           )
                     }
                     isPayBtn
                     className="card-button"
                     title={payBtnTitle}
+                  />
+                </Grid>
+              )}
+              {showCredentialBtn && (
+                <Grid item>
+                  <StyledButton
+                    isDownloadBtn
+                    onClick={() =>
+                      onDownloadAcceptence(
+                        document,
+                        CommonEnums.CONFIRMATION_LETTER
+                      )
+                    }
+                    className="card-button"
+                    title="Confirmation Letter"
+                  />
+                </Grid>
+              )}
+
+              {showCredentialBtn && (
+                <Grid item>
+                  <StyledButton
+                    onClick={() =>
+                      router.push("/student-registration-form/credentials")
+                    }
+                    className="card-button"
+                    title="view login credentials"
                   />
                 </Grid>
               )}
@@ -494,7 +572,7 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-              {showDocumentUploadBtn && (
+              {/* {showDocumentUploadBtn && (
                 <Grid item>
                   <StyledButton
                     onClick={() =>
@@ -505,11 +583,16 @@ function ApplicationCard({
                     title="Upload Document"
                   />
                 </Grid>
-              )}
+              )} */}
               {isAcceptedApplication && (
                 <Grid item>
                   <StyledButton
-                    onClick={() => onDownloadAcceptence(document)}
+                    onClick={() =>
+                      onDownloadAcceptence(
+                        document,
+                        CommonEnums.CONFIRMATION_LETTER
+                      )
+                    }
                     isGreenWhiteCombination
                     isDownloadBtn
                     className="card-button"
@@ -518,7 +601,8 @@ function ApplicationCard({
                 </Grid>
               )}
               {isAcceptedApplication &&
-                educationDetail?.studentTypeCode === "BURSARY" && (
+                educationDetail?.studentTypeCode === "BURSARY" &&
+                sponsorModeType === "EMPBURSARY" && (
                   <Grid item>
                     <StyledButton
                       onClick={() =>

@@ -5,17 +5,23 @@ export enum CommonEnums {
   APP_ENROLLED_ACCEPTED = "ENRL-ACCEPTED",
   RESUB_APP_FEE_PROOF = "RESUB-APP-FEE-PROOF",
   APP_FEE_DOC_VER_PEND = "APP-FEE-DOC-VER-PEND",
-  APP_FEE_VER_PEND="APP-FEE-VER-PEND",
+  APP_FEE_VER_PEND = "APP-FEE-VER-PEND",
   RESUB_APP_DOC = "RESUB-APP-DOC",
-  RMAT_PENDING ="RMAT-PENDING",
+  APP_FEE_ACCEPTED = "APP-FEE-ACCEPTED",
+  RMAT_PENDING = "RMAT-PENDING",
   MANAGEMENT = "management",
   BURSARY = "bursary",
   EMPLOYEE_BURSARY = "empbursary",
   REGULAR = "regular",
   GUARDIAN = "guardian",
   SOUTH_AFRICA_CURRENCY = "RAND",
-  DOCUMENT='Document',
+  DOCUMENT = "Document",
+  PROG_ADMITTED = "PROG-ADMITTED",
+  ACCEPTANCE_LETTER = "ACCEPTANCE-LETTER",
+  CONFIRMATION_LETTER = "CONFIRMATION-LETTER",
 }
+
+export const ErrorMessage = "Something went wrong please try again later";
 export enum AlertEnums {
   INFO = "info",
   DANGER = "danger",
@@ -60,6 +66,7 @@ export const RoutePaths = {
   Document_Success: "/payment/document-upload-success",
   APPLICATION_ENROLLED_SUCCESS: "/payment/application-enrolled-success",
   Dashboard: "/student-registration-form/dashboard",
+  StudentDashboard: "/dashboard",
 };
 
 export const PaymentTypes = [
