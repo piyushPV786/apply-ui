@@ -8,32 +8,48 @@ import {
 } from "../common/common";
 import Image from "next/image";
 import UserCircleIcon from "../../../public/assets/images/user-circle-svgrepo-com.svg";
+import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
+
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { isValidEmail, onlyAlphabets } from "../../Util/Util";
+import {
+  formOptions,
+  isValidDate,
+  isValidEmail,
+  onlyAlphabets,
+  sortAscending,
+  transformDate,
+} from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
+import { identityDocuments } from "../common/constant";
+import { NationalityEnum } from "../common/types";
 interface IPersonalInfoProps {
   genders: IOption[];
   nationalities: IOption[];
   homeLanguage: IOption[];
   race: IOption[];
 }
+
 const parentKey = "lead";
+
 const firstNameKey = `${parentKey}.firstName`;
 const middleNameKey = `${parentKey}.middleName`;
 const lastNameKey = `${parentKey}.lastName`;
-const genderIdKey = `${parentKey}.genderId`;
+const genderIdKey = `${parentKey}.gender`;
 const dateOfBirthKey = `${parentKey}.dateOfBirth`;
 const emailKey = `${parentKey}.email`;
-const nationalityIdKey = `${parentKey}.nationalityId`;
-const identificationPassportNumberKey = `${parentKey}.identificationPassportNumber`;
-const raceIdKey = `${parentKey}.raceId`;
+const nationalityIdKey = `${parentKey}.nationality`;
+const identificationNumberKey = `${parentKey}.identificationNumber`;
+const raceIdKey = `${parentKey}.race`;
+const identificationDocumentTypeKey = `${parentKey}.identificationDocumentType`;
 const homeLanguageIdKey = `${parentKey}.language`;
 const studentNumberKey = `${parentKey}.mobileNumber`;
 const mobileCountryCodeKey = `${parentKey}.mobileCountryCode`;
 const PersonalInfoForm = (props: IPersonalInfoProps) => {
-  const { genders, nationalities, homeLanguage, race } = { ...props };
+  const { genders, nationalities, homeLanguage, race } = {
+    ...props,
+  };
   const {
     setValue,
     register,
@@ -44,6 +60,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const Errors = errors[parentKey] as any;
   const [countryCodeRef, setCountryCode] = useState<any>();
   const [mobNum, setMobile] = useState<any>("");
+  const [isDocument, setDocument] = useState<boolean>(false);
+  const [isNationality, setNationality] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isYes, setIsYes] = useState<boolean>(false);
+
   useEffect(() => {
     const userNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
@@ -53,7 +74,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     );
     setCountryCode(userNumberDetail?.countryCode);
     setValue(studentNumberKey, userNumberDetail?.mobileNumber);
-    setValue(mobileCountryCodeKey, userNumberDetail?.countryCode);
+    setValue(mobileCountryCodeKey, userNumberDetail?.countryCodeNumber);
   }, []);
   const firstName = watch(firstNameKey);
   const middleName = watch(middleNameKey);
@@ -62,13 +83,35 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const dateOfBirth = watch(dateOfBirthKey);
   const email = watch(emailKey);
   const nationalityId = watch(nationalityIdKey);
-  const identificationPassportNumber = watch(identificationPassportNumberKey);
+  const identificationNumber = watch(identificationNumberKey);
   const raceId = watch(raceIdKey);
+  const identificationDocumentType = watch(identificationDocumentTypeKey);
   const homeLanguageId = watch(homeLanguageIdKey);
-  const uppdateMobNumber = () => {
-    const countryCode = getCountryCallingCode(countryCodeRef);
-    setValue(`${countryCode}`, `+${countryCode}`);
+
+  const genderOption = [
+    ...(genders || []),
+    ...[{ name: "Other", code: "other", id: 21 }],
+  ];
+
+  const handleInternationAccordian = (state: string) => {
+    setIsExpanded(true);
+    if (state === "yes") {
+      setNationality(false);
+      setDocument(true);
+
+      setValue(identificationDocumentTypeKey, "PA", formOptions);
+      setValue(nationalityIdKey, "", { shouldDirty: true });
+      setIsYes(true);
+      setValue(identificationNumberKey, "", formOptions);
+    } else {
+      setValue(identificationNumberKey, "", formOptions);
+      setNationality(true);
+      setDocument(false);
+      setValue(nationalityIdKey, "SA", formOptions);
+      setValue(identificationDocumentTypeKey, "", { shouldDirty: true });
+    }
   };
+
   return (
     <>
       <StyledAccordion defaultExpanded={true}>
@@ -85,7 +128,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
           </GreenFormHeading>
         </AccordionSummary>
         <AccordionDetails>
-          <div className="container">
+          <div className="container-fluid form-padding">
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
@@ -101,11 +144,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                     className="form-control"
@@ -134,11 +173,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                     id="middleName"
@@ -159,11 +194,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(name, value, formOptions);
                       }
                     }}
                     id="lastName"
@@ -181,13 +212,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    options={genders}
+                    options={genderOption}
                     label={"Gender"}
                     value={genderId}
                     name={genderIdKey}
                     register={register}
                   />
-                  {TouchFields?.genderId && Errors?.genderId && (
+                  {TouchFields?.gender && Errors?.gender && (
                     <div className="invalid-feedback">Please enter Gender</div>
                   )}
                 </div>
@@ -198,7 +229,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <input
                     value={dateOfBirth}
                     defaultValue={dateOfBirth}
-                    {...register(dateOfBirthKey, { required: true })}
+                    {...register(dateOfBirthKey, {
+                      required: true,
+                      validate: isValidDate,
+                    })}
+                    max={transformDate(new Date(), true)}
                     type="date"
                     className="form-control"
                     id="exampleFormControlInput1"
@@ -206,7 +241,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   />
                   {TouchFields?.dateOfBirth && Errors?.dateOfBirth && (
                     <div className="invalid-feedback">
-                      Please enter Date of Birth
+                      {Errors?.dateOfBirth?.type === "validate"
+                        ? "Please enter valid date"
+                        : "Please enter Date of Birth"}
                     </div>
                   )}
                 </div>
@@ -221,92 +258,56 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       required: true,
                       validate: isValidEmail,
                     })}
-                    type="email"
+                    type="text"
                     className="form-control"
                     id="email"
-                    placeholder=""
                   />
                   {TouchFields?.email && Errors?.email && (
                     <div className="invalid-feedback">
-                      {Errors?.email?.type == "validate"
+                      {Errors?.email?.type === "validate"
                         ? "you have entered an invalid email address. Please try again"
                         : "Please enter Email"}
                     </div>
                   )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-4">
-                <div className="mb-4 pe-none">
-                  <StyledLabel required>Mobile Number</StyledLabel>
-                  <PhoneInput
-                    id="1"
-                    international
-                    countryCallingCodeEditable={false}
-                    defaultCountry={countryCodeRef}
-                    placeholder="Select Country Code*"
-                    {...register(studentNumberKey, { required: false })}
-                    onCountryChange={(value: any) => {
-                      return;
-                      setCountryCode(value);
-                    }}
-                    onBlur={(e) => {
-                      return;
-                      e.stopPropagation();
-                      e.preventDefault();
-                      uppdateMobNumber();
-                    }}
-                    onChange={(value) => {
-                      return;
-                      setValue("mobileNumber", value);
-                    }}
-                    value={mobNum as any}
-                  />
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>
-                    Identification / Passport Number
-                  </StyledLabel>
-                  <input
-                    value={identificationPassportNumber}
-                    defaultValue={identificationPassportNumber}
-                    {...register(identificationPassportNumberKey, {
-                      required: true,
-                    })}
-                    type="text"
-                    className="form-control"
-                    id="identificationPassportNumber"
-                    placeholder=""
-                  />
-                  {TouchFields?.identificationPassportNumber &&
-                    Errors?.identificationPassportNumber && (
+                  {TouchFields?.email &&
+                    email?.length > 1 &&
+                    !isValidEmail(email) && (
                       <div className="invalid-feedback">
-                        Please enter Identification / Passport Number
+                        you have entered an invalid email address. Please try
+                        again
                       </div>
                     )}
                 </div>
               </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <AdvanceDropDown
-                    options={nationalities}
-                    value={nationalityId}
-                    name={nationalityIdKey}
-                    register={register}
-                    label="Nationalty"
-                  />
-                  {TouchFields?.nationalityId && Errors?.nationalityId && (
-                    <div className="invalid-feedback">
-                      Please enter Nationality
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
             <div className="row">
+              <div className="col-md-4">
+                <div className="mb-4 pe-none ">
+                  <StyledLabel required>Mobile Number</StyledLabel>
+                  <div className="disabled">
+                    <PhoneInput
+                      id="1"
+                      international
+                      disabled
+                      countryCallingCodeEditable={false}
+                      defaultCountry={countryCodeRef}
+                      placeholder="Select Country Code*"
+                      {...register(studentNumberKey, { required: false })}
+                      onCountryChange={(value: any) => {
+                        return;
+                      }}
+                      onBlur={() => {
+                        return;
+                      }}
+                      onChange={() => {
+                        return;
+                      }}
+                      value={mobNum as any}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
@@ -316,9 +317,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     options={homeLanguage}
                     value={homeLanguageId}
                   />
-                  {TouchFields?.homeLanguageId && Errors?.homeLanguageId && (
+                  {TouchFields?.language && Errors?.language && (
                     <div className="invalid-feedback">
-                      Please enter Home Language
+                      Please select Home Language
                     </div>
                   )}
                 </div>
@@ -332,12 +333,122 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     register={register}
                     options={race}
                   />
-                  {TouchFields?.raceId && Errors?.raceId && (
-                    <div className="invalid-feedback">Please enter Race</div>
+                  {TouchFields?.race && Errors?.race && (
+                    <div className="invalid-feedback">Please select Race</div>
                   )}
                 </div>
               </div>
             </div>
+            <StyledAccordion
+              expanded={isExpanded || nationalityId !== ""}
+              defaultExpanded={true}
+            >
+              <AccordionSummary>
+                <span className="me-2">
+                  <Image src={AddressImg} alt="user" />
+                </span>
+                <StyledLabel required>
+                  Are you an International student ?
+                </StyledLabel>
+                <div
+                  className="form-check form-check-inline"
+                  style={{ marginLeft: "20px" }}
+                >
+                  <input
+                    className="form-check-input me-2"
+                    type="radio"
+                    name="isInternational"
+                    onClick={() => handleInternationAccordian("yes")}
+                    checked={
+                      (nationalityId !== NationalityEnum.southAfrica &&
+                        nationalityId !== "") ||
+                      isYes
+                    }
+                  />
+                  <label className="form-check-label">Yes</label>
+                </div>
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input me-2"
+                    type="radio"
+                    name="isInternational"
+                    onClick={() => handleInternationAccordian("no")}
+                    checked={nationalityId == "SA"}
+                  />
+                  <label className="form-check-label">No</label>
+                </div>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div className="container-fluid form-padding">
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="mb-4">
+                        <AdvanceDropDown
+                          onChange={() =>
+                            setValue(identificationNumberKey, "", formOptions)
+                          }
+                          disabled={isDocument}
+                          options={identityDocuments}
+                          value={identificationDocumentType}
+                          name={identificationDocumentTypeKey}
+                          register={register}
+                          label="Identification Document Type"
+                        />
+                        {TouchFields?.identificationDocumentType &&
+                          Errors?.identificationDocumentType && (
+                            <div className="invalid-feedback">
+                              Please enter Document Type
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-4">
+                        <StyledLabel required>
+                          Identification Number
+                        </StyledLabel>
+                        <input
+                          value={identificationNumber}
+                          defaultValue={identificationNumber}
+                          {...register(identificationNumberKey, {
+                            required: true,
+                          })}
+                          type="text"
+                          className="form-control"
+                          id="identificationPassportNumber"
+                          placeholder=""
+                        />
+                        {TouchFields?.identificationPassportNumber &&
+                          Errors?.identificationPassportNumber && (
+                            <div className="invalid-feedback">
+                              Please enter Identification Number
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-4">
+                        <AdvanceDropDown
+                          disabled={isNationality}
+                          options={nationalities?.sort((a, b) =>
+                            sortAscending(a, b, "name")
+                          )}
+                          value={nationalityId}
+                          name={nationalityIdKey}
+                          register={register}
+                          label="Nationality"
+                        />
+                        {TouchFields?.nationality && Errors?.nationality && (
+                          <div className="invalid-feedback">
+                            Please enter Nationality
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </StyledAccordion>
           </div>
         </AccordionDetails>
       </StyledAccordion>

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { GreenText } from "../common/common";
 
 export const ApplicationFormContainerStyle = {
   display: "flex",
@@ -47,14 +46,12 @@ export const StyleFooter = styled.div`
   }
 `;
 export const ApplicationFormContainer = styled.div<any>`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   text-align: center;
-  background: white;
-  padding: 0.8rem;
-  border-radius: 3px;
+  background: #FFFFFF;
+  padding: 30px;
+  max-width: 420px;
+  border-radius: 5px;
+  margin-top: 30px;
   @media (max-width: 400px) {
     top: ${({ isProceed }) => (isProceed ? "62%" : "55%")};
   }
@@ -68,7 +65,11 @@ export const Item = styled.div`
     margin-bottom: 0.7rem;
   }
 `;
-
+export const GreenText = styled.span`
+  color: #008554;
+  font-weight: 700;
+  font-size: 14px;
+`;
 export const Title = styled(GreenText)``;
 
 export const Heading = styled.span`
@@ -78,7 +79,7 @@ export const Heading = styled.span`
   padding: 1rem 0;
   position: relative;
   text-align: center;
-  top: 5%;
+  display:block;
 `;
 
 export const StyledLink = styled.span`
@@ -92,7 +93,7 @@ export const ImageContainer = styled.div`
   height: 100vh;
   position: fixed;
   background-image: url(${url});
-  background-position: center;
+  background-position: top center;
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;

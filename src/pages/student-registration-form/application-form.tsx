@@ -1,21 +1,29 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import PersonalInfoForm from "../../components/Form/personalInfoForm";
 import { useForm, FormProvider } from "react-hook-form";
 import styled from "styled-components";
 import { Container, Snackbar } from "@material-ui/core";
 import StepperComponent from "../../components/stepper/stepper";
-import { Green } from "../../components/common/common";
+import { Green, LoaderComponent } from "../../components/common/common";
 import StyledButton from "../../components/button/button";
 import { AddressForm } from "../../components/Form/AddressForm";
 import { EducationForm } from "../../components/Form/EducationForm";
 import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
-import { AcadmicApi, AuthApi } from "../../service/Axios";
-import { IMasterData, IOption } from "../../components/common/types";
+import useAxiosInterceptor from "../../service/Axios";
+import {
+  ILeadFormValues,
+  IMasterData,
+  IOption,
+} from "../../components/common/types";
 import {
   getUploadDocumentUrl,
+  isValidEmail,
+  isValidFileType,
   mapFormData,
+  mapFormDefaultValue,
+  transformFormData,
   uploadDocuments,
 } from "../../Util/Util";
 import { useRouter } from "next/router";
@@ -30,88 +38,18 @@ import {
 } from "../../components/student/style";
 import {
   CommonApi,
+  CommonEnums,
   MagicNumbers,
   RoutePaths,
 } from "../../components/common/constant";
-const mockFormData = {
-  isAgreedTermsAndConditions: false,
-  lead: {
-    firstName: "Shashank",
-    middleName: "",
-    lastName: "Gupta",
-    dateOfBirth: "2023-01-02",
-    email: "dfgdf@rt.vom",
-    mobileNumber: "",
-    identificationPassportNumber: "234324324324",
-    genderId: "M",
-    nationalityId: "BLZ",
-    language: "ISX",
-    raceId: "INDIAN/ASIAN",
-  },
-  address: [
-    {
-      street: "Test adress",
-      zipcode: "234234",
-      city: "test city",
-      state: "test state",
-      country: "Australia",
-      addressType: "POSTAL",
-    },
-    {
-      street: "Test adress",
-      zipcode: "234234",
-      city: "test city",
-      state: "test state",
-      country: "Australia",
-      addressType: "RESIDENTIAL",
-    },
-  ],
-  education: {
-    programCode: "12",
-    qualificationCode: "PGD",
-    highSchoolName: "testschool",
-    referredById: "2",
-    studentTypeId: "1",
-    studyModeCode: null,
-    socialMediaCode: "TWITTER",
-    agentCode: null,
-  },
-  kin: {
-    isKin: "yes",
-    fullName: "sdfsdf",
-    relationship: "single",
-    email: "sdfdsf@tfgfg.vom",
-    mobileNumber: "+9665635435435345",
-    mobileCountryCode: "+966",
-  },
-  employment: {
-    isEmployed: "yes",
-    employmentStatusCode: "1",
-    employer: "123",
-    jobTitle: "tesrt",
-    employmentIndustryCode: "",
-    managerName: "sefsdf",
-    officeAddress: "Test Address",
-    officeMobileNumber: "+96654654654656",
-    officeMobileCountryCode: "+966",
-  },
-  sponser: {
-    isSponsored: "yes",
-    sponsorModeId: "",
-    name: "sfdsffd",
-    address: "dsfdsfsdf",
-    mobileNumber: "+966546354454",
-    mobileCountryCode: "+966",
-  },
-};
-
-const isValidFileType = (files: any[]) => {
-  return (files || []).filter((file) => file?.error === true);
-};
-const ApplicationForm = (props: any) => {
+import {
+  getIntrestedQualificationPrograms,
+  getUserDetailHelper,
+} from "../../Util/applicationFormHelper";
+const isValidLeadEmail = (value: string) => isValidEmail(value);
+const ApplicationForm = () => {
   const router = useRouter();
-
-  const [studentData, setStudentData] = useState<any>(null);
+  const { AuthApi, loading, AcadmicApi } = useAxiosInterceptor();
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
   const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
@@ -119,17 +57,14 @@ const ApplicationForm = (props: any) => {
     success: false,
     show: false,
   });
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [isDocumentUploadDone, setDocumentUploadDone] =
-    useState<boolean>(false);
+  const [leadId, setLeadId] = useState<string>("");
+  const [activeStep, setActiveStep] = useState<any>(0);
   const [masterData, setMasterData] = useState<IMasterData | null>(null);
-  const methods = useForm({
-    mode: "onChange",
+  const [isApplicationEnrolled, setApllicationEnrolled] =
+    useState<boolean>(false);
+  const methods = useForm<ILeadFormValues>({
+    mode: "all",
     reValidateMode: "onBlur",
-    defaultValues: useMemo(() => {
-      return studentData;
-      // return mockFormData as any;
-    }, [studentData]),
   });
   const {
     register,
@@ -143,27 +78,20 @@ const ApplicationForm = (props: any) => {
     getUserDetail();
     getMasterData();
   }, []);
-  useEffect(() => {
-    if (studentData) {
-      mapFormDefaultValue();
-    }
-  }, [studentData]);
-  const allFields = watch();
 
-  const isValidDocument =
-    isValidFileType(allFields?.document?.uploadedDocs).length === 0;
   useEffect(() => {
-    if (window && router.query?.isFormSubmittedAlready) {
-      const isFormSubmittedAlready = JSON.parse(
-        router?.query?.isFormSubmittedAlready as any
-      );
-      const isPaymentFail = JSON.parse(router?.query?.isPaymentFail as any);
-      if (isFormSubmittedAlready && isPaymentFail) {
-        setActiveStep(1);
-        setSubmitted(true);
-      }
+    if (window) {
+      const queryParams = new URLSearchParams(location?.search);
+      const applicationStatus = queryParams.get("status");
+      const isApplicationAccepted =
+        applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED;
+      setApllicationEnrolled(isApplicationAccepted);
     }
-  }, [router.query]);
+  }, []);
+  const allFields = watch();
+  const isValidDocument =
+    allFields?.document?.uploadedDocs.length > 0 &&
+    isValidFileType(allFields?.document?.uploadedDocs).length === 0;
 
   const navigateBack = () => {
     setSubmitted(false);
@@ -174,56 +102,200 @@ const ApplicationForm = (props: any) => {
     setPaymentDone(true);
     setActiveStep((prevState: number) => prevState + 1);
   };
-  const mapFormDefaultValue = () => {
-    for (let [key, value] of Object.entries(studentData)) {
-      setValue(key, value, { shouldDirty: true, shouldTouch: true });
+  const routeIfStepDone = (routeTo: string) => {
+    if (routeTo) {
+      switch (routeTo) {
+        case "Document":
+          setSubmitted(false);
+          setActiveStep(2);
+          setPaymentDone(true);
+          break;
+        default:
+          break;
+      }
     }
   };
-  const submitFormData = (data: object, isDrafSave?: boolean) => {
+
+  const updateLead = (
+    request: any,
+    leadCode: string,
+    applicationCode: string,
+    activeLeadDetail: any,
+    status: string
+  ) => {
+    if (activeStep === MagicNumbers.TWO) {
+      uploadStudentDocs();
+      return;
+    }
+    let methodType;
+    if (
+      applicationCode &&
+      applicationCode?.length > 0 &&
+      (status !== CommonEnums.DRAFT_STATUS || !status)
+    ) {
+      methodType = AuthApi.put(
+        `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}?isDraft=false`,
+        {
+          ...request,
+        }
+      );
+    } else {
+      methodType = AuthApi.post(CommonApi.SAVEUSER, {
+        ...request,
+      });
+    }
+
+    methodType
+      .then(({ data: response }) => {
+        if (!applicationCode || status === CommonEnums.DRAFT_STATUS) {
+          sessionStorage.setItem(
+            "studentId",
+            JSON.stringify({
+              id: response?.data?.leadData?.id,
+              leadCode: response?.data?.leadData?.leadCode,
+            })
+          );
+          localStorage.setItem("leadData", JSON.stringify(response?.data));
+          if (activeLeadDetail) {
+            sessionStorage.setItem(
+              "activeLeadDetail",
+              JSON.stringify({
+                ...activeLeadDetail,
+                applicationCode:
+                  response?.data?.applicationData?.applicationCode,
+              })
+            );
+          }
+        }
+
+        setShowDraftSaveToast({
+          success: true,
+          message: response?.message,
+          show: true,
+        });
+        setSubmitted(false);
+        setActiveStep(activeStep + 1);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setShowDraftSaveToast({
+          success: false,
+          message: err?.message,
+          show: true,
+        });
+        setSubmitted(false);
+      });
+  };
+  const updateUserAsDraft = (request, appCode: string) => {
+    AuthApi.put(`${CommonApi.SAVEDRAFT}/${appCode}`, {
+      ...request,
+    })
+      .then(({ data }) => {
+        setShowDraftSaveToast({
+          success: true,
+          message: "Saved as draft",
+          show: true,
+        });
+        router.push(RoutePaths.Dashboard);
+      })
+      .catch((err) => {
+        console.log({ err });
+        setShowDraftSaveToast({
+          success: false,
+          message: err?.message,
+          show: true,
+        });
+      });
+  };
+  const createDraft = (request, leadCode) => {
+    request.lead.leadCode = leadCode;
+    AuthApi.post(`${CommonApi.SAVEDRAFT}`, {
+      ...request,
+    })
+      .then(({ data }) => {
+        setShowDraftSaveToast({
+          success: true,
+          message: "Saved as draft",
+          show: true,
+        });
+        router.push(RoutePaths.Dashboard);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setShowDraftSaveToast({
+          success: false,
+          message: err?.message,
+          show: true,
+        });
+      });
+  };
+  const submitFormData = (data: any, isDraftSave?: boolean) => {
+    if (data.education.isInternationDegree === "yes") {
+      data.education.isInternationDegree = true;
+    } else if (data.education.isInternationDegree === "no") {
+      data.education.isInternationDegree = false;
+    }
+
     const formData = { ...data };
 
-    const { isSameAsPostalAddress = "", ...rest } = { ...(formData as any) };
+    const {
+      isSameAsPostalAddress = "",
+      payment = null,
+      ...rest
+    } = { ...(formData as any) };
 
-    let request = mapFormData(
-      {
-        ...rest,
-      },
-      isDrafSave
+    let request = mapFormData({
+      ...rest,
+    });
+    const appCode = localStorage?.getItem("leadData")
+      ? JSON.parse(localStorage?.getItem("leadData") as any)?.applicationData
+          ?.applicationCode
+      : null;
+    const activeLeadDetail = JSON.parse(
+      sessionStorage?.getItem("activeLeadDetail") as any
     );
-    const studentId = JSON.parse(
-      sessionStorage?.getItem("leadCode") as any
-    )?.leadCode;
-
-    if (studentId) {
-      updateUser(studentId, request, isDrafSave);
-    } else {
-      // checkValidationForDraftSave() &&
-      createUser({ ...request, isDraft: true });
+    const leadCode =
+      sessionStorage?.getItem("studentId") &&
+      sessionStorage?.getItem("studentId") !== "undefined" &&
+      sessionStorage?.getItem("studentId") !== "{}"
+        ? JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
+        : activeLeadDetail?.leadCode;
+    const draftUpdateCode = activeLeadDetail?.applicationCode
+      ? activeLeadDetail?.applicationCode
+      : appCode;
+    const AppStatus = activeLeadDetail?.status;
+    if (leadCode && !isDraftSave) {
+      setSubmitted(true);
+      request.lead.leadCode = leadCode;
+      updateLead(
+        request,
+        leadCode,
+        draftUpdateCode,
+        activeLeadDetail,
+        AppStatus
+      );
+      return;
+    }
+    if (draftUpdateCode && isDraftSave) {
+      updateUserAsDraft(request, draftUpdateCode);
+      return;
+    }
+    if (!draftUpdateCode && isDraftSave && checkValidationForDraftSave()) {
+      checkValidationForDraftSave() && createDraft(request, leadCode);
+      return;
     }
   };
+
   const checkValidationForDraftSave = () => {
     let isValid = true;
     const {
-      lead: {
-        firstName,
-        lastName,
-        email,
-        mobileNumber,
-        genderId,
-        dateOfBirth,
-        identificationPassportNumber,
-        nationalityId,
-      },
+      lead: { firstName, lastName, email, mobileNumber },
     } = { ...allFields } as any;
     const feildObject: any = {
       firstName,
       lastName,
       email,
       mobileNumber,
-      genderId,
-      dateOfBirth,
-      identificationPassportNumber,
-      nationalityId,
     };
 
     for (let [key, value] of Object.entries(feildObject)) {
@@ -233,51 +305,18 @@ const ApplicationForm = (props: any) => {
         feildObject[key] === 0
       ) {
         isValid = false;
-
-        setValue(key, null, {
+        const lead = `lead.${key}`;
+        setValue(lead, null, {
           shouldTouch: true,
           shouldDirty: true,
           shouldValidate: true,
         });
-        trigger(key);
-      } else {
-        isValid = true;
+        trigger(key, { shouldFocus: true });
       }
     }
     return isValid;
   };
-  const updateUser = (
-    studentId: string,
-    request: any,
-    isDrafSave: boolean | undefined
-  ) => {
-    AuthApi.put(`${CommonApi.GETUSERDETAIL}/${studentId}`, request)
-      .then(({ data }) => {
-        setShowDraftSaveToast({
-          success: true,
-          message: "Data has been successfully saved.",
-          show: true,
-        });
-        if (!isDrafSave) {
-          setSubmitted(true);
-          setActiveStep(activeStep + 1);
-        }
-        if (activeStep === MagicNumbers.TWO) {
-          setActiveStep(2);
-          setDocumentUploadDone(true);
-          setPaymentDone(true);
-          uploadStudentDocs();
-        }
-      })
-      .catch((err) => {
-        setShowDraftSaveToast({
-          success: false,
-          message: err?.message,
-          show: true,
-        });
-        console.log(err);
-      });
-  };
+
   const uploadFiles = (fileUrl: string, file: File) => {
     return uploadDocuments(fileUrl, file)
       .then((res) => {
@@ -290,23 +329,50 @@ const ApplicationForm = (props: any) => {
         console.log(err.message);
       });
   };
-  const uploadStudentDocs = () => {
-    const { uploadedDocs = [] as File[] } = allFields;
+  const uploadStudentDocs = async () => {
+    const {
+      document: { uploadedDocs = [] as File[] },
+    } = allFields;
     let count = 0;
-    uploadedDocs.forEach((file: File) => {
-      getUploadDocumentUrl(file).then((res) => {
-        if (res.status === 200) {
-          count = count + 1;
-          uploadFiles(res, file);
-        } else {
-          showToast(false, res.response.data.message);
-          console.log(res.response.data.messag);
+    const successLength: any[] = [];
+    const filteredDocs = uploadedDocs.filter(
+      (doc) => doc.typeCode !== "PAYMENTPROOF"
+    );
+    await Promise.all(
+      filteredDocs.map((file: File & { typeCode: string }) => {
+        const payload = {
+          documentTypeCode: file?.typeCode || "other",
+          fileName: file.name,
+          fileType: file.type,
+          amount: +allFields?.education?.studyModeDetail?.fee || 0,
+          paymentModeCode: "OFFLINE",
+        };
+        return getUploadDocumentUrl(payload).then((res) => {
+          if (res.statusCode === 201) {
+            count = count + 1;
+            successLength.push("true");
+            uploadFiles(res?.data, file);
+          } else {
+            showToast(false, res.message);
+            console.log(res.message);
+          }
+        });
+      })
+    )
+      .then(() => {
+        if (count === successLength.length) {
+          showToast(true, "Docuuments Successfully Uploaded");
+          setSubmitted(false);
+          setActiveStep(2);
+          setPaymentDone(true);
+          setTimeout(() => {
+            router.push(RoutePaths.Document_Success);
+          }, 2000);
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    });
-    if (count === uploadedDocs.length) {
-      router.push(RoutePaths.Payment_Success);
-    }
   };
   const showToast = (success: boolean, message: string) => {
     setShowDraftSaveToast({
@@ -316,48 +382,18 @@ const ApplicationForm = (props: any) => {
     });
   };
 
-  const createUser = (request: any) => {
-    AuthApi.post(CommonApi.SAVEUSER, {
-      ...request,
-    })
-      .then(({ data }) => {
-        sessionStorage.setItem(
-          "studentId",
-          JSON.stringify({
-            id: data?.data?.leadData?.id,
-            leadCode: data?.data?.leadData?.leadCode,
-          })
-        );
-        sessionStorage.setItem("leadData", JSON.stringify(data?.data));
-        setShowDraftSaveToast({
-          success: true,
-          message: data?.message,
-          show: true,
-        });
-      })
-      .catch((err) => {
-        console.log({ err });
-        setShowDraftSaveToast({
-          success: false,
-          message: err?.message,
-          show: true,
-        });
-      });
-  };
   const onSubmit = (data: any, isDrafSave?: boolean) => {
     submitFormData(data, isDrafSave);
   };
-  const onError = (data: any) => {
-    console.log({ errors });
-  };
+
   const getMasterData = () => {
     AuthApi.get(CommonApi.GETMASTERDATA)
       .then(({ data }: any) => {
         setMasterData({ ...masterData, ...data?.data });
-        getIntrestedQualificationPrograms();
+        getIntrestedQualificationPrograms(AcadmicApi, setMasterData);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -365,35 +401,64 @@ const ApplicationForm = (props: any) => {
     const isAuthenticate = JSON.parse(
       sessionStorage?.getItem("authenticate") as any
     );
-    const studentId = JSON.parse(
-      sessionStorage?.getItem("studentId") as any
-    )?.leadCode;
-    const studentMobile =
-      sessionStorage && JSON.parse(sessionStorage?.getItem("studentId") as any);
-    if (studentId) {
-      AuthApi.get(`${CommonApi.GETUSERDETAIL}/${studentId}`)
-        .then(({ data: response }) => {
-          setStudentData(response?.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    if (!isAuthenticate?.includes("true") || !isAuthenticate) {
+      router.push("/");
+      return;
+    }
+    const leadDetail = JSON.parse(
+      sessionStorage?.getItem("activeLeadDetail") as any
+    );
+    const routeTo: string = sessionStorage.getItem("routeTo")! || "";
+    setLeadId(leadDetail?.applicationCode);
+    if (leadDetail && leadDetail.applicationCode) {
+      getUserDetailHelper(
+        leadDetail,
+        transformFormData,
+        mapFormDefaultValue,
+        routeTo,
+        setActiveStep,
+        setSubmitted,
+        setPaymentDone,
+        routeIfStepDone,
+        setValue,
+        AuthApi
+      );
     }
   };
 
-  const getIntrestedQualificationPrograms = () => {
-    AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
-      .then(({ data }: any) => {
-        setMasterData((prevState: any) => ({
-          ...prevState,
-          programs: data.data as IOption[],
-        }));
+  const onManagementStudentSubmit = () => {
+    const applicationCode = JSON.parse(
+      sessionStorage.getItem("activeLeadDetail")!
+    )?.applicationCode;
+    const programFee = isApplicationEnrolled
+      ? allFields?.payment?.selectedFeeModeFee!
+      : allFields?.education?.applicationFees || "0";
+    const normalDiscountAmount = allFields?.payment?.discountAmount;
+    const discountAmount = allFields?.payment?.conversionRate
+      ? Number(normalDiscountAmount) * (allFields?.payment?.conversionRate || 0)
+      : normalDiscountAmount;
+    const payload = {
+      discountCode: allFields?.payment?.managementDiscountCode,
+      amount: +programFee,
+      phone: allFields?.lead?.mobileNumber,
+      email: allFields?.lead?.email,
+      discountAmount: String(discountAmount),
+    };
+    AuthApi.post(`application/${applicationCode}/payment/management`, {
+      ...payload,
+    })
+      .then(({ data }) => {
+        router.push(RoutePaths.APPLICATION_ENROLLED_SUCCESS);
+        setActiveStep(0);
+        setPaymentDone(true);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
   };
-
   const language = masterData?.languageData as IOption[];
   const nationalities = masterData?.nationalityData as IOption[];
+  const relationData = masterData?.relationData as IOption[];
   const highestQualifications =
     masterData?.highestQualificationData as IOption[];
   const programs = masterData?.programs as IOption[];
@@ -402,197 +467,313 @@ const ApplicationForm = (props: any) => {
   const sponsorModes = masterData?.sponsorModeData as IOption[];
   const studyModes = masterData?.studyModeData as IOption[];
   const genders = masterData?.genderData as IOption[];
-  const employmentStatus = masterData?.employmentStatusData as IOption[];
+  const employmentStatus = masterData?.employmentStatusData?.filter(
+    (item) => item?.name?.toLowerCase() !== "unemployed"
+  ) as IOption[];
   const employmentIndustries = masterData?.employmentIndustryData as IOption[];
   const countryData = masterData?.countryData as IOption[];
   const agentData = masterData?.agentData as IOption[];
+  const documentType = masterData?.documentTypeData as IOption[];
+  const studyTypeData = masterData?.studentTypeData as IOption[];
+  const isManagementStudentType =
+    allFields?.education?.studentTypeCode?.toLowerCase() ===
+    CommonEnums.MANAGEMENT;
 
   const onSkipForNowOnPayment = () => {};
   const onSkipForNowOnDocument = () => {
     setActiveStep(0);
   };
   const { message, success, show } = showDraftSavedToast;
+  const today = new Date();
+  const year = today.getFullYear();
+
+  const isValidForm = () => {
+    if (activeStep === 0) {
+      return (
+        activeStep === MagicNumbers.ZERO &&
+        !isValid &&
+        !isValidLeadEmail(allFields?.lead?.email)
+      );
+    } else {
+      return (
+        activeStep === MagicNumbers.TWO &&
+        !isValid &&
+        !isValidLeadEmail(allFields?.lead?.email)
+      );
+    }
+  };
 
   return (
-    <MainContainer>
-      <Header />
-      <StepperContainer>
-        <StepperComponent
-          isFormSubmitted={isFormSubmitted}
-          isPaymentDone={isPaymentDone}
-          active={activeStep}
-        />
-      </StepperContainer>
-      <>
-        <FormProvider {...methods}>
-          <FormContainer>
-            {" "}
-            {activeStep === MagicNumbers.ZERO && (
-              <>
-                <div className="row w-100">
-                  <form onSubmit={(data) => onSubmit(data)}>
-                    <PersonalInfoForm
-                      genders={genders}
-                      nationalities={nationalities}
-                      homeLanguage={language}
-                      race={race}
-                    />
-                    <AddressForm countryData={countryData} />
-                    <EducationForm
-                      highestQualifications={highestQualifications}
-                      programs={programs}
-                      socialMedias={socialMedias}
-                      agentArr={agentData}
-                    />
-                    <KinDetailsForm />
-                    <EmployedForm
-                      employmentStatusArr={employmentStatus}
-                      employerArr={[]}
-                      employmentIndustries={employmentIndustries}
-                    />
-                    <SponsoredForm sponsorModeArr={sponsorModes} />
-                  </form>
-                </div>
-              </>
-            )}
-          </FormContainer>
-          <FormContainer>
-            {activeStep === MagicNumbers.ONE && (
-              <>
-                <Payment
-                  qualifications={highestQualifications}
-                  studyMode={studyModes}
-                  navigateNext={navigateNext}
-                  onSkipForNowOnPayment={onSkipForNowOnPayment}
-                  showToast={showToast}
-                />
-              </>
-            )}
-            {activeStep === MagicNumbers.TWO && (
-              <>
-                <DocumentUploadForm
-                  allFields={allFields}
-                  isValidDocument={isValidDocument}
-                />
-              </>
-            )}
-          </FormContainer>
-        </FormProvider>
-        <FooterConatiner className="container-fluid d-flex justify-content-center mt-1">
-          <div className="row">
-            <div className="col-md-12">
-              <>
+    <>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <MainContainer>
+          <Header />
+          <StepperContainer>
+            <StepperComponent
+              isFormSubmitted={isFormSubmitted}
+              isPaymentDone={isPaymentDone}
+              active={activeStep}
+            />
+          </StepperContainer>
+          <>
+            <FormProvider {...methods}>
+              <FormContainer>
+                {" "}
                 {activeStep === MagicNumbers.ZERO && (
-                  <div className="form-check text-center">
-                    <input
-                      className="form-check-input me-2"
-                      type="checkbox"
-                      checked={allFields?.isAgreedTermsAndConditions}
-                      id="flexCheckDefault"
-                      {...register("isAgreedTermsAndConditions", {
-                        required: true,
-                      })}
-                    />
-                    <label className="form-check-label">
-                      <strong className="me-1">I have read and agreed</strong>
-                      <a style={{ color: Green }} href="#">
-                        terms and condition?
-                      </a>
-                    </label>
-                  </div>
+                  <>
+                    <div className="application-form">
+                      <div className="row">
+                        <form onSubmit={(data) => onSubmit(data, false)}>
+                          <PersonalInfoForm
+                            key="personalForm"
+                            genders={genders}
+                            nationalities={nationalities}
+                            homeLanguage={language}
+                            race={race}
+                          />
+                          <AddressForm
+                            key="AddressForm"
+                            leadId={leadId}
+                            countryData={countryData}
+                          />
+                          <EducationForm
+                            key="EducationForm"
+                            highestQualifications={highestQualifications}
+                            programs={programs}
+                            socialMedias={socialMedias}
+                            agentArr={agentData}
+                            studyTypeData={studyTypeData}
+                            isApplicationEnrolled={isApplicationEnrolled}
+                            leadId={leadId}
+                          />
+                          <SponsoredForm
+                            leadId={leadId}
+                            key="SponsoredForm"
+                            sponsorModeArr={sponsorModes}
+                            relationData={relationData}
+                            countryData={countryData}
+                          />
+                          <EmployedForm
+                            leadId={leadId}
+                            key="EmployedForm"
+                            employmentStatusArr={employmentStatus}
+                            employmentIndustries={employmentIndustries}
+                            countryData={countryData}
+                          />
+                          <KinDetailsForm
+                            relationData={relationData}
+                            leadId={leadId}
+                            key="KinDetailsForm"
+                          />
+                        </form>
+                      </div>
+                    </div>
+                  </>
                 )}
+              </FormContainer>
+              <FormContainer>
+                {activeStep === MagicNumbers.ONE && (
+                  <>
+                    <Payment
+                      programs={programs}
+                      studyMode={studyModes}
+                      navigateNext={navigateNext}
+                      onSkipForNowOnPayment={onSkipForNowOnPayment}
+                      showToast={showToast}
+                      isManagementStudentType={isManagementStudentType}
+                      isApplicationEnrolled={isApplicationEnrolled}
+                    />
+                  </>
+                )}
+                {activeStep === MagicNumbers.TWO && (
+                  <>
+                    <DocumentUploadForm
+                      allFields={allFields}
+                      isValidDocument={isValidDocument}
+                      documentType={documentType}
+                      leadId={leadId}
+                      isApplicationEnrolled={isApplicationEnrolled}
+                    />
+                  </>
+                )}
+              </FormContainer>
+            </FormProvider>
+            <FooterConatiner className="container-fluid d-flex justify-content-center mt-1">
+              <div className="row">
+                <div className="col-md-12">
+                  <>
+                    {activeStep === MagicNumbers.ZERO && (
+                      <div className="form-check text-center">
+                        <input
+                          className="form-check-input me-2"
+                          type="checkbox"
+                          checked={allFields?.isAgreedTermsAndConditions}
+                          id="flexCheckDefault"
+                          {...register("isAgreedTermsAndConditions", {
+                            required: true,
+                          })}
+                        />
+                        <label className="form-check-label">
+                          <strong className="me-1">
+                            I have read and agreed
+                          </strong>
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: Green }}
+                            href="https://www.regenesys.net/terms-and-conditions/"
+                          >
+                            {" "}
+                            terms and condition?
+                          </a>
+                        </label>
+                      </div>
+                    )}
 
-                {(activeStep === MagicNumbers.ZERO ||
-                  activeStep === MagicNumbers.TWO) && (
-                  <div className="mt-4 text-center">
-                    <>
-                      {activeStep == 2 && (
+                    {(activeStep === MagicNumbers.ZERO ||
+                      activeStep === MagicNumbers.TWO) && (
+                      <div className="mt-4 text-center">
+                        {!isApplicationEnrolled && (
+                          <>
+                            <>
+                              {activeStep == 2 && (
+                                <StyledButton
+                                  onClick={onSkipForNowOnDocument}
+                                  type="button"
+                                  className="me-2 mb-1"
+                                  isGreenWhiteCombination={true}
+                                  title={"Skip for Now"}
+                                />
+                              )}
+                            </>
+                            {activeStep !== 2 && (
+                              <StyledButton
+                                onClick={() => onSubmit(getValues(), true)}
+                                type="button"
+                                disabled={!isDirty}
+                                isGreenWhiteCombination={true}
+                                title={"Save as Draft"}
+                              />
+                            )}
+                            &nbsp;&nbsp;&nbsp;
+                            <StyledButton
+                              onClick={() => {
+                                activeStep === 2
+                                  ? (submitFormData(allFields, false) as any)
+                                  : methods.handleSubmit(
+                                      (data) => onSubmit(data, false) as any
+                                    )();
+                              }}
+                              disabled={isValidForm()}
+                              title={activeStep < 2 ? "Save & Next" : "Submit"}
+                            />
+                          </>
+                        )}
+                        {isApplicationEnrolled && (
+                          <>
+                            <StyledButton
+                              onClick={() => {
+                                router.push(RoutePaths.Dashboard);
+                              }}
+                              isGreenWhiteCombination
+                              title={"Back to Dashboard"}
+                              className="me-3"
+                            />
+                            <StyledButton
+                              onClick={() => {
+                                methods.handleSubmit(
+                                  (data) => onSubmit(data, false) as any
+                                )();
+                              }}
+                              disabled={!isValid}
+                              title={"Save"}
+                            />
+                          </>
+                        )}
+                        <StyleFooter>
+                          <span
+                            className="footer-text"
+                            style={{ color: "#131718" }}
+                          >
+                            Copyright @ 2015 - {year}{" "}
+                            <a href="https://www.regenesys.net/">
+                              Regenesys Business School
+                            </a>
+                          </span>
+                        </StyleFooter>
+                      </div>
+                    )}
+                  </>
+                  {activeStep === MagicNumbers.ONE && (
+                    <div className="mt-5 text-center">
+                      <StyledButton
+                        className="me-2"
+                        onClick={navigateBack}
+                        type="button"
+                        isGreenWhiteCombination={true}
+                        title={"Back"}
+                      />
+                      {isManagementStudentType && (
                         <StyledButton
-                          onClick={onSkipForNowOnDocument}
-                          type="button"
-                          className="me-2 mb-1"
-                          isGreenWhiteCombination={true}
-                          title={"Skip for Now"}
+                          onClick={() => {
+                            onManagementStudentSubmit();
+                          }}
+                          disabled={
+                            !allFields?.payment?.discountAmount ||
+                            Number(allFields?.payment?.discountAmount) === 0
+                          }
+                          title={"Submit"}
                         />
                       )}
-                    </>
-                    <StyledButton
-                      onClick={() => onSubmit(getValues(), true)}
-                      type="button"
-                      disabled={
-                        (!isDirty && !isValidDocument) || !isValidDocument
-                      }
-                      isGreenWhiteCombination={true}
-                      title={"Save as Draft"}
-                    />
-                    &nbsp;&nbsp;&nbsp;
-                    <StyledButton
-                      onClick={methods.handleSubmit(onSubmit as any, onError)}
-                      disabled={!isValid && !isValidDocument}
-                      title={activeStep < 2 ? "Save & Next" : "Submit"}
-                    />
-                    <StyleFooter>
-                      <span style={{ color: "#131718" }}>
-                        Copyright @ 2015 - 2022{" "}
-                        <a href="https://www.regenesys.net/">
-                          Regenesys Business School
-                        </a>
-                      </span>
-                    </StyleFooter>
-                  </div>
-                )}
-              </>
-              {activeStep === MagicNumbers.ONE && (
-                <div className="mt-5 text-center">
-                  <StyledButton
-                    onClick={navigateBack}
-                    type="button"
-                    disabled={!isDirty}
-                    isGreenWhiteCombination={true}
-                    title={"Back"}
-                  />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-        </FooterConatiner>
-      </>
-      {show && (
-        <Snackbar
-          autoHideDuration={1000}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          open={show}
-          onClose={() => {
-            setShowDraftSaveToast(!showDraftSavedToast);
-          }}
-          key={"bottom"}
-        >
-          <ToasterContainer success={success}>
-            <CheckCircleRoundedIcon
-              style={{ color: "#0eb276", fontSize: "30px" }}
-            />
-            <SuccessMsgContainer>
-              <StyledLink>
-                {success ? "Success" : "Error"}
-                <br />
-                <span
-                  style={{
-                    color: "black",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                  }}
-                >
-                  {message}
-                </span>
-              </StyledLink>
-            </SuccessMsgContainer>
-          </ToasterContainer>
-        </Snackbar>
+              </div>
+            </FooterConatiner>
+          </>
+          {show && (
+            <Snackbar
+              autoHideDuration={1000}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              open={show}
+              onClose={() => {
+                setShowDraftSaveToast((prevState) => ({
+                  ...prevState,
+                  show: !show,
+                }));
+              }}
+              key={"bottom"}
+            >
+              <ToasterContainer success={success}>
+                <CheckCircleRoundedIcon
+                  style={{ color: "#0eb276", fontSize: "30px" }}
+                />
+                <SuccessMsgContainer>
+                  <StyledLink>
+                    {success ? "Success" : "Error"}
+                    <br />
+                    <span
+                      style={{
+                        color: "black",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {message}
+                    </span>
+                  </StyledLink>
+                </SuccessMsgContainer>
+              </ToasterContainer>
+            </Snackbar>
+          )}
+        </MainContainer>
       )}
-    </MainContainer>
+    </>
   );
 };
 
@@ -609,13 +790,11 @@ export const MainContainer = styled.div`
 `;
 const FooterConatiner = styled.div`
   width: 100%;
-  height: 310px;
+  min-height: 200px;
   margin-bottom: 4rem;
   .form-check-input:checked {
     background-color: ${Green};
     border-color: #0d6efd;
-  }
-  .form-check-input:checked[type="checkbox"] {
   }
   @media screen and (min-width: 600px) and (max-width: 950px) {
     width: 100%;

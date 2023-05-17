@@ -1,11 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, SyntheticEvent } from "react";
 import { MainContainer, PaymentContainer } from "../payment/payment";
 import { useFormContext } from "react-hook-form";
 import DoneIcon from "@material-ui/icons/Done";
 import styled from "styled-components";
-import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
+import { Green, GreenFormHeading } from "../common/common";
 import StyledButton from "../button/button";
 import {
+  formOptions,
   isInvalidFileType,
   uniqueArrayOfObject,
 } from "../../Util/Util";
@@ -15,65 +16,103 @@ import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
 import ViewIcon from "../../../public/assets/images/view-svgrepo-com.svg";
 import TrashIcon from "../../../public/assets/images/trash-svgrepo-com.svg";
 import FileUpload from "../../../public/assets/images/file-upload-svgrepo-com.svg";
+import { IOption } from "../common/types";
 
 interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
+  isApplicationEnrolled: boolean;
+  isLoading?: boolean;
+  documentType: IOption[];
+  leadId: string;
 }
 const imgUrl = "/assets/images";
 
 const DocumentUploadForm = ({
   allFields,
   isValidDocument,
+  documentType,
+  leadId,
+  isApplicationEnrolled,
 }: IDocumentUploadProps) => {
   const fileUploadRef = useRef<any>(null);
-
   const { register, setValue } = useFormContext();
-
-  const [uploadDocs, setUploadDocs] = useState<(File & { error: boolean })[]>(
-    []
-  );
-
+  const [uploadDocs, setUploadDocs] = useState<
+    (File & { error: boolean; typeCode: string })[]
+  >([]);
+  const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
+  const documentTypeList = !isApplicationEnrolled
+    ? [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
+        (doc) => doc.code !== "BURSARYLETTER"
+      )
+    : [...(documentType || [])]?.filter((doc) => doc.code === "BURSARYLETTER");
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
-    const allUploadedFiles = uniqueArrayOfObject(
-      [...uploadDocs, existingPaymentProof],
-      "size"
-    );
-    setValue("document.uploadedDocs", allUploadedFiles);
-    setUploadDocs(allUploadedFiles);
-  }, []);
+    if (existingPaymentProof && existingPaymentProof.length > 0) {
+      existingPaymentProof?.forEach((element) => {
+        element.typeCode = "PAYMENTPROOF";
+      });
+
+      const allUploadedFiles = uniqueArrayOfObject(
+        [...uploadDocs, ...existingPaymentProof],
+        "size"
+      );
+      setValue("document.uploadedDocs", allUploadedFiles, formOptions);
+      setUploadDocs(allUploadedFiles);
+    }
+  }, [leadId]);
 
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement?.click() as any;
   };
-
   const deleteDocs = (index: number) => {
     const remainingDocs = [...uploadDocs.filter((item, idx) => idx !== index)];
-    setValue("document.uploadedDocs", remainingDocs);
+    setValue("document.uploadedDocs", remainingDocs, formOptions);
     setUploadDocs(remainingDocs);
+    allFields.document.uploadedDocs = remainingDocs;
   };
 
   const uploadDocuments = (files: any) => {
     const uploadedFiles = files;
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
+      if (!item?.typeCode && isApplicationEnrolled) {
+        item.typeCode = "BURSARYLETTER";
+      }
+      if (!item?.typeCode && !isApplicationEnrolled) {
+        item.typeCode = "other";
+      }
     });
     setUploadDocs(uploadedFiles as any);
     setValue("document.uploadedDocs", uploadedFiles);
   };
- 
-  const showPdf = (item: File) => {
+
+  const showPdf = (e: SyntheticEvent, item: File) => {
+    e.preventDefault();
     const file = new Blob([item], {
       type: item?.type.includes("pdf") ? "application/pdf" : "image/jpeg",
     });
     const fileURL = URL.createObjectURL(file);
     window.open(fileURL);
   };
+
+  const imageType = (type: string) => {
+    let data = "png-svgrepo-com.svg";
+    if (type?.toLowerCase().includes("pdf")) {
+      data = "pdf-svgrepo-com.svg";
+    }
+    return data;
+  };
+  const onFileTypeSelect = (value: string, index: number) => {
+    const allFiles: any = [...uploadDocs];
+    allFiles[index].typeCode = value;
+    setValue("document.uploadedDocs", allFiles, formOptions);
+  };
+
   return (
     <>
-      <div className="row w-100">
+      <div className="row document-container">
         <div className="col-12 col-md-12 mb-3">
           <MainContainer>
             {" "}
@@ -91,7 +130,7 @@ const DocumentUploadForm = ({
                 <div className="col-md-5">
                   <CustomContainer>
                     <StyledUploadDocumentContainer ref={fileUploadRef}>
-                      <div className="mt-1">
+                      <div className="mt-1 upload-icon">
                         <Image width="100" src={UploadImg} alt="uplopad-svg" />
                       </div>
                       <input
@@ -99,7 +138,7 @@ const DocumentUploadForm = ({
                         accept="image/jpeg, application/pdf"
                         type="file"
                         {...(register("document.uploadedDocs", {
-                          required: true,
+                          required: isDocumentRequired,
                         }) as any)}
                         onChange={(e) => {
                           if (e?.target) {
@@ -108,10 +147,10 @@ const DocumentUploadForm = ({
                           }
                         }}
                       />
-                      <GreenFormHeading className=" mt-1 fs-3 text">
-                        Drag and Drop files to upload
+                      <GreenFormHeading className="mt-1 text">
+                        Drag and drop, or browse your files
                       </GreenFormHeading>
-                      <strong className="mt-1 fs-4">or</strong>
+                      <strong className="mt-1 fs-6">or</strong>
                       <div>
                         <StyledButton
                           className="mt-2"
@@ -119,8 +158,11 @@ const DocumentUploadForm = ({
                           roundBtn
                           onClick={onDocUploadClick}
                         />
-                        <p className="fs-5" style={{ color: `#838383` }}>
-                          Supported files, PDF, PNG, JPEG, JPG{" "}
+                        <p
+                          className="grey-text mt-2"
+                          style={{ color: `#838383` }}
+                        >
+                          Only PNG, JPEG and PDF files with max size of 2MB{" "}
                         </p>
                       </div>
                     </StyledUploadDocumentContainer>
@@ -128,77 +170,103 @@ const DocumentUploadForm = ({
                 </div>
                 <div className="col-md-7">
                   <UploadedFilesContainer>
-                    <h4 className="fw-bold">Uploaded Files</h4>
-                    <div>
-                      <ul className="list-group mt-2">
-                        {uploadDocs &&
-                          uploadDocs.length > 0 &&
-                          uploadDocs.map((item, index) => {
-                            const imgType = item?.type
-                              ?.toLowerCase()
-                              .includes("pdf")
-                              ? "pdf-svgrepo-com.svg"
-                              : "png-svgrepo-com.svg";
-                            return (
-                              <>
-                                <li
-                                  key={index}
-                                  style={{
-                                    color: item?.error ? "red" : "#212529",
-                                  }}
-                                  className=" d-flex justify-content-space-around list-group-item border-0 fw-bold p-0 mt-4"
-                                >
-                                  <div className="w-75">
-                                    {" "}
-                                    <img
-                                      className="me-2"
-                                      src={`${imgUrl}/${imgType}`}
-                                    />{" "}
-                                    {item?.name}{" "}
-                                    {item?.error && "( Invalid file format )"}
-                                  </div>
-                                  <div>
-                                    {" "}
-                                    {!item.error && (
-                                      <Link
-                                        passHref
-                                        onClick={() => showPdf(item)}
-                                        rel="noopener noreferrer"
-                                        target="_blank"
-                                        href={""}
-                                      >
-                                        <Image
-                                          className="me-2 ms-2 "
-                                          src={ViewIcon}
-                                          alt={"ViewIcon"}
-                                          width="25"
-                                        />
-                                      </Link>
-                                    )}
-                                    <span
-                                      onClick={() => deleteDocs(index)}
-                                      className="cursor-pointer"
+                    <h5 className="fw-bold mb-3 font-roboto">Uploaded Files</h5>
+
+                    <table className="table table-striped doc-table">
+                      <thead>
+                        <tr>
+                          <th scope="col">File Name</th>
+                          <th scope="col">File Type</th>
+                          <th scope="col" className="text-center">
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {uploadDocs?.map((item, index) => (
+                          <tr>
+                            <td>
+                              <div className="w-75">
+                                <img
+                                  className="me-2"
+                                  src={`${imgUrl}/${imageType(item?.type)}`}
+                                />
+                                {item?.name}{" "}
+                                {item?.error && (
+                                  <span style={{ color: "red" }}>
+                                    ( Invalid file format )
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td
+                            // className={
+                            //   item?.typeCode === "PAYMENTPROOF"
+                            //     ? "disabled"
+                            //     : ""
+                            // }
+                            >
+                              {" "}
+                              <select
+                                className="form-select"
+                                onChange={(e) =>
+                                  e?.target?.value &&
+                                  onFileTypeSelect(e?.target?.value, index)
+                                }
+                              >
+                                <option value={""}>Select Document Type</option>
+                                {documentTypeList?.map((item) => (
+                                  <>
+                                    <option
+                                      selected={
+                                        item?.code ===
+                                        uploadDocs[index]?.typeCode
+                                      }
+                                      key={item.code}
+                                      value={item?.code}
                                     >
-                                      <Image
-                                        className="me-2 ms-2 "
-                                        src={TrashIcon}
-                                        alt={"TrashIcon"}
-                                        width="25"
-                                      />
-                                    </span>
-                                  </div>
-                                </li>
-                              </>
-                            );
-                          })}
-                      </ul>
-                    </div>
+                                      {item?.name}
+                                    </option>
+                                  </>
+                                ))}
+                              </select>
+                            </td>
+                            <td className="text-center">
+                              <div>
+                                {!item.error && (
+                                  <Link
+                                    passHref
+                                    onClick={(e) => showPdf(e, item)}
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                    href={""}
+                                  >
+                                    <Image
+                                      className="me-2 ms-2 "
+                                      src={ViewIcon}
+                                      alt={"ViewIcon"}
+                                      width="25"
+                                    />
+                                  </Link>
+                                )}
+                                <span
+                                  onClick={() => deleteDocs(index)}
+                                  className={"cursor-pointer"}
+                                >
+                                  <Image
+                                    className="me-2 ms-2"
+                                    src={TrashIcon}
+                                    alt={"TrashIcon"}
+                                    width="20"
+                                  />
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </UploadedFilesContainer>
-                  {!isValidDocument && (
-                    <h3 style={{ color: "red" }} className="fs-4  mt-5">
-                      Please remove invalid files
-                    </h3>
-                  )}
                 </div>
               </div>
             </PaymentContainer>
@@ -277,9 +345,9 @@ const StyledUploadDocumentContainer = styled.div`
 `;
 const CustomContainer = styled.div`
   padding: 1.5rem;
-  max-width: 400px;
+  max-width: 350px;
   cursor: pointer;
-  background-color: ${DefaultGrey};
+  background-color: #f5f5f5;
   width: 100%;
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='green' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
 `;

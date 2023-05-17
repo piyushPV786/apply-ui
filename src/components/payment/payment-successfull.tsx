@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import StyledButton from "../button/button";
 import { Green, GreenFormHeading } from "../common/common";
 import { MainContainer, PaymentContainer } from "./payment";
@@ -9,15 +9,27 @@ import WarningIcon from "../../../public/assets/images/warning-svgrepo-com.png";
 import PayIcon from "../../../public/assets/images/pay.png";
 import Image from "next/image";
 import { RoutePaths } from "../common/constant";
+import { DocumentSuccess } from "../document/DocumentUploadSuccess";
 
 const PaymentSuccessFull = (props: any) => {
   const router = useRouter();
+
   const onTryAgain = () => {
-    router.push({
-      pathname: RoutePaths.Application_Form,
-      query: { isFormSubmittedAlready: true, isPaymentFail: true },
-    });
+    const isdraftSave = false;
+    const isPaymentPending = true;
+    const leadDetails = JSON.parse(sessionStorage.getItem("activeLeadDetail")!);
+    const leadDetail = {
+      applicationCode: leadDetails?.applicationCode,
+      leadCode: leadDetails?.leadCode,
+      isPaymentPending,
+      isdraftSave,
+      educationDetail: leadDetails?.educationDetail,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    sessionStorage.setItem("routeTo", "payment");
+    router.push(RoutePaths.Application_Form);
   };
+
   const OnlinePaymentSuccess = () => {
     return (
       <PaymentContainer>
@@ -35,6 +47,24 @@ const PaymentSuccessFull = (props: any) => {
                 confirmation <br />
                 email with details soon.
               </p>
+            </div>
+          </div>
+        </div>
+      </PaymentContainer>
+    );
+  };
+  const ApplicationEnrolledSuccess = () => {
+    return (
+      <PaymentContainer>
+        <div className="row">
+          <div className="col-sm-12">
+            <div className="text-center mb-2">
+              <Image width="190" height="170" src={PayIcon} alt="payIcon" />
+            </div>
+            <div className="text-center w-100">
+              <GreenFormHeading style={{ fontSize: "24px" }}>
+                Application enrolled Sucessfully
+              </GreenFormHeading>
             </div>
           </div>
         </div>
@@ -77,6 +107,22 @@ const PaymentSuccessFull = (props: any) => {
       </>
     );
   };
+  const onUploadDocument = () => {
+    const isdraftSave = false;
+    const isPaymentPending = false;
+    const isDocumentPending = true;
+    const leadDetails = JSON.parse(sessionStorage.getItem("activeLeadDetail")!);
+    const leadDetail = {
+      applicationCode: leadDetails?.applicationCode,
+      leadCode: leadDetails?.leadCode,
+      isPaymentPending,
+      isdraftSave,
+      isDocumentPending,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    sessionStorage.setItem("routeTo", "Document");
+    router.push(RoutePaths.Application_Form);
+  };
   const DocumentUploadSuccess = () => {
     return (
       <>
@@ -106,11 +152,15 @@ const PaymentSuccessFull = (props: any) => {
               type="button"
               isGreenWhiteCombination={true}
               title={"Skip for Now"}
-              onClick={props?.onSkipForNowOnPayment}
+              onClick={() => {
+                localStorage.setItem("leadData", "");
+                sessionStorage.setItem("activeLeadDetail", "");
+                router.push(RoutePaths.Dashboard);
+              }}
             />
             &nbsp;&nbsp;&nbsp;
             <StyledButton
-              onClick={props?.submitPaymentDocs}
+              onClick={onUploadDocument}
               title={"Upload Document"}
             />
           </>
@@ -153,15 +203,42 @@ const PaymentSuccessFull = (props: any) => {
       </div>
     );
   };
+
   return (
-    <ParentContainer>
+    <ParentContainer className="text-center">
       <Header />
       <div className="container-fluid w-75 mt-5">
         <MainContainer style={{ paddingBottom: "1rem" }}>
           {props?.pageType === "failure" && <OnlinePaymentFailed />}
           {props?.pageType === "success" && <OnlinePaymentSuccess />}
           {props?.pageType === "document-success" && <DocumentUploadSuccess />}
+          {props?.pageType === "document-upload-success" && <DocumentSuccess />}
           {props?.pageType === "document-failure" && <DocumentUploadFailed />}
+          {props?.pageType === "application-enrolled-success" && (
+            <ApplicationEnrolledSuccess />
+          )}
+          {(props?.pageType === "success" ||
+            props?.pageType === "application-enrolled-success" ||
+            props?.pageType === "document-upload-success") && (
+            <div>
+              <StyledButton
+                onClick={() => {
+                  localStorage.setItem("leadData", "");
+                  sessionStorage.setItem("activeLeadDetail", "");
+                  router.push(RoutePaths.Dashboard);
+                }}
+                title="Back to Dashboard"
+                isGreenWhiteCombination
+                className="me-2"
+              />
+              {props?.pageType !== "document-upload-success" && (
+                <StyledButton
+                  onClick={() => onUploadDocument()}
+                  title="Upload Documents"
+                />
+              )}
+            </div>
+          )}
         </MainContainer>
       </div>
     </ParentContainer>
