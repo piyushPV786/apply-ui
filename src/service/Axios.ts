@@ -30,10 +30,8 @@ const useAxiosInterceptor = () => {
     ) {
       setLoading(true);
     }
-    let tokensData = JSON.parse(localStorage.getItem("tokens"));
-    config.headers.common[
-      "Authorization"
-    ] = `bearer ${tokensData.access_token}`;
+    const tokensData = localStorage.getItem("access_token");
+    config.headers.common["Authorization"] = `bearer ${tokensData}`;
     return config;
   };
 
@@ -52,10 +50,11 @@ const useAxiosInterceptor = () => {
     // Handle error
 
     if (error.response.status === 401) {
-      const authData = JSON.parse(localStorage.getItem("tokens"));
+      const tokensData = localStorage.getItem("access_token");
+      const refreshToken = localStorage.getItem("refresh_token");
       const payload = {
-        access_token: authData.access_token,
-        refresh_token: authData.refreshToken,
+        access_token: tokensData,
+        refresh_token: refreshToken,
       };
 
       let apiResponse = await baseAuth.post("/refresh-token", {
