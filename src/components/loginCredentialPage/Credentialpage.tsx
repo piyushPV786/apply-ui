@@ -11,7 +11,7 @@ import { RoutePaths } from "../common/constant";
 
 export const LoginCredentials = (props: any) => {
   const router = useRouter();
-  const url: any = process.env.Credential_Url;
+  const url: any = process.env.Credential_Url + RoutePaths.StudentDashboard;
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
@@ -43,7 +43,7 @@ export const LoginCredentials = (props: any) => {
                 <div className="text-center w-100">
                   <h6>Student Management System URL (SMS)</h6>
                   <Link href={url} target="blank">
-                    {process.env.Credential_Url}
+                    {process.env.Credential_Url + RoutePaths.StudentDashboard}
                   </Link>
                 </div>
               </div>
