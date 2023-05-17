@@ -11,7 +11,7 @@ import { RoutePaths } from "../common/constant";
 
 export const LoginCredentials = (props: any) => {
   const router = useRouter();
-  const url: string | undefined = process.env.Credential_Url;
+  const url: any = process.env.Credential_Url;
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
