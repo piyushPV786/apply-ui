@@ -57,11 +57,18 @@ const Payment = (props: any) => {
   const programFee: string = isApplicationEnrolled
     ? allFields?.payment?.selectedFeeModeFee || 0
     : allFields?.education?.applicationFees || "0";
-  const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
+  const isInvalidFiles = paymentDocs.some(
+    (file: any) => file.size < 2000000
+  ) as boolean;
+
+  const isInvalidFilesType = paymentDocs.some(
+    (file: any) => file.error
+  ) as Boolean;
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
   };
+
   const normalDiscountAmount = allFields?.payment?.discountAmount || 0;
   const discountAmount = allFields?.payment?.conversionRate
     ? Number(normalDiscountAmount) * (+allFields?.payment?.conversionRate || 0)
@@ -613,9 +620,14 @@ const Payment = (props: any) => {
                                     </span>
                                   ))}
                               </div>
-                              {paymentDocs.length > 0 && isInvalidFiles && (
+                              {paymentDocs.length > 0 && !isInvalidFiles && (
                                 <div className="invalid-feedback">
-                                  Only "PDF" or "JPEG" file can be upload.
+                                  Max file size is 2 kb
+                                </div>
+                              )}
+                              {isInvalidFilesType && (
+                                <div className="invalid-feedback">
+                                  Only PDF and JPGE File Allowed
                                 </div>
                               )}
                             </div>
