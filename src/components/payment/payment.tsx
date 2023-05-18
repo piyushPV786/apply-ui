@@ -244,7 +244,6 @@ const Payment = (props: any) => {
     : isNaN(totalAmount)
     ? +rmatFee + +convertedProgramFee
     : totalAmount;
-
   return (
     <>
       {loadng ? (
@@ -383,7 +382,7 @@ const Payment = (props: any) => {
                             {" "}
                             {isApplicationEnrolled ? (
                               <h6>
-                                Total Program Fees: {selectedCurrency} -{" "}
+                                Total Program Fees: {selectedCurrency} &nbsp;{" "}
                                 {isManagementPromoCode
                                   ? getConvertedProgramFees(
                                       conversionRate,
@@ -396,7 +395,7 @@ const Payment = (props: any) => {
                               </h6>
                             ) : (
                               <h6>
-                                Total Application {selectedCurrency} -{" "}
+                                Total Application {selectedCurrency} &nbsp;{" "}
                                 {isManagementPromoCode
                                   ? getConvertedProgramFees(
                                       conversionRate,
@@ -407,14 +406,14 @@ const Payment = (props: any) => {
                             )}
                             {!isApplicationEnrolled && (
                               <h6>
-                                RMAT Fee {selectedCurrency} -{" "}
+                                RMAT Fee {selectedCurrency} &nbsp;{" "}
                                 {isNaN(rmatFee) ? 0 : rmatFee}
                               </h6>
                             )}
                             {!isManagementPromoCode && (
                               <>
                                 <h6>
-                                  Discount {selectedCurrency} -{" "}
+                                  Discount - {selectedCurrency} &nbsp;
                                   {isNaN(discountAmount) ? 0 : discountAmount}
                                   {discountPercentage && (
                                     <span className="ms-2">
@@ -631,7 +630,8 @@ const Payment = (props: any) => {
                             disabled={
                               isInvalidFiles ||
                               paymentDocs.length === 0 ||
-                              isPaymentDocSubmit
+                              isPaymentDocSubmit ||
+                              !totalPayuAmount
                             }
                             onClick={() => submitPaymentDocs()}
                             title="Submit"
