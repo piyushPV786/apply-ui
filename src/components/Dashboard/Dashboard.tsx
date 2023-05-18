@@ -89,7 +89,9 @@ export const ApplicationDashboard = (props: any) => {
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     if (leadId) {
-      router.push(RoutePaths.Application_Form);
+      router.push(RoutePaths.Application_Form, {
+        query: `status=New-Application`,
+      });
     }
   };
 
@@ -154,7 +156,7 @@ export const ApplicationDashboard = (props: any) => {
       isDocumentPending,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
-    router.push(RoutePaths.Application_Form);
+    router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
   const onUploadBursaryDocuments = (
     applicationCode: string | number,
@@ -177,42 +179,38 @@ export const ApplicationDashboard = (props: any) => {
     router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
 
-  const onDownloadAcceptence = (
+  const onDownloadAcceptence = async (
     documentDetail: IDocument[],
     documentTypeCode:
       | CommonEnums.CONFIRMATION_LETTER
       | CommonEnums.ACCEPTANCE_LETTER
   ) => {
-    console.log({
-      documentDetail,
-      conf: documentDetail?.find(
-        (doc) => doc?.documentTypeCode === documentTypeCode
-      ),
-    });
-    const { name } = {
-      ...documentDetail?.find(
-        (doc) => doc?.documentTypeCode === documentTypeCode
-      )!,
-    };
-    if (!name) return showErrorToast(ErrorMessage);
-    getCommonUploadDocumentUrl(name).then((res) => {
-      if (res?.statusCode === 200) {
-        downloadDocument(res?.data, name);
-        setTimeout(() => {
-          setToast({
-            show: true,
-            message: `${
-              documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
-                ? "Acceptance"
-                : "Confirmation"
-            } Letter Downloaded Successfully`,
-            success: true,
-          });
-        }, 1000);
-      } else {
-        setToast({ show: true, message: res?.message, success: false });
-      }
-    });
+    const documentDetails = documentDetail?.find(
+      (doc) => doc?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
+    );
+
+    if (documentDetails) {
+      const { name = "" } = { ...documentDetails };
+      if (!name) return showErrorToast(ErrorMessage);
+      getCommonUploadDocumentUrl(name).then((res) => {
+        if (res?.statusCode === 200) {
+          downloadDocument(res?.data, name);
+          setTimeout(() => {
+            setToast({
+              show: true,
+              message: `${
+                documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
+                  ? "Acceptance"
+                  : "Confirmation"
+              } Letter Downloaded Successfully`,
+              success: true,
+            });
+          }, 1000);
+        } else {
+          setToast({ show: true, message: res?.message, success: false });
+        }
+      });
+    }
   };
 
   const onToast = () => {
@@ -553,7 +551,9 @@ function ApplicationCard({
                 <Grid item>
                   <StyledButton
                     onClick={() =>
-                      router.push("/student-registration-form/credentials")
+                      router.push("/student-registration-form/credentials", {
+                        query: `state=${status}`,
+                      })
                     }
                     className="card-button"
                     title="view login credentials"
@@ -564,7 +564,12 @@ function ApplicationCard({
                 <Grid item>
                   <StyledButton
                     onClick={() =>
-                      onUploadDocuments(applicationNumber, leadCode, true)
+                      onUploadDocuments(
+                        applicationNumber,
+                        leadCode,
+                        true,
+                        status
+                      )
                     }
                     isUploadBtn
                     className="card-button"
@@ -572,25 +577,13 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-              {/* {showDocumentUploadBtn && (
-                <Grid item>
-                  <StyledButton
-                    onClick={() =>
-                      onUploadDocuments(applicationNumber, leadCode, true)
-                    }
-                    isUploadBtn
-                    className="card-button"
-                    title="Upload Document"
-                  />
-                </Grid>
-              )} */}
               {isAcceptedApplication && (
                 <Grid item>
                   <StyledButton
                     onClick={() =>
                       onDownloadAcceptence(
                         document,
-                        CommonEnums.CONFIRMATION_LETTER
+                        CommonEnums.ACCEPTANCE_LETTER
                       )
                     }
                     isGreenWhiteCombination
