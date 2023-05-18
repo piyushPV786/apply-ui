@@ -60,10 +60,13 @@ const Payment = (props: any) => {
   const isInvalidFiles = paymentDocs.some(
     (file: any) => file.size < 2000000
   ) as any;
+
+  const isInvalidFilesType = paymentDocs.some((file: any) => file.error) as any;
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
   };
+  console.log(isInvalidFilesType);
   const normalDiscountAmount = allFields?.payment?.discountAmount || 0;
   const discountAmount = allFields?.payment?.conversionRate
     ? Number(normalDiscountAmount) * (+allFields?.payment?.conversionRate || 0)
@@ -619,6 +622,11 @@ const Payment = (props: any) => {
                               {paymentDocs.length > 0 && !isInvalidFiles && (
                                 <div className="invalid-feedback">
                                   Max file size is 2 kb
+                                </div>
+                              )}
+                              {isInvalidFilesType && (
+                                <div className="invalid-feedback">
+                                  Only PDF and JPGE File Allowed
                                 </div>
                               )}
                             </div>
