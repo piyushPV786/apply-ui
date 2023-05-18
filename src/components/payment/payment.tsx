@@ -383,7 +383,7 @@ const Payment = (props: any) => {
                       <div className="w-100 p-4 promo-card">
                         <div className="mb-4 d-flex justify-content-between flex-column">
                           <div>
-                            <h6>Subtotal ({selectedCurrency})</h6>
+                            <h6>Subtotal - ({selectedCurrency})</h6>
                           </div>
                           <div>
                             {" "}
@@ -402,7 +402,7 @@ const Payment = (props: any) => {
                               </h6>
                             ) : (
                               <h6>
-                                Total Application {selectedCurrency} &nbsp;{" "}
+                                Total Application - {selectedCurrency} &nbsp;
                                 {isManagementPromoCode
                                   ? getConvertedProgramFees(
                                       conversionRate,
@@ -413,7 +413,7 @@ const Payment = (props: any) => {
                             )}
                             {!isApplicationEnrolled && (
                               <h6>
-                                RMAT Fee {selectedCurrency} &nbsp;{" "}
+                                RMAT Fee - {selectedCurrency} &nbsp;
                                 {isNaN(rmatFee) ? 0 : rmatFee}
                               </h6>
                             )}
