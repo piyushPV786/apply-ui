@@ -7,6 +7,17 @@ import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
 import Image from "next/image";
+import { useMsal } from "@azure/msal-react";
+import { loginRequest } from "./msalConfig";
+import axios from "axios";
+import authConfig from "./auth";
+import {
+  AuthValuesType,
+  RegisterParams,
+  LoginParams,
+  ErrCallbackType,
+  UserDataType,
+} from "./types";
 import {
   ImageContainer,
   ApplicationFormContainer,
@@ -30,6 +41,27 @@ const StudentLogin = () => {
   const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
   const [isResendOtp, setResend] = useState<boolean>(false);
   const { baseAuth, loading } = useAxiosInterceptor();
+
+  const defaultProvider: AuthValuesType = {
+    user: null,
+    loading: true,
+    setUser: () => null,
+    setLoading: () => Boolean,
+    isInitialized: false,
+    login: () => Promise.resolve(),
+    logout: () => Promise.resolve(),
+    setIsInitialized: () => Boolean,
+    register: () => Promise.resolve(),
+  };
+  const [user, setUser] = useState<UserDataType | null>(defaultProvider.user);
+  const userData = {
+    id: 1,
+    role: "admin",
+    password: "admin",
+    fullName: "John Doe",
+    username: "johndoe",
+    email: "admin@materialize.com",
+  };
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
@@ -42,6 +74,7 @@ const StudentLogin = () => {
       router.push(RoutePaths.Dashboard);
     }
   }, []);
+  const { instance } = useMsal();
 
   useEffect(() => {
     let timer;
@@ -58,9 +91,40 @@ const StudentLogin = () => {
     mobileNumber.length! <= 16;
 
   const onchangeOtp = (value: string) => setOtp(value);
-  const onProceed = () => {
+  const onProceed = async (errorCallback?: ErrCallbackType) => {
+    try {
+      const response = await instance.loginPopup(loginRequest);
+      console.log("res", response);
+      const config = {
+        headers: { Authorization: `Bearer ${response.idToken}` },
+      };
+      const userResponse = await axios.get(
+        `${process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI}auth/access-token`,
+        config
+      );
+      console.log("userr", userResponse);
+      if (userResponse?.data.statusCode === 200) {
+        window.localStorage.setItem(
+          authConfig.storageTokenKeyName,
+          userResponse.data.data.access_token
+        );
+        window.localStorage.setItem(
+          authConfig.refreshToken,
+          userResponse.data.data.refresh_token
+        );
+
+        const returnUrl = router.query.returnUrl;
+        setUser(userData);
+        await window.localStorage.setItem("userData", JSON.stringify(userData));
+        const redirectURL = returnUrl && returnUrl !== "/" ? returnUrl : "/";
+        router.push(redirectURL as string);
+      }
+    } catch (err: any) {
+      if (errorCallback) errorCallback(err);
+    }
     setProceed(true);
     const number = parsePhoneNumber(mobileNumber, countryCode);
+
     baseAuth
       .post(CommonApi.REGISTERUSER, {
         mobileNumber: number?.nationalNumber,
