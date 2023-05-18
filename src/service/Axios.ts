@@ -19,6 +19,15 @@ export const CommonAPI = axios.create({
   baseURL: `${process.env.Common_Url}`,
 });
 
+const excludedTokenServises = (service: string) => {
+  if (
+    service.includes(`${process.env.auth_Url}${CommonApi.VERIFYOTP}`) ||
+    service.includes(`${process.env.auth_Url}${CommonApi.REGISTERUSER}`)
+  )
+    return false;
+  return true;
+};
+
 const useAxiosInterceptor = () => {
   const [loading, setLoading] = useState(false);
 
@@ -30,8 +39,13 @@ const useAxiosInterceptor = () => {
     ) {
       setLoading(true);
     }
-    const tokensData = localStorage.getItem("access_token");
-    config.headers.common["Authorization"] = `bearer ${tokensData}`;
+    if (
+      !config.url.includes(CommonApi.VERIFYOTP) &&
+      !config.url.includes(CommonApi.REGISTERUSER)
+    ) {
+      const tokensData = localStorage.getItem("access_token");
+      config.headers.common["Authorization"] = `bearer ${tokensData}`;
+    }
     return config;
   };
 
