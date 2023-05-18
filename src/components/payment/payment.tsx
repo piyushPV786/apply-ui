@@ -59,14 +59,16 @@ const Payment = (props: any) => {
     : allFields?.education?.applicationFees || "0";
   const isInvalidFiles = paymentDocs.some(
     (file: any) => file.size < 2000000
-  ) as any;
+  ) as boolean;
 
-  const isInvalidFilesType = paymentDocs.some((file: any) => file.error) as any;
+  const isInvalidFilesType = paymentDocs.some(
+    (file: any) => file.error
+  ) as Boolean;
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
   };
-  console.log(isInvalidFilesType);
+
   const normalDiscountAmount = allFields?.payment?.discountAmount || 0;
   const discountAmount = allFields?.payment?.conversionRate
     ? Number(normalDiscountAmount) * (+allFields?.payment?.conversionRate || 0)
