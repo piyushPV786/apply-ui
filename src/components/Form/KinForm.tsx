@@ -67,6 +67,16 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
     }
   }, [isKinDetailExist]);
 
+  useEffect(() => {
+    if (!isKinNeed) {
+      unregister(phoneNumber, {
+        keepError: false,
+        keepIsValid: true,
+        keepValue: true,
+      });
+    }
+  }, [isKinDetailExist]);
+
   return (
     <>
       <StyledAccordion>
