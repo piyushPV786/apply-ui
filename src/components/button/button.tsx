@@ -9,6 +9,7 @@ import PayIcon from "../../../public/assets/images/pay-pay.svg";
 import DownloadIcon from "../../../public/assets/images/download-white-icon.svg";
 import RmatImg from "../../../public/assets/images/rmat.png";
 import { useIsRouting } from "../../pages/_app";
+import { ArrowDownwardOutlined } from "@material-ui/icons";
 
 interface IButoonProps {
   title?: string;
@@ -80,7 +81,8 @@ const StyledButton = ({
         )}
         {isDownloadBtn && (
           <StyledDownloadIcon className="me-3 icon-additinal">
-            <Image alt="download" src={DownloadIcon} width={18} height={18} />
+            <ArrowDownwardOutlined />
+            {/* <Image alt="download" src={DownloadIcon} width={18} height={18} /> */}
           </StyledDownloadIcon>
         )}
         {isRouting ? "Loading..." : title}

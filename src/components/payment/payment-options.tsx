@@ -131,7 +131,7 @@ const PaymentOption = (props: any) => {
               <StyledButton
                 form={getSelectedFormId() as any}
                 type="submit"
-                disabled={!allFields?.payment?.paymentType && !paymentPayload}
+                disabled={!allFields?.payment?.paymentType && !paymentPayload || !props?.totalAmount}
                 onClick={() => {}}
                 title="Pay Now"
               />
