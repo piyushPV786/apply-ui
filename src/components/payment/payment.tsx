@@ -622,7 +622,7 @@ const Payment = (props: any) => {
                               </div>
                               {paymentDocs.length > 0 && !isInvalidFiles && (
                                 <div className="invalid-feedback">
-                                  Max file size is 2 kb
+                                  Max file size is 2 MB
                                 </div>
                               )}
                               {isInvalidFilesType && (
@@ -640,7 +640,7 @@ const Payment = (props: any) => {
                         <div className="col align-self-center text-center ">
                           <StyledButton
                             disabled={
-                              isInvalidFiles ||
+                              !isInvalidFiles ||
                               paymentDocs.length === 0 ||
                               isPaymentDocSubmit ||
                               !totalPayuAmount
