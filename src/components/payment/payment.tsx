@@ -27,6 +27,7 @@ import { GreenText } from "../student/style";
 import { CommonApi, CommonEnums } from "../common/constant";
 import CircleTick from "../../../public/assets/images/circle-tick.svg";
 import { FinanceApi } from "../../service/Axios";
+import { Button } from "@material-ui/core";
 
 const getConvertedProgramFees = (conversionRate: number | null, programFee) => {
   return conversionRate ? programFee * conversionRate : programFee;
@@ -480,20 +481,20 @@ const Payment = (props: any) => {
                                   }}
                                 />
                                 <div className="input-group-append cursor-pointer">
-                                  <span
+                                  <Button
                                     onClick={applyDiscount}
                                     style={{
                                       background:
                                         !promoCode || promoCode?.length === 0
                                           ? `${DefaultGrey}`
                                           : `${Green}`,
-                                      padding: "0.47rem 0.75rem",
+                                      padding: "0.50rem 0.75rem",
                                     }}
-                                    className={"input-group-text"}
                                     id="basic-addon2"
+                                    disabled={!promoCode}
                                   >
                                     Apply
-                                  </span>
+                                  </Button>
                                 </div>
                               </div>
                             </div>
