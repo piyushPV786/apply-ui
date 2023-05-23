@@ -387,7 +387,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           onChange={() =>
                             setValue(identificationNumberKey, "", formOptions)
                           }
-                          disabled={isDocument}
                           options={identityDocuments}
                           value={identificationDocumentType}
                           name={identificationDocumentTypeKey}
