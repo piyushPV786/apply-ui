@@ -87,8 +87,10 @@ const Payment = (props: any) => {
     selectedNationality == "IND" ||
     selectedNationality == "SA" ||
     selectedNationality == "NIG"
-      ? String(+programFee * +allFields?.payment?.conversionRate || programFee)
-      : "1300";
+      ? String(
+          +programFee * (+allFields?.payment?.conversionRate || 1) || programFee
+        )
+      : +programFee * (+allFields?.payment?.conversionRate || 1);
   const rmatFeeAmount =
     selectedNationality?.includes("SA") || selectedCurrency?.includes("RAND")
       ? 250
