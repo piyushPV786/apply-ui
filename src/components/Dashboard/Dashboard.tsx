@@ -573,7 +573,7 @@ function ApplicationCard({
                     }
                     isUploadBtn
                     className="card-button"
-                    title="Upload Document"
+                    title="Upload Documents"
                   />
                 </Grid>
               )}
