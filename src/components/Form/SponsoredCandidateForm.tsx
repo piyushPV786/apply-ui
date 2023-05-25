@@ -54,7 +54,6 @@ export const SponsoredForm = (props: ISponsorProps) => {
     countryData = [],
   } = { ...props };
   const CountryData = countryData;
-  console.log(CountryData);
 
   const {
     setValue,
