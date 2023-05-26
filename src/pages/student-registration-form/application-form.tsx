@@ -236,6 +236,10 @@ const ApplicationForm = () => {
       data.education.isInternationDegree = false;
     }
 
+    if (data.employment.zipCode === "") {
+      data.employment.zipCode = null;
+    }
+
     const formData = { ...data };
 
     const {
