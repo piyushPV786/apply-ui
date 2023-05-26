@@ -290,7 +290,7 @@ const DocumentUploadForm = ({
                       <span className="me-2">
                         <DoneIcon />
                       </span>
-                      ID should valid atleast for 6 months
+                      ID should valid atleast be for 6 months
                     </p>
                   </div>
 

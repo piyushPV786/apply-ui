@@ -139,6 +139,15 @@ export const EmployedForm = (props: IEmployeProps) => {
               {...register(`${isEmployed}`, { required: true })}
               value="no"
               checked={isEmployedVal === "no"}
+              onFocus={(e) => {
+                if (e.target.checked) {
+                  unregister(`${employmentCountry}`, {
+                    keepDefaultValue: true,
+                    keepIsValid: true,
+                    keepValue: true,
+                  });
+                }
+              }}
             />
             <label className="form-check-label">No</label>
           </div>
@@ -331,7 +340,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                     </div>
                   )}
 
-                  {!isSelfEmployed && (
+                  {!isSelfEmployed && isEmployedVal === "yes" && (
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown

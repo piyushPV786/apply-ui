@@ -161,7 +161,7 @@ const PaymentSuccessFull = (props: any) => {
             &nbsp;&nbsp;&nbsp;
             <StyledButton
               onClick={onUploadDocument}
-              title={"Upload Document"}
+              title={"Upload Documents"}
             />
           </>
         </div>
