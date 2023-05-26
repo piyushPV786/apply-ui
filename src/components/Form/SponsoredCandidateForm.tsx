@@ -39,7 +39,7 @@ const sponsorPinCode = `${SponsorCandidateDetail}.zipCode`;
 const sponsorState = `${SponsorCandidateDetail}.state`;
 const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
-const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
+export const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
 const relationShip = `${SponsorCandidateDetail}.relationship`;
 interface ISponsorProps {
   leadId: string;
