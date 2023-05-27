@@ -375,7 +375,7 @@ const ApplicationForm = () => {
     )
       .then(() => {
         if (count === successLength.length) {
-          showToast(true, "Docuuments Successfully Uploaded");
+          showToast(true, "Documents Successfully Uploaded");
           setSubmitted(false);
           setActiveStep(2);
           setPaymentDone(true);
