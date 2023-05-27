@@ -30,8 +30,10 @@ const useAxiosInterceptor = () => {
     ) {
       setLoading(true);
     }
+    console.log("storage", localStorage);
 
     const tokensData = localStorage.getItem("access_token");
+    console.log("token", tokensData);
     config.headers.common["Authorization"] = `bearer ${tokensData}`;
 
     return config;
