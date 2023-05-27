@@ -93,26 +93,50 @@ const StudentLogin = () => {
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = async (errorCallback?: ErrCallbackType) => {
     try {
-      const response = await instance.loginPopup(loginRequest);
-      console.log("res", response);
-      const config = {
-        headers: { Authorization: `Bearer ${response.idToken}` },
-      };
-      const userResponse = await axios.get(
-        `${process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI}auth/access-token`,
-        config
-      );
+      const userResponse = await instance.loginPopup(loginRequest);
+      console.log("res", userResponse);
 
-      if (userResponse?.data.statusCode === 200) {
+      // const config = {
+      //   headers: { Authorization: `Bearer ${userResponse.idToken}` },
+      // };
+      // const Response = await axios.get(
+      //   `${process.env.NEXT_PUBLIC_Auth_URL}register`,
+      //   config
+      // );
+
+      if (userResponse) {
         localStorage.setItem(
           authConfig.storageTokenKeyName,
-          userResponse.data.data.access_token
+          userResponse.idToken
         );
-        localStorage.setItem(
-          authConfig.refreshToken,
-          userResponse.data.data.refresh_token
-        );
+        localStorage.setItem(authConfig.refreshToken, userResponse.idToken);
 
+        console.log("coca", localStorage);
+
+        setProceed(true);
+        const number = parsePhoneNumber(mobileNumber, countryCode);
+        baseAuth
+          .post(CommonApi.REGISTERUSER, {
+            mobileNumber: number?.nationalNumber,
+            mobileCountryCode: number?.countryCallingCode,
+          })
+          .then(({}) => {
+            const studentDetail = {
+              mobileNumber: number?.nationalNumber,
+              countryCodeNumber: number?.countryCallingCode,
+              countryCode: countryCode,
+            };
+            sessionStorage.setItem(
+              "studentMobile",
+              JSON.stringify(studentDetail)
+            );
+            setResend(true);
+            setProceed(true);
+            setToast(true);
+          })
+          .catch(({ response }) => {
+            console.error(response);
+          });
         const returnUrl = router.query.returnUrl;
         setUser(userData);
         await window.localStorage.setItem("userData", JSON.stringify(userData));
@@ -122,28 +146,6 @@ const StudentLogin = () => {
     } catch (err: any) {
       if (errorCallback) errorCallback(err);
     }
-    setProceed(true);
-    const number = parsePhoneNumber(mobileNumber, countryCode);
-
-    baseAuth
-      .post(CommonApi.REGISTERUSER, {
-        mobileNumber: number?.nationalNumber,
-        mobileCountryCode: number?.countryCallingCode,
-      })
-      .then(({}) => {
-        const studentDetail = {
-          mobileNumber: number?.nationalNumber,
-          countryCodeNumber: number?.countryCallingCode,
-          countryCode: countryCode,
-        };
-        sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
-        setResend(true);
-        setProceed(true);
-        setToast(true);
-      })
-      .catch(({ response }) => {
-        console.error(response);
-      });
   };
   const onCountryChange = (value: string | any) => {
     if (value) {
