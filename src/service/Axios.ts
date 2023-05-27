@@ -19,15 +19,6 @@ export const CommonAPI = axios.create({
   baseURL: `${process.env.Common_Url}`,
 });
 
-const excludedTokenServises = (service: string) => {
-  if (
-    service.includes(`${process.env.auth_Url}${CommonApi.VERIFYOTP}`) ||
-    service.includes(`${process.env.auth_Url}${CommonApi.REGISTERUSER}`)
-  )
-    return false;
-  return true;
-};
-
 const useAxiosInterceptor = () => {
   const [loading, setLoading] = useState(false);
 

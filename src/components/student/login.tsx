@@ -102,13 +102,13 @@ const StudentLogin = () => {
         `${process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI}auth/access-token`,
         config
       );
-      console.log("userr", userResponse);
+
       if (userResponse?.data.statusCode === 200) {
-        window.localStorage.setItem(
+        localStorage.setItem(
           authConfig.storageTokenKeyName,
           userResponse.data.data.access_token
         );
-        window.localStorage.setItem(
+        localStorage.setItem(
           authConfig.refreshToken,
           userResponse.data.data.refresh_token
         );
