@@ -40,7 +40,7 @@ const PaymentSuccessFull = (props: any) => {
             </div>
             <div className="text-center w-100">
               <GreenFormHeading style={{ fontSize: "24px" }}>
-                Transaction Successfully
+                Transaction Successfull
               </GreenFormHeading>
               <p>
                 We will verify and get back to you. You wil receive an order
@@ -161,7 +161,7 @@ const PaymentSuccessFull = (props: any) => {
             &nbsp;&nbsp;&nbsp;
             <StyledButton
               onClick={onUploadDocument}
-              title={"Upload Document"}
+              title={"Upload Documents"}
             />
           </>
         </div>

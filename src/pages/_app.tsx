@@ -52,7 +52,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
         <ToastContainer
           position="bottom-right"
-          autoClose={100000}
+          autoClose={3500}
           hideProgressBar
         />
       </RouterProvider>
