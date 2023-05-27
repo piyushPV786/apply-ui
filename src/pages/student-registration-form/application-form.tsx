@@ -230,13 +230,13 @@ const ApplicationForm = () => {
       });
   };
   const submitFormData = (data: any, isDraftSave?: boolean) => {
-    if (data.education.isInternationDegree === "yes") {
+    if (data?.education?.isInternationDegree === "yes") {
       data.education.isInternationDegree = true;
-    } else if (data.education.isInternationDegree === "no") {
+    } else if (data?.education?.isInternationDegree === "no") {
       data.education.isInternationDegree = false;
     }
 
-    if (data.employment.zipCode === "") {
+    if (data?.employment?.zipCode === "") {
       data.employment.zipCode = null;
     }
 
