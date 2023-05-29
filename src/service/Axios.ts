@@ -33,10 +33,10 @@ const useAxiosInterceptor = () => {
     }
 
     const tokensData = window.localStorage.getItem("access_Token");
-    if (tokensData) {
-      config.headers["Authorization"] = `bearer ${tokensData}`;
-      console.log("config", config);
-    }
+
+    config.headers["Authorization"] = `bearer ${tokensData}`;
+    console.log("config", config);
+
     return config;
   };
 
