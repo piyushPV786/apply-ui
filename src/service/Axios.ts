@@ -21,7 +21,6 @@ export const CommonAPI = axios.create({
 
 const useAxiosInterceptor = () => {
   const [loading, setLoading] = useState(false);
-  // const [token, setToken] = useState<any>(null);
 
   const myInterceptor = (config) => {
     if (
@@ -35,7 +34,6 @@ const useAxiosInterceptor = () => {
     const tokensData = window.localStorage.getItem("access_Token");
 
     config.headers["Authorization"] = `bearer ${tokensData}`;
-    console.log("config", config);
 
     return config;
   };

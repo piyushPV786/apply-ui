@@ -94,7 +94,6 @@ const StudentLogin = () => {
   const onProceed = async (errorCallback?: ErrCallbackType) => {
     try {
       const userResponse = await instance.loginPopup(loginRequest);
-      console.log("res", userResponse);
 
       if (userResponse) {
         localStorage.setItem(
