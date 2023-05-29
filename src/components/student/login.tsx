@@ -96,25 +96,17 @@ const StudentLogin = () => {
       const userResponse = await instance.loginPopup(loginRequest);
       console.log("res", userResponse);
 
-      // const config = {
-      //   headers: { Authorization: `Bearer ${userResponse.idToken}` },
-      // };
-      // const Response = await axios.get(
-      //   `${process.env.NEXT_PUBLIC_Auth_URL}register`,
-      //   config
-      // );
-
       if (userResponse) {
         localStorage.setItem(
           authConfig.storageTokenKeyName,
           userResponse.idToken
         );
-        localStorage.setItem(authConfig.refreshToken, userResponse.idToken);
 
-        console.log("coca", localStorage);
+        localStorage.setItem(authConfig.refreshToken, userResponse.idToken);
 
         setProceed(true);
         const number = parsePhoneNumber(mobileNumber, countryCode);
+
         baseAuth
           .post(CommonApi.REGISTERUSER, {
             mobileNumber: number?.nationalNumber,

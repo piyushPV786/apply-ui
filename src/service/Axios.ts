@@ -21,6 +21,7 @@ export const CommonAPI = axios.create({
 
 const useAxiosInterceptor = () => {
   const [loading, setLoading] = useState(false);
+  // const [token, setToken] = useState<any>(null);
 
   const myInterceptor = (config) => {
     if (
@@ -30,11 +31,12 @@ const useAxiosInterceptor = () => {
     ) {
       setLoading(true);
     }
-    console.log("tokenset", localStorage.getItem("access_token"));
-    const tokensData = window.localStorage.getItem("access_token");
 
-    config.headers.common["Authorization"] = `bearer ${tokensData}`;
-
+    const tokensData = window.localStorage.getItem("access_Token");
+    if (tokensData) {
+      config.headers["Authorization"] = `bearer ${tokensData}`;
+      console.log("config", config);
+    }
     return config;
   };
 
@@ -51,8 +53,9 @@ const useAxiosInterceptor = () => {
     setLoading(false);
 
     // Handle error
+    console.log(error);
 
-    if (error.response.status === 401) {
+    if (error?.response?.status === 401) {
       const tokensData = localStorage.getItem("access_token");
       const refreshToken = localStorage.getItem("refresh_token");
       const payload = {
@@ -87,7 +90,14 @@ const useAxiosInterceptor = () => {
   addInterceptorToAxiosInstances(CommonAPI);
   addInterceptorToAxiosInstances(FinanceApi);
 
-  return { baseAuth, AcadmicApi, AuthApi, FinanceApi, CommonAPI, loading };
+  return {
+    baseAuth,
+    AcadmicApi,
+    AuthApi,
+    FinanceApi,
+    CommonAPI,
+    loading,
+  };
 };
 
 export default useAxiosInterceptor;
