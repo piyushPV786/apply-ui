@@ -35,7 +35,7 @@ const useAxiosInterceptor = () => {
       !config.url.includes(CommonApi.VERIFYOTP) &&
       !config.url.includes(CommonApi.REGISTERUSER)
     ) {
-      const tokensData = window.localStorage.getItem("access_Token");
+      const tokensData = sessionStorage.getItem("access_Token");
       config.headers["Authorization"] = `bearer ${tokensData}`;
     }
 
@@ -58,8 +58,8 @@ const useAxiosInterceptor = () => {
     console.log(error);
 
     if (error?.response?.status === 401) {
-      const tokensData = localStorage.getItem("access_token");
-      const refreshToken = localStorage.getItem("refresh_token");
+      const tokensData = sessionStorage.getItem("access_token");
+      const refreshToken = sessionStorage.getItem("refresh_token");
       const payload = {
         access_token: tokensData,
         refresh_token: refreshToken,
@@ -68,7 +68,7 @@ const useAxiosInterceptor = () => {
       let apiResponse = await baseAuth.post("/refresh-token", {
         payload,
       });
-      localStorage.setItem("tokens", JSON.stringify(apiResponse.data));
+      sessionStorage.setItem("tokens", JSON.stringify(apiResponse.data));
       error.config.headers[
         "Authorization"
       ] = `bearer ${apiResponse.data.access_token}`;

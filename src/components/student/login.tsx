@@ -263,11 +263,11 @@ const StudentLogin = () => {
         mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
       })
       .then(({ data }) => {
-        window.localStorage.setItem(
+        sessionStorage.setItem(
           authConfig.storageTokenKeyName,
           data.data.tokenDetails.access_token
         );
-        window.localStorage.setItem(
+        sessionStorage.setItem(
           authConfig.refreshToken,
           data.data.tokenDetails.refresh_token
         );
