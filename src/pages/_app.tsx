@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import MSALAuth from "../components/student/MSALAuth";
+
 interface RouterContextProps {
   isRouting: boolean;
 }
@@ -47,15 +47,13 @@ export function useIsRouting() {
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <MSALAuth>
-      <RouterProvider>
-        <Component {...pageProps} />
-        <ToastContainer
-          position="bottom-right"
-          autoClose={3500}
-          hideProgressBar
-        />
-      </RouterProvider>
-    </MSALAuth>
+    <RouterProvider>
+      <Component {...pageProps} />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3500}
+        hideProgressBar
+      />
+    </RouterProvider>
   );
 }

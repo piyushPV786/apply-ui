@@ -31,8 +31,13 @@ const useAxiosInterceptor = () => {
       setLoading(true);
     }
 
-    const tokensData = window.localStorage.getItem("access_Token");
-    config.headers["Authorization"] = `bearer ${tokensData}`;
+    if (
+      !config.url.includes(CommonApi.VERIFYOTP) &&
+      !config.url.includes(CommonApi.REGISTERUSER)
+    ) {
+      const tokensData = window.localStorage.getItem("access_Token");
+      config.headers["Authorization"] = `bearer ${tokensData}`;
+    }
 
     return config;
   };

@@ -7,8 +7,7 @@ import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
 import Image from "next/image";
-import { useMsal } from "@azure/msal-react";
-import { loginRequest } from "./msalConfig";
+
 import axios from "axios";
 import authConfig from "./auth";
 import {
@@ -74,7 +73,6 @@ const StudentLogin = () => {
       router.push(RoutePaths.Dashboard);
     }
   }, []);
-  const { instance } = useMsal();
 
   useEffect(() => {
     let timer;
@@ -91,61 +89,28 @@ const StudentLogin = () => {
     mobileNumber.length! <= 16;
 
   const onchangeOtp = (value: string) => setOtp(value);
-  const onProceed = async (errorCallback?: ErrCallbackType) => {
-    try {
-      const response = await instance.loginPopup(loginRequest);
-      const config = {
-        headers: { Authorization: `Bearer ${response.idToken}` },
-      };
-      const userResponse = await axios.get(
-        `${process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI}auth/access-token`,
-        config
-      );
-
-      if (userResponse) {
-        window.localStorage.setItem(
-          authConfig.storageTokenKeyName,
-          userResponse.data.data.access_token
-        );
-        window.localStorage.setItem(
-          authConfig.refreshToken,
-          userResponse.data.data.refresh_token
-        );
-
+  const onProceed = () => {
+    setProceed(true);
+    const number = parsePhoneNumber(mobileNumber, countryCode);
+    baseAuth
+      .post(CommonApi.REGISTERUSER, {
+        mobileNumber: number?.nationalNumber,
+        mobileCountryCode: number?.countryCallingCode,
+      })
+      .then(({}) => {
+        const studentDetail = {
+          mobileNumber: number?.nationalNumber,
+          countryCodeNumber: number?.countryCallingCode,
+          countryCode: countryCode,
+        };
+        sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
+        setResend(true);
         setProceed(true);
-        const number = parsePhoneNumber(mobileNumber, countryCode);
-
-        baseAuth
-          .post(CommonApi.REGISTERUSER, {
-            mobileNumber: number?.nationalNumber,
-            mobileCountryCode: number?.countryCallingCode,
-          })
-          .then(({}) => {
-            const studentDetail = {
-              mobileNumber: number?.nationalNumber,
-              countryCodeNumber: number?.countryCallingCode,
-              countryCode: countryCode,
-            };
-            sessionStorage.setItem(
-              "studentMobile",
-              JSON.stringify(studentDetail)
-            );
-            setResend(true);
-            setProceed(true);
-            setToast(true);
-          })
-          .catch(({ response }) => {
-            console.error(response);
-          });
-        const returnUrl = router.query.returnUrl;
-        setUser(userData);
-        await window.localStorage.setItem("userData", JSON.stringify(userData));
-        const redirectURL = returnUrl && returnUrl !== "/" ? returnUrl : "/";
-        router.push(redirectURL as string);
-      }
-    } catch (err: any) {
-      if (errorCallback) errorCallback(err);
-    }
+        setToast(true);
+      })
+      .catch(({ response }) => {
+        console.error(response);
+      });
   };
   const onCountryChange = (value: string | any) => {
     if (value) {
