@@ -10,6 +10,8 @@ const nextConfig = {
     Finance_Url: process.env.NEXT_PUBLIC_FINANCE_BASE_URL,
     Common_Url: process.env.NEXT_COMMON_BASE_URL,
     Credential_Url: process.env.NEXT_PUBLIC_CREDENTIAL_BASE_URL,
+    NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI:
+      process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI,
   },
 };
 

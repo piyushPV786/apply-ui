@@ -7,6 +7,16 @@ import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
 import Image from "next/image";
+
+import axios from "axios";
+import authConfig from "./auth";
+import {
+  AuthValuesType,
+  RegisterParams,
+  LoginParams,
+  ErrCallbackType,
+  UserDataType,
+} from "./types";
 import {
   ImageContainer,
   ApplicationFormContainer,
@@ -30,6 +40,27 @@ const StudentLogin = () => {
   const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
   const [isResendOtp, setResend] = useState<boolean>(false);
   const { baseAuth, loading } = useAxiosInterceptor();
+
+  const defaultProvider: AuthValuesType = {
+    user: null,
+    loading: true,
+    setUser: () => null,
+    setLoading: () => Boolean,
+    isInitialized: false,
+    login: () => Promise.resolve(),
+    logout: () => Promise.resolve(),
+    setIsInitialized: () => Boolean,
+    register: () => Promise.resolve(),
+  };
+  const [user, setUser] = useState<UserDataType | null>(defaultProvider.user);
+  const userData = {
+    id: 1,
+    role: "admin",
+    password: "admin",
+    fullName: "John Doe",
+    username: "johndoe",
+    email: "admin@materialize.com",
+  };
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
@@ -221,7 +252,7 @@ const StudentLogin = () => {
     );
   };
 
-  const verifyNumber = () => {
+  const verifyNumber = async () => {
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
@@ -232,6 +263,14 @@ const StudentLogin = () => {
         mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
       })
       .then(({ data }) => {
+        sessionStorage.setItem(
+          authConfig.storageTokenKeyName,
+          data.data.tokenDetails.access_token
+        );
+        sessionStorage.setItem(
+          authConfig.refreshToken,
+          data.data.tokenDetails.refresh_token
+        );
         setErrorMsg(null);
         sessionStorage.setItem(
           "studentId",
