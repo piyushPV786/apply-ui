@@ -32,7 +32,6 @@ const useAxiosInterceptor = () => {
     }
 
     const tokensData = window.localStorage.getItem("access_Token");
-
     config.headers["Authorization"] = `bearer ${tokensData}`;
 
     return config;

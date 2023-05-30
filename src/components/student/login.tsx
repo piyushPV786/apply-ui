@@ -93,15 +93,24 @@ const StudentLogin = () => {
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = async (errorCallback?: ErrCallbackType) => {
     try {
-      const userResponse = await instance.loginPopup(loginRequest);
+      const response = await instance.loginPopup(loginRequest);
+      const config = {
+        headers: { Authorization: `Bearer ${response.idToken}` },
+      };
+      const userResponse = await axios.get(
+        `${process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI}auth/access-token`,
+        config
+      );
 
       if (userResponse) {
-        localStorage.setItem(
+        window.localStorage.setItem(
           authConfig.storageTokenKeyName,
-          userResponse.idToken
+          userResponse.data.data.access_token
         );
-
-        localStorage.setItem(authConfig.refreshToken, userResponse.idToken);
+        window.localStorage.setItem(
+          authConfig.refreshToken,
+          userResponse.data.data.refresh_token
+        );
 
         setProceed(true);
         const number = parsePhoneNumber(mobileNumber, countryCode);
@@ -278,7 +287,7 @@ const StudentLogin = () => {
     );
   };
 
-  const verifyNumber = () => {
+  const verifyNumber = async () => {
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
@@ -289,6 +298,14 @@ const StudentLogin = () => {
         mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
       })
       .then(({ data }) => {
+        window.localStorage.setItem(
+          authConfig.storageTokenKeyName,
+          data.data.tokenDetails.access_token
+        );
+        window.localStorage.setItem(
+          authConfig.refreshToken,
+          data.data.tokenDetails.refresh_token
+        );
         setErrorMsg(null);
         sessionStorage.setItem(
           "studentId",
