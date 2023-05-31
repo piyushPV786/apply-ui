@@ -50,7 +50,7 @@ export const CommonApi = {
   GETUSERDETAIL: "/user",
   SAVEUSER: "/lead",
   SAVEDRAFT: "/draft",
-  REGISTERUSER: "/register",
+  REGISTERUSER: "/auth/register",
   VERIFYOTP: "/verify-otp",
   PAYUPAYMENT: "global/payuPayment",
   GETINTRESTEDQUALIFICATION: "programs",
