@@ -230,10 +230,14 @@ const ApplicationForm = () => {
       });
   };
   const submitFormData = (data: any, isDraftSave?: boolean) => {
-    if (data.education.isInternationDegree === "yes") {
+    if (data?.education?.isInternationDegree === "yes") {
       data.education.isInternationDegree = true;
-    } else if (data.education.isInternationDegree === "no") {
+    } else if (data?.education?.isInternationDegree === "no") {
       data.education.isInternationDegree = false;
+    }
+
+    if (data?.employment?.zipCode === "") {
+      data.employment.zipCode = null;
     }
 
     const formData = { ...data };
@@ -329,6 +333,13 @@ const ApplicationForm = () => {
         console.log(err.message);
       });
   };
+
+  const Dates = new Date();
+  const timestamp =
+    Dates.toLocaleDateString("en-GB").split("/").join("") +
+    Dates.getHours() +
+    Dates.getMinutes();
+
   const uploadStudentDocs = async () => {
     const {
       document: { uploadedDocs = [] as File[] },
@@ -342,11 +353,14 @@ const ApplicationForm = () => {
       filteredDocs.map((file: File & { typeCode: string }) => {
         const payload = {
           documentTypeCode: file?.typeCode || "other",
-          fileName: file.name,
+          fileName: `${file.typeCode || "OTHER"}-${
+            allFields?.lead?.firstName
+          }-${timestamp}`,
           fileType: file.type,
           amount: +allFields?.education?.studyModeDetail?.fee || 0,
           paymentModeCode: "OFFLINE",
         };
+
         return getUploadDocumentUrl(payload).then((res) => {
           if (res.statusCode === 201) {
             count = count + 1;
@@ -361,7 +375,7 @@ const ApplicationForm = () => {
     )
       .then(() => {
         if (count === successLength.length) {
-          showToast(true, "Docuuments Successfully Uploaded");
+          showToast(true, "Documents Successfully Uploaded");
           setSubmitted(false);
           setActiveStep(2);
           setPaymentDone(true);

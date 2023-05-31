@@ -3,7 +3,7 @@ import { useState } from "react";
 import { CommonApi } from "../components/common/constant";
 
 export const baseAuth = axios.create({
-  baseURL: `${process.env.auth_Url}`,
+  baseURL: `${process.env.base_Url}`,
 });
 
 export const AuthApi = axios.create({
@@ -58,6 +58,7 @@ const useAxiosInterceptor = () => {
   };
 
   const myErrorInterceptor = async (error) => {
+  const myErrorInterceptor = async (error) => {
     // Update loading state for request end
     setLoading(false);
 
@@ -98,7 +99,14 @@ const useAxiosInterceptor = () => {
   addInterceptorToAxiosInstances(CommonAPI);
   addInterceptorToAxiosInstances(FinanceApi);
 
-  return { baseAuth, AcadmicApi, AuthApi, FinanceApi, CommonAPI, loading };
+  return {
+    baseAuth,
+    AcadmicApi,
+    AuthApi,
+    FinanceApi,
+    CommonAPI,
+    loading,
+  };
 };
 
 export default useAxiosInterceptor;

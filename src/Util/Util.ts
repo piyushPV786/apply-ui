@@ -351,13 +351,27 @@ export const mapFormDefaultValue = (
 ) => {
   let valueCode;
   for (let [key, value] of Object.entries(studentData)) {
-    if (
-      (key === "kin" && isObjectEmpty(studentData[key])) ||
-      (key === "sponsor" && isObjectEmpty(studentData[key])) ||
-      (key === "employment" && isObjectEmpty(studentData[key]))
-    ) {
-      delete studentData[key];
-    }
+    // if (
+    //   (key === "kin" && isObjectEmpty(studentData[key])) ||
+    //   (key === "sponsor" && isObjectEmpty(studentData[key])) ||
+    //   (key === "employment" && isObjectEmpty(studentData[key]))
+    // ) {
+    //   console.log({ key });
+    //   let mapKey = "";
+    //   if (key === "kin") {
+    //     mapKey = isKin;
+    //     setValue(mapKey, "no", formOptions);
+    //   }
+    //   if (key === "sponsor") {
+    //     mapKey = isKin;
+    //     setValue(mapKey, "no", formOptions);
+    //   }
+    //   if (key === "employment") {
+    //     mapKey = isSponsored;
+    //     setValue(mapKey, "no", formOptions);
+    //   }
+    //   delete studentData[key];
+    // }
     if (acceptedKeysToMap.includes(key)) {
       if (key === "education" && studentData[key]) {
         valueCode = studentData[key]?.socialMediaCode
@@ -373,19 +387,19 @@ export const mapFormDefaultValue = (
   }
 };
 
-export const showSuccessToast = (message) => {
+export const showSuccessToast = (message: string) => {
   toast.success(message, {
     className: "toast-success",
   });
 };
 
-export const showErrorToast = (message) => {
+export const showErrorToast = (message: string) => {
   toast.error(message, {
     className: "toast-error",
   });
 };
 
-export const showWarningToast = (message) => {
+export const showWarningToast = (message: string) => {
   toast.warning(message, {
     className: "toast-warning",
   });

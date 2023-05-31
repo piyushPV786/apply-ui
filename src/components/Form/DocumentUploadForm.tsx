@@ -281,7 +281,7 @@ const DocumentUploadForm = ({
                       <span className="me-2">
                         <DoneIcon />
                       </span>
-                      File accepted JPEG/JPG/PNG,PDF <br />
+                      File accepted JPEG/JPG/PNG/PDF <br />
                       <span style={{ marginLeft: "30px" }}>
                         (Max size :2MB)
                       </span>
@@ -290,7 +290,7 @@ const DocumentUploadForm = ({
                       <span className="me-2">
                         <DoneIcon />
                       </span>
-                      ID should valid atleast for months
+                      ID should valid atleast be for 6 months
                     </p>
                   </div>
 
@@ -299,7 +299,7 @@ const DocumentUploadForm = ({
                       <div>
                         <p>Document should be in good condition</p>
                         <br />
-                        <p>Face must clear visible</p>
+                        <p>Face must be clearly visible</p>
                       </div>
                       <ImageContainer>
                         <div className="w-100">

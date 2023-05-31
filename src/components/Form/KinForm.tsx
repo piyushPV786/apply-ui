@@ -22,7 +22,7 @@ import _ from "lodash";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { IOption } from "../common/types";
 const KinDetails = "kin";
-const isKin = `${KinDetails}.isKin`;
+export const isKin = `${KinDetails}.isKin`;
 const fullName = `${KinDetails}.fullName`;
 const relationShip = `${KinDetails}.relationship`;
 const Email = `${KinDetails}.email`;
@@ -68,13 +68,24 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
   }, [isKinDetailExist]);
 
   useEffect(() => {
-    if (!isKinNeed) {
-      unregister(phoneNumber, {
-        keepError: false,
-        keepIsValid: true,
-      });
+    if (phoneNumberVal) {
+      if (!isKinNeed) {
+        unregister(phoneNumber, {
+          keepError: false,
+          keepIsValid: true,
+          keepValue: true,
+        });
+      }
+    } else {
+      if (!isKinNeed) {
+        unregister(phoneNumber, {
+          keepError: false,
+          keepIsValid: true,
+        });
+      }
     }
   }, [isKinDetailExist]);
+
   return (
     <>
       <StyledAccordion>

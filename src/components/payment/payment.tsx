@@ -27,6 +27,7 @@ import { GreenText } from "../student/style";
 import { CommonApi, CommonEnums } from "../common/constant";
 import CircleTick from "../../../public/assets/images/circle-tick.svg";
 import { FinanceApi } from "../../service/Axios";
+import { Button } from "@material-ui/core";
 
 const getConvertedProgramFees = (conversionRate: number | null, programFee) => {
   return conversionRate ? programFee * conversionRate : programFee;
@@ -86,8 +87,10 @@ const Payment = (props: any) => {
     selectedNationality == "IND" ||
     selectedNationality == "SA" ||
     selectedNationality == "NIG"
-      ? String(+programFee * +allFields?.payment?.conversionRate || programFee)
-      : "1300";
+      ? String(
+          +programFee * (+allFields?.payment?.conversionRate || 1) || programFee
+        )
+      : +programFee * (+allFields?.payment?.conversionRate || 1);
   const rmatFeeAmount =
     selectedNationality?.includes("SA") || selectedCurrency?.includes("RAND")
       ? 250
@@ -480,20 +483,20 @@ const Payment = (props: any) => {
                                   }}
                                 />
                                 <div className="input-group-append cursor-pointer">
-                                  <span
+                                  <Button
                                     onClick={applyDiscount}
                                     style={{
                                       background:
                                         !promoCode || promoCode?.length === 0
                                           ? `${DefaultGrey}`
                                           : `${Green}`,
-                                      padding: "0.47rem 0.75rem",
+                                      padding: "0.50rem 0.75rem",
                                     }}
-                                    className={"input-group-text"}
                                     id="basic-addon2"
+                                    disabled={!promoCode}
                                   >
                                     Apply
-                                  </span>
+                                  </Button>
                                 </div>
                               </div>
                             </div>
@@ -622,7 +625,7 @@ const Payment = (props: any) => {
                               </div>
                               {paymentDocs.length > 0 && !isInvalidFiles && (
                                 <div className="invalid-feedback">
-                                  Max file size is 2 kb
+                                  Max file size is 2 MB
                                 </div>
                               )}
                               {isInvalidFilesType && (
@@ -640,7 +643,7 @@ const Payment = (props: any) => {
                         <div className="col align-self-center text-center ">
                           <StyledButton
                             disabled={
-                              isInvalidFiles ||
+                              !isInvalidFiles ||
                               paymentDocs.length === 0 ||
                               isPaymentDocSubmit ||
                               !totalPayuAmount

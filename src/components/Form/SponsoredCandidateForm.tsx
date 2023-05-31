@@ -39,7 +39,7 @@ const sponsorPinCode = `${SponsorCandidateDetail}.zipCode`;
 const sponsorState = `${SponsorCandidateDetail}.state`;
 const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
-const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
+export const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
 const relationShip = `${SponsorCandidateDetail}.relationship`;
 interface ISponsorProps {
   leadId: string;
@@ -54,7 +54,6 @@ export const SponsoredForm = (props: ISponsorProps) => {
     countryData = [],
   } = { ...props };
   const CountryData = countryData;
-  console.log(CountryData);
 
   const {
     setValue,

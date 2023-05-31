@@ -30,7 +30,7 @@ const managerName = `${EmployementDetails}.managerName`;
 const officeAddress = `${EmployementDetails}.officeAddress`;
 const officeNumber = `${EmployementDetails}.officeMobileNumber`;
 const officePhoneCode = `${EmployementDetails}.officeMobileCountryCode`;
-const isEmployed = `${EmployementDetails}.isEmployed`;
+export const isEmployed = `${EmployementDetails}.isEmployment`;
 const employmentCountry = `${EmployementDetails}.country`;
 const employmentCity = `${EmployementDetails}.city`;
 const employmentPinCode = `${EmployementDetails}.zipCode`;
@@ -91,11 +91,11 @@ export const EmployedForm = (props: IEmployeProps) => {
   const isEmployedNeed = isEmployedVal === "yes";
   const isSelfEmployed = employmentStatusVal === "SELFEMPLOYED";
 
-  useEffect(() => {
-    if (!isObjectEmpty(isEmployerDetailExist) && props?.leadId) {
-      setValue(isEmployed, "yes");
-    }
-  }, [isEmployerDetailExist]);
+  // useEffect(() => {
+  //   if (!isObjectEmpty(isEmployerDetailExist) && props?.leadId) {
+  //     setValue(isEmployed, "yes");
+  //   }
+  // }, [isEmployerDetailExist]);
 
   useEffect(() => {
     if (!isEmployedNeed) {
@@ -139,6 +139,15 @@ export const EmployedForm = (props: IEmployeProps) => {
               {...register(`${isEmployed}`, { required: true })}
               value="no"
               checked={isEmployedVal === "no"}
+              onFocus={(e) => {
+                if (e.target.checked) {
+                  unregister(`${employmentCountry}`, {
+                    keepDefaultValue: true,
+                    keepIsValid: true,
+                    keepValue: true,
+                  });
+                }
+              }}
             />
             <label className="form-check-label">No</label>
           </div>
@@ -331,7 +340,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                     </div>
                   )}
 
-                  {!isSelfEmployed && (
+                  {!isSelfEmployed && isEmployedVal === "yes" && (
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
