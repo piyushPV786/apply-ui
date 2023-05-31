@@ -3,7 +3,7 @@ import { useState } from "react";
 import { CommonApi } from "../components/common/constant";
 
 export const baseAuth = axios.create({
-  baseURL: `${process.env.auth_Url}`,
+  baseURL: `${process.env.base_Url}`,
 });
 
 export const AuthApi = axios.create({
