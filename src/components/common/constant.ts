@@ -51,7 +51,7 @@ export const CommonApi = {
   SAVEUSER: "/lead",
   SAVEDRAFT: "/draft",
   REGISTERUSER: "/auth/register",
-  VERIFYOTP: "/verify-otp",
+  VERIFYOTP: "/auth/verify-otp",
   PAYUPAYMENT: "global/payuPayment",
   GETINTRESTEDQUALIFICATION: "programs",
   GETDOCUMENTURL: "global/file",
