@@ -194,7 +194,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     {...register(`${postalZipCode}`, {
                       required: true,
                       maxLength: 6,
-                      minLength: 5,
+                      minLength: 4,
                     })}
                     type="number"
                     maxLength={6}
@@ -210,7 +210,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                         {error[0]?.zipcode.type === "maxLength"
                           ? "Max length exceeded"
                           : error[0]?.zipcode.type === "minLength"
-                          ? "Minimum length should be 5"
+                          ? "Minimum length should be 4"
                           : "Please enter Zip/Postal Code"}
                       </div>
                     )}
@@ -393,7 +393,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       {...register(`${resPostalCode}`, {
                         required: true,
                         maxLength: 6,
-                        minLength: 5,
+                        minLength: 4,
                       })}
                       type="number"
                       className="form-control"
@@ -408,7 +408,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                           {error[1]?.zipcode.type === "maxLength"
                             ? "Max length exceeded"
                             : error[1]?.zipcode.type === "minLength"
-                            ? "Minimum length should be 5"
+                            ? "Minimum length should be 4"
                             : "Please enter Zip/Postal Code"}
                         </div>
                       )}

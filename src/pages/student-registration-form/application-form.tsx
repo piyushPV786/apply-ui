@@ -11,7 +11,7 @@ import { EducationForm } from "../../components/Form/EducationForm";
 import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
-import useAxiosInterceptor from "../../service/Axios";
+import useAxiosInterceptor, { UserManagementAPI } from "../../service/Axios";
 import {
   ILeadFormValues,
   IMasterData,
@@ -52,6 +52,7 @@ const ApplicationForm = () => {
   const { AuthApi, loading, AcadmicApi } = useAxiosInterceptor();
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
+  const [agentData, setAgentData] = useState([]);
   const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
     message: "",
     success: false,
@@ -77,6 +78,7 @@ const ApplicationForm = () => {
   useEffect(() => {
     getUserDetail();
     getMasterData();
+    getAgentDetails();
   }, []);
 
   useEffect(() => {
@@ -470,7 +472,19 @@ const ApplicationForm = () => {
         console.log(err);
       });
   };
+
+  const getAgentDetails = async () => {
+    UserManagementAPI.get(CommonApi.GETUSERDETAIL)
+      .then(({ data }) => {
+        setAgentData(data?.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const language = masterData?.languageData as IOption[];
+
   const nationalities = masterData?.nationalityData as IOption[];
   const relationData = masterData?.relationData as IOption[];
   const highestQualifications =
@@ -486,7 +500,7 @@ const ApplicationForm = () => {
   ) as IOption[];
   const employmentIndustries = masterData?.employmentIndustryData as IOption[];
   const countryData = masterData?.countryData as IOption[];
-  const agentData = masterData?.agentData as IOption[];
+
   const documentType = masterData?.documentTypeData as IOption[];
   const studyTypeData = masterData?.studentTypeData as IOption[];
   const isManagementStudentType =

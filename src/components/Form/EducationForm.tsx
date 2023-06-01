@@ -512,11 +512,11 @@ export const EducationForm = (props: IEducationProps) => {
                       >
                         <option value={""}>Select Agent</option>
                         {agentArr &&
-                          agentArr.map(({ code, name }) => (
+                          agentArr.map(({ name }) => (
                             <option
-                              selected={code === agentNameVal}
-                              key={code}
-                              value={code}
+                              selected={name === agentNameVal}
+                              key={name}
+                              value={name}
                             >
                               {name}
                             </option>
