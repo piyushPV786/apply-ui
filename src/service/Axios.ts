@@ -18,6 +18,9 @@ export const FinanceApi = axios.create({
 export const CommonAPI = axios.create({
   baseURL: `${process.env.Common_Url}`,
 });
+export const UserManagementAPI = axios.create({
+  baseURL: `${process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI}`,
+});
 
 const useAxiosInterceptor = () => {
   const [loading, setLoading] = useState(false);
@@ -91,6 +94,7 @@ const useAxiosInterceptor = () => {
   addInterceptorToAxiosInstances(AuthApi);
   addInterceptorToAxiosInstances(CommonAPI);
   addInterceptorToAxiosInstances(FinanceApi);
+  addInterceptorToAxiosInstances(UserManagementAPI);
 
   return {
     baseAuth,
@@ -99,6 +103,7 @@ const useAxiosInterceptor = () => {
     FinanceApi,
     CommonAPI,
     loading,
+    UserManagementAPI,
   };
 };
 
