@@ -40,7 +40,7 @@ const applicationFeesKey = `${parentKey}.applicationFees`;
 const internationDegree = `${parentKey}.isInternationDegree`;
 interface IEducationProps {
   highestQualifications: IOption[];
-  programs: IOption[];
+  programs: IOption;
   socialMedias: IOption[];
   agentArr: IOption[];
   studyTypeData: IOption[];
