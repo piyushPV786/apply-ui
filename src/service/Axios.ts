@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { useState } from "react";
-import { CommonApi } from "../components/common/constant";
+import { CommonApi, tokenName } from "../components/common/constant";
 
 export const baseAuth = axios.create({
   baseURL: `${process.env.base_Url}`,
@@ -22,6 +22,21 @@ export const UserManagementAPI = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI}`,
 });
 
+UserManagementAPI.interceptors.request.use(
+  (config) => {
+    if (config.headers) {
+      config.headers["Authorization"] = `Bearer ${window.sessionStorage.getItem(
+        tokenName?.refreshToken
+      )}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 const useAxiosInterceptor = () => {
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +53,7 @@ const useAxiosInterceptor = () => {
       !config.url.includes(CommonApi.VERIFYOTP) &&
       !config.url.includes(CommonApi.REGISTERUSER)
     ) {
-      const tokensData = sessionStorage.getItem("access_Token");
+      const tokensData = window.sessionStorage.getItem(tokenName?.accessToken);
       config.headers["Authorization"] = `bearer ${tokensData}`;
     }
 
@@ -61,21 +76,25 @@ const useAxiosInterceptor = () => {
     console.log(error);
 
     if (error?.response?.status === 401) {
-      const tokensData = sessionStorage.getItem("access_token");
-      const refreshToken = sessionStorage.getItem("refresh_token");
-      const payload = {
-        access_token: tokensData,
-        refresh_token: refreshToken,
-      };
+      const response = await UserManagementAPI.get("/auth/refresh-token");
+      if (
+        response?.data?.data?.access_token &&
+        response?.data?.data?.refresh_token
+      ) {
+        await window.sessionStorage.setItem(
+          tokenName?.accessToken,
+          response.data.data.access_token
+        );
+        await window.sessionStorage.setItem(
+          tokenName.refreshToken,
+          response.data.data.refresh_token
+        );
+        error.config.headers[
+          "Authorization"
+        ] = `Bearer ${response.data.data.access_token}`;
 
-      let apiResponse = await UserManagementAPI.post("/auth/refresh-token", {
-        payload,
-      });
-      sessionStorage.setItem("tokens", JSON.stringify(apiResponse.data));
-      error.config.headers[
-        "Authorization"
-      ] = `bearer ${apiResponse.data.access_token}`;
-      return axios(error.config);
+        return axios(error.config);
+      }
     } else {
       return Promise.reject(error);
     }
