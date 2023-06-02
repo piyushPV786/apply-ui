@@ -100,6 +100,7 @@ export const EducationForm = (props: IEducationProps) => {
   const internationDegreeVal = watch(internationDegree);
   const educationFormError = errors[parentKey] as any;
   const touchFields = touchedFields[parentKey];
+
   useEffect(() => {
     if (
       leadId &&
@@ -184,7 +185,7 @@ export const EducationForm = (props: IEducationProps) => {
                   >
                     <option value={""}>Select Interested Qualification</option>
                     {programs &&
-                      programs?.map(({ code, name }) => (
+                      programs?.data?.map(({ code, name }) => (
                         <option
                           selected={code === programVal}
                           key={code}

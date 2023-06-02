@@ -53,7 +53,7 @@ export const CommonApi = {
   REGISTERUSER: "/auth/register",
   VERIFYOTP: "/auth/verify-otp",
   PAYUPAYMENT: "global/payuPayment",
-  GETINTRESTEDQUALIFICATION: "programs",
+  GETINTRESTEDQUALIFICATION: "programs/all",
   GETDOCUMENTURL: "global/file",
   GETCOMMONDOCUMENTURL: "/document",
   GETDOCUMENT: "/document/upload",
