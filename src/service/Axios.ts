@@ -68,7 +68,7 @@ const useAxiosInterceptor = () => {
         refresh_token: refreshToken,
       };
 
-      let apiResponse = await baseAuth.post("/refresh-token", {
+      let apiResponse = await UserManagementAPI.post("/refresh-token", {
         payload,
       });
       sessionStorage.setItem("tokens", JSON.stringify(apiResponse.data));
