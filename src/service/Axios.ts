@@ -26,7 +26,7 @@ UserManagementAPI.interceptors.request.use(
   (config) => {
     if (config.headers) {
       config.headers["Authorization"] = `Bearer ${window.sessionStorage.getItem(
-        "refreshToken"
+        tokenName?.refreshToken
       )}`;
     }
 
@@ -53,7 +53,7 @@ const useAxiosInterceptor = () => {
       !config.url.includes(CommonApi.VERIFYOTP) &&
       !config.url.includes(CommonApi.REGISTERUSER)
     ) {
-      const tokensData = sessionStorage.getItem(tokenName?.accessToken);
+      const tokensData = window.sessionStorage.getItem(tokenName?.accessToken);
       config.headers["Authorization"] = `bearer ${tokensData}`;
     }
 
