@@ -2,6 +2,9 @@ import axios, { AxiosInstance } from "axios";
 import { useState } from "react";
 import { CommonApi, tokenName } from "../components/common/constant";
 
+export const refreshBaseAuth = axios.create({
+  baseURL: `${process.env.base_Url}`,
+});
 export const baseAuth = axios.create({
   baseURL: `${process.env.base_Url}`,
 });
@@ -22,7 +25,7 @@ export const UserManagementAPI = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI}`,
 });
 
-UserManagementAPI.interceptors.request.use(
+refreshBaseAuth.interceptors.request.use(
   (config) => {
     if (config.headers) {
       config.headers["Authorization"] = `Bearer ${window.sessionStorage.getItem(
@@ -76,7 +79,7 @@ const useAxiosInterceptor = () => {
     console.log(error);
 
     if (error?.response?.status === 401) {
-      const response = await UserManagementAPI.get("/auth/refresh-token");
+      const response = await refreshBaseAuth.get("/auth/refresh-token");
       if (
         response?.data?.data?.access_token &&
         response?.data?.data?.refresh_token
