@@ -158,7 +158,6 @@ export interface IOption {
   deletedAt?: any;
   name: string;
   code: string;
-  data: any;
 }
 
 export interface Mode {
