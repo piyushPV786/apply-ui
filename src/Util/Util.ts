@@ -6,7 +6,7 @@ import {
   removedKeysToMap,
 } from "../components/common/constant";
 import { ILeadFormValues } from "../components/common/types";
-import { AuthApi, CommonAPI, FinanceApi } from "../service/Axios";
+import { AuthApi, CommonAPI, FinanceApi, baseAuth } from "../service/Axios";
 import { parsePhoneNumber } from "react-phone-number-input";
 import { toast } from "react-toastify";
 const ignorKeys = {
@@ -223,7 +223,7 @@ export const applyDiscountCode = async (
 ) => {
   const url = process.env.base_Url;
   try {
-    const response = await axios.get(
+    const response = await baseAuth.get(
       `${url}application/${appCode}/discount/${disCode}?studentType=${studentType}`
     );
     return response.data;

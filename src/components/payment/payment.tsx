@@ -49,7 +49,7 @@ const Payment = (props: any) => {
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
   const selectedProgram =
-    props?.programs &&
+    props?.programs?.length &&
     props.programs?.find(
       (item: IOption) => item?.code == allFields?.education?.programCode
     );
