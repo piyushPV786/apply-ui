@@ -16,7 +16,7 @@ export const getIntrestedQualificationPrograms = (
     .then(({ data }: any) => {
       setMasterData((prevState: any) => ({
         ...prevState,
-        programs: data as IOption[],
+        programs: data?.data as IOption[],
       }));
     })
     .catch((err) => console.log(err))
