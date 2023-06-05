@@ -26,7 +26,7 @@ import {
   Title,
 } from "./style";
 import styled from "styled-components";
-import { CommonApi, RoutePaths } from "../common/constant";
+import { CommonApi, RoutePaths, tokenName } from "../common/constant";
 import { MsgComponent, LoaderComponent } from "../common/common";
 import useAxiosInterceptor from "../../service/Axios";
 
@@ -263,14 +263,15 @@ const StudentLogin = () => {
         mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
       })
       .then(({ data }) => {
-        sessionStorage.setItem(
-          authConfig.storageTokenKeyName,
-          data.data.tokenDetails.access_token
+        window.sessionStorage.setItem(
+          tokenName?.accessToken,
+          data?.data?.tokenDetails?.access_token
         );
-        sessionStorage.setItem(
-          authConfig.refreshToken,
-          data.data.tokenDetails.refresh_token
+        window.sessionStorage.setItem(
+          tokenName.refreshToken,
+          data?.data?.tokenDetails?.refresh_token
         );
+
         setErrorMsg(null);
         sessionStorage.setItem(
           "studentId",

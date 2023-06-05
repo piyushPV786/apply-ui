@@ -118,3 +118,8 @@ export const removedKeysToMap = [
 
 export const bursaryWarning =
   "You must upload Bursary letter in upload document section";
+
+export const tokenName = {
+  accessToken: "accessToken",
+  refreshToken: "refreshToken",
+};
