@@ -504,7 +504,13 @@ function ApplicationCard({
               )}
               {showRAMTBtn && (
                 <Grid item>
-                  <StyledButton isRMATBtn title="Take RMAT Test" />
+                  <StyledButton
+                    onClick={() => {
+                      router.push(RoutePaths.RMATView);
+                    }}
+                    isRMATBtn
+                    title="Take RMAT Test"
+                  />
                 </Grid>
               )}
               {showPayBtn && (
