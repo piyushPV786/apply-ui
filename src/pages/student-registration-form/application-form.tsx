@@ -348,16 +348,18 @@ const ApplicationForm = () => {
     } = allFields;
     let count = 0;
     const successLength: any[] = [];
+
     const filteredDocs = uploadedDocs.filter(
       (doc) => doc.typeCode !== "PAYMENTPROOF"
     );
     await Promise.all(
       filteredDocs.map((file: File & { typeCode: string }) => {
+        const fileName = `${file.typeCode || "OTHER"}-${
+          allFields?.lead?.firstName
+        }-${timestamp}.${String(file.type.split("/")[1])}`;
         const payload = {
           documentTypeCode: file?.typeCode || "other",
-          fileName: `${file.typeCode || "OTHER"}-${
-            allFields?.lead?.firstName
-          }-${timestamp}`,
+          fileName: `${fileName}`,
           fileType: file.type,
           amount: +allFields?.education?.studyModeDetail?.fee || 0,
           paymentModeCode: "OFFLINE",
