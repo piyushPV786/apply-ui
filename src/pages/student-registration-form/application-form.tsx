@@ -63,6 +63,8 @@ const ApplicationForm = () => {
   const [masterData, setMasterData] = useState<IMasterData | null>(null);
   const [isApplicationEnrolled, setApllicationEnrolled] =
     useState<boolean>(false);
+  const [isNewApplication, setNewApplication] = useState<boolean>(false);
+
   const methods = useForm<ILeadFormValues>({
     mode: "all",
     reValidateMode: "onBlur",
@@ -85,9 +87,17 @@ const ApplicationForm = () => {
     if (window) {
       const queryParams = new URLSearchParams(location?.search);
       const applicationStatus = queryParams.get("status");
-      const isApplicationAccepted =
-        applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED;
-      setApllicationEnrolled(isApplicationAccepted);
+      if (applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED) {
+        setApllicationEnrolled(true);
+        setNewApplication(true);
+      } else {
+        setApllicationEnrolled(false);
+        if (applicationStatus === CommonEnums.NEW_STATUS) {
+          setNewApplication(true);
+        } else if (applicationStatus && JSON.parse(applicationStatus)) {
+          setNewApplication(false);
+        }
+      }
     }
   }, []);
   const allFields = watch();
@@ -625,7 +635,7 @@ const ApplicationForm = () => {
                       isValidDocument={isValidDocument}
                       documentType={documentType}
                       leadId={leadId}
-                      isApplicationEnrolled={isApplicationEnrolled}
+                      isApplicationEnrolled={isNewApplication}
                     />
                   </>
                 )}

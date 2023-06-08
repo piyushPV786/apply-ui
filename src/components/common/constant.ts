@@ -1,4 +1,5 @@
 export enum CommonEnums {
+  NEW_STATUS = "New-Application",
   DRAFT_STATUS = "APP-DRAFT",
   FEES_PENDING_STATUS = "APP-FEE-PEND",
   APP_ENROLLED_STATUS = "APP-ENROLLED",
