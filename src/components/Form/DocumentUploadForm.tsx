@@ -42,13 +42,12 @@ const DocumentUploadForm = ({
   >([]);
   const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
 
-  const documentTypeList = !isApplicationEnrolled
-    ? [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
-        (doc) => {
-          doc.code !== "BURSARYLETTER" || "PAYMENTPROOF";
-        }
-      )
-    : [...(documentType || [])]?.filter((doc) => doc.code === "PAYMENTPROOF");
+  const documentTypeList = isApplicationEnrolled
+    ? [...(documentType || [])]?.filter((doc) => doc.code === "PAYMENTPROOF")
+    : [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
+        (doc) => doc.code !== "PAYMENTPROOF"
+      );
+
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
     if (existingPaymentProof && existingPaymentProof.length > 0) {
