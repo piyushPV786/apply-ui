@@ -41,7 +41,7 @@ const DocumentUploadForm = ({
     (File & { error: boolean; typeCode: string })[]
   >([]);
   const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
-  console.log("status", isApplicationEnrolled);
+
   const documentTypeList = isApplicationEnrolled
     ? [...(documentType || [])]?.filter((doc) => doc.code === "PAYMENTPROOF")
     : [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
