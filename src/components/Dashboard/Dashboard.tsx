@@ -407,7 +407,8 @@ function ApplicationCard({
 
   const showUploadBtn =
     status.includes(CommonEnums.APP_ENROLLED_STATUS) ||
-    status.includes(CommonEnums.APP_FEE_ACCEPTED);
+    status.includes(CommonEnums.APP_FEE_ACCEPTED) ||
+    status.includes(CommonEnums.RESUB_APP_DOC);
   return (
     <>
       <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
