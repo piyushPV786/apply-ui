@@ -94,7 +94,7 @@ const ApplicationForm = () => {
         setApllicationEnrolled(false);
         if (applicationStatus === CommonEnums.NEW_STATUS) {
           setNewApplication(true);
-        } else if (applicationStatus && JSON.parse(applicationStatus)) {
+        } else if (applicationStatus === CommonEnums.TRUE) {
           setNewApplication(false);
         }
       }
