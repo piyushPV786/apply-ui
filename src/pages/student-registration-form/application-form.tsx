@@ -87,12 +87,16 @@ const ApplicationForm = () => {
     if (window) {
       const queryParams = new URLSearchParams(location?.search);
       const applicationStatus = queryParams.get("status");
+
       if (applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED) {
         setApllicationEnrolled(true);
         setNewApplication(true);
       } else {
         setApllicationEnrolled(false);
-        if (applicationStatus === CommonEnums.NEW_STATUS) {
+        if (
+          applicationStatus === CommonEnums.NEW_STATUS ||
+          !applicationStatus
+        ) {
           setNewApplication(true);
         } else if (applicationStatus === CommonEnums.TRUE) {
           setNewApplication(false);
@@ -110,8 +114,6 @@ const ApplicationForm = () => {
     setActiveStep((prevState: number) => prevState - 1);
   };
   const navigateNext = () => {
-    setSubmitted(true);
-    setPaymentDone(true);
     setActiveStep((prevState: number) => prevState + 1);
   };
   const routeIfStepDone = (routeTo: string) => {
@@ -356,35 +358,56 @@ const ApplicationForm = () => {
     const {
       document: { uploadedDocs = [] as File[] },
     } = allFields;
+
     let count = 0;
     const successLength: any[] = [];
+    let payload;
 
-    const filteredDocs = uploadedDocs.filter(
-      (doc) => doc.typeCode !== "PAYMENTPROOF"
-    );
     await Promise.all(
-      filteredDocs.map((file: File & { typeCode: string }) => {
-        const fileName = `${file.typeCode || "OTHER"}-${
-          allFields?.lead?.firstName
-        }-${timestamp}.${String(file.type.split("/")[1])}`;
-        const payload = {
-          documentTypeCode: file?.typeCode || "other",
-          fileName: `${fileName}`,
-          fileType: file.type,
-          amount: +allFields?.education?.studyModeDetail?.fee || 0,
-          paymentModeCode: "OFFLINE",
-        };
-
-        return getUploadDocumentUrl(payload).then((res) => {
-          if (res.statusCode === 201) {
-            count = count + 1;
-            successLength.push("true");
-            uploadFiles(res?.data, file);
-          } else {
-            showToast(false, res.message);
-            console.log(res.message);
-          }
-        });
+      uploadedDocs.map((file: File & { typeCode: string }) => {
+        if (file.typeCode == "PAYMENTPROOF") {
+          payload = {
+            documentTypeCode: "PAYMENTPROOF",
+            fileName: file.name,
+            fileType: file.type,
+            amount: allFields.payment?.finalFee,
+            paymentModeCode: "OFFLINE",
+            discountCode: allFields?.payment?.discountCode,
+            discountAmount: allFields?.payment?.discountAmount,
+            studentTypeCode: allFields?.education?.studentTypeCode,
+          };
+          getUploadDocumentUrl(payload).then((res) => {
+            if (res.statusCode === 201) {
+              count = count + 1;
+              successLength.push("true");
+              uploadFiles(res?.data, file);
+            } else {
+              showToast(false, res.message);
+              console.log(res.message);
+            }
+          });
+        } else {
+          const fileName = `${file.typeCode || "OTHER"}-${
+            allFields?.lead?.firstName
+          }-${timestamp}.${String(file.type.split("/")[1])}`;
+          payload = {
+            documentTypeCode: file?.typeCode || "other",
+            fileName: `${fileName}`,
+            fileType: file.type,
+            amount: +allFields?.education?.studyModeDetail?.fee || 0,
+            paymentModeCode: "OFFLINE",
+          };
+          getUploadDocumentUrl(payload).then((res) => {
+            if (res.statusCode === 201) {
+              count = count + 1;
+              successLength.push("true");
+              uploadFiles(res?.data, file);
+            } else {
+              showToast(false, res.message);
+              console.log(res.message);
+            }
+          });
+        }
       })
     )
       .then(() => {
