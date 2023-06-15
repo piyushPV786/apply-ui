@@ -53,6 +53,7 @@ const ApplicationForm = () => {
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
   const [agentData, setAgentData] = useState([]);
+  const [finalfee, setFialFee] = useState([]);
   const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
     message: "",
     success: false,
@@ -87,12 +88,16 @@ const ApplicationForm = () => {
     if (window) {
       const queryParams = new URLSearchParams(location?.search);
       const applicationStatus = queryParams.get("status");
+
       if (applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED) {
         setApllicationEnrolled(true);
         setNewApplication(true);
       } else {
         setApllicationEnrolled(false);
-        if (applicationStatus === CommonEnums.NEW_STATUS) {
+        if (
+          applicationStatus === CommonEnums.NEW_STATUS ||
+          applicationStatus === null
+        ) {
           setNewApplication(true);
         } else if (applicationStatus === CommonEnums.TRUE) {
           setNewApplication(false);
@@ -109,9 +114,8 @@ const ApplicationForm = () => {
     setSubmitted(false);
     setActiveStep((prevState: number) => prevState - 1);
   };
-  const navigateNext = () => {
-    setSubmitted(true);
-    setPaymentDone(true);
+  const navigateNext = (finalAmount) => {
+    setFialFee(finalAmount);
     setActiveStep((prevState: number) => prevState + 1);
   };
   const routeIfStepDone = (routeTo: string) => {
@@ -356,35 +360,55 @@ const ApplicationForm = () => {
     const {
       document: { uploadedDocs = [] as File[] },
     } = allFields;
+
     let count = 0;
     const successLength: any[] = [];
-
-    const filteredDocs = uploadedDocs.filter(
-      (doc) => doc.typeCode !== "PAYMENTPROOF"
-    );
+    let payload;
     await Promise.all(
-      filteredDocs.map((file: File & { typeCode: string }) => {
-        const fileName = `${file.typeCode || "OTHER"}-${
-          allFields?.lead?.firstName
-        }-${timestamp}.${String(file.type.split("/")[1])}`;
-        const payload = {
-          documentTypeCode: file?.typeCode || "other",
-          fileName: `${fileName}`,
-          fileType: file.type,
-          amount: +allFields?.education?.studyModeDetail?.fee || 0,
-          paymentModeCode: "OFFLINE",
-        };
-
-        return getUploadDocumentUrl(payload).then((res) => {
-          if (res.statusCode === 201) {
-            count = count + 1;
-            successLength.push("true");
-            uploadFiles(res?.data, file);
-          } else {
-            showToast(false, res.message);
-            console.log(res.message);
-          }
-        });
+      uploadedDocs.map((file: File & { typeCode: string }) => {
+        if (file.typeCode == "PAYMENTPROOF") {
+          payload = {
+            documentTypeCode: "PAYMENTPROOF",
+            fileName: file.name,
+            fileType: file.type,
+            amount: finalfee,
+            paymentModeCode: "OFFLINE",
+            discountCode: allFields?.payment?.discountCode,
+            discountAmount: allFields?.payment?.discountAmount,
+            studentTypeCode: allFields?.education?.studentTypeCode,
+          };
+          getUploadDocumentUrl(payload).then((res) => {
+            if (res.statusCode === 201) {
+              count = count + 1;
+              successLength.push("true");
+              uploadFiles(res?.data, file);
+            } else {
+              showToast(false, res.message);
+              console.log(res.message);
+            }
+          });
+        } else {
+          const fileName = `${file.typeCode || "OTHER"}-${
+            allFields?.lead?.firstName
+          }-${timestamp}.${String(file.type.split("/")[1])}`;
+          payload = {
+            documentTypeCode: file?.typeCode || "other",
+            fileName: `${fileName}`,
+            fileType: file.type,
+            amount: +allFields?.education?.studyModeDetail?.fee || 0,
+            paymentModeCode: "OFFLINE",
+          };
+          getUploadDocumentUrl(payload).then((res) => {
+            if (res.statusCode === 201) {
+              count = count + 1;
+              successLength.push("true");
+              uploadFiles(res?.data, file);
+            } else {
+              showToast(false, res.message);
+              console.log(res.message);
+            }
+          });
+        }
       })
     )
       .then(() => {
