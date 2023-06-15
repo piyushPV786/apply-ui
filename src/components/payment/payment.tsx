@@ -167,7 +167,8 @@ const Payment = (props: any) => {
         parseInt(programFee) -
         parseInt(allFields?.payment?.discountAmount || 0) +
         rmatFee;
-      props?.navigateNext(finalAmount);
+      setValue("payment.finalFee", finalAmount);
+      props?.navigateNext();
     }
 
     setPaymentDocSubmit(false);

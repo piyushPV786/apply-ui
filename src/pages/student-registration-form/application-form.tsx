@@ -53,7 +53,6 @@ const ApplicationForm = () => {
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
   const [agentData, setAgentData] = useState([]);
-  const [finalfee, setFialFee] = useState([]);
   const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
     message: "",
     success: false,
@@ -96,7 +95,7 @@ const ApplicationForm = () => {
         setApllicationEnrolled(false);
         if (
           applicationStatus === CommonEnums.NEW_STATUS ||
-          applicationStatus === null
+          !applicationStatus
         ) {
           setNewApplication(true);
         } else if (applicationStatus === CommonEnums.TRUE) {
@@ -114,8 +113,7 @@ const ApplicationForm = () => {
     setSubmitted(false);
     setActiveStep((prevState: number) => prevState - 1);
   };
-  const navigateNext = (finalAmount) => {
-    setFialFee(finalAmount);
+  const navigateNext = () => {
     setActiveStep((prevState: number) => prevState + 1);
   };
   const routeIfStepDone = (routeTo: string) => {
@@ -364,6 +362,7 @@ const ApplicationForm = () => {
     let count = 0;
     const successLength: any[] = [];
     let payload;
+
     await Promise.all(
       uploadedDocs.map((file: File & { typeCode: string }) => {
         if (file.typeCode == "PAYMENTPROOF") {
@@ -371,7 +370,7 @@ const ApplicationForm = () => {
             documentTypeCode: "PAYMENTPROOF",
             fileName: file.name,
             fileType: file.type,
-            amount: finalfee,
+            amount: allFields.payment?.finalFee,
             paymentModeCode: "OFFLINE",
             discountCode: allFields?.payment?.discountCode,
             discountAmount: allFields?.payment?.discountAmount,
