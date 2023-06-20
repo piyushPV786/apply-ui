@@ -329,8 +329,8 @@ export const ApplicationDashboard = (props: any) => {
                             No application yet
                           </GreenFormHeading>
                           <p className="grey-text mt-2">
-                            Thank you for trusting Regenesys as your Educational
-                            Institution. Please Apply for your interested
+                            Thank you for trusting Regenesys as your educational
+                            institution. Please apply for your interested
                             qualification now.
                           </p>
                           <StyledButton

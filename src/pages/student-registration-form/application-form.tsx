@@ -681,16 +681,16 @@ const ApplicationForm = () => {
                         />
                         <label className="form-check-label">
                           <strong className="me-1">
-                            I have read and agreed
+                            I have read and agreed the
                           </strong>
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ color: Green }}
+                            style={{ color: Green, fontWeight: "bold" }}
                             href="https://www.regenesys.net/terms-and-conditions/"
                           >
                             {" "}
-                            terms and condition?
+                            terms and conditions
                           </a>
                         </label>
                       </div>

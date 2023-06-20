@@ -126,14 +126,14 @@ const StudentLogin = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Item>
-              <Title className="login-title">Login With Mobile Number</Title>
+              <Title className="login-title">Login with mobile number</Title>
             </Item>
           </Grid>
           <Grid item xs={12}>
             <Item>
               {" "}
               <span className="login-text">
-                Enter your mobile number we will send you OTP to Verify
+                Enter your mobile number and we will send you an OTP to verify
               </span>
             </Item>
           </Grid>
@@ -186,7 +186,7 @@ const StudentLogin = () => {
           <Grid item xs={12}>
             <Item>
               <span className="login-text">
-                Enter 4 digit OTP code sent to your number {mobileNumber}
+                Enter the 4 digit OTP sent to your mobile number{mobileNumber}
               </span>
             </Item>
           </Grid>
