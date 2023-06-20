@@ -161,47 +161,21 @@ const Payment = (props: any) => {
       });
   };
   const submitPaymentDocs = async () => {
-    let count = 0;
-    setPaymentDocSubmit(true);
-    await Promise.all(
-      paymentDocs.map((file) => {
-        const payload = {
-          documentTypeCode: "PAYMENTPROOF",
-          fileName: file.name,
-          fileType: file.type,
-          amount:
-            parseInt(programFee) -
-            parseInt(allFields?.payment?.discountAmount || 0) +
-            rmatFee,
-          paymentModeCode: "OFFLINE",
-          discountCode: allFields?.payment?.discountCode,
-          discountAmount: allFields?.payment?.discountAmount,
-          studentTypeCode: allFields?.education?.studentTypeCode,
-        };
-        return getUploadDocumentUrl(payload).then((res) => {
-          if (res?.statusCode === 201) {
-            count = count + 1;
-            uploadPaymentDocument(res?.data, file);
-          } else {
-            props.showToast(false, res?.response?.data?.message);
-            setPaymentDocSubmit(false);
-          }
-        });
-      })
-    )
-      .then(() => {
-        if (count === paymentDocs.length) {
-          setPaymentDocSubmit(false);
-          props?.navigateNext();
-        }
-      })
-      .catch((err) => {
-        setPaymentDocSubmit(false);
-        props.showToast(false, "Something went wrong");
-        console.log(err);
-      });
+    if (paymentDocs.length) {
+      setPaymentDocSubmit(false);
+      const finalAmount =
+        parseInt(programFee) -
+        parseInt(allFields?.payment?.discountAmount || 0) +
+        rmatFee;
+      setValue("payment.finalFee", finalAmount);
+      props?.navigateNext();
+    }
+
+    setPaymentDocSubmit(false);
+
     sessionStorage.removeItem("lastPromoCode");
   };
+
   const onPaymentDocumentUpload = (files: any) => {
     const uploadedFiles = files;
     uploadedFiles.forEach((item: any) => {

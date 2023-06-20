@@ -44,7 +44,7 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
 
       if (
         key == "employment" &&
-        (formData[key]?.isEmployed == "no" || !formData[key]?.isEmployed)
+        (formData[key]?.isEmployment == "no" || !formData[key]?.isEmployment)
       ) {
         delete formData[key];
       }
