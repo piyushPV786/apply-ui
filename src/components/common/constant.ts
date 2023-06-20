@@ -59,6 +59,7 @@ export const CommonApi = {
   GETCOMMONDOCUMENTURL: "/document",
   GETDOCUMENT: "/document/upload",
   GETCURRENCYCONVERSION: "/programs-fee/fee-conversion-rate/",
+  GETRMATDETAILS: "/application/rmat/details/",
 };
 
 export const RoutePaths = {
