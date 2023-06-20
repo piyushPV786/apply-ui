@@ -6,7 +6,7 @@ import {
 } from "../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import {
   formOptions,
@@ -38,6 +38,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
     register,
     watch,
     unregister,
+    control,
     formState: { errors, touchedFields },
   } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
@@ -52,8 +53,12 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
   const isKinNeed = isNextKinVal === "yes";
 
   const uppdateMobNumber = () => {
-    const countryCode = getCountryCallingCode(countryCodeRef);
-    setValue(`${mobileCountryCode}`, `+${countryCode}`);
+    if (countryCodeRef) {
+      const countryCode = getCountryCallingCode(countryCodeRef);
+      setValue(`${mobileCountryCode}`, `+${countryCode}`);
+    } else {
+      setValue(`${mobileCountryCode}`, "", formOptions);
+    }
   };
   useEffect(() => {
     if (!leadId) {
@@ -144,7 +149,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                       }
                     }}
                   />
-                  {touchedField?.name && error?.name && (
+                  {touchedField?.fullName && error?.fullName && (
                     <div className="invalid-feedback">
                       Please enter full name
                     </div>
@@ -161,7 +166,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                     register={register}
                     required={isKinNeed}
                   />
-                  {touchedField?.relation && error?.relation && (
+                  {touchedField?.relationship && error?.relationship && (
                     <div className="invalid-feedback">
                       Please enter relationship
                     </div>
@@ -182,8 +187,9 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                   />
                   {touchedField?.email && error?.email && (
                     <div className="invalid-feedback">
-                      {error?.email?.type == "validate" &&
-                        "you have entered an invalid email address. Please try again"}
+                      {error?.email?.type == "validate"
+                        ? "you have entered an invalid email address. Please try again"
+                        : "Please enter email"}
                     </div>
                   )}
                 </div>
@@ -193,32 +199,36 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel required>Mobile Number</StyledLabel>
-                  <PhoneInput
-                    id="2"
-                    international
-                    countryCallingCodeEditable={false}
-                    defaultCountry={countryCodeRef}
-                    placeholder="Select Country Code*"
-                    {...register(`${phoneNumber}`, {
+                  <Controller
+                    control={control}
+                    name={phoneNumber}
+                    rules={{
                       required: isKinNeed,
-                      validate: () =>
-                        validateNumber(phoneNumberVal, countryCodeRef),
-                    })}
-                    onCountryChange={(value: any) => {
-                      setCountryCode(value);
+                      validate: (value) =>
+                        validateNumber(value, countryCodeRef) ||
+                        "Invalid phone number",
                     }}
-                    onBlur={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      uppdateMobNumber();
-                    }}
-                    onChange={(value) => {
-                      setValue(`${phoneNumber}`, value, {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      });
-                    }}
-                    value={phoneNumberVal}
+                    render={({ field }) => (
+                      <PhoneInput
+                        {...field}
+                        id="2"
+                        international
+                        countryCallingCodeEditable={false}
+                        defaultCountry={countryCodeRef}
+                        placeholder="Select Country Code*"
+                        onCountryChange={(value: any) => {
+                          setCountryCode(value);
+                        }}
+                        onBlur={() => {
+                          field.onBlur();
+                          uppdateMobNumber();
+                        }}
+                        onChange={(value) => {
+                          field.onChange(value);
+                        }}
+                        value={field.value}
+                      />
+                    )}
                   />
                   {touchedField?.mobileNumber && error?.mobileNumber && (
                     <div className="invalid-feedback">

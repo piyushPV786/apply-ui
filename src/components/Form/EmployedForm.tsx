@@ -6,7 +6,7 @@ import {
 } from "../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
 import AdvanceDropDown from "../dropdown/Dropdown";
@@ -57,6 +57,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     register,
     watch,
     unregister,
+    control,
     formState: { errors, touchedFields },
   } = useFormContext();
 
@@ -83,8 +84,12 @@ export const EmployedForm = (props: IEmployeProps) => {
   }, []);
 
   const uppdateMobNumber = () => {
-    const countryCode = getCountryCallingCode(countryCodeRef);
-    setValue(`${officePhoneCode}`, `+${countryCode}`);
+    if (countryCodeRef) {
+      const countryCode = getCountryCallingCode(countryCodeRef);
+      setValue(`${officePhoneCode}`, `+${countryCode}`);
+    } else {
+      setValue(`${officePhoneCode}`, "", formOptions);
+    }
   };
   const touchField = touchedFields[EmployementDetails] as any;
   const error = errors[EmployementDetails] as any;
@@ -218,7 +223,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                         value={jobTitleVal}
                         defaultValue={jobTitleVal}
                         {...register(`${jobTitle}`, {
-                          required: isEmployedNeed && isSelfEmployed,
+                          required: isEmployedNeed,
                         })}
                         onChange={(e) => {
                           const value = e.target.value;
@@ -228,6 +233,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                           }
                         }}
                       />
+                      {touchField?.jobTitle && error?.jobTitle && (
+                        <div className="invalid-feedback">
+                          Please enter Job Title
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -238,7 +248,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                         className="form-select"
                         aria-label="Default select example"
                         {...register(`${industry}`, {
-                          required: isEmployedNeed && isSelfEmployed,
+                          required: isEmployedNeed,
                         })}
                       >
                         <option value={""}>Select Industry</option>
@@ -270,7 +280,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                           className="form-control"
                           value={managerNameVal}
                           defaultValue={managerNameVal}
-                          {...register(`${managerName}`)}
+                          {...register(`${managerName}`, { required: true })}
                           onChange={(e) => {
                             const value = e.target.value;
                             const name = e.target.name;
@@ -279,7 +289,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                             }
                           }}
                         />
-                        {touchField?.manager && error?.manager && (
+                        {touchField?.managerName && error?.managerName && (
                           <div className="invalid-feedback">
                             Please enter manager name
                           </div>
@@ -296,8 +306,13 @@ export const EmployedForm = (props: IEmployeProps) => {
                           className="form-control"
                           value={officeAddressVal}
                           defaultValue={officeAddressVal}
-                          {...register(`${officeAddress}`)}
+                          {...register(`${officeAddress}`, { required: true })}
                         />
+                        {touchField?.officeAddress && error?.officeAddress && (
+                          <div className="invalid-feedback">
+                            Please enter Office Address
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -305,29 +320,37 @@ export const EmployedForm = (props: IEmployeProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <StyledLabel required>Office Number</StyledLabel>
-                        <PhoneInput
-                          international
-                          countryCallingCodeEditable={false}
-                          defaultCountry={countryCodeRef}
-                          placeholder="Select Country Code*"
-                          {...register(`${officeNumber}`, {
+                        <Controller
+                          control={control}
+                          name={officeNumber}
+                          rules={{
                             required: isEmployedNeed,
-                            validate: () =>
-                              validateNumber(officeNumberVal, countryCodeRef),
-                          })}
-                          onCountryChange={(value: any) => {
-                            setCountryCode(value);
+                            validate: (value) =>
+                              validateNumber(value, countryCodeRef) ||
+                              "Invalid office number",
                           }}
-                          onBlur={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            uppdateMobNumber();
-                          }}
-                          onChange={(value) => {
-                            setValue(officeNumber, value, formOptions);
-                          }}
-                          value={officeNumberVal}
+                          render={({ field }) => (
+                            <PhoneInput
+                              {...field}
+                              international
+                              countryCallingCodeEditable={false}
+                              defaultCountry={countryCodeRef}
+                              placeholder="Select Country Code*"
+                              onCountryChange={(value: any) => {
+                                setCountryCode(value);
+                              }}
+                              onBlur={() => {
+                                field.onBlur();
+                                uppdateMobNumber();
+                              }}
+                              onChange={(value) => {
+                                field.onChange(value);
+                              }}
+                              value={field.value}
+                            />
+                          )}
                         />
+
                         {touchField?.officeMobileNumber &&
                           error?.officeMobileNumber && (
                             <div className="invalid-feedback">
@@ -348,6 +371,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                           options={CountryData.sort((a, b) =>
                             sortAscending(a, b, "name")
                           )}
+                          required={true}
                           register={register}
                           mapKey="code"
                           name={employmentCountry}
@@ -358,14 +382,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                           label="Country"
                         />
 
-                        {touchedFields &&
-                          error &&
-                          touchedFields[0]?.country &&
-                          error[0]?.country && (
-                            <div className="invalid-feedback">
-                              Please enter Postal Country
-                            </div>
-                          )}
+                        {touchField?.country && error?.country && (
+                          <div className="invalid-feedback">
+                            Please select Country
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -380,13 +401,13 @@ export const EmployedForm = (props: IEmployeProps) => {
                           {...register(`${employmentPinCode}`, {
                             required: true,
                           })}
+                          type="number"
                         />
-                        {touchedFields?.employmentPinCode &&
-                          error?.employmentPinCode && (
-                            <div className="invalid-feedback">
-                              Please Enter Pin Code
-                            </div>
-                          )}
+                        {touchField?.zipCode && error?.zipCode && (
+                          <div className="invalid-feedback">
+                            Please enter Pin Code
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -402,13 +423,19 @@ export const EmployedForm = (props: IEmployeProps) => {
                           {...register(`${employmentState}`, {
                             required: true,
                           })}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const name = e.target.name;
+                            if (onlyAlphabets(value)) {
+                              setValue(name, value, formOptions);
+                            }
+                          }}
                         />
-                        {touchedFields?.employmentState &&
-                          error?.employmentState && (
-                            <div className="invalid-feedback">
-                              Please Enter State Name
-                            </div>
-                          )}
+                        {touchField?.state && error?.state && (
+                          <div className="invalid-feedback">
+                            Please enter State Name
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -424,13 +451,19 @@ export const EmployedForm = (props: IEmployeProps) => {
                           {...register(`${employmentCity}`, {
                             required: true,
                           })}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const name = e.target.name;
+                            if (onlyAlphabets(value)) {
+                              setValue(name, value, formOptions);
+                            }
+                          }}
                         />
-                        {touchedFields?.employmentCity &&
-                          error?.employmentCity && (
-                            <div className="invalid-feedback">
-                              Please Enter City Name
-                            </div>
-                          )}
+                        {touchField?.city && error?.city && (
+                          <div className="invalid-feedback">
+                            Please enter City Name
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
