@@ -403,7 +403,7 @@ function ApplicationCard({
     ? "Pay Program Fee"
     : "Pay Application Fee";
 
-  const showRAMTBtn = status.includes(CommonEnums.RMAT_PENDING);
+  const showRMATBtn = status.includes(CommonEnums.RMAT_PENDING);
 
   const showUploadBtn =
     status.includes(CommonEnums.APP_ENROLLED_STATUS) ||
@@ -503,11 +503,13 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-              {showRAMTBtn && (
+              {showRMATBtn && (
                 <Grid item>
                   <StyledButton
                     onClick={() => {
-                      router.push(RoutePaths.RMATView);
+                      router.push(RoutePaths.RMATView, {
+                        query: { enrolmentCode },
+                      });
                     }}
                     isRMATBtn
                     title="Take RMAT Test"

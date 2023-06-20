@@ -372,12 +372,14 @@ export const EmployedForm = (props: IEmployeProps) => {
                   {!isSelfEmployed && (
                     <div className="col-md-4">
                       <div className="mb-4">
-                        <StyledLabel> Pin Code / Zip Code</StyledLabel>
+                        <StyledLabel required> Pin Code / Zip Code</StyledLabel>
                         <input
                           className="form-control"
                           value={employmentPinCodeVal}
                           defaultValue={employmentPinCodeVal}
-                          {...register(`${employmentPinCode}`)}
+                          {...register(`${employmentPinCode}`, {
+                            required: true,
+                          })}
                         />
                         {touchedFields?.employmentPinCode &&
                           error?.employmentPinCode && (
@@ -392,12 +394,14 @@ export const EmployedForm = (props: IEmployeProps) => {
                   {!isSelfEmployed && (
                     <div className="col-md-4">
                       <div className="mb-4">
-                        <StyledLabel> State/Provinces</StyledLabel>
+                        <StyledLabel required> State/Provinces</StyledLabel>
                         <input
                           className="form-control"
                           value={employmentStateVal}
                           defaultValue={employmentStateVal}
-                          {...register(`${employmentState}`)}
+                          {...register(`${employmentState}`, {
+                            required: true,
+                          })}
                         />
                         {touchedFields?.employmentState &&
                           error?.employmentState && (
@@ -412,12 +416,14 @@ export const EmployedForm = (props: IEmployeProps) => {
                   {!isSelfEmployed && (
                     <div className="col-md-4">
                       <div className="mb-4">
-                        <StyledLabel> City</StyledLabel>
+                        <StyledLabel required> City</StyledLabel>
                         <input
                           className="form-control"
                           value={employmentCityVal}
                           defaultValue={employmentCityVal}
-                          {...register(`${employmentCity}`)}
+                          {...register(`${employmentCity}`, {
+                            required: true,
+                          })}
                         />
                         {touchedFields?.employmentCity &&
                           error?.employmentCity && (

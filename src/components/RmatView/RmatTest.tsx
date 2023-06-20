@@ -1,17 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MainContainer, PaymentContainer } from "../payment/payment";
 import { GreenFormHeading } from "../common/common";
 import Header from "../common/header";
-import { AlertEnums, RoutePaths } from "../common/constant";
+import { AlertEnums, CommonApi, RoutePaths } from "../common/constant";
 import AlertBox from "../alert/Alert";
 import { GreenText } from "../student/style";
 import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
-interface RmatTestProps {}
+import { AuthApi } from "../../service/Axios";
+import DocumentUploadContainer from "../document/DocumentUploadContainer";
 
 const RmatTest: React.FC = () => {
+  const [userDetail, setUserDetail] = useState<any>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const url = window.location.href;
+    const urlObj = new URL(url);
+    const searchParams = new URLSearchParams(urlObj.search);
+    const enrolmentCode = searchParams.get("enrolmentCode");
+    AuthApi.get(`${CommonApi.GETRMATDETAILS}${enrolmentCode}`)
+      .then((res) => {
+        console.log({ res });
+        // const data = {
+        //   statusCode: 200,
+        //   message: "Data Fetched Successfully.",
+        //   data: {
+        //     isActive: true,
+        //     id: 1,
+        //     createdBy: null,
+        //     createdAt: "2023-06-15T13:26:18.201Z",
+        //     updatedBy: null,
+        //     updatedAt: "2023-06-15T13:26:18.201Z",
+        //     deletedBy: null,
+        //     deletedAt: null,
+        //     username: "pqr1397708.michael",
+        //     password: "ml4an5jx",
+        //     moodleId: "1859",
+        //     url: "https://rmatuat.regenesys.net",
+        //   },
+        // };
+        setUserDetail(res?.data?.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
   return (
     <ParentContainer className="text-center">
       <Header />
@@ -41,19 +77,19 @@ const RmatTest: React.FC = () => {
                 <div className="row">
                   <div className="col-4">
                     <p>RMAT Test URL</p>
-                    <a href="http://rmat.regeniusuat.net/">
-                      <GreenText>http://rmat.regeniusuat.net/</GreenText>
+                    <a href={userDetail?.url}>
+                      <GreenText>{userDetail?.url}</GreenText>
                     </a>
                   </div>
                   <div className="col-4">
                     <p>Username</p>
                     <a href="#">
-                      <GreenText>Karn.Sharma@gmail.com</GreenText>
+                      <GreenText>{userDetail?.username}</GreenText>
                     </a>
                   </div>
                   <div className="col-4">
                     <p>Password</p>
-                    <strong>wp9dh%sKgK</strong>
+                    <strong>{userDetail?.password}</strong>
                   </div>
                 </div>
               </div>
@@ -81,6 +117,7 @@ const RmatTest: React.FC = () => {
           </div>
         </MainContainer>
       </div>
+      <DocumentUploadContainer {...({} as any)} />
     </ParentContainer>
   );
 };

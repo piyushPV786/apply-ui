@@ -437,12 +437,17 @@ export const SponsoredForm = (props: ISponsorProps) => {
                         </div>
                         <div className="col-md-4">
                           <div className="mb-4">
-                            <StyledLabel> Pin Code / Zip Code</StyledLabel>
+                            <StyledLabel required>
+                              {" "}
+                              Pin Code / Zip Code
+                            </StyledLabel>
                             <input
                               className="form-control"
                               value={sponsorPinCodeVal}
                               defaultValue={sponsorPinCodeVal}
-                              {...register(`${sponsorPinCode}`)}
+                              {...register(`${sponsorPinCode}`, {
+                                required: isSponserNeed,
+                              })}
                             />
                           </div>
                           {touchedField?.sponsorPinCode &&
@@ -454,12 +459,14 @@ export const SponsoredForm = (props: ISponsorProps) => {
                         </div>{" "}
                         <div className="col-md-4">
                           <div className="mb-4">
-                            <StyledLabel> State/Provinces</StyledLabel>
+                            <StyledLabel required> State/Provinces</StyledLabel>
                             <input
                               className="form-control"
                               value={sponsorStateVal}
                               defaultValue={sponsorStateVal}
-                              {...register(`${sponsorState}`)}
+                              {...register(`${sponsorState}`, {
+                                required: isSponserNeed,
+                              })}
                             />
                             {touchedField?.sponsorState &&
                               error?.sponsorState && (
@@ -471,12 +478,14 @@ export const SponsoredForm = (props: ISponsorProps) => {
                         </div>{" "}
                         <div className="col-md-4">
                           <div className="mb-4">
-                            <StyledLabel> City</StyledLabel>
+                            <StyledLabel required> City</StyledLabel>
                             <input
                               className="form-control"
                               value={sponsorCityVal}
                               defaultValue={sponsorCityVal}
-                              {...register(`${sponsorCity}`)}
+                              {...register(`${sponsorCity}`, {
+                                required: isSponserNeed,
+                              })}
                             />
                             {touchedField?.sponsorCity &&
                               error?.sponsorCity && (

@@ -693,6 +693,11 @@ const ApplicationForm = () => {
                             terms and conditions
                           </a>
                         </label>
+                        {errors?.isAgreedTermsAndConditions && (
+                          <div className="invalid-feedback">
+                            Please check terms and conditions
+                          </div>
+                        )}
                       </div>
                     )}
 
