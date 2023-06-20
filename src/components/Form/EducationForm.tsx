@@ -12,7 +12,7 @@ import { useFormContext } from "react-hook-form";
 import { IFee, IOption, IStudyModeQualification } from "../common/types";
 import styled from "styled-components";
 import {
-  formOptions,
+  formDirtyState,
   onlyAlphaNumericSpace,
   sortAscending,
 } from "../../Util/Util";
@@ -113,9 +113,9 @@ export const EducationForm = (props: IEducationProps) => {
   }, [programVal]);
   useEffect(() => {
     if (internationDegreeVal === true) {
-      setValue(internationDegree, "yes", formOptions);
+      setValue(internationDegree, "yes", formDirtyState);
     } else if (internationDegreeVal === false) {
-      setValue(internationDegree, "no", formOptions);
+      setValue(internationDegree, "no", formDirtyState);
     }
   }, [internationDegreeVal]);
 
@@ -136,7 +136,7 @@ export const EducationForm = (props: IEducationProps) => {
         setValue(
           applicationFeesKey,
           applicationFees?.fees[0]?.fee,
-          formOptions
+          formDirtyState
         );
         setStudyModeQualification(courseFeesDetail);
       })
@@ -176,7 +176,7 @@ export const EducationForm = (props: IEducationProps) => {
                     className="form-select"
                     {...register(`${program}`, { required: true })}
                     onChange={(e) => {
-                      setValue(e.target.name, e.target.value, formOptions);
+                      setValue(e.target.name, e.target.value, formDirtyState);
                       getQualificationStudyModeData(e.target.value);
                     }}
                     disabled={isApplicationEnrolled}
@@ -239,7 +239,7 @@ export const EducationForm = (props: IEducationProps) => {
                                           setValue(
                                             studyMode,
                                             e.target.value,
-                                            formOptions
+                                            formDirtyState
                                           );
                                         }}
                                         value={studyModeCode}
@@ -297,7 +297,7 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchFields?.qualificationCode &&
+                  {educationFormError &&
                     educationFormError?.qualificationCode && (
                       <div className="invalid-feedback">
                         Please select Highest Qualification
@@ -321,16 +321,15 @@ export const EducationForm = (props: IEducationProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphaNumericSpace(value) || !value) {
-                        setValue(name, value, formOptions);
+                        setValue(name, value, formDirtyState);
                       }
                     }}
                   />
-                  {touchFields?.highSchoolName &&
-                    educationFormError?.highSchoolName && (
-                      <div className="invalid-feedback">
-                        Please enter high school name
-                      </div>
-                    )}
+                  {educationFormError && educationFormError?.highSchoolName && (
+                    <div className="invalid-feedback">
+                      Please enter high school name
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -343,7 +342,7 @@ export const EducationForm = (props: IEducationProps) => {
                     <input
                       key={`${internationDegreeVal}yes`}
                       onClick={() => {
-                        setValue(internationDegree, "yes", formOptions);
+                        setValue(internationDegree, "yes", formDirtyState);
                       }}
                       className="form-check-input me-2"
                       type="radio"
@@ -366,7 +365,7 @@ export const EducationForm = (props: IEducationProps) => {
                     <input
                       key={`${internationDegreeVal}no`}
                       onClick={() => {
-                        setValue(internationDegree, "no", formOptions);
+                        setValue(internationDegree, "no", formDirtyState);
                       }}
                       className="form-check-input me-2"
                       type="radio"
@@ -386,7 +385,7 @@ export const EducationForm = (props: IEducationProps) => {
                     </label>
                   </div>
 
-                  {touchFields?.isInternationDegree &&
+                  {educationFormError &&
                     educationFormError?.isInternationDegree && (
                       <div className="invalid-feedback">
                         International is required
@@ -404,22 +403,23 @@ export const EducationForm = (props: IEducationProps) => {
                     className="form-select"
                     {...register(`${studentTypeName}`, { required: true })}
                     onChange={({ target: { value } }) => {
-                      setValue(studentTypeName, value, formOptions);
-                      setValue("sponsor", null, formOptions);
+                      setValue(studentTypeName, value, formDirtyState);
+                      setValue("sponsor", null, formDirtyState);
                       if (
                         value?.toLowerCase().includes(CommonEnums.MANAGEMENT)
                       ) {
-                        setValue("sponsor.isSponsored", "no", formOptions);
+                        setValue("sponsor.isSponsored", "no", formDirtyState);
                         return;
                       }
                       if (value?.toLowerCase().includes(CommonEnums.REGULAR)) {
-                        setValue("sponsor.isSponsored", "no", formOptions);
+                        setValue("sponsor.isSponsored", "no", formDirtyState);
                         return;
                       }
                       if (value?.toLowerCase().includes(CommonEnums.BURSARY)) {
-                        setValue("sponsor.isSponsored", "yes", formOptions);
+                        setValue("sponsor.isSponsored", "yes", formDirtyState);
                         return;
-                      } else setValue("sponsor.isSponsored", "", formOptions);
+                      } else
+                        setValue("sponsor.isSponsored", "", formDirtyState);
                       return;
                     }}
                   >
@@ -438,7 +438,7 @@ export const EducationForm = (props: IEducationProps) => {
                           </option>
                         ))}
                   </select>
-                  {touchFields?.studentTypeCode &&
+                  {educationFormError &&
                     educationFormError?.studentTypeCode && (
                       <div className="invalid-feedback">
                         Please select Student type
@@ -460,17 +460,17 @@ export const EducationForm = (props: IEducationProps) => {
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
-                      setValue(name, value, formOptions);
+                      setValue(name, value, formDirtyState);
                       setTimeout(() => {
                         if (value === "AGENT") {
-                          setValue(socialMediaId, "", formOptions);
+                          setValue(socialMediaId, "", formDirtyState);
                           unregister(socialMediaId, {
                             keepError: false,
                             keepIsValid: true,
                           });
                         }
                         if (value === "SOCIALMEDIA") {
-                          setValue(agentName, "", formOptions);
+                          setValue(agentName, "", formDirtyState);
                           unregister(agentName, {
                             keepError: false,
                             keepIsValid: true,
@@ -492,12 +492,11 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchFields?.referredById &&
-                    educationFormError?.referredById && (
-                      <div className="invalid-feedback">
-                        Please select Referred by
-                      </div>
-                    )}
+                  {educationFormError && educationFormError?.referredById && (
+                    <div className="invalid-feedback">
+                      Please select Referred by
+                    </div>
+                  )}
                 </div>
 
                 {referredByeVal === "AGENT" && (
@@ -523,12 +522,11 @@ export const EducationForm = (props: IEducationProps) => {
                             </option>
                           ))}
                       </select>
-                      {touchFields?.agentCode &&
-                        educationFormError?.agentCode && (
-                          <div className="invalid-feedback">
-                            Please select agent
-                          </div>
-                        )}
+                      {educationFormError && educationFormError?.agentCode && (
+                        <div className="invalid-feedback">
+                          Please select agent
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -556,7 +554,7 @@ export const EducationForm = (props: IEducationProps) => {
                             </option>
                           ))}
                       </select>
-                      {touchFields?.socialMediaCode &&
+                      {educationFormError &&
                         educationFormError?.socialMediaCode && (
                           <div className="invalid-feedback">
                             Please select social media

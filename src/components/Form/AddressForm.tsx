@@ -15,6 +15,7 @@ import {
   onlyAlphabets,
   sortAscending,
   onlyAlphabetsOrNumbersDash,
+  formDirtyState,
 } from "../../Util/Util";
 const Address = "address";
 const resPostalAddress = `${Address}[1].street`;
@@ -89,18 +90,15 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabetsOrNumbersDash(value)) {
-                        setValue(name, value, formOptions);
+                        setValue(name, value, formDirtyState);
                       }
                     }}
                   />
-                  {touchedField &&
-                    error &&
-                    touchedField[0]?.street &&
-                    error[0]?.street && (
-                      <div className="invalid-feedback">
-                        Please enter Postal Address
-                      </div>
-                    )}
+                  {error && error[0]?.street && (
+                    <div className="invalid-feedback">
+                      Please enter Postal Address
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -117,16 +115,13 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, formOptions);
+                        setValue(name, value, formDirtyState);
                       }
                     }}
                   />
-                  {touchedField &&
-                    error &&
-                    touchedField[0]?.city &&
-                    error[0]?.city && (
-                      <div className="invalid-feedback">Please enter City</div>
-                    )}
+                  {error && error[0]?.city && (
+                    <div className="invalid-feedback">Please enter City</div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -143,18 +138,15 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, formOptions);
+                        setValue(name, value, formDirtyState);
                       }
                     }}
                   />
-                  {touchedField &&
-                    error &&
-                    touchedField[0]?.state &&
-                    error[0]?.state && (
-                      <div className="invalid-feedback">
-                        Please enter Postal State
-                      </div>
-                    )}
+                  {error && error[0]?.state && (
+                    <div className="invalid-feedback">
+                      Please enter Postal State
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -176,14 +168,11 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     label="Country"
                   />
 
-                  {touchedField &&
-                    error &&
-                    touchedField[0]?.country &&
-                    error[0]?.country && (
-                      <div className="invalid-feedback">
-                        Please enter Postal Country
-                      </div>
-                    )}
+                  {error && error[0]?.country && (
+                    <div className="invalid-feedback">
+                      Please enter Postal Country
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -202,18 +191,15 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     id="postalZipCode"
                     placeholder="Enter Zip/Postal Code"
                   />
-                  {touchedField &&
-                    error &&
-                    touchedField[0]?.zipcode &&
-                    error[0]?.zipcode && (
-                      <div className="invalid-feedback">
-                        {error[0]?.zipcode.type === "maxLength"
-                          ? "Max length exceeded"
-                          : error[0]?.zipcode.type === "minLength"
-                          ? "Minimum length should be 4"
-                          : "Please enter Zip/Postal Code"}
-                      </div>
-                    )}
+                  {error && error[0]?.zipcode && (
+                    <div className="invalid-feedback">
+                      {error[0]?.zipcode.type === "maxLength"
+                        ? "Max length exceeded"
+                        : error[0]?.zipcode.type === "minLength"
+                        ? "Minimum length should be 4"
+                        : "Please enter Zip/Postal Code"}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -285,18 +271,15 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                         const value = e.target.value;
                         const name = e.target.name;
                         if (onlyAlphabetsOrNumbersDash(value)) {
-                          setValue(name, value, formOptions);
+                          setValue(name, value, formDirtyState);
                         }
                       }}
                     />
-                    {touchedField &&
-                      error &&
-                      touchedField[1]?.street &&
-                      error[1]?.street && (
-                        <div className="invalid-feedback">
-                          Please enter Residential Address
-                        </div>
-                      )}
+                    {error && error[1]?.street && (
+                      <div className="invalid-feedback">
+                        Please enter Residential Address
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -313,18 +296,15 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                         const value = e.target.value;
                         const name = e.target.name;
                         if (onlyAlphabets(value)) {
-                          setValue(name, value, formOptions);
+                          setValue(name, value, formDirtyState);
                         }
                       }}
                     />
-                    {touchedField &&
-                      error &&
-                      touchedField[1]?.city &&
-                      error[1]?.city && (
-                        <div className="invalid-feedback">
-                          Please enter Residential City
-                        </div>
-                      )}
+                    {error && error[1]?.city && (
+                      <div className="invalid-feedback">
+                        Please enter Residential City
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -342,18 +322,15 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                         const value = e.target.value;
                         const name = e.target.name;
                         if (onlyAlphabets(value)) {
-                          setValue(name, value, formOptions);
+                          setValue(name, value, formDirtyState);
                         }
                       }}
                     />
-                    {touchedField &&
-                      error &&
-                      touchedField[1]?.state &&
-                      error[1]?.state && (
-                        <div className="invalid-feedback">
-                          Please enter Residential State
-                        </div>
-                      )}
+                    {error && error[1]?.state && (
+                      <div className="invalid-feedback">
+                        Please enter Residential State
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -374,14 +351,11 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                         setValue(resCountry, value, formOptions);
                       }}
                     />
-                    {touchedField &&
-                      error &&
-                      touchedField[1]?.country &&
-                      error[1]?.country && (
-                        <div className="invalid-feedback">
-                          Please enter Residential Country
-                        </div>
-                      )}
+                    {error && error[1]?.country && (
+                      <div className="invalid-feedback">
+                        Please enter Residential Country
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -400,18 +374,15 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       id="postalCode"
                       placeholder="Enter Zip/Postal Code"
                     />
-                    {touchedField &&
-                      error &&
-                      touchedField[1]?.zipcode &&
-                      error[1]?.zipcode && (
-                        <div className="invalid-feedback">
-                          {error[1]?.zipcode.type === "maxLength"
-                            ? "Max length exceeded"
-                            : error[1]?.zipcode.type === "minLength"
-                            ? "Minimum length should be 4"
-                            : "Please enter Zip/Postal Code"}
-                        </div>
-                      )}
+                    {error && error[1]?.zipcode && (
+                      <div className="invalid-feedback">
+                        {error[1]?.zipcode.type === "maxLength"
+                          ? "Max length exceeded"
+                          : error[1]?.zipcode.type === "minLength"
+                          ? "Minimum length should be 4"
+                          : "Please enter Zip/Postal Code"}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

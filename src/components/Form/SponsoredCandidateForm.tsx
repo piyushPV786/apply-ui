@@ -15,12 +15,12 @@ import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import {
-  formOptions,
   isObjectEmpty,
   isValidEmail,
   onlyAlphabets,
   validateNumber,
   sortAscending,
+  formDirtyState,
 } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
@@ -81,7 +81,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
       const countryCode = getCountryCallingCode(countryCodeRef);
       setValue(`${sponsorMobileCode}`, `+${countryCode}`);
     } else {
-      setValue(`${sponsorMobileCode}`, null, formOptions);
+      setValue(`${sponsorMobileCode}`, null, formDirtyState);
     }
   };
   const error = errors[SponsorCandidateDetail] as any;
@@ -109,7 +109,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
       props?.leadId &&
       isSponserDetailExist
     ) {
-      setValue(isSponsored, "yes", formOptions);
+      setValue(isSponsored, "yes", formDirtyState);
     }
   }, [isSponserDetailExist]);
 
@@ -250,12 +250,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 </option>
                               ))}
                           </select>
-                          {touchedField?.relationship &&
-                            error?.relationship && (
-                              <div className="invalid-feedback">
-                                Please select relationship type
-                              </div>
-                            )}
+                          {error && error?.relationship && (
+                            <div className="invalid-feedback">
+                              Please select relationship type
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -282,11 +281,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 const value = e.target.value;
                                 const name = e.target.name;
                                 if (onlyAlphabets(value)) {
-                                  setValue(name, value, formOptions);
+                                  setValue(name, value, formDirtyState);
                                 }
                               }}
                             />
-                            {touchedField?.name && error?.name && (
+                            {error && error?.name && (
                               <div className="invalid-feedback">
                                 Please enter{" "}
                                 {getSponsorNameLabel(
@@ -322,17 +321,17 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 })}
                               />
 
-                              {touchedField?.email &&
-                                error?.email &&
-                                !isSelfSponsored &&
-                                sponserEmailVal.length > 0 &&
-                                isSponserNeed && (
-                                  <div className="invalid-feedback">
-                                    {error?.email?.type == "validate"
-                                      ? "you have entered an invalid email address. Please try again"
-                                      : "Please enter sponser email"}
-                                  </div>
-                                )}
+                              {error && error?.email && (
+                                <div className="invalid-feedback">
+                                  {error?.email?.type == "validate" &&
+                                  sponserEmailVal?.length > 0
+                                    ? "you have entered an invalid email address. Please try again"
+                                    : `Please enter ${getSponsorEmailLabel(
+                                        studentType?.toLowerCase(),
+                                        sponsorModeVal?.toLowerCase()
+                                      )}`}
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
@@ -384,14 +383,13 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 />
                               )}
                             />
-                            {touchedField?.mobileNumber &&
-                              error?.mobileNumber && (
-                                <div className="invalid-feedback">
-                                  {error?.mobileNumber.type === "validate"
-                                    ? "you have entered an invalid number"
-                                    : " Please enter phone number"}
-                                </div>
-                              )}
+                            {error && error?.mobileNumber && (
+                              <div className="invalid-feedback">
+                                {error?.mobileNumber.type === "validate"
+                                  ? "you have entered an invalid number"
+                                  : " Please enter phone number"}
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className="col-md-4">
@@ -412,7 +410,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 required: true,
                               })}
                             />
-                            {touchedField?.address && error?.address && (
+                            {error && error?.address && (
                               <div className="invalid-feedback">
                                 Please enter{" "}
                                 {getSponsorAddressLabel(
@@ -435,19 +433,16 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               name={sponsorCountry}
                               onChange={(e: any) => {
                                 const value = e.target.value;
-                                setValue(sponsorCountry, value, formOptions);
+                                setValue(sponsorCountry, value, formDirtyState);
                               }}
                               label="Country"
                             />
 
-                            {touchedField &&
-                              error &&
-                              touchedField?.country &&
-                              error?.country && (
-                                <div className="invalid-feedback">
-                                  Please enter Country
-                                </div>
-                              )}
+                            {error && error?.country && (
+                              <div className="invalid-feedback">
+                                Please enter Country
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className="col-md-4">
@@ -465,12 +460,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               })}
                               type="number"
                             />
+                            {error && error?.zipCode && (
+                              <div className="invalid-feedback">
+                                Please enter Pin Code
+                              </div>
+                            )}
                           </div>
-                          {touchedField?.zipCode && error?.zipCode && (
-                            <div className="invalid-feedback">
-                              Please enter Pin Code
-                            </div>
-                          )}
                         </div>{" "}
                         <div className="col-md-4">
                           <div className="mb-4">
@@ -486,11 +481,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 const value = e.target.value;
                                 const name = e.target.name;
                                 if (onlyAlphabets(value)) {
-                                  setValue(name, value, formOptions);
+                                  setValue(name, value, formDirtyState);
                                 }
                               }}
                             />
-                            {touchedField?.state && error?.state && (
+                            {error && error?.state && (
                               <div className="invalid-feedback">
                                 Please enter State Name
                               </div>
@@ -511,11 +506,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 const value = e.target.value;
                                 const name = e.target.name;
                                 if (onlyAlphabets(value)) {
-                                  setValue(name, value, formOptions);
+                                  setValue(name, value, formDirtyState);
                                 }
                               }}
                             />
-                            {touchedField?.city && error?.city && (
+                            {error && error?.city && (
                               <div className="invalid-feedback">
                                 Please enter City Name
                               </div>

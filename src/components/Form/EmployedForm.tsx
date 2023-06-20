@@ -11,7 +11,7 @@ import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import {
-  formOptions,
+  formDirtyState,
   isObjectEmpty,
   onlyAlphabets,
   onlyAlphaNumericSpace,
@@ -88,7 +88,7 @@ export const EmployedForm = (props: IEmployeProps) => {
       const countryCode = getCountryCallingCode(countryCodeRef);
       setValue(`${officePhoneCode}`, `+${countryCode}`);
     } else {
-      setValue(`${officePhoneCode}`, "", formOptions);
+      setValue(`${officePhoneCode}`, "", formDirtyState);
     }
   };
   const touchField = touchedFields[EmployementDetails] as any;
@@ -183,12 +183,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchField?.employmentStatusCode &&
-                    error?.employmentStatusCode && (
-                      <div className="invalid-feedback">
-                        Please select employment status
-                      </div>
-                    )}
+                  {error && error?.employmentStatusCode && (
+                    <div className="invalid-feedback">
+                      Please select employment status
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -206,7 +205,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                           value={employerVal}
                           defaultValue={employerVal}
                         />
-                        {touchField?.employer && error?.employer && (
+                        {error && error?.employer && (
                           <div className="invalid-feedback">
                             Please enter employer
                           </div>
@@ -229,11 +228,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                           const value = e.target.value;
                           const name = e.target.name;
                           if (onlyAlphaNumericSpace(value) || !value) {
-                            setValue(name, value, formOptions);
+                            setValue(name, value, formDirtyState);
                           }
                         }}
                       />
-                      {touchField?.jobTitle && error?.jobTitle && (
+                      {error && error?.jobTitle && (
                         <div className="invalid-feedback">
                           Please enter Job Title
                         </div>
@@ -263,12 +262,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                             </option>
                           ))}
                       </select>
-                      {touchField?.employmentIndustryCode &&
-                        error?.employmentIndustryCode && (
-                          <div className="invalid-feedback">
-                            Please select industry
-                          </div>
-                        )}
+                      {error && error?.employmentIndustryCode && (
+                        <div className="invalid-feedback">
+                          Please select industry
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -285,11 +283,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                             const value = e.target.value;
                             const name = e.target.name;
                             if (onlyAlphabets(value)) {
-                              setValue(name, value, formOptions);
+                              setValue(name, value, formDirtyState);
                             }
                           }}
                         />
-                        {touchField?.managerName && error?.managerName && (
+                        {error && error?.managerName && (
                           <div className="invalid-feedback">
                             Please enter manager name
                           </div>
@@ -308,7 +306,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                           defaultValue={officeAddressVal}
                           {...register(`${officeAddress}`, { required: true })}
                         />
-                        {touchField?.officeAddress && error?.officeAddress && (
+                        {error && error?.officeAddress && (
                           <div className="invalid-feedback">
                             Please enter Office Address
                           </div>
@@ -351,14 +349,13 @@ export const EmployedForm = (props: IEmployeProps) => {
                           )}
                         />
 
-                        {touchField?.officeMobileNumber &&
-                          error?.officeMobileNumber && (
-                            <div className="invalid-feedback">
-                              {error?.officeMobileNumber.type === "validate"
-                                ? "you have entered an invalid number"
-                                : "Please enter office number"}
-                            </div>
-                          )}
+                        {error && error?.officeMobileNumber && (
+                          <div className="invalid-feedback">
+                            {error?.officeMobileNumber.type === "validate"
+                              ? "you have entered an invalid number"
+                              : "Please enter office number"}
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -377,12 +374,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                           name={employmentCountry}
                           onChange={(e: any) => {
                             const value = e.target.value;
-                            setValue(employmentCountry, value, formOptions);
+                            setValue(employmentCountry, value, formDirtyState);
                           }}
                           label="Country"
                         />
 
-                        {touchField?.country && error?.country && (
+                        {error && error?.country && (
                           <div className="invalid-feedback">
                             Please select Country
                           </div>
@@ -403,7 +400,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                           })}
                           type="number"
                         />
-                        {touchField?.zipCode && error?.zipCode && (
+                        {error && error?.zipCode && (
                           <div className="invalid-feedback">
                             Please enter Pin Code
                           </div>
@@ -427,11 +424,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                             const value = e.target.value;
                             const name = e.target.name;
                             if (onlyAlphabets(value)) {
-                              setValue(name, value, formOptions);
+                              setValue(name, value, formDirtyState);
                             }
                           }}
                         />
-                        {touchField?.state && error?.state && (
+                        {error && error?.state && (
                           <div className="invalid-feedback">
                             Please enter State Name
                           </div>
@@ -455,11 +452,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                             const value = e.target.value;
                             const name = e.target.name;
                             if (onlyAlphabets(value)) {
-                              setValue(name, value, formOptions);
+                              setValue(name, value, formDirtyState);
                             }
                           }}
                         />
-                        {touchField?.city && error?.city && (
+                        {error && error?.city && (
                           <div className="invalid-feedback">
                             Please enter City Name
                           </div>

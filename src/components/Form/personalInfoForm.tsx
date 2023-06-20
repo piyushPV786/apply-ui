@@ -14,7 +14,7 @@ import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
 import {
-  formOptions,
+  formDirtyState,
   isValidDate,
   isValidEmail,
   onlyAlphabets,
@@ -99,15 +99,15 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       setNationality(false);
       setDocument(true);
 
-      setValue(identificationDocumentTypeKey, "PA", formOptions);
+      setValue(identificationDocumentTypeKey, "PA", formDirtyState);
       setValue(nationalityIdKey, "", { shouldDirty: true });
       setIsYes(true);
-      setValue(identificationNumberKey, "", formOptions);
+      setValue(identificationNumberKey, "", formDirtyState);
     } else {
-      setValue(identificationNumberKey, "", formOptions);
+      setValue(identificationNumberKey, "", formDirtyState);
       setNationality(true);
       setDocument(false);
-      setValue(nationalityIdKey, "SA", formOptions);
+      setValue(nationalityIdKey, "SA", formDirtyState);
       setValue(identificationDocumentTypeKey, "", { shouldDirty: true });
     }
   };
@@ -144,14 +144,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, formOptions);
+                        setValue(name, value, formDirtyState);
                       }
                     }}
                     className="form-control"
                     id="firstName"
                     placeholder="e.g Robert"
                   />
-                  {TouchFields?.firstName && Errors?.firstName && (
+                  {Errors?.firstName && (
                     <>
                       <div className="invalid-feedback">
                         Please enter First Name
@@ -173,7 +173,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, formOptions);
+                        setValue(name, value, formDirtyState);
                       }
                     }}
                     id="middleName"
@@ -194,13 +194,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, formOptions);
+                        setValue(name, value, formDirtyState);
                       }
                     }}
                     id="lastName"
                     placeholder=""
                   />
-                  {TouchFields?.lastName && Errors?.lastName && (
+                  {Errors?.lastName && (
                     <div className="invalid-feedback">
                       Please enter Last Name
                     </div>
@@ -218,7 +218,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     name={genderIdKey}
                     register={register}
                   />
-                  {TouchFields?.gender && Errors?.gender && (
+                  {Errors?.gender && (
                     <div className="invalid-feedback">Please enter Gender</div>
                   )}
                 </div>
@@ -239,7 +239,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="exampleFormControlInput1"
                     placeholder=""
                   />
-                  {TouchFields?.dateOfBirth && Errors?.dateOfBirth && (
+                  {Errors?.dateOfBirth && (
                     <div className="invalid-feedback">
                       {Errors?.dateOfBirth?.type === "validate"
                         ? "Please enter valid date"
@@ -262,21 +262,19 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     className="form-control"
                     id="email"
                   />
-                  {TouchFields?.email && Errors?.email && (
+                  {Errors?.email && (
                     <div className="invalid-feedback">
                       {Errors?.email?.type === "validate"
                         ? "you have entered an invalid email address. Please try again"
                         : "Please enter Email"}
                     </div>
                   )}
-                  {TouchFields?.email &&
-                    email?.length > 1 &&
-                    !isValidEmail(email) && (
-                      <div className="invalid-feedback">
-                        you have entered an invalid email address. Please try
-                        again
-                      </div>
-                    )}
+                  {/* {email?.length > 1 && !isValidEmail(email) && (
+                    <div className="invalid-feedback">
+                      you have entered an invalid email address. Please try
+                      again
+                    </div>
+                  )} */}
                 </div>
               </div>
             </div>
@@ -317,7 +315,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     options={homeLanguage}
                     value={homeLanguageId}
                   />
-                  {TouchFields?.language && Errors?.language && (
+                  {Errors?.language && (
                     <div className="invalid-feedback">
                       Please select Home Language
                     </div>
@@ -333,7 +331,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     register={register}
                     options={race}
                   />
-                  {TouchFields?.race && Errors?.race && (
+                  {Errors?.race && (
                     <div className="invalid-feedback">Please select Race</div>
                   )}
                 </div>
@@ -385,7 +383,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       <div className="mb-4">
                         <AdvanceDropDown
                           onChange={() =>
-                            setValue(identificationNumberKey, "", formOptions)
+                            setValue(
+                              identificationNumberKey,
+                              "",
+                              formDirtyState
+                            )
                           }
                           options={identityDocuments}
                           value={identificationDocumentType}
@@ -393,12 +395,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           register={register}
                           label="Identification Document Type"
                         />
-                        {TouchFields?.identificationDocumentType &&
-                          Errors?.identificationDocumentType && (
-                            <div className="invalid-feedback">
-                              Please enter Document Type
-                            </div>
-                          )}
+                        {Errors?.identificationDocumentType && (
+                          <div className="invalid-feedback">
+                            Please enter Document Type
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -417,12 +418,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           id="identificationPassportNumber"
                           placeholder=""
                         />
-                        {TouchFields?.identificationPassportNumber &&
-                          Errors?.identificationPassportNumber && (
-                            <div className="invalid-feedback">
-                              Please enter Identification Number
-                            </div>
-                          )}
+                        {Errors?.identificationNumber && (
+                          <div className="invalid-feedback">
+                            Please enter Identification Number
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -437,7 +437,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           register={register}
                           label="Nationality"
                         />
-                        {TouchFields?.nationality && Errors?.nationality && (
+                        {Errors?.nationality && (
                           <div className="invalid-feedback">
                             Please enter Nationality
                           </div>
