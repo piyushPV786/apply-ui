@@ -149,7 +149,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                       }
                     }}
                   />
-                  {touchedField?.fullName && error?.fullName && (
+                  {error && error?.fullName && (
                     <div className="invalid-feedback">
                       Please enter full name
                     </div>
@@ -166,7 +166,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                     register={register}
                     required={isKinNeed}
                   />
-                  {touchedField?.relationship && error?.relationship && (
+                  {error && error?.relationship && (
                     <div className="invalid-feedback">
                       Please enter relationship
                     </div>
@@ -185,7 +185,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                       validate: (value) => isValidEmail(value, !isKinNeed),
                     })}
                   />
-                  {touchedField?.email && error?.email && (
+                  {error && error?.email && (
                     <div className="invalid-feedback">
                       {error?.email?.type == "validate"
                         ? "you have entered an invalid email address. Please try again"
@@ -230,7 +230,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                       />
                     )}
                   />
-                  {touchedField?.mobileNumber && error?.mobileNumber && (
+                  {error && error?.mobileNumber && (
                     <div className="invalid-feedback">
                       {error?.mobileNumber.type === "validate"
                         ? "you have entered an invalid number"

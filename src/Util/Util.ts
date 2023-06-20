@@ -322,6 +322,11 @@ export const formOptions = {
   shouldValidate: true,
 };
 
+export const formDirtyState = {
+  shouldDirty: true,
+  shouldTouch: true,
+};
+
 export const transformFormData = (formData: any) => {
   if (formData) {
     for (let [key, value] of Object.entries(formData)) {
