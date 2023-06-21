@@ -11,6 +11,7 @@ import { EducationForm } from "../../components/Form/EducationForm";
 import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
+import Termsconditiondialog from "../../components/dialog/Terms&ConditionDialog";
 import useAxiosInterceptor, { UserManagementAPI } from "../../service/Axios";
 import {
   ILeadFormValues,
@@ -52,7 +53,9 @@ const ApplicationForm = () => {
   const { AuthApi, loading, AcadmicApi } = useAxiosInterceptor();
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
+
   const [agentData, setAgentData] = useState([]);
+
   const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
     message: "",
     success: false,
@@ -128,6 +131,10 @@ const ApplicationForm = () => {
           break;
       }
     }
+  };
+
+  const updateTermsConditions = () => {
+    setValue("isAgreedTermsAndConditions", true);
   };
 
   const updateLead = (
@@ -669,7 +676,7 @@ const ApplicationForm = () => {
                 <div className="col-md-12">
                   <>
                     {activeStep === MagicNumbers.ZERO && (
-                      <div className="form-check text-center">
+                      <div className="form-check text-center d-flex flex-row">
                         <input
                           className="form-check-input me-2"
                           type="checkbox"
@@ -679,25 +686,15 @@ const ApplicationForm = () => {
                             required: true,
                           })}
                         />
-                        <label className="form-check-label">
-                          <strong className="me-1">
-                            I have read and agreed the
-                          </strong>
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: Green, fontWeight: "bold" }}
-                            href="https://www.regenesys.net/terms-and-conditions/"
-                          >
-                            {" "}
-                            terms and conditions
-                          </a>
-                        </label>
-                        {errors?.isAgreedTermsAndConditions && (
-                          <div className="invalid-feedback">
-                            Please check terms and conditions
-                          </div>
-                        )}
+
+                        <Termsconditiondialog
+                          updateTermsConditions={updateTermsConditions}
+                        />
+                      </div>
+                    )}
+                    {errors?.isAgreedTermsAndConditions && (
+                      <div className="invalid-feedback">
+                        Please check terms and conditions
                       </div>
                     )}
 
