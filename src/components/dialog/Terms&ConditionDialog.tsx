@@ -1916,6 +1916,9 @@ export const EditGroup = ({ updateTermsConditions }) => {
           <StyledButton
             type="button"
             isGreenWhiteCombination={true}
+            onClick={() => {
+              setDialogShow(false);
+            }}
             title={"Decline"}
           />
           <StyledButton
