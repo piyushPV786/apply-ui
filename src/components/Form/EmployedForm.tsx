@@ -323,9 +323,14 @@ export const EmployedForm = (props: IEmployeProps) => {
                           name={officeNumber}
                           rules={{
                             required: isEmployedNeed,
-                            validate: (value) =>
-                              validateNumber(value, countryCodeRef) ||
-                              "Invalid office number",
+                            validate: (value) => {
+                              if (isEmployedNeed) {
+                                return (
+                                  validateNumber(value, countryCodeRef) ||
+                                  "Invalid phone number"
+                                );
+                              }
+                            },
                           }}
                           render={({ field }) => (
                             <PhoneInput

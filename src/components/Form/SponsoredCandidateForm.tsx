@@ -354,10 +354,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               rules={{
                                 required: true,
                                 validate: (value) => {
-                                  return (
-                                    validateNumber(value, countryCodeRef) ||
-                                    "Invalid phone number"
-                                  );
+                                  if (isSponserNeed) {
+                                    return (
+                                      validateNumber(value, countryCodeRef) ||
+                                      "Invalid phone number"
+                                    );
+                                  }
                                 },
                               }}
                               render={({ field }) => (
