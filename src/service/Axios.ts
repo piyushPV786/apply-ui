@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { useState } from "react";
 import { CommonApi, tokenName } from "../components/common/constant";
+import { CodeSharp } from "@material-ui/icons";
 
 export const refreshBaseAuth = axios.create({
   baseURL: `${process.env.base_Url}`,
@@ -79,27 +80,21 @@ const useAxiosInterceptor = () => {
     console.log(error);
 
     if (error?.response?.status === 401) {
-      const response = await refreshBaseAuth.get("/auth/refresh-token");
-      if (
-        response?.data?.data?.access_token &&
-        response?.data?.data?.refresh_token
-      ) {
-        await window.sessionStorage.setItem(
-          tokenName?.accessToken,
-          response.data.data.access_token
-        );
-        await window.sessionStorage.setItem(
-          tokenName.refreshToken,
-          response.data.data.refresh_token
-        );
-        error.config.headers[
-          "Authorization"
-        ] = `Bearer ${response.data.data.access_token}`;
+      try {
+        const response = await refreshBaseAuth.get("/auth/refresh-token");
 
-        return axios(error.config);
+        if (response.data?.data?.status == 400) {
+          window.localStorage.clear();
+          window.location.href = `/`;
+          return;
+        }
+      } catch (err: any) {
+        if (err?.response?.status === 401) {
+          window.localStorage.clear();
+          window.location.href = `/`;
+          return;
+        }
       }
-    } else {
-      return Promise.reject(error);
     }
   };
 
