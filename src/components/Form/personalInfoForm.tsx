@@ -380,7 +380,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                             value={permenantResident}
                             name={permenantResidentKey}
                             register={register}
-                            label="Permenant Resident"
+                            label="permanent Resident"
                           />
                         </div>
                       </div>
