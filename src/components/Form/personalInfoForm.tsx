@@ -338,7 +338,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
             </div>
 
             <GreyStyledAccordion
-              expanded={nationalityStatus !== ""}
+              expanded={!nationalityStatus}
               defaultExpanded={true}
             >
               <AccordionSummary>
