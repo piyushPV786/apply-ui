@@ -50,7 +50,7 @@ import {
 const isValidLeadEmail = (value: string) => isValidEmail(value);
 const ApplicationForm = () => {
   const router = useRouter();
-  const { AuthApi, loading, AcadmicApi } = useAxiosInterceptor();
+  const { AuthApi, loading, AcadmicApi, CommonAPI } = useAxiosInterceptor();
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
 
@@ -67,6 +67,7 @@ const ApplicationForm = () => {
   const [isApplicationEnrolled, setApllicationEnrolled] =
     useState<boolean>(false);
   const [isNewApplication, setNewApplication] = useState<boolean>(false);
+  const [nationalityStatus, setNationalityStatus] = useState([]);
 
   const methods = useForm<ILeadFormValues>({
     mode: "all",
@@ -77,6 +78,7 @@ const ApplicationForm = () => {
     formState: { isValid, isDirty, errors },
     watch,
     setValue,
+    clearErrors,
     getValues,
     trigger,
   } = methods;
@@ -84,6 +86,7 @@ const ApplicationForm = () => {
     getUserDetail();
     getMasterData();
     getAgentDetails();
+    getNationalData();
   }, []);
 
   useEffect(() => {
@@ -135,6 +138,7 @@ const ApplicationForm = () => {
 
   const updateTermsConditions = () => {
     setValue("isAgreedTermsAndConditions", true);
+    clearErrors("isAgreedTermsAndConditions");
   };
 
   const updateLead = (
@@ -455,6 +459,16 @@ const ApplicationForm = () => {
       });
   };
 
+  const getNationalData = () => {
+    CommonAPI.get(CommonApi.NATIONALITYSTATUS)
+      .then(({ data }) => {
+        setNationalityStatus(data?.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   const getUserDetail = () => {
     const isAuthenticate = JSON.parse(
       sessionStorage?.getItem("authenticate") as any
@@ -603,6 +617,7 @@ const ApplicationForm = () => {
                             nationalities={nationalities}
                             homeLanguage={language}
                             race={race}
+                            nationalityStatusData={nationalityStatus}
                           />
                           <AddressForm
                             key="AddressForm"

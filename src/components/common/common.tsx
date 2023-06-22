@@ -54,6 +54,26 @@ export const StyledAccordion = styled(Accordion)`
     }
   }
 `;
+export const GreyStyledAccordion = styled(Accordion)`
+  .MuiAccordionDetails-root {
+    background: #f5f5f5 !important;
+  }
+
+  .MuiAccordionSummary-root {
+    background: #f5f5f5 !important;
+    height: 60px;
+    border-bottom: none !important;
+    display: flex;
+    flex-direction row
+  }
+
+  @media (max-width: 510px) {
+    .MuiAccordionSummary-root {
+      background: #f5f5f5 !important;
+      height: 60px;
+    }
+  }
+`;
 
 export const Toaster = ({ success, message, setShowToast, show }) => (
   <Snackbar

@@ -7,6 +7,7 @@ interface IAdvanceDropDownProps {
   label?: string;
   value: string;
   mapKey?: string;
+
   displayItem?: string;
   name?: string;
   required?: boolean;
@@ -34,7 +35,7 @@ const AdvanceDropDown = ({
   return (
     <>
       <StyledLabel hideLabel={!label} forceHide={hideLabel} required={required}>
-        {label}
+        {!hideLabel && label}
       </StyledLabel>
       <select
         disabled={disabled}
@@ -47,7 +48,7 @@ const AdvanceDropDown = ({
         })}
         {...props}
       >
-        <option value={""}>{label && `Select ${label}`}</option>
+        <option value={""}>{(label && `Select ${label}`) || ``}</option>
         {options &&
           options.map(({ ...rest }) => {
             return (
