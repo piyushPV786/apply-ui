@@ -27,12 +27,10 @@ export const EditGroup = ({ updateTermsConditions }) => {
   return (
     <Grid>
       <label className="form-check-label">
-        <strong className="me-1">I have read and agreed the</strong>
+        <strong className="me-1">Please read and agree to the</strong>
         <a
-          target="_blank"
-          rel="noopener noreferrer"
           style={{ color: "Green", fontWeight: "bold" }}
-          // href="https://www.regenesys.net/terms-and-conditions/"
+          href="#"
           onClick={() => {
             setDialogShow(true);
           }}
