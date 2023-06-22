@@ -109,6 +109,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       setValue(permenantResidentKey, "", formDirtyState);
       setValue(nationalityIdKey, "", formDirtyState);
     }
+
+    setValue(identificationDocumentTypeKey, "", formDirtyState);
+    setValue(identificationNumberKey, "", formDirtyState);
   };
 
   return (
