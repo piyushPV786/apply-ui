@@ -398,7 +398,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           register={register}
                           label="Nationality"
                         />
-                        {Errors?.nationality && (
+                        {Errors?.nationalityId && (
                           <div className="invalid-feedback">
                             Please Select Nationality
                           </div>
