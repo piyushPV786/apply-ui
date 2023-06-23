@@ -11,6 +11,7 @@ import { EducationForm } from "../../components/Form/EducationForm";
 import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
+import Termsconditiondialog from "../../components/dialog/Terms&ConditionDialog";
 import useAxiosInterceptor, { UserManagementAPI } from "../../service/Axios";
 import {
   ILeadFormValues,
@@ -50,10 +51,12 @@ import {
 const isValidLeadEmail = (value: string) => isValidEmail(value);
 const ApplicationForm = () => {
   const router = useRouter();
-  const { AuthApi, loading, AcadmicApi } = useAxiosInterceptor();
+  const { AuthApi, loading, AcadmicApi, CommonAPI } = useAxiosInterceptor();
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
+
   const [agentData, setAgentData] = useState([]);
+
   const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
     message: "",
     success: false,
@@ -66,6 +69,8 @@ const ApplicationForm = () => {
     useState<boolean>(false);
   const [isNewApplication, setNewApplication] = useState<boolean>(false);
 
+  const [nationalityStatus, setNationalityStatus] = useState([]);
+
   const methods = useForm<ILeadFormValues>({
     mode: "all",
     reValidateMode: "onBlur",
@@ -75,6 +80,7 @@ const ApplicationForm = () => {
     formState: { isValid, isDirty, errors },
     watch,
     setValue,
+    clearErrors,
     getValues,
     trigger,
   } = methods;
@@ -82,6 +88,7 @@ const ApplicationForm = () => {
     getUserDetail();
     getMasterData();
     getAgentDetails();
+    getNationalData();
   }, []);
 
   useEffect(() => {
@@ -129,6 +136,11 @@ const ApplicationForm = () => {
           break;
       }
     }
+  };
+
+  const updateTermsConditions = () => {
+    setValue("isAgreedTermsAndConditions", true);
+    clearErrors("isAgreedTermsAndConditions");
   };
 
   const updateLead = (
@@ -435,6 +447,17 @@ const ApplicationForm = () => {
     const response = await getAllDocumentsDetails();
     setValue("document.documentDetails", response?.data);
   };
+
+  const getNationalData = () => {
+    CommonAPI.get(CommonApi.NATIONALITYSTATUS)
+      .then(({ data }) => {
+        setNationalityStatus(data?.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   const getUserDetail = () => {
     const isAuthenticate = JSON.parse(
       sessionStorage?.getItem("authenticate") as any
@@ -586,6 +609,7 @@ const ApplicationForm = () => {
                             nationalities={nationalities}
                             homeLanguage={language}
                             race={race}
+                            nationalityStatusData={nationalityStatus}
                           />
                           <AddressForm
                             key="AddressForm"
@@ -661,7 +685,7 @@ const ApplicationForm = () => {
                 <div className="col-md-12">
                   <>
                     {activeStep === MagicNumbers.ZERO && (
-                      <div className="form-check text-center">
+                      <div className="form-check text-center d-flex flex-row">
                         <input
                           className="form-check-input me-2"
                           type="checkbox"
@@ -671,25 +695,15 @@ const ApplicationForm = () => {
                             required: true,
                           })}
                         />
-                        <label className="form-check-label">
-                          <strong className="me-1">
-                            I have read and agreed the
-                          </strong>
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: Green, fontWeight: "bold" }}
-                            href="https://www.regenesys.net/terms-and-conditions/"
-                          >
-                            {" "}
-                            terms and conditions
-                          </a>
-                        </label>
-                        {errors?.isAgreedTermsAndConditions && (
-                          <div className="invalid-feedback">
-                            Please check terms and conditions
-                          </div>
-                        )}
+
+                        <Termsconditiondialog
+                          updateTermsConditions={updateTermsConditions}
+                        />
+                      </div>
+                    )}
+                    {errors?.isAgreedTermsAndConditions && (
+                      <div className="invalid-feedback">
+                        Please check terms and conditions
                       </div>
                     )}
 

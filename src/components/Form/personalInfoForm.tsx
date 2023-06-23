@@ -4,6 +4,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {
   GreenFormHeading,
   StyledAccordion,
+  GreyStyledAccordion,
   StyledLabel,
 } from "../common/common";
 import Image from "next/image";
@@ -23,12 +24,13 @@ import {
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { identityDocuments } from "../common/constant";
-import { NationalityEnum } from "../common/types";
+
 interface IPersonalInfoProps {
   genders: IOption[];
   nationalities: IOption[];
   homeLanguage: IOption[];
   race: IOption[];
+  nationalityStatusData: any[];
 }
 
 const parentKey = "lead";
@@ -46,10 +48,13 @@ export const identificationDocumentTypeKey = `${parentKey}.identificationDocumen
 const homeLanguageIdKey = `${parentKey}.language`;
 const studentNumberKey = `${parentKey}.mobileNumber`;
 const mobileCountryCodeKey = `${parentKey}.mobileCountryCode`;
+const nationalityStatusKey = `${parentKey}.nationalityStatus`;
+const permenantResidentKey = `${parentKey}.permenantResident`;
 const PersonalInfoForm = (props: IPersonalInfoProps) => {
-  const { genders, nationalities, homeLanguage, race } = {
-    ...props,
-  };
+  const { genders, nationalities, homeLanguage, race, nationalityStatusData } =
+    {
+      ...props,
+    };
   const {
     setValue,
     register,
@@ -83,33 +88,31 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const dateOfBirth = watch(dateOfBirthKey);
   const email = watch(emailKey);
   const nationalityId = watch(nationalityIdKey);
+  const nationalityStatus = watch(nationalityStatusKey);
   const identificationNumber = watch(identificationNumberKey);
   const raceId = watch(raceIdKey);
   const identificationDocumentType = watch(identificationDocumentTypeKey);
   const homeLanguageId = watch(homeLanguageIdKey);
+  const permenantResident = watch(permenantResidentKey);
 
   const genderOption = [
     ...(genders || []),
     ...[{ name: "Other", code: "other", id: 21 }],
   ];
 
-  const handleInternationAccordian = (state: string) => {
-    setIsExpanded(true);
-    if (state === "yes") {
-      setNationality(false);
-      setDocument(true);
-
-      setValue(identificationDocumentTypeKey, "PA", formDirtyState);
-      setValue(nationalityIdKey, "", { shouldDirty: true });
-      setIsYes(true);
-      setValue(identificationNumberKey, "", formDirtyState);
-    } else {
-      setValue(identificationNumberKey, "", formDirtyState);
-      setNationality(true);
-      setDocument(false);
+  const handleInternationAccordian = (state) => {
+    if (state.target.value === "SA") {
       setValue(nationalityIdKey, "SA", formDirtyState);
-      setValue(identificationDocumentTypeKey, "", { shouldDirty: true });
+    } else if (state.target.value == "PRSA") {
+      setValue(permenantResidentKey, "SA", formDirtyState);
+      setValue(nationalityIdKey, "", formDirtyState);
+    } else {
+      setValue(permenantResidentKey, "", formDirtyState);
+      setValue(nationalityIdKey, "", formDirtyState);
     }
+
+    setValue(identificationDocumentTypeKey, "", formDirtyState);
+    setValue(identificationNumberKey, "", formDirtyState);
   };
 
   return (
@@ -337,48 +340,76 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                 </div>
               </div>
             </div>
-            <StyledAccordion
-              expanded={isExpanded || nationalityId !== ""}
+
+            <GreyStyledAccordion
+              expanded={nationalityStatus}
               defaultExpanded={true}
             >
               <AccordionSummary>
+                <div className="me-4">
+                  <span className="me-2">
+                    <Image src={AddressImg} alt="user" />
+                  </span>
+                  <StyledLabel required>Nationality Status</StyledLabel>
+                </div>
+
+                <AdvanceDropDown
+                  options={nationalityStatusData}
+                  value={nationalityStatus}
+                  name={nationalityStatusKey}
+                  register={register}
+                  onChange={handleInternationAccordian}
+                  label="Nationality Status"
+                  hideLabel
+                />
                 <span className="me-2">
-                  <Image src={AddressImg} alt="user" />
+                  {Errors?.nationalityStatus && (
+                    <div className="invalid-feedback">
+                      Please Select Nationality Status
+                    </div>
+                  )}
                 </span>
-                <StyledLabel required>
-                  Are you an International student ?
-                </StyledLabel>
-                <div
-                  className="form-check form-check-inline"
-                  style={{ marginLeft: "20px" }}
-                >
-                  <input
-                    className="form-check-input me-2"
-                    type="radio"
-                    name="isInternational"
-                    onClick={() => handleInternationAccordian("yes")}
-                    checked={
-                      (nationalityId !== NationalityEnum.southAfrica &&
-                        nationalityId !== "") ||
-                      isYes
-                    }
-                  />
-                  <label className="form-check-label">Yes</label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input me-2"
-                    type="radio"
-                    name="isInternational"
-                    onClick={() => handleInternationAccordian("no")}
-                    checked={nationalityId == "SA"}
-                  />
-                  <label className="form-check-label">No</label>
-                </div>
               </AccordionSummary>
               <AccordionDetails>
                 <div className="container-fluid form-padding">
                   <div className="row">
+                    {nationalityStatus == "PRSA" ? (
+                      <div className="col-md-4">
+                        <div className="mb-4">
+                          <AdvanceDropDown
+                            disabled={nationalityStatus == "PRSA"}
+                            options={nationalities?.sort((a, b) =>
+                              sortAscending(a, b, "name")
+                            )}
+                            value={permenantResident}
+                            name={permenantResidentKey}
+                            register={register}
+                            label="Permanent Resident"
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+
+                    <div className="col-md-4">
+                      <div className="mb-4">
+                        <AdvanceDropDown
+                          disabled={nationalityStatus == "SA"}
+                          options={nationalities?.sort((a, b) =>
+                            sortAscending(a, b, "name")
+                          )}
+                          value={nationalityId}
+                          name={nationalityIdKey}
+                          register={register}
+                          label="Nationality"
+                        />
+                        {Errors?.nationalityId && (
+                          <div className="invalid-feedback">
+                            Please Select Nationality
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
@@ -397,7 +428,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                         />
                         {Errors?.identificationDocumentType && (
                           <div className="invalid-feedback">
-                            Please enter Document Type
+                            Please Select Document Type
                           </div>
                         )}
                       </div>
@@ -425,29 +456,10 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                         )}
                       </div>
                     </div>
-                    <div className="col-md-4">
-                      <div className="mb-4">
-                        <AdvanceDropDown
-                          disabled={isNationality}
-                          options={nationalities?.sort((a, b) =>
-                            sortAscending(a, b, "name")
-                          )}
-                          value={nationalityId}
-                          name={nationalityIdKey}
-                          register={register}
-                          label="Nationality"
-                        />
-                        {Errors?.nationality && (
-                          <div className="invalid-feedback">
-                            Please enter Nationality
-                          </div>
-                        )}
-                      </div>
-                    </div>
                   </div>
                 </div>
               </AccordionDetails>
-            </StyledAccordion>
+            </GreyStyledAccordion>
           </div>
         </AccordionDetails>
       </StyledAccordion>

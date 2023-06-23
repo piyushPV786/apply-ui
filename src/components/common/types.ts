@@ -145,6 +145,7 @@ export interface IMasterData {
   disablityData: IOption[];
   agentData: IOption[];
   studentTypeData: IOption[];
+  nationalityStatus: IOption[];
 }
 
 export interface IOption {
