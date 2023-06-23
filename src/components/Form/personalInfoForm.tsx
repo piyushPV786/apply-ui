@@ -246,7 +246,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <div className="invalid-feedback">
                       {Errors?.dateOfBirth?.type === "validate"
                         ? "Please enter valid date"
-                        : "Please enter Date of Birth"}
+                        : "Please enter valid  Date of Birth"}
                     </div>
                   )}
                 </div>
