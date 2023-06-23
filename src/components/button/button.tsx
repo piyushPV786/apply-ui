@@ -95,14 +95,22 @@ export default StyledButton;
 
 const MyButton = styled(Button)<any>`
   border-radius: ${({ roundBtn }) => (roundBtn ? "20px" : "")}!important;
-  background: ${({ isGreenWhiteCombination }) =>
-    isGreenWhiteCombination ? "white!important" : "#008554 !important"};
+  background: ${({ isGreenWhiteCombination, disabled }) =>
+    isGreenWhiteCombination
+      ? "white!important"
+      : disabled
+      ? "#d2d2d2!important"
+      : "#008554 !important"};
   border: 1px solid #008554 !important;
   .MuiButton-label {
-    color: ${({ isGreenWhiteCombination }) =>
-      isGreenWhiteCombination ? Green : "white"};
+    color: ${({ isGreenWhiteCombination, disabled }) =>
+      isGreenWhiteCombination
+        ? Green
+        : disabled
+        ? "#b6b6b6!important"
+        : "white"};
   }
-  opacity: ${({ disabled }) => (disabled ? 0.3 : 1)}!important;
+  // opacity: ${({ disabled }) => (disabled ? 0.3 : 1)}!important;
   cursor: pointer;
   @media (max-width: 510px) {
     background: ${({ isGreenWhiteCombination }) =>

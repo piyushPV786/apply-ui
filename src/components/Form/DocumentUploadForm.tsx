@@ -1,22 +1,58 @@
-import React, { useState, useRef, useEffect, SyntheticEvent } from "react";
-import { MainContainer, PaymentContainer } from "../payment/payment";
+import { useState, useRef, useEffect, SyntheticEvent } from "react";
+import { PaymentContainer } from "../payment/payment";
 import { useFormContext } from "react-hook-form";
-import DoneIcon from "@material-ui/icons/Done";
 import styled from "styled-components";
-import { Green, GreenFormHeading } from "../common/common";
+import { Green, StyledLabel } from "../common/common";
 import StyledButton from "../button/button";
 import {
+  formDirtyState,
   formOptions,
   isInvalidFileType,
   uniqueArrayOfObject,
 } from "../../Util/Util";
-import Link from "next/link";
-import Image from "next/image";
-import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
-import ViewIcon from "../../../public/assets/images/view-svgrepo-com.svg";
-import TrashIcon from "../../../public/assets/images/trash-svgrepo-com.svg";
-import FileUpload from "../../../public/assets/images/file-upload-svgrepo-com.svg";
-import { IOption } from "../common/types";
+
+import { ILeadFormValues, IOption } from "../common/types";
+import DocumentUploadContainer, {
+  MainContainer,
+  TickWithText,
+} from "../document/DocumentUploadContainer";
+import { Typography } from "@mui/material";
+import AdvanceDropDown from "../dropdown/Dropdown";
+import { identificationDocumentTypeKey } from "./personalInfoForm";
+
+const documentUploadFormData = [
+  {
+    name: "Declaration form",
+    id: "declarationForm",
+    disabled: false,
+    status: "upload pending",
+    isDeclaration: true,
+  },
+  {
+    name: "National ID/Passport",
+    id: "nationalIdPassport",
+    disabled: false,
+    status: "upload pending",
+  },
+  {
+    name: "Highest Qualification",
+    id: "highestQualification",
+    disabled: false,
+    status: "upload pending",
+  },
+  {
+    name: "Matric Certificate or Equivalent",
+    id: "matricCertificate",
+    disabled: false,
+    status: "upload pending",
+  },
+  {
+    name: "Detailed CV",
+    id: "detailCV",
+    disabled: false,
+    status: "upload pending",
+  },
+];
 
 interface IDocumentUploadProps {
   allFields: any;
@@ -25,6 +61,10 @@ interface IDocumentUploadProps {
   isLoading?: boolean;
   documentType: IOption[];
   leadId: string;
+  onUpload?: (file: File | File[]) => void;
+  onRemove?: (index: number) => void;
+  onSubmit: (formValue: ILeadFormValues) => void;
+  onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
 const imgUrl = "/assets/images";
 
@@ -34,19 +74,34 @@ const DocumentUploadForm = ({
   documentType,
   leadId,
   isApplicationEnrolled,
+  onSaveDraft,
+  onSubmit,
 }: IDocumentUploadProps) => {
+  const [documentFormDataDetail, setDocumentFormDataDetail] = useState<
+    typeof documentUploadFormData
+  >(documentUploadFormData);
   const fileUploadRef = useRef<any>(null);
-  const { register, setValue } = useFormContext();
+  const {
+    register,
+    setValue,
+    formState: { errors },
+  } = useFormContext();
+  const documentFormFields = allFields?.document;
+  const documentFieldErrors = errors?.document as any;
   const [uploadDocs, setUploadDocs] = useState<
     (File & { error: boolean; typeCode: string })[]
   >([]);
-  const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
+  const isDocumentRequired = allFields?.document?.documentDetails?.length === 0;
 
   const documentTypeList = isApplicationEnrolled
     ? [...(documentType || [])]?.filter((doc) => doc.code === "PAYMENTPROOF")
     : [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
         (doc) => doc.code !== "PAYMENTPROOF"
       );
+  const documentIds = documentUploadFormData?.map((document) => document.id);
+  const areAllDocumentsUploaded = documentIds.every((id) =>
+    uploadDocs.some((doc) => doc.typeCode === id)
+  );
 
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
@@ -64,19 +119,32 @@ const DocumentUploadForm = ({
     }
   }, [leadId]);
 
+  useEffect(() => {
+    if (isDocumentRequired) {
+      setDocumentFormDataDetail(
+        documentUploadFormData.map(({ status, ...rest }) => ({
+          ...rest,
+          status: "Upload Pending",
+        }))
+      );
+    }
+  }, []);
+
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement?.click() as any;
   };
-  const deleteDocs = (index: number) => {
-    const remainingDocs = [...uploadDocs.filter((item, idx) => idx !== index)];
+  const deleteDocs = (index: number, file: File & { typeCode: string }) => {
+    const remainingDocs = [
+      ...uploadDocs.filter((item, idx) => item?.typeCode !== file?.typeCode),
+    ];
     setValue("document.uploadedDocs", remainingDocs, formOptions);
     setUploadDocs(remainingDocs);
-    allFields.document.uploadedDocs = remainingDocs;
   };
 
   const uploadDocuments = (files: any) => {
     const uploadedFiles = files;
+
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
       if (!item?.typeCode && isApplicationEnrolled) {
@@ -86,8 +154,9 @@ const DocumentUploadForm = ({
         item.typeCode = "other";
       }
     });
-    setUploadDocs(uploadedFiles as any);
-    setValue("document.uploadedDocs", uploadedFiles);
+    setUploadDocs((prevState) => [...prevState, ...(uploadedFiles as any)]);
+    const allFiles = [...uploadDocs, ...uploadedFiles];
+    setValue("document.uploadedDocs", allFiles);
   };
 
   const showPdf = (e: SyntheticEvent, item: File) => {
@@ -112,222 +181,115 @@ const DocumentUploadForm = ({
     setValue("document.uploadedDocs", allFiles, formOptions);
   };
 
-  return (
-    <>
-      <div className="row document-container">
-        <div className="col-12 col-md-12 mb-3">
-          <MainContainer>
-            {" "}
-            <PaymentHeading>
-              <div className="col-md-12">
-                <StyleHeading>
-                  <GreenFormHeading style={{ fontSize: "20px" }}>
-                    Required Documents
-                  </GreenFormHeading>
-                </StyleHeading>
+  const NationalityPassportFields = () => {
+    return (
+      <div className="row mt-2">
+        <div className="col-md-6">
+          <div className="mb-4">
+            <AdvanceDropDown
+              onChange={(e) =>
+                setValue(
+                  identificationDocumentTypeKey,
+                  e?.target?.value,
+                  formDirtyState
+                )
+              }
+              value={documentFormFields?.identificationDocumentType}
+              required
+              options={documentTypeList}
+              name={identificationDocumentTypeKey}
+              register={register}
+              label="Identification Document Type"
+            />
+            {documentFieldErrors?.identificationDocumentType && (
+              <div className="invalid-feedback">
+                Please select Identification Document Type
               </div>
-            </PaymentHeading>
-            <PaymentContainer>
-              <div className="row">
-                <div className="col-md-5">
-                  <CustomContainer>
-                    <StyledUploadDocumentContainer ref={fileUploadRef}>
-                      <div className="mt-1 upload-icon">
-                        <Image width="100" src={UploadImg} alt="uplopad-svg" />
-                      </div>
-                      <input
-                        className="d-none"
-                        accept="image/jpeg, application/pdf"
-                        type="file"
-                        {...(register("document.uploadedDocs", {
-                          required: isDocumentRequired,
-                        }) as any)}
-                        onChange={(e) => {
-                          if (e?.target) {
-                            const files = [...uploadDocs, e.target?.files![0]];
-                            uploadDocuments(files);
-                          }
-                        }}
-                      />
-                      <GreenFormHeading className="mt-1 text">
-                        Drag and drop, or browse your files
-                      </GreenFormHeading>
-                      <strong className="mt-1 fs-6">or</strong>
-                      <div>
-                        <StyledButton
-                          className="mt-2"
-                          title="Browse"
-                          roundBtn
-                          onClick={onDocUploadClick}
-                        />
-                        <p
-                          className="grey-text mt-2"
-                          style={{ color: `#838383` }}
-                        >
-                          Only PNG, JPEG and PDF files with max size of 2MB{" "}
-                        </p>
-                      </div>
-                    </StyledUploadDocumentContainer>
-                  </CustomContainer>
-                </div>
-                <div className="col-md-7">
-                  <UploadedFilesContainer>
-                    <h5 className="fw-bold mb-3 font-roboto">Uploaded Files</h5>
+            )}
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="mb-4">
+            <StyledLabel required>Others ( Please Specify )</StyledLabel>
+            <input
+              value={documentFormFields?.other}
+              defaultValue={documentFormFields?.other}
+              {...register("document.other", {
+                required: true,
+              })}
+              type="text"
+              className="form-control"
+              id="otherText"
+            />
 
-                    <table className="table table-striped doc-table">
-                      <thead>
-                        <tr>
-                          <th scope="col">File Name</th>
-                          <th scope="col">File Type</th>
-                          <th scope="col" className="text-center">
-                            Action
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {uploadDocs?.map((item, index) => (
-                          <tr>
-                            <td>
-                              <div className="w-75">
-                                <img
-                                  className="me-2"
-                                  src={`${imgUrl}/${imageType(item?.type)}`}
-                                />
-                                {item?.name}{" "}
-                                {item?.error && (
-                                  <span style={{ color: "red" }}>
-                                    ( Invalid file format )
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td
-                            // className={
-                            //   item?.typeCode === "PAYMENTPROOF"
-                            //     ? "disabled"
-                            //     : ""
-                            // }
-                            >
-                              {" "}
-                              <select
-                                className="form-select"
-                                onChange={(e) =>
-                                  e?.target?.value &&
-                                  onFileTypeSelect(e?.target?.value, index)
-                                }
-                              >
-                                <option value={""}>Select Document Type</option>
-                                {documentTypeList?.map((item) => (
-                                  <>
-                                    <option
-                                      selected={
-                                        item?.code ===
-                                        uploadDocs[index]?.typeCode
-                                      }
-                                      key={item.code}
-                                      value={item?.code}
-                                    >
-                                      {item?.name}
-                                    </option>
-                                  </>
-                                ))}
-                              </select>
-                            </td>
-                            <td className="text-center">
-                              <div>
-                                {!item.error && (
-                                  <Link
-                                    passHref
-                                    onClick={(e) => showPdf(e, item)}
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                    href={""}
-                                  >
-                                    <Image
-                                      className="me-2 ms-2 "
-                                      src={ViewIcon}
-                                      alt={"ViewIcon"}
-                                      width="25"
-                                    />
-                                  </Link>
-                                )}
-                                <span
-                                  onClick={() => deleteDocs(index)}
-                                  className={"cursor-pointer"}
-                                >
-                                  <Image
-                                    className="me-2 ms-2"
-                                    src={TrashIcon}
-                                    alt={"TrashIcon"}
-                                    width="20"
-                                  />
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </UploadedFilesContainer>
-                </div>
+            {documentFieldErrors?.identificationDocumentType && (
+              <div className="invalid-feedback">
+                Please select Identification Document Type
               </div>
-            </PaymentContainer>
-            <div style={{ margin: "1rem" }}>
-              <DocumentCriteriaContainer>
-                <div className="row">
-                  <GreenFormHeading className="fs-5 m-2">
-                    Document Criteria
-                  </GreenFormHeading>
-                  <div className="col-md-5 col-lg-5">
-                    <p>
-                      <span className="me-2">
-                        <DoneIcon />
-                      </span>
-                      File accepted JPEG/JPG/PNG/PDF <br />
-                      <span style={{ marginLeft: "30px" }}>
-                        (Max size :2MB)
-                      </span>
-                    </p>
-                    <p>
-                      <span className="me-2">
-                        <DoneIcon />
-                      </span>
-                      ID should valid atleast be for 6 months
-                    </p>
-                  </div>
-
-                  <div className="col-md-7 col-lg-7">
-                    <div className="d-flex justify-content-around">
-                      <div>
-                        <p>Document should be in good condition</p>
-                        <br />
-                        <p>Face must be clearly visible</p>
-                      </div>
-                      <ImageContainer>
-                        <div className="w-100">
-                          <Image
-                            className="mb-2"
-                            width={"40"}
-                            src={FileUpload}
-                            alt={"file-upload"}
-                          />
-                          <p className="">Sample Document</p>
-                          <GreenFormHeading>
-                            <a style={{ color: `${Green}` }} href="#">
-                              View
-                            </a>
-                          </GreenFormHeading>
-                        </div>
-                      </ImageContainer>
-                    </div>
-                  </div>
-                </div>
-              </DocumentCriteriaContainer>
-            </div>
-          </MainContainer>
+            )}
+          </div>
         </div>
       </div>
-    </>
+    );
+  };
+
+  return (
+    <div className="row mx-3 document-container">
+      <div className="col-md-8">
+        {documentFormDataDetail.map(
+          ({ name, disabled, status, id, isDeclaration = false }) => {
+            const customFileds = id?.includes("nationalIdPassport") ? (
+              <NationalityPassportFields />
+            ) : null;
+            return (
+              <DocumentUploadContainer
+                key={`${name}_${id}`}
+                title={name}
+                status={status}
+                isDeclaration={isDeclaration}
+                disabled={disabled}
+                onUpload={uploadDocuments}
+                onRemove={deleteDocs as any}
+                documentType={id}
+                customComponent={customFileds}
+              />
+            );
+          }
+        )}
+      </div>
+      <div className="col-md-4">
+        <MainContainer>
+          <div className="d-flex flex-column">
+            <StyledButton
+              isGreenWhiteCombination
+              className="my-2"
+              title="Save as Draft"
+              onClick={onSaveDraft}
+            />
+            <StyledButton
+              disabled={!areAllDocumentsUploaded}
+              onClick={onSubmit}
+              title="Submit Documents"
+            />
+          </div>
+        </MainContainer>
+
+        <MainContainer className="px-1">
+          <div className="d-flex flex-column">
+            <Typography textAlign="left" component="header" fontWeight="bold">
+              Document Status
+            </Typography>
+            {documentFormDataDetail.map(({ name, status }) => (
+              <TickWithText
+                key={name}
+                status={status?.toLowerCase()}
+                text={name}
+              />
+            ))}
+          </div>
+        </MainContainer>
+      </div>
+    </div>
   );
 };
 

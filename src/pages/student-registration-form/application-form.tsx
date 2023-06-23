@@ -19,6 +19,7 @@ import {
   IOption,
 } from "../../components/common/types";
 import {
+  getAllDocumentsDetails,
   getUploadDocumentUrl,
   isValidEmail,
   isValidFileType,
@@ -113,7 +114,7 @@ const ApplicationForm = () => {
   }, []);
   const allFields = watch();
   const isValidDocument =
-    allFields?.document?.uploadedDocs.length > 0 &&
+    allFields?.document?.uploadedDocs?.length > 0 &&
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
 
   const navigateBack = () => {
@@ -369,59 +370,42 @@ const ApplicationForm = () => {
   const uploadStudentDocs = async () => {
     const {
       document: { uploadedDocs = [] as File[] },
-    } = allFields;
+    } = { ...allFields };
 
     let count = 0;
     const successLength: any[] = [];
     let payload;
 
-    await Promise.all(
-      uploadedDocs.map((file: File & { typeCode: string }) => {
-        if (file.typeCode == "PAYMENTPROOF") {
-          payload = {
-            documentTypeCode: "PAYMENTPROOF",
-            fileName: file.name,
-            fileType: file.type,
-            amount: allFields.payment?.finalFee,
-            paymentModeCode: "OFFLINE",
-            discountCode: allFields?.payment?.discountCode,
-            discountAmount: allFields?.payment?.discountAmount,
-            studentTypeCode: allFields?.education?.studentTypeCode,
-          };
-          getUploadDocumentUrl(payload).then((res) => {
-            if (res.statusCode === 201) {
-              count = count + 1;
-              successLength.push("true");
-              uploadFiles(res?.data, file);
-            } else {
-              showToast(false, res.message);
-              console.log(res.message);
-            }
+    const files = [] as any[];
+    uploadedDocs.map((file: File & { typeCode: string }) => {
+      files.push({
+        documentTypeCode: file?.typeCode,
+        fileName: file.name,
+        fileType: file.type,
+      });
+    });
+
+    payload = {
+      files,
+      amount: allFields.payment?.finalFee,
+      paymentModeCode: "OFFLINE",
+      discountCode: allFields?.payment?.discountCode,
+      discountAmount: allFields?.payment?.discountAmount,
+      // studentTypeCode: allFields?.education?.studentTypeCode,
+    };
+    getUploadDocumentUrl(payload)
+      .then((res) => {
+        if (res.statusCode === 201) {
+          count = count + 1;
+          successLength.push("true");
+          uploadedDocs.forEach((file) => {
+            uploadFiles(res?.data, file);
           });
         } else {
-          const fileName = `${file.typeCode || "OTHER"}-${
-            allFields?.lead?.firstName
-          }-${timestamp}.${String(file.type.split("/")[1])}`;
-          payload = {
-            documentTypeCode: file?.typeCode || "other",
-            fileName: `${fileName}`,
-            fileType: file.type,
-            amount: +allFields?.education?.studyModeDetail?.fee || 0,
-            paymentModeCode: "OFFLINE",
-          };
-          getUploadDocumentUrl(payload).then((res) => {
-            if (res.statusCode === 201) {
-              count = count + 1;
-              successLength.push("true");
-              uploadFiles(res?.data, file);
-            } else {
-              showToast(false, res.message);
-              console.log(res.message);
-            }
-          });
+          showToast(false, res.message);
+          console.log(res.message);
         }
       })
-    )
       .then(() => {
         if (count === successLength.length) {
           showToast(true, "Documents Successfully Uploaded");
@@ -458,6 +442,10 @@ const ApplicationForm = () => {
       .catch((err) => {
         console.error(err);
       });
+  };
+  const getDocumentDetails = async () => {
+    const response = await getAllDocumentsDetails();
+    setValue("document.documentDetails", response?.data);
   };
 
   const getNationalData = () => {
@@ -496,6 +484,9 @@ const ApplicationForm = () => {
         setValue,
         AuthApi
       );
+      getDocumentDetails(); /// this will give detals of document which are already upload or if its give empty array it mean nothing uploaded yet
+    } else {
+      setValue("document.documentDetails", []);
     }
   };
 
@@ -682,6 +673,8 @@ const ApplicationForm = () => {
                       documentType={documentType}
                       leadId={leadId}
                       isApplicationEnrolled={isNewApplication}
+                      onSubmit={() => submitFormData(allFields, false) as any}
+                      onSaveDraft={() => onSubmit(getValues(), true) as any}
                     />
                   </>
                 )}
@@ -714,13 +707,12 @@ const ApplicationForm = () => {
                       </div>
                     )}
 
-                    {(activeStep === MagicNumbers.ZERO ||
-                      activeStep === MagicNumbers.TWO) && (
+                    {activeStep === MagicNumbers.ZERO && (
                       <div className="mt-4 text-center">
                         {!isApplicationEnrolled && (
                           <>
                             <>
-                              {activeStep == 2 && (
+                              {/* {activeStep != 2 && (
                                 <StyledButton
                                   onClick={onSkipForNowOnDocument}
                                   type="button"
@@ -728,7 +720,7 @@ const ApplicationForm = () => {
                                   isGreenWhiteCombination={true}
                                   title={"Skip for Now"}
                                 />
-                              )}
+                              )} */}
                             </>
                             {activeStep !== 2 && (
                               <StyledButton
