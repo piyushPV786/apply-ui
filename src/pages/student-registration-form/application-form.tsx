@@ -67,7 +67,7 @@ const ApplicationForm = () => {
   const [isApplicationEnrolled, setApllicationEnrolled] =
     useState<boolean>(false);
   const [isNewApplication, setNewApplication] = useState<boolean>(false);
-  const [read, setRead] = useState<boolean>(true);
+
   const [nationalityStatus, setNationalityStatus] = useState([]);
 
   const methods = useForm<ILeadFormValues>({
@@ -140,7 +140,6 @@ const ApplicationForm = () => {
   const updateTermsConditions = () => {
     setValue("isAgreedTermsAndConditions", true);
     clearErrors("isAgreedTermsAndConditions");
-    setRead(false);
   };
 
   const updateLead = (
@@ -695,7 +694,6 @@ const ApplicationForm = () => {
                     {activeStep === MagicNumbers.ZERO && (
                       <div className="form-check text-center d-flex flex-row">
                         <input
-                          disabled={read}
                           className="form-check-input me-2"
                           type="checkbox"
                           checked={allFields?.isAgreedTermsAndConditions}
