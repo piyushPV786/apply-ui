@@ -109,6 +109,7 @@ export const identityDocuments = [
   },
   { code: "DL", name: "Driving License" },
   { code: "PA", name: "Passport" },
+  { code: "BI", name: "BookId" },
 ];
 
 export const acceptedKeysToMap = [
