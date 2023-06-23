@@ -23,6 +23,13 @@ export enum CommonEnums {
   CONFIRMATION_LETTER = "CONFIRMATION-LETTER",
 }
 
+export enum DocumentStatus {
+  UploadPending = "upload pending",
+  Approved = "approved",
+  Submitted = "submitted",
+  Rejected = "rejected",
+}
+
 export const ErrorMessage = "Something went wrong please try again later";
 export enum AlertEnums {
   INFO = "info",

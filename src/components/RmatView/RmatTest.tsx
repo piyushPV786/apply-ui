@@ -117,7 +117,6 @@ const RmatTest: React.FC = () => {
           </div>
         </MainContainer>
       </div>
-      <DocumentUploadContainer {...({} as any)} />
     </ParentContainer>
   );
 };

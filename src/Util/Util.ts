@@ -175,6 +175,38 @@ export const getUploadDocumentUrl = async (
     return error;
   }
 };
+export const getAllDocumentsDetails = async (code?: string) => {
+  const url = process.env.base_Url;
+  const appCode = code || getApplicationCode();
+  try {
+    const response: any = await AuthApi.get(
+      `${url}application/documents/${appCode}`
+    );
+    if (response.status === 200) {
+      const { data } = response;
+      return await data;
+    }
+  } catch (error: any) {
+    console.log(error.message);
+    return error;
+  }
+};
+export const downloadDeclarationLetter = async (code?: string) => {
+  const url = process.env.base_Url;
+  const appCode = code || getApplicationCode();
+  try {
+    const response: any = await AuthApi.get(
+      `${url}application/${appCode}/download/declarationForm`
+    );
+    if (response.status === 200) {
+      const { data } = response;
+      return await data;
+    }
+  } catch (error: any) {
+    console.log(error.message);
+    return error;
+  }
+};
 export const getCommonUploadDocumentUrl = async (fileName: string) => {
   try {
     const response: any = await CommonAPI.get(

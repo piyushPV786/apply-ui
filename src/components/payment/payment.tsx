@@ -15,7 +15,6 @@ import {
   applyDiscountCode,
   getApplicationCode,
   getQualificationStudyModeData,
-  getUploadDocumentUrl,
   isInvalidFileType,
   sortAscending,
   uploadDocuments,
