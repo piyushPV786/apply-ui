@@ -27,7 +27,7 @@ export const EditGroup = ({ updateTermsConditions }) => {
   return (
     <Grid>
       <label className="form-check-label">
-        <strong className="me-1">Please read and agree to the</strong>
+        I have read and agreed to
         <a
           style={{ color: "Green", fontWeight: "bold" }}
           href="#"
@@ -36,7 +36,7 @@ export const EditGroup = ({ updateTermsConditions }) => {
           }}
         >
           {" "}
-          terms and conditions
+          Terms and Conditions
         </a>
       </label>
 
@@ -60,7 +60,10 @@ export const EditGroup = ({ updateTermsConditions }) => {
                 data-id="2b0ab16"
                 data-element_type="column"
               >
-                <div className="elementor-widget-wrap elementor-element-populated">
+                <div
+                  className="elementor-widget-wrap elementor-element-populated"
+                  style={{ maxHeight: 400, overflowY: "auto" }}
+                >
                   <div
                     className="elementor-element elementor-element-809c681 elementor-widget elementor-widget-text-editor"
                     data-id="809c681"

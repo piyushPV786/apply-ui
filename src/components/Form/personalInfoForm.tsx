@@ -105,6 +105,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       setValue(nationalityIdKey, "SA", formDirtyState);
     } else if (state.target.value == "PRSA") {
       setValue(permenantResidentKey, "SA", formDirtyState);
+      setValue(nationalityIdKey, "", formDirtyState);
     } else {
       setValue(permenantResidentKey, "", formDirtyState);
       setValue(nationalityIdKey, "", formDirtyState);
