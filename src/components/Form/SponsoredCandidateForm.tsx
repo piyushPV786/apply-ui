@@ -40,7 +40,7 @@ const sponsorState = `${SponsorCandidateDetail}.state`;
 const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
 export const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
-const relationShip = `${SponsorCandidateDetail}.relationship`;
+const relationShip = `${SponsorCandidateDetail}.relationshipCode`;
 interface ISponsorProps {
   leadId: string;
   sponsorModeArr: IOption[];
@@ -103,15 +103,15 @@ export const SponsoredForm = (props: ISponsorProps) => {
     .includes(CommonEnums.EMPLOYEE_BURSARY);
   const disableSponsorForm =
     studentType?.toLowerCase() === CommonEnums.MANAGEMENT;
-  useEffect(() => {
-    if (
-      !isObjectEmpty(isSponserDetailExist) &&
-      props?.leadId &&
-      isSponserDetailExist
-    ) {
-      setValue(isSponsored, "yes", formDirtyState);
-    }
-  }, [isSponserDetailExist]);
+  // useEffect(() => {
+  //   if (
+  //     !isObjectEmpty(isSponserDetailExist) &&
+  //     props?.leadId &&
+  //     isSponserDetailExist
+  //   ) {
+  //     setValue(isSponsored, "yes", formDirtyState);
+  //   }
+  // }, [isSponserDetailExist]);
 
   useEffect(() => {
     if (!props?.leadId) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -10,7 +10,6 @@ import { Controller, useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import {
   formOptions,
-  isEmpty,
   isObjectEmpty,
   isValidEmail,
   onlyAlphabets,
@@ -18,7 +17,6 @@ import {
 } from "../../Util/Util";
 import Image from "next/image";
 import KinImg from "../../../public/assets/images/kin.svg";
-import _ from "lodash";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { IOption } from "../common/types";
 const KinDetails = "kin";
@@ -66,9 +64,9 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
       );
       setCountryCode(userNumberDetail?.countryCode);
     }
-    if (!isObjectEmpty(isKinDetailExist) && leadId) {
-      setValue(isKin, "yes", formOptions);
-    }
+    // if (!isObjectEmpty(isKinDetailExist) && leadId) {
+    //   setValue(isKin, "yes", formOptions);
+    // }
   }, [isKinDetailExist]);
 
   useEffect(() => {
