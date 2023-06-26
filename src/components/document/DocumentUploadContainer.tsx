@@ -5,7 +5,11 @@ import StyledButton from "../button/button";
 import { Green, StyledLabel } from "../common/common";
 import { AlertEnums } from "../common/constant";
 import AlertBox from "../alert/Alert";
-import { downloadDeclarationLetter, isInvalidFileType } from "../../Util/Util";
+import {
+  downloadDeclarationLetter,
+  downloadDocument,
+  isInvalidFileType,
+} from "../../Util/Util";
 import { GreenText } from "../student/style";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -87,8 +91,19 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     onRemove && onRemove(index, file);
   };
 
-  const onDownloadDeclarationLetter = () => {
-    const response = downloadDeclarationLetter();
+  const onDownloadDeclarationLetter = async () => {
+    const responseData = await downloadDeclarationLetter();
+    const blob = new Blob([responseData], {
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    });
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = "dect";
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   };
   return (
     <MainContainer>
@@ -162,7 +177,9 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
       {uploadDocs &&
         uploadDocs?.length > 0 &&
         uploadDocs?.map((file, index) => (
-          <UploadedFileViewContainer key={`file_${file?.name}_${index}_uploaded`}>
+          <UploadedFileViewContainer
+            key={`file_${file?.name}_${index}_uploaded`}
+          >
             <GreenText>{file?.name}</GreenText>
             <ActionContainer>
               <CircleIconContainer onClick={(e) => showPdf(e, file)}>

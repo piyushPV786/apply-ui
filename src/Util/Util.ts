@@ -32,21 +32,21 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
         key == "kin" &&
         (formData[key]?.isKin == "no" || !formData[key]?.isKin)
       ) {
-        delete formData[key];
+        formData[key] = { isKin: "no" };
       }
 
       if (
         key == "sponsor" &&
         (formData[key]?.isSponsored === "no" || !formData[key]?.isSponsored)
       ) {
-        delete formData[key];
+        formData[key] = { isSponsored: "no" };
       }
 
       if (
         key == "employment" &&
         (formData[key]?.isEmployment == "no" || !formData[key]?.isEmployment)
       ) {
-        delete formData[key];
+        formData[key] = { isEmployment: "no" };
       }
       if (removedKeysToMap[key] && typeof formData[key] !== "object") {
         delete formData[key];
@@ -388,27 +388,6 @@ export const mapFormDefaultValue = (
 ) => {
   let valueCode;
   for (let [key, value] of Object.entries(studentData)) {
-    // if (
-    //   (key === "kin" && isObjectEmpty(studentData[key])) ||
-    //   (key === "sponsor" && isObjectEmpty(studentData[key])) ||
-    //   (key === "employment" && isObjectEmpty(studentData[key]))
-    // ) {
-    //   console.log({ key });
-    //   let mapKey = "";
-    //   if (key === "kin") {
-    //     mapKey = isKin;
-    //     setValue(mapKey, "no", formOptions);
-    //   }
-    //   if (key === "sponsor") {
-    //     mapKey = isKin;
-    //     setValue(mapKey, "no", formOptions);
-    //   }
-    //   if (key === "employment") {
-    //     mapKey = isSponsored;
-    //     setValue(mapKey, "no", formOptions);
-    //   }
-    //   delete studentData[key];
-    // }
     if (acceptedKeysToMap.includes(key)) {
       if (key === "education" && studentData[key]) {
         valueCode = studentData[key]?.socialMediaCode
