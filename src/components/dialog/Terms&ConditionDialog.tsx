@@ -565,7 +565,7 @@ export const EditGroup = ({ updateTermsConditions }) => {
                                                                 </p>
                                                                 <p className="p1">
                                                                   g. Should any
-                                                                  monies due by
+                                                                  money due by
                                                                   the student or
                                                                   the
                                                                   signatory/ies
