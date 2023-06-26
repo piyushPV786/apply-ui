@@ -41,26 +41,7 @@ const StudentLogin = () => {
   const [isResendOtp, setResend] = useState<boolean>(false);
   const { baseAuth, loading } = useAxiosInterceptor();
 
-  const defaultProvider: AuthValuesType = {
-    user: null,
-    loading: true,
-    setUser: () => null,
-    setLoading: () => Boolean,
-    isInitialized: false,
-    login: () => Promise.resolve(),
-    logout: () => Promise.resolve(),
-    setIsInitialized: () => Boolean,
-    register: () => Promise.resolve(),
-  };
-  const [user, setUser] = useState<UserDataType | null>(defaultProvider.user);
-  const userData = {
-    id: 1,
-    role: "admin",
-    password: "admin",
-    fullName: "John Doe",
-    username: "johndoe",
-    email: "admin@materialize.com",
-  };
+
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
