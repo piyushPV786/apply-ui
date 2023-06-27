@@ -197,7 +197,7 @@ export const EducationForm = (props: IEducationProps) => {
                   </select>
                   {educationFormError?.programCode && (
                     <div className="invalid-feedback">
-                      Please enter Interested Program
+                      select your interested program
                     </div>
                   )}
                 </div>
@@ -388,7 +388,7 @@ export const EducationForm = (props: IEducationProps) => {
                   {educationFormError &&
                     educationFormError?.isInternationDegree && (
                       <div className="invalid-feedback">
-                        International is required
+                        international degree is required
                       </div>
                     )}
                 </div>
