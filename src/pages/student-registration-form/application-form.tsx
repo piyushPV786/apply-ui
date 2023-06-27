@@ -147,10 +147,18 @@ const ApplicationForm = () => {
     }
   };
 
-  const updateTermsConditions = () => {
-    setValue("isAgreedTermsAndConditions", true);
-    clearErrors("isAgreedTermsAndConditions");
-    settermsOpen(false);
+  const updateTermsConditions = (status) => {
+    if (status == true) {
+      setValue("isAgreedTermsAndConditions", true);
+      clearErrors("isAgreedTermsAndConditions");
+      settermsOpen(false);
+    }
+
+    if (status == false) {
+      setValue("isAgreedTermsAndConditions", false);
+      clearErrors("isAgreedTermsAndConditions");
+      settermsOpen(false);
+    }
   };
 
   const updateLead = (
@@ -701,7 +709,11 @@ const ApplicationForm = () => {
                           type="checkbox"
                           checked={allFields?.isAgreedTermsAndConditions}
                           onClick={() => {
-                            settermsOpen(true);
+                            if (
+                              allFields?.isAgreedTermsAndConditions == false
+                            ) {
+                              settermsOpen(true);
+                            }
                           }}
                           id="flexCheckDefault"
                           {...register("isAgreedTermsAndConditions", {

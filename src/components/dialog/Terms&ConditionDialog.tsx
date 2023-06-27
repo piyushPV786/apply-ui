@@ -1923,14 +1923,14 @@ export const EditGroup = ({
             type="button"
             isGreenWhiteCombination={true}
             onClick={() => {
-              termsHandelClose();
+              updateTermsConditions(false);
             }}
             title={"Decline"}
           />
           <StyledButton
             title={"Accept"}
             onClick={() => {
-              updateTermsConditions();
+              updateTermsConditions(true);
             }}
           />
         </DialogActions>
