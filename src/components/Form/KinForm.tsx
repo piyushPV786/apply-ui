@@ -159,7 +159,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                   <div className="mb-4">
                     <AdvanceDropDown
                       options={relationData}
-                      label={"RelationShip"}
+                      label={"Relationship"}
                       value={relationShipVal}
                       name={relationShip}
                       register={register}
