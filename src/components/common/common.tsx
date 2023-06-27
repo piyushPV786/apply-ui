@@ -118,7 +118,7 @@ const sponsorEmail = `${SponsorCandidateDetail}.email`;
 const sponsorAddress = `${SponsorCandidateDetail}.address`;
 const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
-const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
+const isSponsor = `${SponsorCandidateDetail}.isSponsor`;
 
 export const getSponsorNameLabel = (
   studentType: string,

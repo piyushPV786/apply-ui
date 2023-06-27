@@ -39,7 +39,7 @@ const sponsorPinCode = `${SponsorCandidateDetail}.zipCode`;
 const sponsorState = `${SponsorCandidateDetail}.state`;
 const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
-export const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
+export const isSponsor = `${SponsorCandidateDetail}.isSponsor`;
 const relationShip = `${SponsorCandidateDetail}.relationshipCode`;
 interface ISponsorProps {
   leadId: string;
@@ -65,7 +65,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
   } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>();
 
-  const isSponsoredVal = watch(isSponsored);
+  const isSponsorVal = watch(isSponsor);
   const sponsorModeVal = watch(sponsorMode);
   const sponsorNameVal = watch(sponsorName);
   const sponsorAddressVal = watch(sponsorAddress);
@@ -88,7 +88,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
   const touchedField = touchedFields[SponsorCandidateDetail] as any;
   const isSelfSponsored = sponsorModeVal === "SELF";
   const isSponserDetailExist = watch(SponsorCandidateDetail);
-  const isSponserNeed = isSponsoredVal === "yes";
+  const isSponserNeed = isSponsorVal === "yes";
   const disablePhoneOnSelfSponser = isSelfSponsored;
   const educationFormValues = watch("education");
   const studentType = educationFormValues?.studentTypeCode;
@@ -103,15 +103,15 @@ export const SponsoredForm = (props: ISponsorProps) => {
     .includes(CommonEnums.EMPLOYEE_BURSARY);
   const disableSponsorForm =
     studentType?.toLowerCase() === CommonEnums.MANAGEMENT;
-  // useEffect(() => {
-  //   if (
-  //     !isObjectEmpty(isSponserDetailExist) &&
-  //     props?.leadId &&
-  //     isSponserDetailExist
-  //   ) {
-  //     setValue(isSponsored, "yes", formDirtyState);
-  //   }
-  // }, [isSponserDetailExist]);
+  useEffect(() => {
+    if (
+      !isObjectEmpty(isSponserDetailExist) &&
+      props?.leadId &&
+      isSponserDetailExist
+    ) {
+      setValue(isSponsor, "yes", formDirtyState);
+    }
+  }, [isSponserDetailExist]);
 
   useEffect(() => {
     if (!props?.leadId) {
@@ -165,9 +165,9 @@ export const SponsoredForm = (props: ISponsorProps) => {
             <input
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isSponsored}`, { required: isSponserNeed })}
+              {...register(`${isSponsor}`, { required: isSponserNeed })}
               value="yes"
-              checked={isSponsoredVal === "yes"}
+              checked={isSponsorVal === "yes"}
             />
             <label className="form-check-label">Yes</label>
           </div>
@@ -176,15 +176,15 @@ export const SponsoredForm = (props: ISponsorProps) => {
               disabled={isBursaryStudentType}
               className="form-check-input me-2"
               type="radio"
-              {...register(`${isSponsored}`, { required: isSponserNeed })}
+              {...register(`${isSponsor}`, { required: isSponserNeed })}
               value="no"
-              checked={isSponsoredVal === "no"}
+              checked={isSponsorVal === "no"}
             />
             <label className="form-check-label">No</label>
           </div>
         </AccordionSummary>
         {!disableSponsorForm && (
-          <AccordionDetails hidden={!isSponsoredVal || isSponsoredVal === "no"}>
+          <AccordionDetails hidden={!isSponsorVal || isSponsorVal === "no"}>
             <div className="container-fluid form-padding">
               <div className="row">
                 <div className="col-md-4">

@@ -408,18 +408,17 @@ export const EducationForm = (props: IEducationProps) => {
                       if (
                         value?.toLowerCase().includes(CommonEnums.MANAGEMENT)
                       ) {
-                        setValue("sponsor.isSponsored", "no", formDirtyState);
+                        setValue("sponsor.isSponsor", "no", formDirtyState);
                         return;
                       }
                       if (value?.toLowerCase().includes(CommonEnums.REGULAR)) {
-                        setValue("sponsor.isSponsored", "no", formDirtyState);
+                        setValue("sponsor.isSponsor", "no", formDirtyState);
                         return;
                       }
                       if (value?.toLowerCase().includes(CommonEnums.BURSARY)) {
-                        setValue("sponsor.isSponsored", "yes", formDirtyState);
+                        setValue("sponsor.isSponsor", "yes", formDirtyState);
                         return;
-                      } else
-                        setValue("sponsor.isSponsored", "", formDirtyState);
+                      } else setValue("sponsor.isSponsor", "", formDirtyState);
                       return;
                     }}
                   >
