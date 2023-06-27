@@ -37,7 +37,7 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
 
       if (
         key == "sponsor" &&
-        (formData[key]?.isSponsored === "no" || !formData[key]?.isSponsored)
+        (formData[key]?.isSponsor === "no" || !formData[key]?.isSponsor)
       ) {
         formData[key] = { isSponsored: "no" };
       }
@@ -326,7 +326,7 @@ export function isObjectEmpty(object: any) {
   const mobileNumberKeyTwo = "mobileNumber";
   const isKin = "isKin";
   const isEmployed = "isEmployed";
-  const isSponsored = "isSponsored";
+  const isSponsor = "isSponsor";
   const newCloneObject = { ...object };
   newCloneObject &&
     mobileNumberKeyOne in newCloneObject &&
@@ -339,8 +339,8 @@ export function isObjectEmpty(object: any) {
     isEmployed in newCloneObject &&
     delete newCloneObject[isEmployed];
   newCloneObject &&
-    isSponsored in newCloneObject &&
-    delete newCloneObject[isSponsored];
+    isSponsor in newCloneObject &&
+    delete newCloneObject[isSponsor];
   return Object?.values(newCloneObject).every((v) =>
     v && typeof v === "object"
       ? isObjectEmpty(v)

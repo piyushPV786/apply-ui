@@ -70,6 +70,7 @@ const ApplicationForm = () => {
   const [isNewApplication, setNewApplication] = useState<boolean>(false);
 
   const [nationalityStatus, setNationalityStatus] = useState([]);
+  const [termsOpen, settermsOpen] = useState<any>(false);
 
   const methods = useForm<ILeadFormValues>({
     mode: "all",
@@ -124,6 +125,14 @@ const ApplicationForm = () => {
   const navigateNext = () => {
     setActiveStep((prevState: number) => prevState + 1);
   };
+
+  const termsHandelClose = () => {
+    settermsOpen(false);
+  };
+  const termsHandelOpen = () => {
+    settermsOpen(true);
+  };
+
   const routeIfStepDone = (routeTo: string) => {
     if (routeTo) {
       switch (routeTo) {
@@ -141,6 +150,7 @@ const ApplicationForm = () => {
   const updateTermsConditions = () => {
     setValue("isAgreedTermsAndConditions", true);
     clearErrors("isAgreedTermsAndConditions");
+    settermsOpen(false);
   };
 
   const updateLead = (
@@ -690,6 +700,9 @@ const ApplicationForm = () => {
                           className="form-check-input me-2"
                           type="checkbox"
                           checked={allFields?.isAgreedTermsAndConditions}
+                          onClick={() => {
+                            settermsOpen(true);
+                          }}
                           id="flexCheckDefault"
                           {...register("isAgreedTermsAndConditions", {
                             required: true,
@@ -697,6 +710,9 @@ const ApplicationForm = () => {
                         />
 
                         <Termsconditiondialog
+                          termsHandelOpen={termsHandelOpen}
+                          termsHandelClose={termsHandelClose}
+                          termsOpen={termsOpen}
                           updateTermsConditions={updateTermsConditions}
                         />
                       </div>
