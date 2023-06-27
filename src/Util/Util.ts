@@ -39,7 +39,7 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
         key == "sponsor" &&
         (formData[key]?.isSponsor === "no" || !formData[key]?.isSponsor)
       ) {
-        formData[key] = { isSponsored: "no" };
+        formData[key] = { isSponsor: "no" };
       }
 
       if (
