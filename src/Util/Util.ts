@@ -395,9 +395,9 @@ export const mapFormDefaultValue = (
           : studentData[key]?.agentCode
           ? "AGENT"
           : "";
-        setValue(key, value, {});
+        setValue(key, value);
       }
-      setValue(key, value, {});
+      setValue(key, value);
     }
     setValue("education.referredById", valueCode, formOptions);
   }
