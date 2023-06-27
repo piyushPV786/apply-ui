@@ -103,15 +103,15 @@ export const SponsoredForm = (props: ISponsorProps) => {
     .includes(CommonEnums.EMPLOYEE_BURSARY);
   const disableSponsorForm =
     studentType?.toLowerCase() === CommonEnums.MANAGEMENT;
-  useEffect(() => {
-    if (
-      !isObjectEmpty(isSponserDetailExist) &&
-      props?.leadId &&
-      isSponserDetailExist
-    ) {
-      setValue(isSponsor, "yes", formDirtyState);
-    }
-  }, [isSponserDetailExist]);
+  // useEffect(() => {
+  //   if (
+  //     !isObjectEmpty(isSponserDetailExist) &&
+  //     props?.leadId &&
+  //     isSponserDetailExist
+  //   ) {
+  //     setValue(isSponsor, "yes", formDirtyState);
+  //   }
+  // }, [isSponserDetailExist]);
 
   useEffect(() => {
     if (!props?.leadId) {
