@@ -41,7 +41,6 @@ const StudentLogin = () => {
   const [isResendOtp, setResend] = useState<boolean>(false);
   const { baseAuth, loading } = useAxiosInterceptor();
 
-
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
@@ -54,15 +53,6 @@ const StudentLogin = () => {
       router.push(RoutePaths.Dashboard);
     }
   }, []);
-
-  useEffect(() => {
-    let timer;
-    if (isProceed && isResendOtp) {
-      timer = setTimeout(() => {
-        setShowResendBtn(true);
-      }, 60000);
-    }
-  }, [isProceed, isResendOtp]);
 
   const isNumberValid =
     mobileNumber &&
@@ -85,7 +75,7 @@ const StudentLogin = () => {
           countryCode: countryCode,
         };
         sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
-        setResend(true);
+
         setProceed(true);
         setToast(true);
       })
@@ -219,8 +209,7 @@ const StudentLogin = () => {
                 className="link-text"
                 onClick={() => {
                   setProceed(!isProceed);
-                  setResend(false);
-                  setShowResendBtn(false);
+
                   setOtp("");
                 }}
               >
@@ -267,14 +256,13 @@ const StudentLogin = () => {
           success: false,
           message: "Sorry! The entered OTP is invalid. Please try again",
         });
+        setShowResendBtn(true);
       });
   };
 
   const resendOtp = () => {
     setErrorMsg({ success: true, message: "OTP re-sent successfully" });
     setOtp("");
-    setShowResendBtn(true);
-    setResend(true);
   };
 
   const today = new Date();
