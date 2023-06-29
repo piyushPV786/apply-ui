@@ -48,6 +48,7 @@ import {
   getIntrestedQualificationPrograms,
   getUserDetailHelper,
 } from "../../Util/applicationFormHelper";
+
 const isValidLeadEmail = (value: string) => isValidEmail(value);
 const ApplicationForm = () => {
   const router = useRouter();
@@ -475,7 +476,6 @@ const ApplicationForm = () => {
         console.error(err);
       });
   };
-
   const getUserDetail = () => {
     const isAuthenticate = JSON.parse(
       sessionStorage?.getItem("authenticate") as any
@@ -540,9 +540,9 @@ const ApplicationForm = () => {
   };
 
   const getAgentDetails = async () => {
-    UserManagementAPI.get(CommonApi.GETUSERDETAIL)
+    UserManagementAPI.get(CommonApi.AGENT_LIST)
       .then(({ data }) => {
-        setAgentData(data?.data?.data);
+        setAgentData(data?.data);
       })
       .catch((err) => {
         console.log(err);
