@@ -69,6 +69,7 @@ export const CommonApi = {
   GETCURRENCYCONVERSION: "/programs-fee/fee-conversion-rate/",
   GETRMATDETAILS: "/application/rmat/details/",
   NATIONALITYSTATUS: "/nationality-status",
+  AGENT_LIST: "/user/role/Sales",
 };
 
 export const RoutePaths = {
