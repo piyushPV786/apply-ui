@@ -19,6 +19,7 @@ import DocumentUploadContainer, {
 import { Typography } from "@mui/material";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { identificationDocumentTypeKey } from "./personalInfoForm";
+import { CloseOutlined } from "@material-ui/icons";
 
 const documentUploadFormData = [
   {
@@ -54,6 +55,34 @@ const documentUploadFormData = [
   },
 ];
 
+const documentCriteria = [
+  {
+    text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</stroong>`,
+    isInnerText: true,
+  },
+  {
+    text: `ID should be at least valid for <strong>6 months.</strong>`,
+    isInnerText: true,
+  },
+  { text: "Document must be clear visible" },
+  { text: "Upload a color scan of the original document." },
+  {
+    text: "Do not upload black & white scans",
+    icon: (
+      <div
+        style={{
+          backgroundColor: "#ffe9e9",
+          borderRadius: "50%",
+          padding: "1px",
+          marginRight: "3px",
+        }}
+      >
+        <CloseOutlined color="error" />
+      </div>
+    ),
+  },
+];
+
 interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
@@ -67,7 +96,22 @@ interface IDocumentUploadProps {
   onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
 const imgUrl = "/assets/images";
+function mapStatusToFormData(response, formData) {
+  if (response?.length > 0) {
+    for (const item of response) {
+      const matchingFormData = formData.find(
+        (formDataItem) => formDataItem.id === item.documentTypeCode
+      );
 
+      if (matchingFormData) {
+        if (item.status === "PENDING") {
+          return;
+        } else matchingFormData.status = item.status;
+      }
+    }
+    return formData;
+  } else return formData;
+}
 const DocumentUploadForm = ({
   allFields,
   isValidDocument,
@@ -79,7 +123,7 @@ const DocumentUploadForm = ({
 }: IDocumentUploadProps) => {
   const [documentFormDataDetail, setDocumentFormDataDetail] = useState<
     typeof documentUploadFormData
-  >(documentUploadFormData);
+  >(mapStatusToFormData(allFields?.documentDetails, documentUploadFormData));
   const fileUploadRef = useRef<any>(null);
   const {
     register,
@@ -284,6 +328,26 @@ const DocumentUploadForm = ({
                 key={name}
                 status={status?.toLowerCase()}
                 text={name}
+              />
+            ))}
+          </div>
+        </MainContainer>
+        <MainContainer className="px-1">
+          <div className="d-flex flex-column py-1">
+            <Typography textAlign="left" component="header" fontWeight="bold">
+              Document Criteria
+            </Typography>
+            <Typography color="black" textAlign="left" component="caption">
+              Documents not following the below guidelines will not be accepted
+              and you will be asked to submit the documents again
+            </Typography>
+            {documentCriteria.map(({ text, icon, isInnerText }: any) => (
+              <TickWithText
+                key={text}
+                text={text}
+                icon={icon}
+                isInnerText={isInnerText}
+                required={false}
               />
             ))}
           </div>

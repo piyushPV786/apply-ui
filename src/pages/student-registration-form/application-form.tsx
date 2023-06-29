@@ -417,8 +417,8 @@ const ApplicationForm = () => {
         if (res.statusCode === 201) {
           count = count + 1;
           successLength.push("true");
-          uploadedDocs.forEach((file) => {
-            uploadFiles(res?.data, file);
+          res?.data.forEach((url, index) => {
+            uploadFiles(url, uploadedDocs[index]);
           });
         } else {
           showToast(false, res.message);
