@@ -20,7 +20,12 @@ import {
 import StyledButton from "../../components/button/button";
 // ** Third Party Library
 
-export const EditGroup = ({ updateTermsConditions }) => {
+export const EditGroup = ({
+  updateTermsConditions,
+  termsOpen,
+  termsHandelClose,
+  termsHandelOpen,
+}) => {
   // ** States
   const [dialogShow, setDialogShow] = useState(false);
 
@@ -32,7 +37,7 @@ export const EditGroup = ({ updateTermsConditions }) => {
           style={{ color: "Green", fontWeight: "bold" }}
           href="#"
           onClick={() => {
-            setDialogShow(true);
+            termsHandelOpen();
           }}
         >
           {" "}
@@ -42,10 +47,10 @@ export const EditGroup = ({ updateTermsConditions }) => {
 
       <Dialog
         fullWidth
-        open={dialogShow}
+        open={dialogShow || termsOpen}
         maxWidth="xl"
         scroll="body"
-        onClose={() => setDialogShow(false)}
+        onClose={() => termsHandelClose}
       >
         <Box sx={{ mt: 5, textAlign: "center" }}>
           <Typography variant="h5" sx={{ mb: 3, lineHeight: "2rem" }}>
@@ -1918,15 +1923,14 @@ export const EditGroup = ({ updateTermsConditions }) => {
             type="button"
             isGreenWhiteCombination={true}
             onClick={() => {
-              setDialogShow(false);
+              updateTermsConditions(false);
             }}
             title={"Decline"}
           />
           <StyledButton
             title={"Accept"}
             onClick={() => {
-              setDialogShow(false);
-              updateTermsConditions();
+              updateTermsConditions(true);
             }}
           />
         </DialogActions>

@@ -71,6 +71,7 @@ const ApplicationForm = () => {
   const [isNewApplication, setNewApplication] = useState<boolean>(false);
 
   const [nationalityStatus, setNationalityStatus] = useState([]);
+  const [termsOpen, settermsOpen] = useState<any>(false);
 
   const methods = useForm<ILeadFormValues>({
     mode: "all",
@@ -125,6 +126,14 @@ const ApplicationForm = () => {
   const navigateNext = () => {
     setActiveStep((prevState: number) => prevState + 1);
   };
+
+  const termsHandelClose = () => {
+    settermsOpen(false);
+  };
+  const termsHandelOpen = () => {
+    settermsOpen(true);
+  };
+
   const routeIfStepDone = (routeTo: string) => {
     if (routeTo) {
       switch (routeTo) {
@@ -139,9 +148,18 @@ const ApplicationForm = () => {
     }
   };
 
-  const updateTermsConditions = () => {
-    setValue("isAgreedTermsAndConditions", true);
-    clearErrors("isAgreedTermsAndConditions");
+  const updateTermsConditions = (status) => {
+    if (status == true) {
+      setValue("isAgreedTermsAndConditions", true);
+      clearErrors("isAgreedTermsAndConditions");
+      settermsOpen(false);
+    }
+
+    if (status == false) {
+      setValue("isAgreedTermsAndConditions", false);
+      clearErrors("isAgreedTermsAndConditions");
+      settermsOpen(false);
+    }
   };
 
   const updateLead = (
@@ -690,6 +708,13 @@ const ApplicationForm = () => {
                           className="form-check-input me-2"
                           type="checkbox"
                           checked={allFields?.isAgreedTermsAndConditions}
+                          onClick={() => {
+                            if (
+                              allFields?.isAgreedTermsAndConditions == false
+                            ) {
+                              settermsOpen(true);
+                            }
+                          }}
                           id="flexCheckDefault"
                           {...register("isAgreedTermsAndConditions", {
                             required: true,
@@ -697,6 +722,9 @@ const ApplicationForm = () => {
                         />
 
                         <Termsconditiondialog
+                          termsHandelOpen={termsHandelOpen}
+                          termsHandelClose={termsHandelClose}
+                          termsOpen={termsOpen}
                           updateTermsConditions={updateTermsConditions}
                         />
                       </div>

@@ -197,7 +197,7 @@ export const EducationForm = (props: IEducationProps) => {
                   </select>
                   {educationFormError?.programCode && (
                     <div className="invalid-feedback">
-                      Please enter Interested Program
+                      select your interested program
                     </div>
                   )}
                 </div>
@@ -388,7 +388,7 @@ export const EducationForm = (props: IEducationProps) => {
                   {educationFormError &&
                     educationFormError?.isInternationDegree && (
                       <div className="invalid-feedback">
-                        International is required
+                        international degree is required
                       </div>
                     )}
                 </div>
@@ -408,18 +408,17 @@ export const EducationForm = (props: IEducationProps) => {
                       if (
                         value?.toLowerCase().includes(CommonEnums.MANAGEMENT)
                       ) {
-                        setValue("sponsor.isSponsored", "no", formDirtyState);
+                        setValue("sponsor.isSponsor", "no", formDirtyState);
                         return;
                       }
                       if (value?.toLowerCase().includes(CommonEnums.REGULAR)) {
-                        setValue("sponsor.isSponsored", "no", formDirtyState);
+                        setValue("sponsor.isSponsor", "no", formDirtyState);
                         return;
                       }
                       if (value?.toLowerCase().includes(CommonEnums.BURSARY)) {
-                        setValue("sponsor.isSponsored", "yes", formDirtyState);
+                        setValue("sponsor.isSponsor", "yes", formDirtyState);
                         return;
-                      } else
-                        setValue("sponsor.isSponsored", "", formDirtyState);
+                      } else setValue("sponsor.isSponsor", "", formDirtyState);
                       return;
                     }}
                   >
