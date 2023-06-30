@@ -379,7 +379,6 @@ const ApplicationForm = () => {
         console.log(err.message);
       });
   };
-
   const Dates = new Date();
   const timestamp =
     Dates.toLocaleDateString("en-GB").split("/").join("") +
@@ -397,11 +396,21 @@ const ApplicationForm = () => {
 
     const files = [] as any[];
     uploadedDocs.map((file: File & { typeCode: string }) => {
-      files.push({
-        documentTypeCode: file?.typeCode,
-        fileName: file.name,
-        fileType: file.type,
-      });
+      if (file?.typeCode === "nationalIdPassport") {
+        files.push({
+          documentTypeCode:
+            allFields?.document?.identificationDocumentType?.includes("others")
+              ? allFields?.document?.other
+              : allFields?.document?.identificationDocumentType,
+          fileName: file.name,
+          fileType: file.type,
+        });
+      } else
+        files.push({
+          documentTypeCode: file?.typeCode,
+          fileName: file.name,
+          fileType: file.type,
+        });
     });
 
     payload = {

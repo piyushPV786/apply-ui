@@ -54,6 +54,20 @@ const documentUploadFormData = [
     status: "upload pending",
   },
 ];
+const mbaProgramDocuments = [
+  {
+    name: "Motivation Letter",
+    id: "motivationLetter",
+    disabled: false,
+    status: "upload pending",
+  },
+  {
+    name: "Interview Notes",
+    id: "interviewNotes",
+    disabled: false,
+    status: "upload pending",
+  },
+];
 
 const documentCriteria = [
   {
@@ -106,7 +120,13 @@ function mapStatusToFormData(response, formData) {
       if (matchingFormData) {
         if (item.status === "PENDING") {
           return;
-        } else matchingFormData.status = item.status;
+        }
+        if (item.status === "SALES_REJECT") {
+          matchingFormData.status = "Rejected";
+        }
+        if (item.status === "APPROVED") {
+          matchingFormData.status = "Approved";
+        }
       }
     }
     return formData;
@@ -123,13 +143,29 @@ const DocumentUploadForm = ({
 }: IDocumentUploadProps) => {
   const [documentFormDataDetail, setDocumentFormDataDetail] = useState<
     typeof documentUploadFormData
-  >(mapStatusToFormData(allFields?.documentDetails, documentUploadFormData));
+  >(documentUploadFormData);
   const fileUploadRef = useRef<any>(null);
   const {
     register,
     setValue,
     formState: { errors },
   } = useFormContext();
+  const documentDetails = allFields?.document?.documentDetails || [];
+
+  const isMBAProgram = allFields?.education?.programCode === "MBA-PROG";
+  useEffect(() => {
+    if (documentDetails?.length > 0) {
+      setDocumentFormDataDetail(
+        mapStatusToFormData(documentDetails, documentUploadFormData)
+      );
+    }
+    if (isMBAProgram) {
+      setDocumentFormDataDetail((prevState) => [
+        ...prevState,
+        ...mbaProgramDocuments,
+      ]);
+    }
+  }, []);
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
   const [uploadDocs, setUploadDocs] = useState<
@@ -137,11 +173,14 @@ const DocumentUploadForm = ({
   >([]);
   const isDocumentRequired = allFields?.document?.documentDetails?.length === 0;
 
-  const documentTypeList = isApplicationEnrolled
-    ? [...(documentType || [])]?.filter((doc) => doc.code === "PAYMENTPROOF")
-    : [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
-        (doc) => doc.code !== "PAYMENTPROOF"
-      );
+  // const documentTypeList = isApplicationEnrolled
+  //   ? [...(documentType || [])]?.filter((doc) => doc.code === "PAYMENTPROOF")
+  //   : [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
+  //       (doc) => doc.code !== "PAYMENTPROOF"
+  //     );
+  const documentTypeList = documentType?.filter(
+    (item) => item?.code !== "PAYMENTPROOF"
+  );
   const documentIds = documentUploadFormData?.map((document) => document.id);
   const areAllDocumentsUploaded = documentIds.every((id) =>
     uploadDocs.some((doc) => doc.typeCode === id)
@@ -233,7 +272,7 @@ const DocumentUploadForm = ({
             <AdvanceDropDown
               onChange={(e) =>
                 setValue(
-                  identificationDocumentTypeKey,
+                  "document.identificationDocumentType",
                   e?.target?.value,
                   formDirtyState
                 )
@@ -280,7 +319,7 @@ const DocumentUploadForm = ({
   return (
     <div className="row mx-3 document-container">
       <div className="col-md-8">
-        {documentFormDataDetail.map(
+        {documentFormDataDetail?.map(
           ({ name, disabled, status, id, isDeclaration = false }) => {
             const customFileds = id?.includes("nationalIdPassport") ? (
               <NationalityPassportFields />
