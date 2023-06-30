@@ -123,6 +123,7 @@ interface Lead {
   nationality: string;
   mobileCountryCode: string;
   leadCode: string;
+  isAgreedTermsAndConditions: boolean;
 }
 
 export interface IMasterData {

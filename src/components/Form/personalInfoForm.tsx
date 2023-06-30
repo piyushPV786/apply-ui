@@ -23,7 +23,6 @@ import {
   transformDate,
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
-import { identityDocuments } from "../common/constant";
 
 interface IPersonalInfoProps {
   genders: IOption[];
@@ -31,6 +30,7 @@ interface IPersonalInfoProps {
   homeLanguage: IOption[];
   race: IOption[];
   nationalityStatusData: any[];
+  identityDocuments: any[];
 }
 
 const parentKey = "lead";
@@ -51,10 +51,16 @@ const mobileCountryCodeKey = `${parentKey}.mobileCountryCode`;
 const nationalityStatusKey = `${parentKey}.nationalityStatus`;
 const permenantResidentKey = `${parentKey}.permenantResident`;
 const PersonalInfoForm = (props: IPersonalInfoProps) => {
-  const { genders, nationalities, homeLanguage, race, nationalityStatusData } =
-    {
-      ...props,
-    };
+  const {
+    genders,
+    nationalities,
+    homeLanguage,
+    race,
+    nationalityStatusData,
+    identityDocuments,
+  } = {
+    ...props,
+  };
   const {
     setValue,
     register,

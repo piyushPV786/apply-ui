@@ -70,6 +70,7 @@ export const CommonApi = {
   GETRMATDETAILS: "/application/rmat/details/",
   NATIONALITYSTATUS: "/nationality-status",
   AGENT_LIST: "/user/role/Sales",
+  IDENTIFICATIONDOCUMENT: "/identification-Type",
 };
 
 export const RoutePaths = {
