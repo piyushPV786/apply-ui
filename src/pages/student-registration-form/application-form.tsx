@@ -784,9 +784,14 @@ const ApplicationForm = () => {
                           checked={allFields?.lead?.isAgreedTermsAndConditions}
                           onClick={() => {
                             if (
-                              allFields?.isAgreedTermsAndConditions == false
+                              allFields?.lead.isAgreedTermsAndConditions ==
+                              false
                             ) {
                               settermsOpen(true);
+                            } else if (
+                              allFields?.lead.isAgreedTermsAndConditions == true
+                            ) {
+                              updateTermsConditions(false);
                             }
                           }}
                           id="flexCheckDefault"
