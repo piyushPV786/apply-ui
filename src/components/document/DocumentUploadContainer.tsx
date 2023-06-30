@@ -113,8 +113,8 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
         style={{ fontWeight: "bolder" }}
         fontWeight="bold"
       >
-        {title}
-        <Status status={status}>{status}</Status>
+        <StyledLabel required>{title}</StyledLabel>
+        <Status style={{marginLeft:'2rem'}} status={status}>{status}</Status>
       </Typography>
 
       {isDeclaration && (
@@ -138,7 +138,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
       {status?.toLowerCase()?.includes("rejected") && (
         <>
           <AlertBox
-            style={{ width: "100%", maxWidth: "unset" }}
+            style={{ width: "100%", maxWidth: "unset", margin: "10px 0" }}
             severity={AlertEnums.DANGER}
           >
             {reasonText}
@@ -228,12 +228,25 @@ const useStyles = makeStyles({
   },
 });
 
-export const TickWithText = ({ text, status }) => {
+export const TickWithText = ({
+  text,
+  status = "",
+  icon,
+  isInnerText = false,
+  required = true,
+}: any) => {
   const classes = useStyles();
   const labelId = `list-secondary-label-${text}`;
   const title = () => (
-    <StyledLabel style={{ fontSize: "11px", fonWeight: 600 }} required>
-      {text}
+    <StyledLabel
+      style={{ fontSize: "11px", fonWeight: 600 }}
+      required={required}
+    >
+      {isInnerText ? (
+        <div dangerouslySetInnerHTML={{ __html: text }}></div>
+      ) : (
+        text
+      )}
     </StyledLabel>
   );
   return (
@@ -241,12 +254,21 @@ export const TickWithText = ({ text, status }) => {
       <ListItem
         key={text}
         secondaryAction={
-          <Status
-            className=""
-            style={{ fontSize: "12px", position: "relative", left: "10px" }}
-            noBg
-            status={status}
-          >{`-${status}`}</Status>
+          <>
+            {status && (
+              <Status
+                className=""
+                style={{
+                  fontSize: "12px",
+                  position: "relative",
+                  left: "10px",
+                  fontWeight: "bold",
+                }}
+                noBg
+                status={status}
+              >{`-${status}`}</Status>
+            )}
+          </>
         }
         disablePadding
         dense
@@ -258,9 +280,11 @@ export const TickWithText = ({ text, status }) => {
         }}
       >
         <ListItemButton>
-          <div className={classes.roundBackground}>
-            <CheckOutlined className={classes.icon} />
-          </div>
+          {icon || (
+            <div className={classes.roundBackground}>
+              <CheckOutlined className={classes.icon} />
+            </div>
+          )}
           <ListItemText id={labelId} primary={title()} />
         </ListItemButton>
       </ListItem>

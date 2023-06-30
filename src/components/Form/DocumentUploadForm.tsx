@@ -19,6 +19,7 @@ import DocumentUploadContainer, {
 import { Typography } from "@mui/material";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { identificationDocumentTypeKey } from "./personalInfoForm";
+import { CloseOutlined } from "@material-ui/icons";
 
 const documentUploadFormData = [
   {
@@ -53,6 +54,48 @@ const documentUploadFormData = [
     status: "upload pending",
   },
 ];
+const mbaProgramDocuments = [
+  {
+    name: "Motivation Letter",
+    id: "motivationLetter",
+    disabled: false,
+    status: "upload pending",
+  },
+  {
+    name: "Interview Notes",
+    id: "interviewNotes",
+    disabled: false,
+    status: "upload pending",
+  },
+];
+
+const documentCriteria = [
+  {
+    text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</stroong>`,
+    isInnerText: true,
+  },
+  {
+    text: `ID should be at least valid for <strong>6 months.</strong>`,
+    isInnerText: true,
+  },
+  { text: "Document must be clear visible" },
+  { text: "Upload a color scan of the original document." },
+  {
+    text: "Do not upload black & white scans",
+    icon: (
+      <div
+        style={{
+          backgroundColor: "#ffe9e9",
+          borderRadius: "50%",
+          padding: "1px",
+          marginRight: "3px",
+        }}
+      >
+        <CloseOutlined color="error" />
+      </div>
+    ),
+  },
+];
 
 interface IDocumentUploadProps {
   allFields: any;
@@ -67,7 +110,28 @@ interface IDocumentUploadProps {
   onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
 const imgUrl = "/assets/images";
+function mapStatusToFormData(response, formData) {
+  if (response?.length > 0) {
+    for (const item of response) {
+      const matchingFormData = formData.find(
+        (formDataItem) => formDataItem.id === item.documentTypeCode
+      );
 
+      if (matchingFormData) {
+        if (item.status === "PENDING") {
+          return;
+        }
+        if (item.status === "SALES_REJECT") {
+          matchingFormData.status = "Rejected";
+        }
+        if (item.status === "APPROVED") {
+          matchingFormData.status = "Approved";
+        }
+      }
+    }
+    return formData;
+  } else return formData;
+}
 const DocumentUploadForm = ({
   allFields,
   isValidDocument,
@@ -86,6 +150,22 @@ const DocumentUploadForm = ({
     setValue,
     formState: { errors },
   } = useFormContext();
+  const documentDetails = allFields?.document?.documentDetails || [];
+
+  const isMBAProgram = allFields?.education?.programCode === "MBA-PROG";
+  useEffect(() => {
+    if (documentDetails?.length > 0) {
+      setDocumentFormDataDetail(
+        mapStatusToFormData(documentDetails, documentUploadFormData)
+      );
+    }
+    if (isMBAProgram) {
+      setDocumentFormDataDetail((prevState) => [
+        ...prevState,
+        ...mbaProgramDocuments,
+      ]);
+    }
+  }, []);
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
   const [uploadDocs, setUploadDocs] = useState<
@@ -93,11 +173,14 @@ const DocumentUploadForm = ({
   >([]);
   const isDocumentRequired = allFields?.document?.documentDetails?.length === 0;
 
-  const documentTypeList = isApplicationEnrolled
-    ? [...(documentType || [])]?.filter((doc) => doc.code === "PAYMENTPROOF")
-    : [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
-        (doc) => doc.code !== "PAYMENTPROOF"
-      );
+  // const documentTypeList = isApplicationEnrolled
+  //   ? [...(documentType || [])]?.filter((doc) => doc.code === "PAYMENTPROOF")
+  //   : [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
+  //       (doc) => doc.code !== "PAYMENTPROOF"
+  //     );
+  const documentTypeList = documentType?.filter(
+    (item) => item?.code !== "PAYMENTPROOF"
+  );
   const documentIds = documentUploadFormData?.map((document) => document.id);
   const areAllDocumentsUploaded = documentIds.every((id) =>
     uploadDocs.some((doc) => doc.typeCode === id)
@@ -189,7 +272,7 @@ const DocumentUploadForm = ({
             <AdvanceDropDown
               onChange={(e) =>
                 setValue(
-                  identificationDocumentTypeKey,
+                  "document.identificationDocumentType",
                   e?.target?.value,
                   formDirtyState
                 )
@@ -236,7 +319,7 @@ const DocumentUploadForm = ({
   return (
     <div className="row mx-3 document-container">
       <div className="col-md-8">
-        {documentFormDataDetail.map(
+        {documentFormDataDetail?.map(
           ({ name, disabled, status, id, isDeclaration = false }) => {
             const customFileds = id?.includes("nationalIdPassport") ? (
               <NationalityPassportFields />
@@ -284,6 +367,26 @@ const DocumentUploadForm = ({
                 key={name}
                 status={status?.toLowerCase()}
                 text={name}
+              />
+            ))}
+          </div>
+        </MainContainer>
+        <MainContainer className="px-1">
+          <div className="d-flex flex-column py-1">
+            <Typography textAlign="left" component="header" fontWeight="bold">
+              Document Criteria
+            </Typography>
+            <Typography color="black" textAlign="left" component="caption">
+              Documents not following the below guidelines will not be accepted
+              and you will be asked to submit the documents again
+            </Typography>
+            {documentCriteria.map(({ text, icon, isInnerText }: any) => (
+              <TickWithText
+                key={text}
+                text={text}
+                icon={icon}
+                isInnerText={isInnerText}
+                required={false}
               />
             ))}
           </div>
