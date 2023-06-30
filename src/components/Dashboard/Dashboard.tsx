@@ -103,8 +103,7 @@ export const ApplicationDashboard = (props: any) => {
     draftId
   ) => {
     clearRoute();
-    const isdraftSave =
-      status === (CommonEnums.DRAFT_STATUS || "DRAFT") ? true : false;
+    const isdraftSave = status === CommonEnums.DRAFT_STATUS ? true : false;
     const leadDetail = {
       applicationCode,
       leadCode,
