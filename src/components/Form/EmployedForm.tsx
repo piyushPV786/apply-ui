@@ -106,7 +106,7 @@ export const EmployedForm = (props: IEmployeProps) => {
   }, [isEmployedNeed]);
   return (
     <>
-      <StyledAccordion>
+      <StyledAccordion defaultExpanded={isEmployedNeed}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
