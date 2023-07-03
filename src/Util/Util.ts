@@ -14,6 +14,7 @@ const ignorKeys = {
   deletedAt: "",
   isActive: "",
   updatedAt: "",
+  document: "",
 };
 export const mapFormData = (data: any, isDraft?: boolean) => {
   let formData = data;
@@ -196,8 +197,9 @@ export const downloadDeclarationLetter = async (code?: string) => {
   const appCode = code || getApplicationCode();
   try {
     const response: any = await AuthApi.get(
-      `${url}application/${appCode}/download/declarationForm`
-    ,{ responseType: 'blob',});
+      `${url}application/${appCode}/download/declarationForm`,
+      { responseType: "blob" }
+    );
     if (response.status === 200) {
       const { data } = response;
       return await data;

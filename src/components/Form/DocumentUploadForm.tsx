@@ -138,7 +138,7 @@ const mapStatusDocument = (documentData) => {
     for (const item of documentData) {
       const { status = "" } = { ...item };
       const documentStatus = status?.toLowerCase();
-      if (documentStatus?.includes("pending")) {
+        if (documentStatus?.includes("pending")) {
         item.status = "Pending";
       }
       if (documentStatus?.includes("sales_rejected")) {
@@ -381,13 +381,15 @@ const DocumentUploadForm = ({
             <Typography textAlign="left" component="header" fontWeight="bold">
               Document Status
             </Typography>
-            {mapStatusDocument(documentFormDataDetail).map(({ name, status }) => (
-              <TickWithText
-                key={name}
-                status={status?.toLowerCase()}
-                text={name}
-              />
-            ))}
+            {mapStatusDocument(documentFormDataDetail).map(
+              ({ name, status }) => (
+                <TickWithText
+                  key={name}
+                  status={status?.toLowerCase()}
+                  text={name}
+                />
+              )
+            )}
           </div>
         </MainContainer>
         <MainContainer className="px-1">
