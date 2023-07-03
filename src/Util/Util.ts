@@ -197,7 +197,7 @@ export const downloadDeclarationLetter = async (code?: string) => {
   try {
     const response: any = await AuthApi.get(
       `${url}application/${appCode}/download/declarationForm`
-    );
+    ,{ responseType: 'blob',});
     if (response.status === 200) {
       const { data } = response;
       return await data;

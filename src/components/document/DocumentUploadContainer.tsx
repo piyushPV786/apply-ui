@@ -96,14 +96,13 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     const blob = new Blob([responseData], {
       type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     });
-
     const downloadLink = document.createElement("a");
     downloadLink.href = URL.createObjectURL(blob);
-    downloadLink.download = "dect";
-
+    const filename = "declaration-letter.docx";
+    downloadLink.download = filename;
     document.body.appendChild(downloadLink);
     downloadLink.click();
-    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(downloadLink.href);
   };
   return (
     <MainContainer>
@@ -114,7 +113,9 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
         fontWeight="bold"
       >
         <StyledLabel required>{title}</StyledLabel>
-        <Status style={{marginLeft:'2rem'}} status={status}>{status}</Status>
+        <Status style={{ marginLeft: "2rem" }} status={status}>
+          {status}
+        </Status>
       </Typography>
 
       {isDeclaration && (
