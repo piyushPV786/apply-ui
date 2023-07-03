@@ -132,6 +132,25 @@ function mapStatusToFormData(response, formData) {
     return formData;
   } else return formData;
 }
+
+const mapStatusDocument = (documentData) => {
+  if (documentData?.length > 0) {
+    for (const item of documentData) {
+      const { status = "" } = { ...item };
+      const documentStatus = status?.toLowerCase();
+      if (documentStatus?.includes("pending")) {
+        item.status = "Pending";
+      }
+      if (documentStatus?.includes("sales_rejected")) {
+        item.status = "Rejected";
+      }
+      if (documentStatus?.includes("approved")) {
+        item.status = "Approved";
+      }
+    }
+    return documentData;
+  } else return documentData;
+};
 const DocumentUploadForm = ({
   allFields,
   isValidDocument,
@@ -362,7 +381,7 @@ const DocumentUploadForm = ({
             <Typography textAlign="left" component="header" fontWeight="bold">
               Document Status
             </Typography>
-            {documentFormDataDetail.map(({ name, status }) => (
+            {mapStatusDocument(documentFormDataDetail).map(({ name, status }) => (
               <TickWithText
                 key={name}
                 status={status?.toLowerCase()}
