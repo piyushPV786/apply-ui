@@ -251,6 +251,7 @@ const ApplicationForm = () => {
       });
   };
   const updateUserAsDraft = (request) => {
+    console.log(request);
     const activeLeadDetail = JSON.parse(
       sessionStorage?.getItem("activeLeadDetail") as any
     );
@@ -785,7 +786,8 @@ const ApplicationForm = () => {
                           onClick={() => {
                             if (
                               allFields?.lead.isAgreedTermsAndConditions ==
-                              false
+                                false ||
+                              allFields?.lead.isAgreedTermsAndConditions == null
                             ) {
                               settermsOpen(true);
                             } else if (
