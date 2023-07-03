@@ -69,7 +69,8 @@ const ApplicationForm = () => {
   const [isApplicationEnrolled, setApllicationEnrolled] =
     useState<boolean>(false);
   const [isNewApplication, setNewApplication] = useState<boolean>(false);
-
+  const [identificationDocumentTypeData, setIdentificationDocumentTypeData] =
+    useState<any>([]);
   const [nationalityStatus, setNationalityStatus] = useState([]);
   const [termsOpen, settermsOpen] = useState<any>(false);
 
@@ -91,6 +92,7 @@ const ApplicationForm = () => {
     getMasterData();
     getAgentDetails();
     getNationalData();
+    identificationDocumentType();
   }, []);
 
   useEffect(() => {
@@ -134,6 +136,12 @@ const ApplicationForm = () => {
     settermsOpen(true);
   };
 
+  const identificationDocumentType = async () => {
+    const response = await CommonAPI.get(CommonApi.IDENTIFICATIONDOCUMENT);
+
+    setIdentificationDocumentTypeData(response?.data.data);
+  };
+
   const routeIfStepDone = (routeTo: string) => {
     if (routeTo) {
       switch (routeTo) {
@@ -150,12 +158,14 @@ const ApplicationForm = () => {
 
   const updateTermsConditions = (status) => {
     if (status == true) {
+      allFields.lead.isAgreedTermsAndConditions = true;
       setValue("isAgreedTermsAndConditions", true);
       clearErrors("isAgreedTermsAndConditions");
       settermsOpen(false);
     }
 
     if (status == false) {
+      allFields.lead.isAgreedTermsAndConditions = false;
       setValue("isAgreedTermsAndConditions", false);
       clearErrors("isAgreedTermsAndConditions");
       settermsOpen(false);
@@ -167,7 +177,8 @@ const ApplicationForm = () => {
     leadCode: string,
     applicationCode: string,
     activeLeadDetail: any,
-    status: string
+    status: string,
+    draft: boolean | undefined
   ) => {
     if (activeStep === MagicNumbers.TWO) {
       uploadStudentDocs();
@@ -186,9 +197,16 @@ const ApplicationForm = () => {
         }
       );
     } else {
-      methodType = AuthApi.post(CommonApi.SAVEUSER, {
-        ...request,
-      });
+      if (draft) {
+        request.applicationCode = applicationCode;
+        methodType = AuthApi.post(`${CommonApi.SAVEUSER}?isDraft=true`, {
+          ...request,
+        });
+      } else {
+        methodType = AuthApi.post(`${CommonApi.SAVEUSER}?isDraft=false  `, {
+          ...request,
+        });
+      }
     }
 
     methodType
@@ -232,7 +250,12 @@ const ApplicationForm = () => {
         setSubmitted(false);
       });
   };
-  const updateUserAsDraft = (request, appCode: string) => {
+  const updateUserAsDraft = (request) => {
+    const activeLeadDetail = JSON.parse(
+      sessionStorage?.getItem("activeLeadDetail") as any
+    );
+    const appCode = activeLeadDetail.applicationCode;
+
     AuthApi.put(`${CommonApi.SAVEDRAFT}/${appCode}`, {
       ...request,
     })
@@ -253,7 +276,40 @@ const ApplicationForm = () => {
         });
       });
   };
-  const createDraft = (request, leadCode) => {
+
+  const createDraft = (data) => {
+    if (data?.education?.isInternationDegree === "yes") {
+      data.education.isInternationDegree = true;
+    } else if (data?.education?.isInternationDegree === "no") {
+      data.education.isInternationDegree = false;
+    }
+
+    if (data?.employment?.zipCode === "") {
+      data.employment.zipCode = null;
+    }
+
+    const formData = { ...data };
+
+    const {
+      isSameAsPostalAddress = "",
+      payment = null,
+      ...rest
+    } = { ...(formData as any) };
+
+    let request = mapFormData({
+      ...rest,
+    });
+
+    const activeLeadDetail = JSON.parse(
+      sessionStorage?.getItem("activeLeadDetail") as any
+    );
+    const leadCode =
+      sessionStorage?.getItem("studentId") &&
+      sessionStorage?.getItem("studentId") !== "undefined" &&
+      sessionStorage?.getItem("studentId") !== "{}"
+        ? JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
+        : activeLeadDetail?.leadCode;
+
     request.lead.leadCode = leadCode;
     AuthApi.post(`${CommonApi.SAVEDRAFT}`, {
       ...request,
@@ -264,7 +320,6 @@ const ApplicationForm = () => {
           message: "Saved as draft",
           show: true,
         });
-        router.push(RoutePaths.Dashboard);
       })
       .catch((err) => {
         console.log(err.message);
@@ -275,6 +330,7 @@ const ApplicationForm = () => {
         });
       });
   };
+
   const submitFormData = (data: any, isDraftSave?: boolean) => {
     if (data?.education?.isInternationDegree === "yes") {
       data.education.isInternationDegree = true;
@@ -322,16 +378,23 @@ const ApplicationForm = () => {
         leadCode,
         draftUpdateCode,
         activeLeadDetail,
-        AppStatus
+        AppStatus,
+        isDraftSave
       );
       return;
     }
-    if (draftUpdateCode && isDraftSave) {
-      updateUserAsDraft(request, draftUpdateCode);
-      return;
-    }
-    if (!draftUpdateCode && isDraftSave && checkValidationForDraftSave()) {
-      checkValidationForDraftSave() && createDraft(request, leadCode);
+
+    if (isDraftSave && checkValidationForDraftSave()) {
+      checkValidationForDraftSave();
+
+      updateLead(
+        request,
+        leadCode,
+        draftUpdateCode,
+        activeLeadDetail,
+        AppStatus,
+        isDraftSave
+      );
       return;
     }
   };
@@ -458,6 +521,7 @@ const ApplicationForm = () => {
   };
 
   const onSubmit = (data: any, isDrafSave?: boolean) => {
+    console.log(isDrafSave);
     submitFormData(data, isDrafSave);
   };
 
@@ -631,6 +695,7 @@ const ApplicationForm = () => {
                       <div className="row">
                         <form onSubmit={(data) => onSubmit(data, false)}>
                           <PersonalInfoForm
+                            identityDocuments={identificationDocumentTypeData}
                             key="personalForm"
                             genders={genders}
                             nationalities={nationalities}
@@ -716,12 +781,17 @@ const ApplicationForm = () => {
                         <input
                           className="form-check-input me-2"
                           type="checkbox"
-                          checked={allFields?.isAgreedTermsAndConditions}
+                          checked={allFields?.lead?.isAgreedTermsAndConditions}
                           onClick={() => {
                             if (
-                              allFields?.isAgreedTermsAndConditions == false
+                              allFields?.lead.isAgreedTermsAndConditions ==
+                              false
                             ) {
                               settermsOpen(true);
+                            } else if (
+                              allFields?.lead.isAgreedTermsAndConditions == true
+                            ) {
+                              updateTermsConditions(false);
                             }
                           }}
                           id="flexCheckDefault"
@@ -761,7 +831,19 @@ const ApplicationForm = () => {
                             </>
                             {activeStep !== 2 && (
                               <StyledButton
-                                onClick={() => onSubmit(getValues(), true)}
+                                onClick={() => {
+                                  if (
+                                    JSON.parse(
+                                      sessionStorage?.getItem(
+                                        "activeLeadDetail"
+                                      ) as any
+                                    )?.isdraftSave == true
+                                  ) {
+                                    updateUserAsDraft(allFields);
+                                  } else {
+                                    createDraft(allFields);
+                                  }
+                                }}
                                 type="button"
                                 disabled={!isDirty}
                                 isGreenWhiteCombination={true}
@@ -773,9 +855,19 @@ const ApplicationForm = () => {
                               onClick={() => {
                                 activeStep === 2
                                   ? (submitFormData(allFields, false) as any)
-                                  : methods.handleSubmit(
-                                      (data) => onSubmit(data, false) as any
-                                    )();
+                                  : methods.handleSubmit((data) => {
+                                      if (
+                                        JSON.parse(
+                                          sessionStorage?.getItem(
+                                            "activeLeadDetail"
+                                          ) as any
+                                        )?.isdraftSave == true
+                                      ) {
+                                        onSubmit(data, true) as any;
+                                      } else {
+                                        onSubmit(data, false) as any;
+                                      }
+                                    })();
                               }}
                               disabled={isValidForm()}
                               title={activeStep < 2 ? "Save & Next" : "Submit"}
