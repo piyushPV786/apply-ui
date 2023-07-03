@@ -251,7 +251,6 @@ const ApplicationForm = () => {
       });
   };
   const updateUserAsDraft = (request) => {
-    console.log(request);
     const activeLeadDetail = JSON.parse(
       sessionStorage?.getItem("activeLeadDetail") as any
     );
