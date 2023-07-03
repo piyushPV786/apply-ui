@@ -1,6 +1,6 @@
 import React, { useRef, useState, SyntheticEvent } from "react";
 import styled from "styled-components";
-import { Container, Typography, Button } from "@mui/material";
+import { Container, Typography, Button, Modal } from "@mui/material";
 import StyledButton from "../button/button";
 import { Green, StyledLabel } from "../common/common";
 import { AlertEnums } from "../common/constant";
@@ -22,7 +22,14 @@ import {
 } from "@material-ui/icons";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import List from "@material-ui/core/List";
-import { makeStyles } from "@material-ui/core";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  makeStyles,
+} from "@material-ui/core";
 
 interface DocumentUploadContainerProps {
   title: string;
@@ -71,7 +78,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     const fileElement = fileUploadRef.current?.childNodes[0] as any;
     fileElement?.click() as any;
   };
-
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const statusType = status?.toLowerCase();
 
   const isApproved = statusType?.includes("submitted");
@@ -104,6 +111,15 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     downloadLink.click();
     URL.revokeObjectURL(downloadLink.href);
   };
+
+  const handleModalOpen = () => {
+    setOpenModal(true);
+  };
+
+  const handleModalClose = () => {
+    setOpenModal(false);
+  };
+
   return (
     <MainContainer>
       <Typography
@@ -112,7 +128,24 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
         style={{ fontWeight: "bolder" }}
         fontWeight="bold"
       >
-        <StyledLabel required>{title}</StyledLabel>
+        <Dialog
+          open={openModal}
+          onClose={handleModalClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">File Size Exceeded</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              The file size exceeds the limit of 2MB. Please upload a file below
+              or equal to 2MB.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <StyledButton color="" title="Close" onClick={handleModalClose} />
+          </DialogActions>
+        </Dialog>
+        ;<StyledLabel required>{title}</StyledLabel>
         <Status style={{ marginLeft: "2rem" }} status={status}>
           {status}
         </Status>
@@ -156,9 +189,15 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             onChange={(e) => {
               if (e?.target) {
                 const file = e.target?.files![0] as any;
-                file.typeCode = documentType;
-                const files = [...uploadDocs, file];
-                uploadDocuments(files);
+                if (file.size > 2 * 1024 * 1024) {
+                  // Check file size (2MB limit)
+                  handleModalOpen(); // Open the modal if file size exceeds the limit
+                } else {
+                  file.typeCode = documentType;
+                  const files = [...uploadDocs, file];
+
+                  uploadDocuments(files);
+                }
               }
             }}
           />
