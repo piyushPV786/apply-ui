@@ -320,6 +320,7 @@ const ApplicationForm = () => {
           message: "Saved as draft",
           show: true,
         });
+        router.push(RoutePaths.Dashboard);
       })
       .catch((err) => {
         console.log(err.message);
@@ -785,7 +786,8 @@ const ApplicationForm = () => {
                           onClick={() => {
                             if (
                               allFields?.lead.isAgreedTermsAndConditions ==
-                              false
+                                false ||
+                              allFields?.lead.isAgreedTermsAndConditions == null
                             ) {
                               settermsOpen(true);
                             } else if (
