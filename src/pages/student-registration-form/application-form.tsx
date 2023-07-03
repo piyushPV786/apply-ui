@@ -785,7 +785,8 @@ const ApplicationForm = () => {
                           onClick={() => {
                             if (
                               allFields?.lead.isAgreedTermsAndConditions ==
-                              false
+                                false ||
+                              allFields?.lead.isAgreedTermsAndConditions == null
                             ) {
                               settermsOpen(true);
                             } else if (
