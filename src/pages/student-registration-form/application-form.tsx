@@ -320,6 +320,7 @@ const ApplicationForm = () => {
           message: "Saved as draft",
           show: true,
         });
+        router.push(RoutePaths.Dashboard);
       })
       .catch((err) => {
         console.log(err.message);
