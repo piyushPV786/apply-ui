@@ -240,7 +240,7 @@ export const ApplicationDashboard = (props: any) => {
                         <div className="d-flex justify-content-end">
                           <StyledButton
                             onClick={onApplyNow}
-                            title="Apply New Course"
+                            title="Apply New Application"
                           />
                         </div>
                       </div>

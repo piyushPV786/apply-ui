@@ -106,6 +106,14 @@ export const isValidFileType = (files: any[]) => {
   return files.filter((file) => file?.error === true);
 };
 export const onlyAlphabets = (value: string) => /^[a-zA-Z ]*$/.test(value);
+
+export const capitalizeFirstLetter = (str) => {
+  // converting first letter to uppercase
+  const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
+
+  return capitalized;
+};
+
 export const onlyAlphaNumeric = (value: string) =>
   /^(?![0-9]*$)[a-zA-Z0-9]+$/.test(value);
 export const onlyAlphaNumericSpace = (value: string) =>

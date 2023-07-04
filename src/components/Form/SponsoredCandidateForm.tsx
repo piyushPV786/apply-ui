@@ -19,6 +19,7 @@ import {
   isValidEmail,
   onlyAlphabets,
   validateNumber,
+  capitalizeFirstLetter,
   sortAscending,
   formDirtyState,
 } from "../../Util/Util";
@@ -281,7 +282,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 const value = e.target.value;
                                 const name = e.target.name;
                                 if (onlyAlphabets(value)) {
-                                  setValue(name, value, formDirtyState);
+                                  setValue(
+                                    name,
+                                    capitalizeFirstLetter(value),
+                                    formDirtyState
+                                  );
                                 }
                               }}
                             />
@@ -319,6 +324,16 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                   validate: (value) =>
                                     getEmailValidation(value),
                                 })}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  const name = e.target.name;
+
+                                  setValue(
+                                    name,
+                                    capitalizeFirstLetter(value),
+                                    formDirtyState
+                                  );
+                                }}
                               />
 
                               {error && error?.email && (
@@ -483,7 +498,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 const value = e.target.value;
                                 const name = e.target.name;
                                 if (onlyAlphabets(value)) {
-                                  setValue(name, value, formDirtyState);
+                                  setValue(
+                                    name,
+                                    capitalizeFirstLetter(value),
+                                    formDirtyState
+                                  );
                                 }
                               }}
                             />
@@ -508,7 +527,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 const value = e.target.value;
                                 const name = e.target.name;
                                 if (onlyAlphabets(value)) {
-                                  setValue(name, value, formDirtyState);
+                                  setValue(
+                                    name,
+                                    capitalizeFirstLetter(value),
+                                    formDirtyState
+                                  );
                                 }
                               }}
                             />

@@ -15,6 +15,7 @@ import {
   isObjectEmpty,
   onlyAlphabets,
   onlyAlphaNumericSpace,
+  capitalizeFirstLetter,
   validateNumber,
   sortAscending,
 } from "../../Util/Util";
@@ -223,7 +224,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                             const value = e.target.value;
                             const name = e.target.name;
                             if (onlyAlphaNumericSpace(value) || !value) {
-                              setValue(name, value, formDirtyState);
+                              setValue(
+                                name,
+                                capitalizeFirstLetter(value),
+                                formDirtyState
+                              );
                             }
                           }}
                         />
@@ -278,7 +283,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                               const value = e.target.value;
                               const name = e.target.name;
                               if (onlyAlphabets(value)) {
-                                setValue(name, value, formDirtyState);
+                                setValue(
+                                  name,
+                                  capitalizeFirstLetter(value),
+                                  formDirtyState
+                                );
                               }
                             }}
                           />
@@ -302,6 +311,15 @@ export const EmployedForm = (props: IEmployeProps) => {
                             {...register(`${officeAddress}`, {
                               required: true,
                             })}
+                            onChange={(e) => {
+                              const name = e.target.name;
+                              const value = e.target.value;
+                              setValue(
+                                name,
+                                capitalizeFirstLetter(value),
+                                formDirtyState
+                              );
+                            }}
                           />
                           {error && error?.officeAddress && (
                             <div className="invalid-feedback">
@@ -433,7 +451,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                               const value = e.target.value;
                               const name = e.target.name;
                               if (onlyAlphabets(value)) {
-                                setValue(name, value, formDirtyState);
+                                setValue(
+                                  name,
+                                  capitalizeFirstLetter(value),
+                                  formDirtyState
+                                );
                               }
                             }}
                           />
@@ -461,7 +483,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                               const value = e.target.value;
                               const name = e.target.name;
                               if (onlyAlphabets(value)) {
-                                setValue(name, value, formDirtyState);
+                                setValue(
+                                  name,
+                                  capitalizeFirstLetter(value),
+                                  formDirtyState
+                                );
                               }
                             }}
                           />
