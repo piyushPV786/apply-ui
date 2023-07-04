@@ -145,7 +145,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             <StyledButton color="" title="Close" onClick={handleModalClose} />
           </DialogActions>
         </Dialog>
-        ;<StyledLabel required>{title}</StyledLabel>
+        <StyledLabel required>{title}</StyledLabel>
         <Status style={{ marginLeft: "2rem" }} status={status}>
           {status}
         </Status>
@@ -353,7 +353,7 @@ const Status = styled.span<{ status: string; noBg?: boolean }>`
       color:#31a0b7
       `;
     }
-    if (statusType === "upload pending") {
+    if (statusType === "upload pending" || statusType === "pending") {
       return `
       background:#fcefd0;
       color:#d8a035

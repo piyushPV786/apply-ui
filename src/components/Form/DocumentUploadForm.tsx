@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, SyntheticEvent } from "react";
+import { useState, useEffect } from "react";
 import { PaymentContainer } from "../payment/payment";
 import { useFormContext } from "react-hook-form";
 import styled from "styled-components";
@@ -26,32 +26,32 @@ const documentUploadFormData = [
     name: "Declaration form",
     id: "declarationForm",
     disabled: false,
-    status: "upload pending",
+    status: "Upload Pending",
     isDeclaration: true,
   },
   {
     name: "National ID/Passport",
     id: "nationalIdPassport",
     disabled: false,
-    status: "upload pending",
+    status: "Upload Pending",
   },
   {
     name: "Highest Qualification",
     id: "highestQualification",
     disabled: false,
-    status: "upload pending",
+    status: "Upload Pending",
   },
   {
     name: "Matric Certificate or Equivalent",
     id: "matricCertificate",
     disabled: false,
-    status: "upload pending",
+    status: "Upload Pending",
   },
   {
     name: "Detailed CV",
     id: "detailCV",
     disabled: false,
-    status: "upload pending",
+    status: "Upload Pending",
   },
 ];
 const mbaProgramDocuments = [
@@ -109,22 +109,22 @@ interface IDocumentUploadProps {
   onSubmit: (formValue: ILeadFormValues) => void;
   onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
-const imgUrl = "/assets/images";
 function mapStatusToFormData(response, formData) {
   if (response?.length > 0) {
     for (const item of response) {
       const matchingFormData = formData.find(
         (formDataItem) => formDataItem.id === item.documentTypeCode
       );
-
       if (matchingFormData) {
-        if (item.status === "PENDING") {
+        const status = item?.status?.replace("SALES_", "");
+
+        if (status === "PENDING") {
           return;
         }
-        if (item.status === "SALES_REJECT") {
+        if (status === "REJECT") {
           matchingFormData.status = "Rejected";
         }
-        if (item.status === "APPROVED") {
+        if (status === "APPROVED") {
           matchingFormData.status = "Approved";
         }
       }
@@ -138,7 +138,7 @@ const mapStatusDocument = (documentData) => {
     for (const item of documentData) {
       const { status = "" } = { ...item };
       const documentStatus = status?.toLowerCase();
-        if (documentStatus?.includes("pending")) {
+      if (documentStatus?.includes("pending")) {
         item.status = "Pending";
       }
       if (documentStatus?.includes("sales_rejected")) {
@@ -153,7 +153,6 @@ const mapStatusDocument = (documentData) => {
 };
 const DocumentUploadForm = ({
   allFields,
-  isValidDocument,
   documentType,
   leadId,
   isApplicationEnrolled,
@@ -163,14 +162,12 @@ const DocumentUploadForm = ({
   const [documentFormDataDetail, setDocumentFormDataDetail] = useState<
     typeof documentUploadFormData
   >(documentUploadFormData);
-  const fileUploadRef = useRef<any>(null);
   const {
     register,
     setValue,
     formState: { errors },
   } = useFormContext();
   const documentDetails = allFields?.document?.documentDetails || [];
-
   const isMBAProgram = allFields?.education?.programCode === "MBA-PROG";
   useEffect(() => {
     if (documentDetails?.length > 0) {
@@ -184,7 +181,7 @@ const DocumentUploadForm = ({
         ...mbaProgramDocuments,
       ]);
     }
-  }, []);
+  }, [isMBAProgram]);
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
   const [uploadDocs, setUploadDocs] = useState<
@@ -203,6 +200,10 @@ const DocumentUploadForm = ({
   const documentIds = documentUploadFormData?.map((document) => document.id);
   const areAllDocumentsUploaded = documentIds.every((id) =>
     uploadDocs.some((doc) => doc.typeCode === id)
+  );
+
+  const documentStatusDetail = JSON.parse(
+    JSON.stringify(documentFormDataDetail)
   );
 
   useEffect(() => {
@@ -232,10 +233,6 @@ const DocumentUploadForm = ({
     }
   }, []);
 
-  const onDocUploadClick = () => {
-    const fileElement = fileUploadRef.current?.childNodes[1] as any;
-    fileElement?.click() as any;
-  };
   const deleteDocs = (index: number, file: File & { typeCode: string }) => {
     const remainingDocs = [
       ...uploadDocs.filter((item, idx) => item?.typeCode !== file?.typeCode),
@@ -259,28 +256,6 @@ const DocumentUploadForm = ({
     setUploadDocs((prevState) => [...prevState, ...(uploadedFiles as any)]);
     const allFiles = [...uploadDocs, ...uploadedFiles];
     setValue("document.uploadedDocs", allFiles);
-  };
-
-  const showPdf = (e: SyntheticEvent, item: File) => {
-    e.preventDefault();
-    const file = new Blob([item], {
-      type: item?.type.includes("pdf") ? "application/pdf" : "image/jpeg",
-    });
-    const fileURL = URL.createObjectURL(file);
-    window.open(fileURL);
-  };
-
-  const imageType = (type: string) => {
-    let data = "png-svgrepo-com.svg";
-    if (type?.toLowerCase().includes("pdf")) {
-      data = "pdf-svgrepo-com.svg";
-    }
-    return data;
-  };
-  const onFileTypeSelect = (value: string, index: number) => {
-    const allFiles: any = [...uploadDocs];
-    allFiles[index].typeCode = value;
-    setValue("document.uploadedDocs", allFiles, formOptions);
   };
 
   const NationalityPassportFields = () => {
@@ -381,15 +356,13 @@ const DocumentUploadForm = ({
             <Typography textAlign="left" component="header" fontWeight="bold">
               Document Status
             </Typography>
-            {mapStatusDocument(documentFormDataDetail).map(
-              ({ name, status }) => (
-                <TickWithText
-                  key={name}
-                  status={status?.toLowerCase()}
-                  text={name}
-                />
-              )
-            )}
+            {mapStatusDocument(documentStatusDetail).map(({ name, status }) => (
+              <TickWithText
+                key={name}
+                status={status?.toLowerCase()}
+                text={name}
+              />
+            ))}
           </div>
         </MainContainer>
         <MainContainer className="px-1">
