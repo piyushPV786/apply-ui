@@ -14,6 +14,7 @@ import {
   isValidEmail,
   onlyAlphabets,
   validateNumber,
+  capitalizeFirstLetter,
 } from "../../Util/Util";
 import Image from "next/image";
 import KinImg from "../../../public/assets/images/kin.svg";
@@ -144,7 +145,11 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                         const value = e.target.value;
                         const name = e.target.name;
                         if (onlyAlphabets(value)) {
-                          setValue(name, value, formOptions);
+                          setValue(
+                            name,
+                            capitalizeFirstLetter(value),
+                            formOptions
+                          );
                         }
                       }}
                     />
@@ -183,6 +188,16 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                         required: isKinNeed,
                         validate: (value) => isValidEmail(value, !isKinNeed),
                       })}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formOptions
+                        );
+                      }}
                     />
                     {error && error?.email && (
                       <div className="invalid-feedback">
