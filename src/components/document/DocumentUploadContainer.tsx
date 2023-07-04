@@ -145,7 +145,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             <StyledButton color="" title="Close" onClick={handleModalClose} />
           </DialogActions>
         </Dialog>
-        ;<StyledLabel required>{title}</StyledLabel>
+        <StyledLabel required>{title}</StyledLabel>
         <Status style={{ marginLeft: "2rem" }} status={status}>
           {status}
         </Status>

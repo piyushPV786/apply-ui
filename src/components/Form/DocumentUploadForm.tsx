@@ -118,13 +118,14 @@ function mapStatusToFormData(response, formData) {
       );
 
       if (matchingFormData) {
-        if (item.status === "PENDING") {
+        const status = item?.status?.replace("SALES_", "");
+        if (status === "PENDING") {
           return;
         }
-        if (item.status === "SALES_REJECT") {
+        if (status === "REJECT") {
           matchingFormData.status = "Rejected";
         }
-        if (item.status === "APPROVED") {
+        if (status === "APPROVED") {
           matchingFormData.status = "Approved";
         }
       }
@@ -138,7 +139,7 @@ const mapStatusDocument = (documentData) => {
     for (const item of documentData) {
       const { status = "" } = { ...item };
       const documentStatus = status?.toLowerCase();
-        if (documentStatus?.includes("pending")) {
+      if (documentStatus?.includes("pending")) {
         item.status = "Pending";
       }
       if (documentStatus?.includes("sales_rejected")) {
