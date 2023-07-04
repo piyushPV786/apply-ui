@@ -54,7 +54,7 @@ const documentUploadFormData = [
     status: "Upload Pending",
   },
 ];
-const mbaProgramDocuments = [
+const mbaProgramDocuments: any = [
   {
     name: "Motivation Letter",
     id: "motivationLetter",
@@ -175,13 +175,17 @@ const DocumentUploadForm = ({
         mapStatusToFormData(documentDetails, documentUploadFormData)
       );
     }
-    if (isMBAProgram) {
-      setDocumentFormDataDetail((prevState) => [
-        ...prevState,
-        ...mbaProgramDocuments,
-      ]);
-    }
-  }, [isMBAProgram]);
+  }, []);
+
+  // useEffect(() => {
+  //   if (isMBAProgram) {
+  //     console.log("gooo");
+  //     setDocumentFormDataDetail((prevState) => [
+  //       ...prevState,
+  //       ...mbaProgramDocuments,
+  //     ]);
+  //   }
+  // }, [isMBAProgram]);
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
   const [uploadDocs, setUploadDocs] = useState<
@@ -313,26 +317,27 @@ const DocumentUploadForm = ({
   return (
     <div className="row mx-3 document-container">
       <div className="col-md-8">
-        {documentFormDataDetail?.map(
-          ({ name, disabled, status, id, isDeclaration = false }) => {
-            const customFileds = id?.includes("nationalIdPassport") ? (
-              <NationalityPassportFields />
-            ) : null;
-            return (
-              <DocumentUploadContainer
-                key={`${name}_${id}`}
-                title={name}
-                status={status}
-                isDeclaration={isDeclaration}
-                disabled={disabled}
-                onUpload={uploadDocuments}
-                onRemove={deleteDocs as any}
-                documentType={id}
-                customComponent={customFileds}
-              />
-            );
-          }
-        )}
+        {(isMBAProgram
+          ? [...documentFormDataDetail, ...mbaProgramDocuments]
+          : documentFormDataDetail
+        )?.map(({ name, disabled, status, id, isDeclaration = false }) => {
+          const customFileds = id?.includes("nationalIdPassport") ? (
+            <NationalityPassportFields />
+          ) : null;
+          return (
+            <DocumentUploadContainer
+              key={`${name}_${id}`}
+              title={name}
+              status={status}
+              isDeclaration={isDeclaration}
+              disabled={disabled}
+              onUpload={uploadDocuments}
+              onRemove={deleteDocs as any}
+              documentType={id}
+              customComponent={customFileds}
+            />
+          );
+        })}
       </div>
       <div className="col-md-4">
         <MainContainer>
