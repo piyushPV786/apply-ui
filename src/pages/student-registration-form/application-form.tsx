@@ -550,6 +550,9 @@ const ApplicationForm = () => {
     setValue("document.documentDetails", response?.data);
   };
 
+
+  
+
   const getNationalData = () => {
     CommonAPI.get(CommonApi.NATIONALITYSTATUS)
       .then(({ data }) => {
