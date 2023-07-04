@@ -178,9 +178,9 @@ const ApplicationForm = () => {
     applicationCode: string,
     activeLeadDetail: any,
     status: string,
-    draft: boolean | undefined
+    draftSave: boolean | undefined
   ) => {
-    if (activeStep === MagicNumbers.TWO) {
+    if (activeStep === MagicNumbers.TWO && !draftSave) {
       uploadStudentDocs();
       return;
     }
@@ -197,11 +197,20 @@ const ApplicationForm = () => {
         }
       );
     } else {
-      if (draft) {
+      if (draftSave) {
+        const fetchMethod =
+          applicationCode &&
+          applicationCode?.length > 0 &&
+          (status !== CommonEnums.DRAFT_STATUS || !status)
+            ? "put"
+            : "post";
         request.applicationCode = applicationCode;
-        methodType = AuthApi.post(`${CommonApi.SAVEUSER}?isDraft=true`, {
-          ...request,
-        });
+        methodType = AuthApi[fetchMethod](
+          `${CommonApi.SAVEUSER}?isDraft=true`,
+          {
+            ...request,
+          }
+        );
       } else {
         methodType = AuthApi.post(`${CommonApi.SAVEUSER}?isDraft=false  `, {
           ...request,
@@ -541,6 +550,9 @@ const ApplicationForm = () => {
     setValue("document.documentDetails", response?.data);
   };
 
+
+  
+
   const getNationalData = () => {
     CommonAPI.get(CommonApi.NATIONALITYSTATUS)
       .then(({ data }) => {
@@ -763,7 +775,7 @@ const ApplicationForm = () => {
                     <DocumentUploadForm
                       allFields={allFields}
                       isValidDocument={isValidDocument}
-                      documentType={documentType}
+                      documentType={identificationDocumentTypeData}
                       leadId={leadId}
                       isApplicationEnrolled={isNewApplication}
                       onSubmit={() => submitFormData(allFields, false) as any}
