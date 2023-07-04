@@ -6,7 +6,7 @@ import {
   removedKeysToMap,
 } from "../components/common/constant";
 import { ILeadFormValues } from "../components/common/types";
-import { AuthApi, CommonAPI, FinanceApi } from "../service/Axios";
+import { AuthApi, CommonAPI, FinanceApi, baseAuth } from "../service/Axios";
 import { parsePhoneNumber } from "react-phone-number-input";
 import { toast } from "react-toastify";
 const ignorKeys = {
@@ -14,6 +14,7 @@ const ignorKeys = {
   deletedAt: "",
   isActive: "",
   updatedAt: "",
+  document: "",
 };
 export const mapFormData = (data: any, isDraft?: boolean) => {
   let formData = data;
@@ -32,21 +33,21 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
         key == "kin" &&
         (formData[key]?.isKin == "no" || !formData[key]?.isKin)
       ) {
-        delete formData[key];
+        formData[key] = { isKin: "no" };
       }
 
       if (
         key == "sponsor" &&
-        (formData[key]?.isSponsored === "no" || !formData[key]?.isSponsored)
+        (formData[key]?.isSponsor === "no" || !formData[key]?.isSponsor)
       ) {
-        delete formData[key];
+        formData[key] = { isSponsor: "no" };
       }
 
       if (
         key == "employment" &&
-        (formData[key]?.isEmployed == "no" || !formData[key]?.isEmployed)
+        (formData[key]?.isEmployment == "no" || !formData[key]?.isEmployment)
       ) {
-        delete formData[key];
+        formData[key] = { isEmployment: "no" };
       }
       if (removedKeysToMap[key] && typeof formData[key] !== "object") {
         delete formData[key];
@@ -175,6 +176,39 @@ export const getUploadDocumentUrl = async (
     return error;
   }
 };
+export const getAllDocumentsDetails = async (code?: string) => {
+  const url = process.env.base_Url;
+  const appCode = code || getApplicationCode();
+  try {
+    const response: any = await AuthApi.get(
+      `${url}application/documents/${appCode}`
+    );
+    if (response.status === 200) {
+      const { data } = response;
+      return await data;
+    }
+  } catch (error: any) {
+    console.log(error.message);
+    return error;
+  }
+};
+export const downloadDeclarationLetter = async (code?: string) => {
+  const url = process.env.base_Url;
+  const appCode = code || getApplicationCode();
+  try {
+    const response: any = await AuthApi.get(
+      `${url}application/${appCode}/download/declarationForm`,
+      { responseType: "blob" }
+    );
+    if (response.status === 200) {
+      const { data } = response;
+      return await data;
+    }
+  } catch (error: any) {
+    console.log(error.message);
+    return error;
+  }
+};
 export const getCommonUploadDocumentUrl = async (fileName: string) => {
   try {
     const response: any = await CommonAPI.get(
@@ -223,7 +257,7 @@ export const applyDiscountCode = async (
 ) => {
   const url = process.env.base_Url;
   try {
-    const response = await axios.get(
+    const response = await baseAuth.get(
       `${url}application/${appCode}/discount/${disCode}?studentType=${studentType}`
     );
     return response.data;
@@ -294,7 +328,7 @@ export function isObjectEmpty(object: any) {
   const mobileNumberKeyTwo = "mobileNumber";
   const isKin = "isKin";
   const isEmployed = "isEmployed";
-  const isSponsored = "isSponsored";
+  const isSponsor = "isSponsor";
   const newCloneObject = { ...object };
   newCloneObject &&
     mobileNumberKeyOne in newCloneObject &&
@@ -307,8 +341,8 @@ export function isObjectEmpty(object: any) {
     isEmployed in newCloneObject &&
     delete newCloneObject[isEmployed];
   newCloneObject &&
-    isSponsored in newCloneObject &&
-    delete newCloneObject[isSponsored];
+    isSponsor in newCloneObject &&
+    delete newCloneObject[isSponsor];
   return Object?.values(newCloneObject).every((v) =>
     v && typeof v === "object"
       ? isObjectEmpty(v)
@@ -320,6 +354,11 @@ export const formOptions = {
   shouldDirty: true,
   shouldTouch: true,
   shouldValidate: true,
+};
+
+export const formDirtyState = {
+  shouldDirty: true,
+  shouldTouch: true,
 };
 
 export const transformFormData = (formData: any) => {
@@ -351,13 +390,6 @@ export const mapFormDefaultValue = (
 ) => {
   let valueCode;
   for (let [key, value] of Object.entries(studentData)) {
-    if (
-      (key === "kin" && isObjectEmpty(studentData[key])) ||
-      (key === "sponsor" && isObjectEmpty(studentData[key])) ||
-      (key === "employment" && isObjectEmpty(studentData[key]))
-    ) {
-      delete studentData[key];
-    }
     if (acceptedKeysToMap.includes(key)) {
       if (key === "education" && studentData[key]) {
         valueCode = studentData[key]?.socialMediaCode
@@ -365,27 +397,27 @@ export const mapFormDefaultValue = (
           : studentData[key]?.agentCode
           ? "AGENT"
           : "";
-        setValue(key, value, formOptions);
+        setValue(key, value);
       }
-      setValue(key, value, formOptions);
+      setValue(key, value);
     }
     setValue("education.referredById", valueCode, formOptions);
   }
 };
 
-export const showSuccessToast = (message) => {
+export const showSuccessToast = (message: string) => {
   toast.success(message, {
     className: "toast-success",
   });
 };
 
-export const showErrorToast = (message) => {
+export const showErrorToast = (message: string) => {
   toast.error(message, {
     className: "toast-error",
   });
 };
 
-export const showWarningToast = (message) => {
+export const showWarningToast = (message: string) => {
   toast.warning(message, {
     className: "toast-warning",
   });

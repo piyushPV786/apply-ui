@@ -1,22 +1,101 @@
-import React, { useState, useRef, useEffect, SyntheticEvent } from "react";
-import { MainContainer, PaymentContainer } from "../payment/payment";
+import { useState, useEffect } from "react";
+import { PaymentContainer } from "../payment/payment";
 import { useFormContext } from "react-hook-form";
-import DoneIcon from "@material-ui/icons/Done";
 import styled from "styled-components";
-import { Green, GreenFormHeading } from "../common/common";
+import { Green, StyledLabel } from "../common/common";
 import StyledButton from "../button/button";
 import {
+  formDirtyState,
   formOptions,
   isInvalidFileType,
   uniqueArrayOfObject,
 } from "../../Util/Util";
-import Link from "next/link";
-import Image from "next/image";
-import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
-import ViewIcon from "../../../public/assets/images/view-svgrepo-com.svg";
-import TrashIcon from "../../../public/assets/images/trash-svgrepo-com.svg";
-import FileUpload from "../../../public/assets/images/file-upload-svgrepo-com.svg";
-import { IOption } from "../common/types";
+
+import { ILeadFormValues, IOption } from "../common/types";
+import DocumentUploadContainer, {
+  MainContainer,
+  TickWithText,
+} from "../document/DocumentUploadContainer";
+import { Typography } from "@mui/material";
+import AdvanceDropDown from "../dropdown/Dropdown";
+import { identificationDocumentTypeKey } from "./personalInfoForm";
+import { CloseOutlined } from "@material-ui/icons";
+
+const documentUploadFormData = [
+  {
+    name: "Declaration form",
+    id: "declarationForm",
+    disabled: false,
+    status: "Upload Pending",
+    isDeclaration: true,
+  },
+  {
+    name: "National ID/Passport",
+    id: "nationalIdPassport",
+    disabled: false,
+    status: "Upload Pending",
+  },
+  {
+    name: "Highest Qualification",
+    id: "highestQualification",
+    disabled: false,
+    status: "Upload Pending",
+  },
+  {
+    name: "Matric Certificate or Equivalent",
+    id: "matricCertificate",
+    disabled: false,
+    status: "Upload Pending",
+  },
+  {
+    name: "Detailed CV",
+    id: "detailCV",
+    disabled: false,
+    status: "Upload Pending",
+  },
+];
+const mbaProgramDocuments: any = [
+  {
+    name: "Motivation Letter",
+    id: "motivationLetter",
+    disabled: false,
+    status: "upload pending",
+  },
+  {
+    name: "Interview Notes",
+    id: "interviewNotes",
+    disabled: false,
+    status: "upload pending",
+  },
+];
+
+const documentCriteria = [
+  {
+    text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</stroong>`,
+    isInnerText: true,
+  },
+  {
+    text: `ID should be at least valid for <strong>6 months.</strong>`,
+    isInnerText: true,
+  },
+  { text: "Document must be clear visible" },
+  { text: "Upload a color scan of the original document." },
+  {
+    text: "Do not upload black & white scans",
+    icon: (
+      <div
+        style={{
+          backgroundColor: "#ffe9e9",
+          borderRadius: "50%",
+          padding: "1px",
+          marginRight: "3px",
+        }}
+      >
+        <CloseOutlined color="error" />
+      </div>
+    ),
+  },
+];
 
 interface IDocumentUploadProps {
   allFields: any;
@@ -25,27 +104,112 @@ interface IDocumentUploadProps {
   isLoading?: boolean;
   documentType: IOption[];
   leadId: string;
+  onUpload?: (file: File | File[]) => void;
+  onRemove?: (index: number) => void;
+  onSubmit: (formValue: ILeadFormValues) => void;
+  onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
-const imgUrl = "/assets/images";
+function mapStatusToFormData(response, formData) {
+  if (response?.length > 0) {
+    for (const item of response) {
+      const matchingFormData = formData.find(
+        (formDataItem) => formDataItem.id === item.documentTypeCode
+      );
+      if (matchingFormData) {
+        const status = item?.status?.replace("SALES_", "");
 
+        if (status === "PENDING") {
+          return;
+        }
+        if (status === "REJECT") {
+          matchingFormData.status = "Rejected";
+        }
+        if (status === "APPROVED") {
+          matchingFormData.status = "Approved";
+        }
+      }
+    }
+    return formData;
+  } else return formData;
+}
+
+const mapStatusDocument = (documentData) => {
+  if (documentData?.length > 0) {
+    for (const item of documentData) {
+      const { status = "" } = { ...item };
+      const documentStatus = status?.toLowerCase();
+      if (documentStatus?.includes("pending")) {
+        item.status = "Pending";
+      }
+      if (documentStatus?.includes("sales_rejected")) {
+        item.status = "Rejected";
+      }
+      if (documentStatus?.includes("approved")) {
+        item.status = "Approved";
+      }
+    }
+    return documentData;
+  } else return documentData;
+};
 const DocumentUploadForm = ({
   allFields,
-  isValidDocument,
   documentType,
   leadId,
   isApplicationEnrolled,
+  onSaveDraft,
+  onSubmit,
 }: IDocumentUploadProps) => {
-  const fileUploadRef = useRef<any>(null);
-  const { register, setValue } = useFormContext();
+  const [documentFormDataDetail, setDocumentFormDataDetail] = useState<
+    typeof documentUploadFormData
+  >(documentUploadFormData);
+  const {
+    register,
+    setValue,
+    formState: { errors },
+  } = useFormContext();
+  const documentDetails = allFields?.document?.documentDetails || [];
+  const isMBAProgram = allFields?.education?.programCode === "MBA-PROG";
+  useEffect(() => {
+    if (documentDetails?.length > 0) {
+      setDocumentFormDataDetail(
+        mapStatusToFormData(documentDetails, documentUploadFormData)
+      );
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   if (isMBAProgram) {
+  //     console.log("gooo");
+  //     setDocumentFormDataDetail((prevState) => [
+  //       ...prevState,
+  //       ...mbaProgramDocuments,
+  //     ]);
+  //   }
+  // }, [isMBAProgram]);
+  const documentFormFields = allFields?.document;
+  const documentFieldErrors = errors?.document as any;
   const [uploadDocs, setUploadDocs] = useState<
     (File & { error: boolean; typeCode: string })[]
   >([]);
-  const isDocumentRequired = allFields?.document?.uploadedDocs?.length === 0;
-  const documentTypeList = !isApplicationEnrolled
-    ? [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
-        (doc) => doc.code !== "BURSARYLETTER"
-      )
-    : [...(documentType || [])]?.filter((doc) => doc.code === "BURSARYLETTER");
+  const isDocumentRequired = allFields?.document?.documentDetails?.length === 0;
+
+  // const documentTypeList = isApplicationEnrolled
+  //   ? [...(documentType || [])]?.filter((doc) => doc.code === "PAYMENTPROOF")
+  //   : [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
+  //       (doc) => doc.code !== "PAYMENTPROOF"
+  //     );
+  const documentTypeList = documentType?.filter(
+    (item) => item?.code !== "PAYMENTPROOF"
+  );
+  const documentIds = documentUploadFormData?.map((document) => document.id);
+  const areAllDocumentsUploaded = documentIds.every((id) =>
+    uploadDocs.some((doc) => doc.typeCode === id)
+  );
+
+  const documentStatusDetail = JSON.parse(
+    JSON.stringify(documentFormDataDetail)
+  );
+
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
     if (existingPaymentProof && existingPaymentProof.length > 0) {
@@ -62,19 +226,28 @@ const DocumentUploadForm = ({
     }
   }, [leadId]);
 
-  const onDocUploadClick = () => {
-    const fileElement = fileUploadRef.current?.childNodes[1] as any;
-    fileElement?.click() as any;
-  };
-  const deleteDocs = (index: number) => {
-    const remainingDocs = [...uploadDocs.filter((item, idx) => idx !== index)];
+  useEffect(() => {
+    if (isDocumentRequired) {
+      setDocumentFormDataDetail(
+        documentUploadFormData.map(({ status, ...rest }) => ({
+          ...rest,
+          status: "Upload Pending",
+        }))
+      );
+    }
+  }, []);
+
+  const deleteDocs = (index: number, file: File & { typeCode: string }) => {
+    const remainingDocs = [
+      ...uploadDocs.filter((item, idx) => item?.typeCode !== file?.typeCode),
+    ];
     setValue("document.uploadedDocs", remainingDocs, formOptions);
     setUploadDocs(remainingDocs);
-    allFields.document.uploadedDocs = remainingDocs;
   };
 
   const uploadDocuments = (files: any) => {
     const uploadedFiles = files;
+
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
       if (!item?.typeCode && isApplicationEnrolled) {
@@ -84,248 +257,141 @@ const DocumentUploadForm = ({
         item.typeCode = "other";
       }
     });
-    setUploadDocs(uploadedFiles as any);
-    setValue("document.uploadedDocs", uploadedFiles);
+    setUploadDocs((prevState) => [...prevState, ...(uploadedFiles as any)]);
+    const allFiles = [...uploadDocs, ...uploadedFiles];
+    setValue("document.uploadedDocs", allFiles);
   };
 
-  const showPdf = (e: SyntheticEvent, item: File) => {
-    e.preventDefault();
-    const file = new Blob([item], {
-      type: item?.type.includes("pdf") ? "application/pdf" : "image/jpeg",
-    });
-    const fileURL = URL.createObjectURL(file);
-    window.open(fileURL);
-  };
+  const NationalityPassportFields = () => {
+    return (
+      <div className="row mt-2">
+        <div className="col-md-6">
+          <div className="mb-4">
+            <AdvanceDropDown
+              onChange={(e) =>
+                setValue(
+                  "document.identificationDocumentType",
+                  e?.target?.value,
+                  formDirtyState
+                )
+              }
+              value={documentFormFields?.identificationDocumentType}
+              required
+              options={documentTypeList}
+              name={identificationDocumentTypeKey}
+              register={register}
+              label="Identification Document Type"
+            />
+            {documentFieldErrors?.identificationDocumentType && (
+              <div className="invalid-feedback">
+                Please select Identification Document Type
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="mb-4">
+            <StyledLabel required>Others ( Please Specify )</StyledLabel>
+            <input
+              value={documentFormFields?.other}
+              defaultValue={documentFormFields?.other}
+              {...register("document.other", {
+                required: true,
+              })}
+              type="text"
+              className="form-control"
+              id="otherText"
+            />
 
-  const imageType = (type: string) => {
-    let data = "png-svgrepo-com.svg";
-    if (type?.toLowerCase().includes("pdf")) {
-      data = "pdf-svgrepo-com.svg";
-    }
-    return data;
-  };
-  const onFileTypeSelect = (value: string, index: number) => {
-    const allFiles: any = [...uploadDocs];
-    allFiles[index].typeCode = value;
-    setValue("document.uploadedDocs", allFiles, formOptions);
+            {documentFieldErrors?.identificationDocumentType && (
+              <div className="invalid-feedback">
+                Please select Identification Document Type
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
-    <>
-      <div className="row document-container">
-        <div className="col-12 col-md-12 mb-3">
-          <MainContainer>
-            {" "}
-            <PaymentHeading>
-              <div className="col-md-12">
-                <StyleHeading>
-                  <GreenFormHeading style={{ fontSize: "20px" }}>
-                    Required Documents
-                  </GreenFormHeading>
-                </StyleHeading>
-              </div>
-            </PaymentHeading>
-            <PaymentContainer>
-              <div className="row">
-                <div className="col-md-5">
-                  <CustomContainer>
-                    <StyledUploadDocumentContainer ref={fileUploadRef}>
-                      <div className="mt-1 upload-icon">
-                        <Image width="100" src={UploadImg} alt="uplopad-svg" />
-                      </div>
-                      <input
-                        className="d-none"
-                        accept="image/jpeg, application/pdf"
-                        type="file"
-                        {...(register("document.uploadedDocs", {
-                          required: isDocumentRequired,
-                        }) as any)}
-                        onChange={(e) => {
-                          if (e?.target) {
-                            const files = [...uploadDocs, e.target?.files![0]];
-                            uploadDocuments(files);
-                          }
-                        }}
-                      />
-                      <GreenFormHeading className="mt-1 text">
-                        Drag and drop, or browse your files
-                      </GreenFormHeading>
-                      <strong className="mt-1 fs-6">or</strong>
-                      <div>
-                        <StyledButton
-                          className="mt-2"
-                          title="Browse"
-                          roundBtn
-                          onClick={onDocUploadClick}
-                        />
-                        <p
-                          className="grey-text mt-2"
-                          style={{ color: `#838383` }}
-                        >
-                          Only PNG, JPEG and PDF files with max size of 2MB{" "}
-                        </p>
-                      </div>
-                    </StyledUploadDocumentContainer>
-                  </CustomContainer>
-                </div>
-                <div className="col-md-7">
-                  <UploadedFilesContainer>
-                    <h5 className="fw-bold mb-3 font-roboto">Uploaded Files</h5>
-
-                    <table className="table table-striped doc-table">
-                      <thead>
-                        <tr>
-                          <th scope="col">File Name</th>
-                          <th scope="col">File Type</th>
-                          <th scope="col" className="text-center">
-                            Action
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {uploadDocs?.map((item, index) => (
-                          <tr>
-                            <td>
-                              <div className="w-75">
-                                <img
-                                  className="me-2"
-                                  src={`${imgUrl}/${imageType(item?.type)}`}
-                                />
-                                {item?.name}{" "}
-                                {item?.error && (
-                                  <span style={{ color: "red" }}>
-                                    ( Invalid file format )
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td
-                            // className={
-                            //   item?.typeCode === "PAYMENTPROOF"
-                            //     ? "disabled"
-                            //     : ""
-                            // }
-                            >
-                              {" "}
-                              <select
-                                className="form-select"
-                                onChange={(e) =>
-                                  e?.target?.value &&
-                                  onFileTypeSelect(e?.target?.value, index)
-                                }
-                              >
-                                <option value={""}>Select Document Type</option>
-                                {documentTypeList?.map((item) => (
-                                  <>
-                                    <option
-                                      selected={
-                                        item?.code ===
-                                        uploadDocs[index]?.typeCode
-                                      }
-                                      key={item.code}
-                                      value={item?.code}
-                                    >
-                                      {item?.name}
-                                    </option>
-                                  </>
-                                ))}
-                              </select>
-                            </td>
-                            <td className="text-center">
-                              <div>
-                                {!item.error && (
-                                  <Link
-                                    passHref
-                                    onClick={(e) => showPdf(e, item)}
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                    href={""}
-                                  >
-                                    <Image
-                                      className="me-2 ms-2 "
-                                      src={ViewIcon}
-                                      alt={"ViewIcon"}
-                                      width="25"
-                                    />
-                                  </Link>
-                                )}
-                                <span
-                                  onClick={() => deleteDocs(index)}
-                                  className={"cursor-pointer"}
-                                >
-                                  <Image
-                                    className="me-2 ms-2"
-                                    src={TrashIcon}
-                                    alt={"TrashIcon"}
-                                    width="20"
-                                  />
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </UploadedFilesContainer>
-                </div>
-              </div>
-            </PaymentContainer>
-            <div style={{ margin: "1rem" }}>
-              <DocumentCriteriaContainer>
-                <div className="row">
-                  <GreenFormHeading className="fs-5 m-2">
-                    Document Criteria
-                  </GreenFormHeading>
-                  <div className="col-md-5 col-lg-5">
-                    <p>
-                      <span className="me-2">
-                        <DoneIcon />
-                      </span>
-                      File accepted JPEG/JPG/PNG,PDF <br />
-                      <span style={{ marginLeft: "30px" }}>
-                        (Max size :2MB)
-                      </span>
-                    </p>
-                    <p>
-                      <span className="me-2">
-                        <DoneIcon />
-                      </span>
-                      ID should valid atleast for months
-                    </p>
-                  </div>
-
-                  <div className="col-md-7 col-lg-7">
-                    <div className="d-flex justify-content-around">
-                      <div>
-                        <p>Document should be in good condition</p>
-                        <br />
-                        <p>Face must clear visible</p>
-                      </div>
-                      <ImageContainer>
-                        <div className="w-100">
-                          <Image
-                            className="mb-2"
-                            width={"40"}
-                            src={FileUpload}
-                            alt={"file-upload"}
-                          />
-                          <p className="">Sample Document</p>
-                          <GreenFormHeading>
-                            <a style={{ color: `${Green}` }} href="#">
-                              View
-                            </a>
-                          </GreenFormHeading>
-                        </div>
-                      </ImageContainer>
-                    </div>
-                  </div>
-                </div>
-              </DocumentCriteriaContainer>
-            </div>
-          </MainContainer>
-        </div>
+    <div className="row mx-3 document-container">
+      <div className="col-md-8">
+        {(isMBAProgram
+          ? [...documentFormDataDetail, ...mbaProgramDocuments]
+          : documentFormDataDetail
+        )?.map(({ name, disabled, status, id, isDeclaration = false }) => {
+          const customFileds = id?.includes("nationalIdPassport") ? (
+            <NationalityPassportFields />
+          ) : null;
+          return (
+            <DocumentUploadContainer
+              key={`${name}_${id}`}
+              title={name}
+              status={status}
+              isDeclaration={isDeclaration}
+              disabled={disabled}
+              onUpload={uploadDocuments}
+              onRemove={deleteDocs as any}
+              documentType={id}
+              customComponent={customFileds}
+            />
+          );
+        })}
       </div>
-    </>
+      <div className="col-md-4">
+        <MainContainer>
+          <div className="d-flex flex-column">
+            <StyledButton
+              isGreenWhiteCombination
+              className="my-2"
+              title="Save as Draft"
+              onClick={onSaveDraft}
+            />
+            <StyledButton
+              disabled={!areAllDocumentsUploaded}
+              onClick={onSubmit}
+              title="Submit Documents"
+            />
+          </div>
+        </MainContainer>
+
+        <MainContainer className="px-1">
+          <div className="d-flex flex-column">
+            <Typography textAlign="left" component="header" fontWeight="bold">
+              Document Status
+            </Typography>
+            {mapStatusDocument(documentStatusDetail).map(({ name, status }) => (
+              <TickWithText
+                key={name}
+                status={status?.toLowerCase()}
+                text={name}
+              />
+            ))}
+          </div>
+        </MainContainer>
+        <MainContainer className="px-1">
+          <div className="d-flex flex-column py-1">
+            <Typography textAlign="left" component="header" fontWeight="bold">
+              Document Criteria
+            </Typography>
+            <Typography color="black" textAlign="left" component="caption">
+              Documents not following the below guidelines will not be accepted
+              and you will be asked to submit the documents again
+            </Typography>
+            {documentCriteria.map(({ text, icon, isInnerText }: any) => (
+              <TickWithText
+                key={text}
+                text={text}
+                icon={icon}
+                isInnerText={isInnerText}
+                required={false}
+              />
+            ))}
+          </div>
+        </MainContainer>
+      </div>
+    </div>
   );
 };
 

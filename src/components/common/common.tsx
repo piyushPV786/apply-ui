@@ -54,6 +54,26 @@ export const StyledAccordion = styled(Accordion)`
     }
   }
 `;
+export const GreyStyledAccordion = styled(Accordion)`
+  .MuiAccordionDetails-root {
+    background: #f5f5f5 !important;
+  }
+
+  .MuiAccordionSummary-root {
+    background: #f5f5f5 !important;
+    height: 60px;
+    border-bottom: none !important;
+    display: flex;
+    flex-direction row
+  }
+
+  @media (max-width: 510px) {
+    .MuiAccordionSummary-root {
+      background: #f5f5f5 !important;
+      height: 60px;
+    }
+  }
+`;
 
 export const Toaster = ({ success, message, setShowToast, show }) => (
   <Snackbar
@@ -98,7 +118,7 @@ const sponsorEmail = `${SponsorCandidateDetail}.email`;
 const sponsorAddress = `${SponsorCandidateDetail}.address`;
 const sponsorPhoneNumber = `${SponsorCandidateDetail}.mobileNumber`;
 const sponsorMobileCode = `${SponsorCandidateDetail}.mobileCountryCode`;
-const isSponsored = `${SponsorCandidateDetail}.isSponsored`;
+const isSponsor = `${SponsorCandidateDetail}.isSponsor`;
 
 export const getSponsorNameLabel = (
   studentType: string,

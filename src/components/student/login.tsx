@@ -7,6 +7,16 @@ import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
 import Image from "next/image";
+
+import axios from "axios";
+import authConfig from "./auth";
+import {
+  AuthValuesType,
+  RegisterParams,
+  LoginParams,
+  ErrCallbackType,
+  UserDataType,
+} from "./types";
 import {
   ImageContainer,
   ApplicationFormContainer,
@@ -16,7 +26,7 @@ import {
   Title,
 } from "./style";
 import styled from "styled-components";
-import { CommonApi, RoutePaths } from "../common/constant";
+import { CommonApi, RoutePaths, tokenName } from "../common/constant";
 import { MsgComponent, LoaderComponent } from "../common/common";
 import useAxiosInterceptor from "../../service/Axios";
 
@@ -30,6 +40,7 @@ const StudentLogin = () => {
   const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
   const [isResendOtp, setResend] = useState<boolean>(false);
   const { baseAuth, loading } = useAxiosInterceptor();
+
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
@@ -42,15 +53,6 @@ const StudentLogin = () => {
       router.push(RoutePaths.Dashboard);
     }
   }, []);
-
-  useEffect(() => {
-    let timer;
-    if (isProceed && isResendOtp) {
-      timer = setTimeout(() => {
-        setShowResendBtn(true);
-      }, 60000);
-    }
-  }, [isProceed, isResendOtp]);
 
   const isNumberValid =
     mobileNumber &&
@@ -73,7 +75,7 @@ const StudentLogin = () => {
           countryCode: countryCode,
         };
         sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
-        setResend(true);
+
         setProceed(true);
         setToast(true);
       })
@@ -95,14 +97,14 @@ const StudentLogin = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Item>
-              <Title className="login-title">Login With Mobile Number</Title>
+              <Title className="login-title">Login with mobile number</Title>
             </Item>
           </Grid>
           <Grid item xs={12}>
             <Item>
               {" "}
               <span className="login-text">
-                Enter your mobile number we will send you OTP to Verify
+                Enter your mobile number and we will send you an OTP to verify
               </span>
             </Item>
           </Grid>
@@ -155,7 +157,7 @@ const StudentLogin = () => {
           <Grid item xs={12}>
             <Item>
               <span className="login-text">
-                Enter 4 digit OTP code sent to your number {mobileNumber}
+                Enter the 4 digit OTP sent to your mobile number{mobileNumber}
               </span>
             </Item>
           </Grid>
@@ -207,8 +209,7 @@ const StudentLogin = () => {
                 className="link-text"
                 onClick={() => {
                   setProceed(!isProceed);
-                  setResend(false);
-                  setShowResendBtn(false);
+
                   setOtp("");
                 }}
               >
@@ -221,7 +222,7 @@ const StudentLogin = () => {
     );
   };
 
-  const verifyNumber = () => {
+  const verifyNumber = async () => {
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
@@ -232,6 +233,15 @@ const StudentLogin = () => {
         mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
       })
       .then(({ data }) => {
+        window.sessionStorage.setItem(
+          tokenName?.accessToken,
+          data?.data?.tokenDetails?.access_token
+        );
+        window.sessionStorage.setItem(
+          tokenName.refreshToken,
+          data?.data?.tokenDetails?.refresh_token
+        );
+
         setErrorMsg(null);
         sessionStorage.setItem(
           "studentId",
@@ -246,14 +256,13 @@ const StudentLogin = () => {
           success: false,
           message: "Sorry! The entered OTP is invalid. Please try again",
         });
+        setShowResendBtn(true);
       });
   };
 
   const resendOtp = () => {
     setErrorMsg({ success: true, message: "OTP re-sent successfully" });
     setOtp("");
-    setShowResendBtn(true);
-    setResend(true);
   };
 
   const today = new Date();

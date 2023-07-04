@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 interface RouterContextProps {
   isRouting: boolean;
 }
@@ -50,7 +51,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Component {...pageProps} />
       <ToastContainer
         position="bottom-right"
-        autoClose={100000}
+        autoClose={3500}
         hideProgressBar
       />
     </RouterProvider>

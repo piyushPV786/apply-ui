@@ -123,6 +123,7 @@ interface Lead {
   nationality: string;
   mobileCountryCode: string;
   leadCode: string;
+  isAgreedTermsAndConditions: boolean;
 }
 
 export interface IMasterData {
@@ -145,6 +146,7 @@ export interface IMasterData {
   disablityData: IOption[];
   agentData: IOption[];
   studentTypeData: IOption[];
+  nationalityStatus: IOption[];
 }
 
 export interface IOption {
@@ -176,6 +178,7 @@ export interface IApplication {
   education: IEducation;
   lead: ILead;
   document: IDocument;
+  studentCode: string;
 }
 
 export interface IDocument {

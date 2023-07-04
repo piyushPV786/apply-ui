@@ -1,4 +1,6 @@
 export enum CommonEnums {
+  TRUE = "true",
+  NEW_STATUS = "New-Application",
   DRAFT_STATUS = "APP-DRAFT",
   FEES_PENDING_STATUS = "APP-FEE-PEND",
   APP_ENROLLED_STATUS = "APP-ENROLLED",
@@ -19,6 +21,13 @@ export enum CommonEnums {
   PROG_ADMITTED = "PROG-ADMITTED",
   ACCEPTANCE_LETTER = "ACCEPTANCE-LETTER",
   CONFIRMATION_LETTER = "CONFIRMATION-LETTER",
+}
+
+export enum DocumentStatus {
+  UploadPending = "upload pending",
+  Approved = "approved",
+  Submitted = "submitted",
+  Rejected = "rejected",
 }
 
 export const ErrorMessage = "Something went wrong please try again later";
@@ -50,14 +59,18 @@ export const CommonApi = {
   GETUSERDETAIL: "/user",
   SAVEUSER: "/lead",
   SAVEDRAFT: "/draft",
-  REGISTERUSER: "/register",
-  VERIFYOTP: "/verify-otp",
+  REGISTERUSER: "/auth/register",
+  VERIFYOTP: "/auth/verify-otp",
   PAYUPAYMENT: "global/payuPayment",
-  GETINTRESTEDQUALIFICATION: "programs",
+  GETINTRESTEDQUALIFICATION: "programs/all",
   GETDOCUMENTURL: "global/file",
   GETCOMMONDOCUMENTURL: "/document",
   GETDOCUMENT: "/document/upload",
   GETCURRENCYCONVERSION: "/programs-fee/fee-conversion-rate/",
+  GETRMATDETAILS: "/application/rmat/details/",
+  NATIONALITYSTATUS: "/nationality-status",
+  AGENT_LIST: "/user/role/Sales",
+  IDENTIFICATIONDOCUMENT: "/identification-Type",
 };
 
 export const RoutePaths = {
@@ -66,6 +79,8 @@ export const RoutePaths = {
   Document_Success: "/payment/document-upload-success",
   APPLICATION_ENROLLED_SUCCESS: "/payment/application-enrolled-success",
   Dashboard: "/student-registration-form/dashboard",
+  StudentDashboard: "/dashboard",
+  RMATView: "/rmat",
 };
 
 export const PaymentTypes = [
@@ -96,6 +111,7 @@ export const identityDocuments = [
   },
   { code: "DL", name: "Driving License" },
   { code: "PA", name: "Passport" },
+  { code: "BI", name: "BookId" },
 ];
 
 export const acceptedKeysToMap = [
@@ -117,3 +133,8 @@ export const removedKeysToMap = [
 
 export const bursaryWarning =
   "You must upload Bursary letter in upload document section";
+
+export const tokenName = {
+  accessToken: "accessToken",
+  refreshToken: "refreshToken",
+};

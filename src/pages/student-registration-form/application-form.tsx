@@ -11,13 +11,15 @@ import { EducationForm } from "../../components/Form/EducationForm";
 import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
-import useAxiosInterceptor from "../../service/Axios";
+import Termsconditiondialog from "../../components/dialog/Terms&ConditionDialog";
+import useAxiosInterceptor, { UserManagementAPI } from "../../service/Axios";
 import {
   ILeadFormValues,
   IMasterData,
   IOption,
 } from "../../components/common/types";
 import {
+  getAllDocumentsDetails,
   getUploadDocumentUrl,
   isValidEmail,
   isValidFileType,
@@ -46,12 +48,16 @@ import {
   getIntrestedQualificationPrograms,
   getUserDetailHelper,
 } from "../../Util/applicationFormHelper";
+
 const isValidLeadEmail = (value: string) => isValidEmail(value);
 const ApplicationForm = () => {
   const router = useRouter();
-  const { AuthApi, loading, AcadmicApi } = useAxiosInterceptor();
+  const { AuthApi, loading, AcadmicApi, CommonAPI } = useAxiosInterceptor();
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
+
+  const [agentData, setAgentData] = useState([]);
+
   const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
     message: "",
     success: false,
@@ -62,6 +68,12 @@ const ApplicationForm = () => {
   const [masterData, setMasterData] = useState<IMasterData | null>(null);
   const [isApplicationEnrolled, setApllicationEnrolled] =
     useState<boolean>(false);
+  const [isNewApplication, setNewApplication] = useState<boolean>(false);
+  const [identificationDocumentTypeData, setIdentificationDocumentTypeData] =
+    useState<any>([]);
+  const [nationalityStatus, setNationalityStatus] = useState([]);
+  const [termsOpen, settermsOpen] = useState<any>(false);
+
   const methods = useForm<ILeadFormValues>({
     mode: "all",
     reValidateMode: "onBlur",
@@ -71,26 +83,42 @@ const ApplicationForm = () => {
     formState: { isValid, isDirty, errors },
     watch,
     setValue,
+    clearErrors,
     getValues,
     trigger,
   } = methods;
   useEffect(() => {
     getUserDetail();
     getMasterData();
+    getAgentDetails();
+    getNationalData();
+    identificationDocumentType();
   }, []);
 
   useEffect(() => {
     if (window) {
       const queryParams = new URLSearchParams(location?.search);
       const applicationStatus = queryParams.get("status");
-      const isApplicationAccepted =
-        applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED;
-      setApllicationEnrolled(isApplicationAccepted);
+
+      if (applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED) {
+        setApllicationEnrolled(true);
+        setNewApplication(true);
+      } else {
+        setApllicationEnrolled(false);
+        if (
+          applicationStatus === CommonEnums.NEW_STATUS ||
+          !applicationStatus
+        ) {
+          setNewApplication(true);
+        } else if (applicationStatus === CommonEnums.TRUE) {
+          setNewApplication(false);
+        }
+      }
     }
   }, []);
   const allFields = watch();
   const isValidDocument =
-    allFields?.document?.uploadedDocs.length > 0 &&
+    allFields?.document?.uploadedDocs?.length > 0 &&
     isValidFileType(allFields?.document?.uploadedDocs).length === 0;
 
   const navigateBack = () => {
@@ -98,10 +126,22 @@ const ApplicationForm = () => {
     setActiveStep((prevState: number) => prevState - 1);
   };
   const navigateNext = () => {
-    setSubmitted(true);
-    setPaymentDone(true);
     setActiveStep((prevState: number) => prevState + 1);
   };
+
+  const termsHandelClose = () => {
+    settermsOpen(false);
+  };
+  const termsHandelOpen = () => {
+    settermsOpen(true);
+  };
+
+  const identificationDocumentType = async () => {
+    const response = await CommonAPI.get(CommonApi.IDENTIFICATIONDOCUMENT);
+
+    setIdentificationDocumentTypeData(response?.data.data);
+  };
+
   const routeIfStepDone = (routeTo: string) => {
     if (routeTo) {
       switch (routeTo) {
@@ -116,14 +156,31 @@ const ApplicationForm = () => {
     }
   };
 
+  const updateTermsConditions = (status) => {
+    if (status == true) {
+      allFields.lead.isAgreedTermsAndConditions = true;
+      setValue("isAgreedTermsAndConditions", true);
+      clearErrors("isAgreedTermsAndConditions");
+      settermsOpen(false);
+    }
+
+    if (status == false) {
+      allFields.lead.isAgreedTermsAndConditions = false;
+      setValue("isAgreedTermsAndConditions", false);
+      clearErrors("isAgreedTermsAndConditions");
+      settermsOpen(false);
+    }
+  };
+
   const updateLead = (
     request: any,
     leadCode: string,
     applicationCode: string,
     activeLeadDetail: any,
-    status: string
+    status: string,
+    draftSave: boolean | undefined
   ) => {
-    if (activeStep === MagicNumbers.TWO) {
+    if (activeStep === MagicNumbers.TWO && !draftSave) {
       uploadStudentDocs();
       return;
     }
@@ -140,9 +197,25 @@ const ApplicationForm = () => {
         }
       );
     } else {
-      methodType = AuthApi.post(CommonApi.SAVEUSER, {
-        ...request,
-      });
+      if (draftSave) {
+        const fetchMethod =
+          applicationCode &&
+          applicationCode?.length > 0 &&
+          (status !== CommonEnums.DRAFT_STATUS || !status)
+            ? "put"
+            : "post";
+        request.applicationCode = applicationCode;
+        methodType = AuthApi[fetchMethod](
+          `${CommonApi.SAVEUSER}?isDraft=true`,
+          {
+            ...request,
+          }
+        );
+      } else {
+        methodType = AuthApi.post(`${CommonApi.SAVEUSER}?isDraft=false  `, {
+          ...request,
+        });
+      }
     }
 
     methodType
@@ -186,7 +259,12 @@ const ApplicationForm = () => {
         setSubmitted(false);
       });
   };
-  const updateUserAsDraft = (request, appCode: string) => {
+  const updateUserAsDraft = (request) => {
+    const activeLeadDetail = JSON.parse(
+      sessionStorage?.getItem("activeLeadDetail") as any
+    );
+    const appCode = activeLeadDetail.applicationCode;
+
     AuthApi.put(`${CommonApi.SAVEDRAFT}/${appCode}`, {
       ...request,
     })
@@ -207,7 +285,40 @@ const ApplicationForm = () => {
         });
       });
   };
-  const createDraft = (request, leadCode) => {
+
+  const createDraft = (data) => {
+    if (data?.education?.isInternationDegree === "yes") {
+      data.education.isInternationDegree = true;
+    } else if (data?.education?.isInternationDegree === "no") {
+      data.education.isInternationDegree = false;
+    }
+
+    if (data?.employment?.zipCode === "") {
+      data.employment.zipCode = null;
+    }
+
+    const formData = { ...data };
+
+    const {
+      isSameAsPostalAddress = "",
+      payment = null,
+      ...rest
+    } = { ...(formData as any) };
+
+    let request = mapFormData({
+      ...rest,
+    });
+
+    const activeLeadDetail = JSON.parse(
+      sessionStorage?.getItem("activeLeadDetail") as any
+    );
+    const leadCode =
+      sessionStorage?.getItem("studentId") &&
+      sessionStorage?.getItem("studentId") !== "undefined" &&
+      sessionStorage?.getItem("studentId") !== "{}"
+        ? JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
+        : activeLeadDetail?.leadCode;
+
     request.lead.leadCode = leadCode;
     AuthApi.post(`${CommonApi.SAVEDRAFT}`, {
       ...request,
@@ -229,11 +340,16 @@ const ApplicationForm = () => {
         });
       });
   };
+
   const submitFormData = (data: any, isDraftSave?: boolean) => {
-    if (data.education.isInternationDegree === "yes") {
+    if (data?.education?.isInternationDegree === "yes") {
       data.education.isInternationDegree = true;
-    } else if (data.education.isInternationDegree === "no") {
+    } else if (data?.education?.isInternationDegree === "no") {
       data.education.isInternationDegree = false;
+    }
+
+    if (data?.employment?.zipCode === "") {
+      data.employment.zipCode = null;
     }
 
     const formData = { ...data };
@@ -272,16 +388,23 @@ const ApplicationForm = () => {
         leadCode,
         draftUpdateCode,
         activeLeadDetail,
-        AppStatus
+        AppStatus,
+        isDraftSave
       );
       return;
     }
-    if (draftUpdateCode && isDraftSave) {
-      updateUserAsDraft(request, draftUpdateCode);
-      return;
-    }
-    if (!draftUpdateCode && isDraftSave && checkValidationForDraftSave()) {
-      checkValidationForDraftSave() && createDraft(request, leadCode);
+
+    if (isDraftSave && checkValidationForDraftSave()) {
+      checkValidationForDraftSave();
+
+      updateLead(
+        request,
+        leadCode,
+        draftUpdateCode,
+        activeLeadDetail,
+        AppStatus,
+        isDraftSave
+      );
       return;
     }
   };
@@ -329,39 +452,64 @@ const ApplicationForm = () => {
         console.log(err.message);
       });
   };
+  const Dates = new Date();
+  const timestamp =
+    Dates.toLocaleDateString("en-GB").split("/").join("") +
+    Dates.getHours() +
+    Dates.getMinutes();
+
   const uploadStudentDocs = async () => {
     const {
       document: { uploadedDocs = [] as File[] },
-    } = allFields;
+    } = { ...allFields };
+
     let count = 0;
     const successLength: any[] = [];
-    const filteredDocs = uploadedDocs.filter(
-      (doc) => doc.typeCode !== "PAYMENTPROOF"
-    );
-    await Promise.all(
-      filteredDocs.map((file: File & { typeCode: string }) => {
-        const payload = {
-          documentTypeCode: file?.typeCode || "other",
+    let payload;
+
+    const files = [] as any[];
+    uploadedDocs.map((file: File & { typeCode: string }) => {
+      if (file?.typeCode === "nationalIdPassport") {
+        files.push({
+          documentTypeCode:
+            allFields?.document?.identificationDocumentType?.includes("others")
+              ? allFields?.document?.other
+              : allFields?.document?.identificationDocumentType,
           fileName: file.name,
           fileType: file.type,
-          amount: +allFields?.education?.studyModeDetail?.fee || 0,
-          paymentModeCode: "OFFLINE",
-        };
-        return getUploadDocumentUrl(payload).then((res) => {
-          if (res.statusCode === 201) {
-            count = count + 1;
-            successLength.push("true");
-            uploadFiles(res?.data, file);
-          } else {
-            showToast(false, res.message);
-            console.log(res.message);
-          }
         });
+      } else
+        files.push({
+          documentTypeCode: file?.typeCode,
+          fileName: file.name,
+          fileType: file.type,
+        });
+    });
+
+    payload = {
+      files,
+      amount: allFields.payment?.finalFee,
+      paymentModeCode: "OFFLINE",
+      discountCode: allFields?.payment?.discountCode,
+      discountAmount: allFields?.payment?.discountAmount,
+      // studentTypeCode: allFields?.education?.studentTypeCode,
+    };
+    getUploadDocumentUrl(payload)
+      .then((res) => {
+        if (res.statusCode === 201) {
+          count = count + 1;
+          successLength.push("true");
+          res?.data.forEach((url, index) => {
+            uploadFiles(url, uploadedDocs[index]);
+          });
+        } else {
+          showToast(false, res.message);
+          console.log(res.message);
+        }
       })
-    )
       .then(() => {
         if (count === successLength.length) {
-          showToast(true, "Docuuments Successfully Uploaded");
+          showToast(true, "Documents Successfully Uploaded");
           setSubmitted(false);
           setActiveStep(2);
           setPaymentDone(true);
@@ -383,6 +531,7 @@ const ApplicationForm = () => {
   };
 
   const onSubmit = (data: any, isDrafSave?: boolean) => {
+    console.log(isDrafSave);
     submitFormData(data, isDrafSave);
   };
 
@@ -396,7 +545,20 @@ const ApplicationForm = () => {
         console.error(err);
       });
   };
+  const getDocumentDetails = async () => {
+    const response = await getAllDocumentsDetails();
+    setValue("document.documentDetails", response?.data);
+  };
 
+  const getNationalData = () => {
+    CommonAPI.get(CommonApi.NATIONALITYSTATUS)
+      .then(({ data }) => {
+        setNationalityStatus(data?.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
   const getUserDetail = () => {
     const isAuthenticate = JSON.parse(
       sessionStorage?.getItem("authenticate") as any
@@ -423,6 +585,9 @@ const ApplicationForm = () => {
         setValue,
         AuthApi
       );
+      getDocumentDetails(); /// this will give detals of document which are already upload or if its give empty array it mean nothing uploaded yet
+    } else {
+      setValue("document.documentDetails", []);
     }
   };
 
@@ -456,12 +621,25 @@ const ApplicationForm = () => {
         console.log(err);
       });
   };
+
+  const getAgentDetails = async () => {
+    UserManagementAPI.get(CommonApi.AGENT_LIST)
+      .then(({ data }) => {
+        setAgentData(data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const language = masterData?.languageData as IOption[];
+
   const nationalities = masterData?.nationalityData as IOption[];
   const relationData = masterData?.relationData as IOption[];
   const highestQualifications =
     masterData?.highestQualificationData as IOption[];
   const programs = masterData?.programs as IOption[];
+
   const race = masterData?.raceData as IOption[];
   const socialMedias = masterData?.socialMediaData as IOption[];
   const sponsorModes = masterData?.sponsorModeData as IOption[];
@@ -472,7 +650,7 @@ const ApplicationForm = () => {
   ) as IOption[];
   const employmentIndustries = masterData?.employmentIndustryData as IOption[];
   const countryData = masterData?.countryData as IOption[];
-  const agentData = masterData?.agentData as IOption[];
+
   const documentType = masterData?.documentTypeData as IOption[];
   const studyTypeData = masterData?.studentTypeData as IOption[];
   const isManagementStudentType =
@@ -527,11 +705,13 @@ const ApplicationForm = () => {
                       <div className="row">
                         <form onSubmit={(data) => onSubmit(data, false)}>
                           <PersonalInfoForm
+                            identityDocuments={identificationDocumentTypeData}
                             key="personalForm"
                             genders={genders}
                             nationalities={nationalities}
                             homeLanguage={language}
                             race={race}
+                            nationalityStatusData={nationalityStatus}
                           />
                           <AddressForm
                             key="AddressForm"
@@ -592,9 +772,11 @@ const ApplicationForm = () => {
                     <DocumentUploadForm
                       allFields={allFields}
                       isValidDocument={isValidDocument}
-                      documentType={documentType}
+                      documentType={identificationDocumentTypeData}
                       leadId={leadId}
-                      isApplicationEnrolled={isApplicationEnrolled}
+                      isApplicationEnrolled={isNewApplication}
+                      onSubmit={() => submitFormData(allFields, false) as any}
+                      onSaveDraft={() => onSubmit(getValues(), true) as any}
                     />
                   </>
                 )}
@@ -605,40 +787,50 @@ const ApplicationForm = () => {
                 <div className="col-md-12">
                   <>
                     {activeStep === MagicNumbers.ZERO && (
-                      <div className="form-check text-center">
+                      <div className="form-check text-center d-flex flex-row">
                         <input
                           className="form-check-input me-2"
                           type="checkbox"
-                          checked={allFields?.isAgreedTermsAndConditions}
+                          checked={allFields?.lead?.isAgreedTermsAndConditions}
+                          onClick={() => {
+                            if (
+                              allFields?.lead.isAgreedTermsAndConditions ==
+                                false ||
+                              allFields?.lead.isAgreedTermsAndConditions == null
+                            ) {
+                              settermsOpen(true);
+                            } else if (
+                              allFields?.lead.isAgreedTermsAndConditions == true
+                            ) {
+                              updateTermsConditions(false);
+                            }
+                          }}
                           id="flexCheckDefault"
                           {...register("isAgreedTermsAndConditions", {
                             required: true,
                           })}
                         />
-                        <label className="form-check-label">
-                          <strong className="me-1">
-                            I have read and agreed
-                          </strong>
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: Green }}
-                            href="https://www.regenesys.net/terms-and-conditions/"
-                          >
-                            {" "}
-                            terms and condition?
-                          </a>
-                        </label>
+
+                        <Termsconditiondialog
+                          termsHandelOpen={termsHandelOpen}
+                          termsHandelClose={termsHandelClose}
+                          termsOpen={termsOpen}
+                          updateTermsConditions={updateTermsConditions}
+                        />
+                      </div>
+                    )}
+                    {errors?.isAgreedTermsAndConditions && (
+                      <div className="invalid-feedback">
+                        Please check terms and conditions
                       </div>
                     )}
 
-                    {(activeStep === MagicNumbers.ZERO ||
-                      activeStep === MagicNumbers.TWO) && (
+                    {activeStep === MagicNumbers.ZERO && (
                       <div className="mt-4 text-center">
                         {!isApplicationEnrolled && (
                           <>
                             <>
-                              {activeStep == 2 && (
+                              {/* {activeStep != 2 && (
                                 <StyledButton
                                   onClick={onSkipForNowOnDocument}
                                   type="button"
@@ -646,11 +838,23 @@ const ApplicationForm = () => {
                                   isGreenWhiteCombination={true}
                                   title={"Skip for Now"}
                                 />
-                              )}
+                              )} */}
                             </>
                             {activeStep !== 2 && (
                               <StyledButton
-                                onClick={() => onSubmit(getValues(), true)}
+                                onClick={() => {
+                                  if (
+                                    JSON.parse(
+                                      sessionStorage?.getItem(
+                                        "activeLeadDetail"
+                                      ) as any
+                                    )?.isdraftSave == true
+                                  ) {
+                                    updateUserAsDraft(allFields);
+                                  } else {
+                                    createDraft(allFields);
+                                  }
+                                }}
                                 type="button"
                                 disabled={!isDirty}
                                 isGreenWhiteCombination={true}
@@ -662,9 +866,19 @@ const ApplicationForm = () => {
                               onClick={() => {
                                 activeStep === 2
                                   ? (submitFormData(allFields, false) as any)
-                                  : methods.handleSubmit(
-                                      (data) => onSubmit(data, false) as any
-                                    )();
+                                  : methods.handleSubmit((data) => {
+                                      if (
+                                        JSON.parse(
+                                          sessionStorage?.getItem(
+                                            "activeLeadDetail"
+                                          ) as any
+                                        )?.isdraftSave == true
+                                      ) {
+                                        onSubmit(data, true) as any;
+                                      } else {
+                                        onSubmit(data, false) as any;
+                                      }
+                                    })();
                               }}
                               disabled={isValidForm()}
                               title={activeStep < 2 ? "Save & Next" : "Submit"}

@@ -15,7 +15,6 @@ import {
   applyDiscountCode,
   getApplicationCode,
   getQualificationStudyModeData,
-  getUploadDocumentUrl,
   isInvalidFileType,
   sortAscending,
   uploadDocuments,
@@ -27,6 +26,7 @@ import { GreenText } from "../student/style";
 import { CommonApi, CommonEnums } from "../common/constant";
 import CircleTick from "../../../public/assets/images/circle-tick.svg";
 import { FinanceApi } from "../../service/Axios";
+import { Button } from "@material-ui/core";
 
 const getConvertedProgramFees = (conversionRate: number | null, programFee) => {
   return conversionRate ? programFee * conversionRate : programFee;
@@ -48,7 +48,7 @@ const Payment = (props: any) => {
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
   const selectedProgram =
-    props?.programs &&
+    props?.programs?.length &&
     props.programs?.find(
       (item: IOption) => item?.code == allFields?.education?.programCode
     );
@@ -57,11 +57,18 @@ const Payment = (props: any) => {
   const programFee: string = isApplicationEnrolled
     ? allFields?.payment?.selectedFeeModeFee || 0
     : allFields?.education?.applicationFees || "0";
-  const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
+  const isInvalidFiles = paymentDocs.some(
+    (file: any) => file.size < 2000000
+  ) as boolean;
+
+  const isInvalidFilesType = paymentDocs.some(
+    (file: any) => file.error
+  ) as Boolean;
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
   };
+
   const normalDiscountAmount = allFields?.payment?.discountAmount || 0;
   const discountAmount = allFields?.payment?.conversionRate
     ? Number(normalDiscountAmount) * (+allFields?.payment?.conversionRate || 0)
@@ -79,8 +86,10 @@ const Payment = (props: any) => {
     selectedNationality == "IND" ||
     selectedNationality == "SA" ||
     selectedNationality == "NIG"
-      ? String(+programFee * +allFields?.payment?.conversionRate || programFee)
-      : "1300";
+      ? String(
+          +programFee * (+allFields?.payment?.conversionRate || 1) || programFee
+        )
+      : +programFee * (+allFields?.payment?.conversionRate || 1);
   const rmatFeeAmount =
     selectedNationality?.includes("SA") || selectedCurrency?.includes("RAND")
       ? 250
@@ -151,47 +160,21 @@ const Payment = (props: any) => {
       });
   };
   const submitPaymentDocs = async () => {
-    let count = 0;
-    setPaymentDocSubmit(true);
-    await Promise.all(
-      paymentDocs.map((file) => {
-        const payload = {
-          documentTypeCode: "PAYMENTPROOF",
-          fileName: file.name,
-          fileType: file.type,
-          amount:
-            parseInt(programFee) -
-            parseInt(allFields?.payment?.discountAmount || 0) +
-            rmatFee,
-          paymentModeCode: "OFFLINE",
-          discountCode: allFields?.payment?.discountCode,
-          discountAmount: allFields?.payment?.discountAmount,
-          studentTypeCode: allFields?.education?.studentTypeCode,
-        };
-        return getUploadDocumentUrl(payload).then((res) => {
-          if (res?.statusCode === 201) {
-            count = count + 1;
-            uploadPaymentDocument(res?.data, file);
-          } else {
-            props.showToast(false, res?.response?.data?.message);
-            setPaymentDocSubmit(false);
-          }
-        });
-      })
-    )
-      .then(() => {
-        if (count === paymentDocs.length) {
-          setPaymentDocSubmit(false);
-          props?.navigateNext();
-        }
-      })
-      .catch((err) => {
-        setPaymentDocSubmit(false);
-        props.showToast(false, "Something went wrong");
-        console.log(err);
-      });
+    if (paymentDocs.length) {
+      setPaymentDocSubmit(false);
+      const finalAmount =
+        parseInt(programFee) -
+        parseInt(allFields?.payment?.discountAmount || 0) +
+        rmatFee;
+      setValue("payment.finalFee", finalAmount);
+      props?.navigateNext();
+    }
+
+    setPaymentDocSubmit(false);
+
     sessionStorage.removeItem("lastPromoCode");
   };
+
   const onPaymentDocumentUpload = (files: any) => {
     const uploadedFiles = files;
     uploadedFiles.forEach((item: any) => {
@@ -244,7 +227,6 @@ const Payment = (props: any) => {
     : isNaN(totalAmount)
     ? +rmatFee + +convertedProgramFee
     : totalAmount;
-
   return (
     <>
       {loadng ? (
@@ -377,13 +359,13 @@ const Payment = (props: any) => {
                       <div className="w-100 p-4 promo-card">
                         <div className="mb-4 d-flex justify-content-between flex-column">
                           <div>
-                            <h6>Subtotal ({selectedCurrency})</h6>
+                            <h6>Subtotal - ({selectedCurrency})</h6>
                           </div>
                           <div>
                             {" "}
                             {isApplicationEnrolled ? (
                               <h6>
-                                Total Program Fees: {selectedCurrency} -{" "}
+                                Total Program Fees: {selectedCurrency} &nbsp;{" "}
                                 {isManagementPromoCode
                                   ? getConvertedProgramFees(
                                       conversionRate,
@@ -396,7 +378,7 @@ const Payment = (props: any) => {
                               </h6>
                             ) : (
                               <h6>
-                                Total Application {selectedCurrency} -{" "}
+                                Total Application - {selectedCurrency} &nbsp;
                                 {isManagementPromoCode
                                   ? getConvertedProgramFees(
                                       conversionRate,
@@ -407,14 +389,14 @@ const Payment = (props: any) => {
                             )}
                             {!isApplicationEnrolled && (
                               <h6>
-                                RMAT Fee {selectedCurrency} -{" "}
+                                RMAT Fee - {selectedCurrency} &nbsp;
                                 {isNaN(rmatFee) ? 0 : rmatFee}
                               </h6>
                             )}
                             {!isManagementPromoCode && (
                               <>
                                 <h6>
-                                  Discount {selectedCurrency} -{" "}
+                                  Discount - {selectedCurrency} &nbsp;
                                   {isNaN(discountAmount) ? 0 : discountAmount}
                                   {discountPercentage && (
                                     <span className="ms-2">
@@ -474,20 +456,20 @@ const Payment = (props: any) => {
                                   }}
                                 />
                                 <div className="input-group-append cursor-pointer">
-                                  <span
+                                  <Button
                                     onClick={applyDiscount}
                                     style={{
                                       background:
                                         !promoCode || promoCode?.length === 0
                                           ? `${DefaultGrey}`
                                           : `${Green}`,
-                                      padding: "0.47rem 0.75rem",
+                                      padding: "0.50rem 0.75rem",
                                     }}
-                                    className={"input-group-text"}
                                     id="basic-addon2"
+                                    disabled={!promoCode}
                                   >
                                     Apply
-                                  </span>
+                                  </Button>
                                 </div>
                               </div>
                             </div>
@@ -614,9 +596,14 @@ const Payment = (props: any) => {
                                     </span>
                                   ))}
                               </div>
-                              {paymentDocs.length > 0 && isInvalidFiles && (
+                              {paymentDocs.length > 0 && !isInvalidFiles && (
                                 <div className="invalid-feedback">
-                                  Only "PDF" or "JPEG" file can be upload.
+                                  Max file size is 2 MB
+                                </div>
+                              )}
+                              {isInvalidFilesType && (
+                                <div className="invalid-feedback">
+                                  Only PDF and JPGE File Allowed
                                 </div>
                               )}
                             </div>
@@ -629,9 +616,10 @@ const Payment = (props: any) => {
                         <div className="col align-self-center text-center ">
                           <StyledButton
                             disabled={
-                              isInvalidFiles ||
+                              !isInvalidFiles ||
                               paymentDocs.length === 0 ||
-                              isPaymentDocSubmit
+                              isPaymentDocSubmit ||
+                              !totalPayuAmount
                             }
                             onClick={() => submitPaymentDocs()}
                             title="Submit"

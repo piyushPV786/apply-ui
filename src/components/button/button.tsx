@@ -9,6 +9,7 @@ import PayIcon from "../../../public/assets/images/pay-pay.svg";
 import DownloadIcon from "../../../public/assets/images/download-white-icon.svg";
 import RmatImg from "../../../public/assets/images/rmat.png";
 import { useIsRouting } from "../../pages/_app";
+import { ArrowDownwardOutlined } from "@material-ui/icons";
 
 interface IButoonProps {
   title?: string;
@@ -80,7 +81,8 @@ const StyledButton = ({
         )}
         {isDownloadBtn && (
           <StyledDownloadIcon className="me-3 icon-additinal">
-            <Image alt="download" src={DownloadIcon} width={18} height={18} />
+            <ArrowDownwardOutlined />
+            {/* <Image alt="download" src={DownloadIcon} width={18} height={18} /> */}
           </StyledDownloadIcon>
         )}
         {isRouting ? "Loading..." : title}
@@ -93,14 +95,22 @@ export default StyledButton;
 
 const MyButton = styled(Button)<any>`
   border-radius: ${({ roundBtn }) => (roundBtn ? "20px" : "")}!important;
-  background: ${({ isGreenWhiteCombination }) =>
-    isGreenWhiteCombination ? "white!important" : "#008554 !important"};
+  background: ${({ isGreenWhiteCombination, disabled }) =>
+    isGreenWhiteCombination
+      ? "white!important"
+      : disabled
+      ? "#d2d2d2!important"
+      : "#008554 !important"};
   border: 1px solid #008554 !important;
   .MuiButton-label {
-    color: ${({ isGreenWhiteCombination }) =>
-      isGreenWhiteCombination ? Green : "white"};
+    color: ${({ isGreenWhiteCombination, disabled }) =>
+      isGreenWhiteCombination
+        ? Green
+        : disabled
+        ? "#b6b6b6!important"
+        : "white"};
   }
-  opacity: ${({ disabled }) => (disabled ? 0.3 : 1)}!important;
+  // opacity: ${({ disabled }) => (disabled ? 0.3 : 1)}!important;
   cursor: pointer;
   @media (max-width: 510px) {
     background: ${({ isGreenWhiteCombination }) =>

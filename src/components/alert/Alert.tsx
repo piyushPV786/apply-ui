@@ -10,16 +10,22 @@ import styled, { css } from "styled-components";
 interface IAlertProps {
   children: string;
   severity?: AlertEnums;
+  style?: any;
 }
 interface IStyledAlertProps {
   className: string;
   variant?: AlertEnums;
 }
 
-const AlertBox = ({ children, severity = AlertEnums.INFO }: IAlertProps) => {
+const AlertBox = ({
+  children,
+  severity = AlertEnums.INFO,
+  style,
+}: IAlertProps) => {
   return (
     <StyledAlert
       variant={severity}
+      style={style!}
       className="p-2 d-flex shadow border-start border-4 rounded-end align-items-center"
     >
       {severity === AlertEnums.INFO && (
