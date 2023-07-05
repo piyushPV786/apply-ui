@@ -483,7 +483,8 @@ const ApplicationForm = () => {
                 "others"
               )
                 ? allFields?.document?.other
-                : allFields?.document?.identificationDocumentType,
+                : allFields?.document?.identificationDocumentType ||
+                  "nationalIdPassport",
             fileName: file.name,
             fileType: file.type,
           });
