@@ -308,15 +308,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                         formDirtyState
                       );
                     }}
-                    onChange={(e) => {
-                      const name = e.target.name;
-                      const value = e.target.value;
-                      setValue(
-                        name,
-                        capitalizeFirstLetter(value),
-                        formDirtyState
-                      );
-                    }}
                   />
                   {Errors?.email && (
                     <div className="invalid-feedback">
