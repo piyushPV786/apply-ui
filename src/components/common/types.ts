@@ -91,7 +91,7 @@ interface Education {
   internationDegreeVal: string;
 }
 export interface Payment {
-  paymentProof: File[];
+  paymentProof: File & { typeCode: string }[];
   paymentType: null;
   selectedCurrency: string;
   managementDiscountCode: string;
