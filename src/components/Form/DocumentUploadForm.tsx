@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Green, StyledLabel } from "../common/common";
 import StyledButton from "../button/button";
 import {
+  deepClone,
   formDirtyState,
   formOptions,
   isInvalidFileType,
@@ -112,9 +113,15 @@ interface IDocumentUploadProps {
 function mapStatusToFormData(response, formData) {
   if (response?.length > 0) {
     for (const item of response) {
-      const matchingFormData = formData.find(
-        (formDataItem) => formDataItem.id === item.documentTypeCode
-      );
+      const matchingFormData = formData?.find((formDataItem) => {
+        if (
+          formDataItem.id === "nationalIdPassport" &&
+          item.documentTypeCode === "IDPASSPORT"
+        ) {
+          return formDataItem;
+        } else return formDataItem.id === item.documentTypeCode;
+      });
+
       if (matchingFormData) {
         const status = item?.status?.replace("SALES_", "");
 
@@ -175,17 +182,8 @@ const DocumentUploadForm = ({
         mapStatusToFormData(documentDetails, documentUploadFormData)
       );
     }
-  }, []);
+  }, [isMBAProgram]);
 
-  // useEffect(() => {
-  //   if (isMBAProgram) {
-  //     console.log("gooo");
-  //     setDocumentFormDataDetail((prevState) => [
-  //       ...prevState,
-  //       ...mbaProgramDocuments,
-  //     ]);
-  //   }
-  // }, [isMBAProgram]);
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
   const [uploadDocs, setUploadDocs] = useState<
@@ -201,14 +199,12 @@ const DocumentUploadForm = ({
   const documentTypeList = documentType?.filter(
     (item) => item?.code !== "PAYMENTPROOF"
   );
-  const documentIds = documentUploadFormData?.map((document) => document.id);
-  const areAllDocumentsUploaded = documentIds.every((id) =>
+  const documentIds = documentFormDataDetail?.map((document) => document.id);
+  const areAllDocumentsUploaded = documentIds?.every((id) =>
     uploadDocs.some((doc) => doc.typeCode === id)
   );
 
-  const documentStatusDetail = JSON.parse(
-    JSON.stringify(documentFormDataDetail)
-  );
+  const documentStatusDetail = deepClone(documentFormDataDetail);
 
   useEffect(() => {
     const existingPaymentProof = allFields?.payment?.paymentProof;
@@ -225,17 +221,6 @@ const DocumentUploadForm = ({
       setUploadDocs(allUploadedFiles);
     }
   }, [leadId]);
-
-  useEffect(() => {
-    if (isDocumentRequired) {
-      setDocumentFormDataDetail(
-        documentUploadFormData.map(({ status, ...rest }) => ({
-          ...rest,
-          status: "Upload Pending",
-        }))
-      );
-    }
-  }, []);
 
   const deleteDocs = (index: number, file: File & { typeCode: string }) => {
     const remainingDocs = [
@@ -313,31 +298,32 @@ const DocumentUploadForm = ({
       </div>
     );
   };
-
+  const documentFormData = isMBAProgram
+    ? [...documentFormDataDetail, ...mbaProgramDocuments]
+    : documentFormDataDetail;
   return (
     <div className="row mx-3 document-container">
       <div className="col-md-8">
-        {(isMBAProgram
-          ? [...documentFormDataDetail, ...mbaProgramDocuments]
-          : documentFormDataDetail
-        )?.map(({ name, disabled, status, id, isDeclaration = false }) => {
-          const customFileds = id?.includes("nationalIdPassport") ? (
-            <NationalityPassportFields />
-          ) : null;
-          return (
-            <DocumentUploadContainer
-              key={`${name}_${id}`}
-              title={name}
-              status={status}
-              isDeclaration={isDeclaration}
-              disabled={disabled}
-              onUpload={uploadDocuments}
-              onRemove={deleteDocs as any}
-              documentType={id}
-              customComponent={customFileds}
-            />
-          );
-        })}
+        {(documentFormData || []).map(
+          ({ name, disabled, status, id, isDeclaration = false }) => {
+            const customFileds = id?.includes("nationalIdPassport") ? (
+              <NationalityPassportFields />
+            ) : null;
+            return (
+              <DocumentUploadContainer
+                key={`${name}_${id}`}
+                title={name}
+                status={status}
+                isDeclaration={isDeclaration}
+                disabled={disabled}
+                onUpload={uploadDocuments}
+                onRemove={deleteDocs as any}
+                documentType={id}
+                customComponent={customFileds}
+              />
+            );
+          }
+        )}
       </div>
       <div className="col-md-4">
         <MainContainer>

@@ -2,7 +2,13 @@ import axios from "axios";
 import { FieldValues, UseFormSetValue } from "react-hook-form";
 import {
   acceptedKeysToMap,
+  APPLICATION_STATUS,
+  BLUE,
   CommonApi,
+  DARK_GRAY,
+  GREEN,
+  NAVY_BLUE,
+  ORANGE,
   removedKeysToMap,
 } from "../components/common/constant";
 import { ILeadFormValues } from "../components/common/types";
@@ -16,6 +22,7 @@ const ignorKeys = {
   updatedAt: "",
   document: "",
 };
+
 export const mapFormData = (data: any, isDraft?: boolean) => {
   let formData = data;
   if (formData) {
@@ -63,6 +70,64 @@ export const mapFormData = (data: any, isDraft?: boolean) => {
       }
     }
     return formData;
+  }
+};
+export const deepClone = (obj) => {
+  if (typeof obj !== "object" || obj === null) {
+    return obj; // Return primitives and null as is
+  }
+
+  let clone;
+  if (Array.isArray(obj)) {
+    clone = [];
+    for (let i = 0; i < obj.length; i++) {
+      clone[i] = deepClone(obj[i]); // Recursively clone array elements
+    }
+  } else {
+    clone = {};
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        clone[key] = deepClone(obj[key]); // Recursively clone object properties
+      }
+    }
+  }
+
+  return clone;
+};
+
+export const getStatusColor = (status: string) => {
+  const applicationStatus = status;
+  switch (applicationStatus) {
+    case APPLICATION_STATUS.SAVED_AS_DRAFT:
+      return DARK_GRAY;
+      break;
+    case APPLICATION_STATUS.BURSARY_DOCUMENTS_ACCEPTED:
+    case APPLICATION_STATUS.RESUBMIT_BURSARY_DOCUMENTS:
+    case APPLICATION_STATUS.BURSARY_CONFIRMATION_PENDING:
+    case APPLICATION_STATUS.UPLOAD_APPLICATION_DOCUMENTS:
+    case APPLICATION_STATUS.RESUBMIT_APPLICATION_DOCUMENTS:
+    case APPLICATION_STATUS.RMAT_PENDING:
+    case APPLICATION_STATUS.PROGRAM_FEES_PENDING:
+    case APPLICATION_STATUS.UPLOAD_BURSARY_DOCUMENTS:
+    case APPLICATION_STATUS.RESUBMIT_BURSARY_DOCUMENTS:
+      return ORANGE;
+      break;
+    case APPLICATION_STATUS.ENROLLED_TO_APPLICATION:
+    case APPLICATION_STATUS.APPLICATION_FEE_ACCEPTED:
+    case APPLICATION_STATUS.ENROLMENT_ACCEPTED:
+    case APPLICATION_STATUS.APPLICATION_DOCUMENTS_ACCEPTED:
+      return BLUE;
+      break;
+    case APPLICATION_STATUS.APPLICATION_DOCUMENTS_UPLOADED:
+    case APPLICATION_STATUS.BURSARY_DOCUMENTS_UPLOADED:
+      return GREEN;
+      break;
+    case APPLICATION_STATUS.REQUEST_FOR_BURSARY:
+      return NAVY_BLUE;
+      break;
+    default:
+      return DARK_GRAY;
+      break;
   }
 };
 export const isValidDate = (value) => {
