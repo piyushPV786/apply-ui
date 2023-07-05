@@ -302,11 +302,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     onChange={(e) => {
                       const name = e.target.name;
                       const value = e.target.value;
-                      setValue(
-                        name,
-                        capitalizeFirstLetter(value),
-                        formDirtyState
-                      );
+                      setValue(name, value, formDirtyState);
                     }}
                   />
                   {Errors?.email && (
