@@ -21,6 +21,7 @@ import {
   onlyAlphabets,
   capitalizeFirstLetter,
   sortAscending,
+  onlyAlphabetsOrNumbers,
   transformDate,
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
@@ -159,6 +160,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           capitalizeFirstLetter(value),
                           formDirtyState
                         );
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                     className="form-control"
@@ -192,6 +198,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           capitalizeFirstLetter(value),
                           formDirtyState
                         );
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                     id="middleName"
@@ -212,6 +223,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                         setValue(
                           name,
                           capitalizeFirstLetter(value),
@@ -479,7 +495,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           onChange={(e) => {
                             const name = e.target.name;
                             const value = e.target.value;
-                            if (onlyAlphabets(value)) {
+                            if (onlyAlphabetsOrNumbers(value)) {
                               setValue(name, value, formDirtyState);
                             }
                           }}
