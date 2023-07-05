@@ -200,6 +200,17 @@ export const EmployedForm = (props: IEmployeProps) => {
                             })}
                             value={employerVal}
                             defaultValue={employerVal}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              const name = e.target.name;
+                              if (onlyAlphabets(value)) {
+                                setValue(
+                                  name,
+                                  capitalizeFirstLetter(value),
+                                  formDirtyState
+                                );
+                              }
+                            }}
                           />
                           {error && error?.employer && (
                             <div className="invalid-feedback">
