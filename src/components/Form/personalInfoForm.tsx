@@ -480,7 +480,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           onChange={(e) => {
                             const name = e.target.name;
                             const value = e.target.value;
+<<<<<<< HEAD
                             if (onlyAlphabetsOrNumbers(value)) {
+=======
+                            if (onlyAlphabets(value)) {
+>>>>>>> f1a394fc36610a7bf8f5149537871791ef577137
                               setValue(name, value, formDirtyState);
                             }
                           }}

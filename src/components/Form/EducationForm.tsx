@@ -11,6 +11,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import { IFee, IOption, IStudyModeQualification } from "../common/types";
 import styled from "styled-components";
+import { capitalizeFirstLetter } from "../../Util/Util";
 import {
   formDirtyState,
   onlyAlphaNumericSpace,
@@ -153,7 +154,7 @@ export const EducationForm = (props: IEducationProps) => {
     );
   return (
     <>
-      <StyledAccordion expanded key="education" id="education">
+      <StyledAccordion defaultExpanded={true} key="education" id="education">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -321,7 +322,11 @@ export const EducationForm = (props: IEducationProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphaNumericSpace(value) || !value) {
-                        setValue(name, value, formDirtyState);
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                   />

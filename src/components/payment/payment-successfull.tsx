@@ -150,6 +150,16 @@ const PaymentSuccessFull = (props: any) => {
             <StyledButton
               className="mb-1"
               type="button"
+              title={"Back to Dashboard"}
+              onClick={() => {
+                localStorage.setItem("leadData", "");
+                sessionStorage.setItem("activeLeadDetail", "");
+                router.push(RoutePaths.Dashboard);
+              }}
+            />
+            {/* <StyledButton
+              className="mb-1"
+              type="button"
               isGreenWhiteCombination={true}
               title={"Skip for Now"}
               onClick={() => {
@@ -162,7 +172,7 @@ const PaymentSuccessFull = (props: any) => {
             <StyledButton
               onClick={onUploadDocument}
               title={"Upload Documents"}
-            />
+            /> */}
           </>
         </div>
       </>

@@ -14,6 +14,7 @@ import {
   formOptions,
   onlyAlphabets,
   sortAscending,
+  capitalizeFirstLetter,
   onlyAlphabetsOrNumbersDash,
   formDirtyState,
 } from "../../Util/Util";
@@ -59,7 +60,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
 
   return (
     <>
-      <StyledAccordion expanded>
+      <StyledAccordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -90,7 +91,11 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabetsOrNumbersDash(value)) {
-                        setValue(name, value, formDirtyState);
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                   />
@@ -115,7 +120,11 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, formDirtyState);
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                   />
@@ -126,7 +135,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>State</StyledLabel>
+                  <StyledLabel required>State/Provinces</StyledLabel>
                   <input
                     {...register(`${postalState}`, {
                       required: true,
@@ -138,7 +147,11 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, formDirtyState);
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                   />
@@ -163,7 +176,11 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     name={postalCountry}
                     onChange={(e: any) => {
                       const value = e.target.value;
-                      setValue(postalCountry, value, formOptions);
+                      setValue(
+                        postalCountry,
+                        capitalizeFirstLetter(value),
+                        formOptions
+                      );
                     }}
                     label="Country"
                   />
@@ -271,7 +288,11 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                         const value = e.target.value;
                         const name = e.target.name;
                         if (onlyAlphabetsOrNumbersDash(value)) {
-                          setValue(name, value, formDirtyState);
+                          setValue(
+                            name,
+                            capitalizeFirstLetter(value),
+                            formDirtyState
+                          );
                         }
                       }}
                     />
@@ -296,7 +317,11 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                         const value = e.target.value;
                         const name = e.target.name;
                         if (onlyAlphabets(value)) {
-                          setValue(name, value, formDirtyState);
+                          setValue(
+                            name,
+                            capitalizeFirstLetter(value),
+                            formDirtyState
+                          );
                         }
                       }}
                     />
@@ -309,7 +334,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>State</StyledLabel>
+                    <StyledLabel required>State/Provinces</StyledLabel>
                     <input
                       {...register(`${resState}`, {
                         required: true,
@@ -322,7 +347,11 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                         const value = e.target.value;
                         const name = e.target.name;
                         if (onlyAlphabets(value)) {
-                          setValue(name, value, formDirtyState);
+                          setValue(
+                            name,
+                            capitalizeFirstLetter(value),
+                            formDirtyState
+                          );
                         }
                       }}
                     />
