@@ -19,7 +19,9 @@ import {
   isValidDate,
   isValidEmail,
   onlyAlphabets,
+  capitalizeFirstLetter,
   sortAscending,
+  onlyAlphabetsOrNumbers,
   transformDate,
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
@@ -153,7 +155,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, formDirtyState);
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                     className="form-control"
@@ -182,7 +188,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, formDirtyState);
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                     id="middleName"
@@ -203,7 +213,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, formDirtyState);
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                     id="lastName"
@@ -270,6 +284,15 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="text"
                     className="form-control"
                     id="email"
+                    onChange={(e) => {
+                      const name = e.target.name;
+                      const value = e.target.value;
+                      setValue(
+                        name,
+                        capitalizeFirstLetter(value),
+                        formDirtyState
+                      );
+                    }}
                   />
                   {Errors?.email && (
                     <div className="invalid-feedback">
@@ -454,6 +477,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           className="form-control"
                           id="identificationPassportNumber"
                           placeholder=""
+                          onChange={(e) => {
+                            const name = e.target.name;
+                            const value = e.target.value;
+                            if (onlyAlphabetsOrNumbers(value)) {
+                              setValue(name, value, formDirtyState);
+                            }
+                          }}
                         />
                         {Errors?.identificationNumber && (
                           <div className="invalid-feedback">
