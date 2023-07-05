@@ -160,6 +160,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           capitalizeFirstLetter(value),
                           formDirtyState
                         );
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                     className="form-control"
@@ -193,6 +198,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           capitalizeFirstLetter(value),
                           formDirtyState
                         );
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                     id="middleName"
@@ -213,6 +223,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                         setValue(
                           name,
                           capitalizeFirstLetter(value),
@@ -284,6 +299,15 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="text"
                     className="form-control"
                     id="email"
+                    onChange={(e) => {
+                      const name = e.target.name;
+                      const value = e.target.value;
+                      setValue(
+                        name,
+                        capitalizeFirstLetter(value),
+                        formDirtyState
+                      );
+                    }}
                     onChange={(e) => {
                       const name = e.target.name;
                       const value = e.target.value;
@@ -480,11 +504,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           onChange={(e) => {
                             const name = e.target.name;
                             const value = e.target.value;
-<<<<<<< HEAD
                             if (onlyAlphabetsOrNumbers(value)) {
-=======
-                            if (onlyAlphabets(value)) {
->>>>>>> f1a394fc36610a7bf8f5149537871791ef577137
                               setValue(name, value, formDirtyState);
                             }
                           }}
