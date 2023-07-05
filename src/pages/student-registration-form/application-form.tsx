@@ -246,8 +246,13 @@ const ApplicationForm = () => {
           message: response?.message,
           show: true,
         });
+        if (activeStep === MagicNumbers.TWO && draftSave) {
+          router.push(RoutePaths.Dashboard);
+        }
         setSubmitted(false);
-        setActiveStep(activeStep + 1);
+        if (activeStep < MagicNumbers.TWO) {
+          setActiveStep(activeStep + 1);
+        }
       })
       .catch((err) => {
         console.log(err.message);
@@ -461,31 +466,43 @@ const ApplicationForm = () => {
   const uploadStudentDocs = async () => {
     const {
       document: { uploadedDocs = [] as File[] },
+      payment,
     } = { ...allFields };
-
+    const { paymentProof = [] } = { ...payment };
     let count = 0;
     const successLength: any[] = [];
     let payload;
 
     const files = [] as any[];
-    uploadedDocs.map((file: File & { typeCode: string }) => {
-      if (file?.typeCode === "nationalIdPassport") {
+    if (activeStep === MagicNumbers.TWO) {
+      uploadedDocs.map((file: File & { typeCode: string }) => {
+        if (file?.typeCode === "nationalIdPassport") {
+          files.push({
+            documentTypeCode:
+              allFields?.document?.identificationDocumentType?.includes(
+                "others"
+              )
+                ? allFields?.document?.other
+                : allFields?.document?.identificationDocumentType,
+            fileName: file.name,
+            fileType: file.type,
+          });
+        } else
+          files.push({
+            documentTypeCode: file?.typeCode,
+            fileName: file.name,
+            fileType: file.type,
+          });
+      });
+    } else if (activeStep === MagicNumbers.ONE) {
+      paymentProof.map((file) => {
         files.push({
-          documentTypeCode:
-            allFields?.document?.identificationDocumentType?.includes("others")
-              ? allFields?.document?.other
-              : allFields?.document?.identificationDocumentType,
+          documentTypeCode: "PAYMENTPROOF",
           fileName: file.name,
           fileType: file.type,
         });
-      } else
-        files.push({
-          documentTypeCode: file?.typeCode,
-          fileName: file.name,
-          fileType: file.type,
-        });
-    });
-
+      });
+    }
     payload = {
       files,
       amount: allFields.payment?.finalFee,
@@ -509,13 +526,19 @@ const ApplicationForm = () => {
       })
       .then(() => {
         if (count === successLength.length) {
-          showToast(true, "Documents Successfully Uploaded");
           setSubmitted(false);
-          setActiveStep(2);
-          setPaymentDone(true);
-          setTimeout(() => {
-            router.push(RoutePaths.Document_Success);
-          }, 2000);
+          if (activeStep === MagicNumbers.ONE) {
+            setPaymentDone(true);
+            setTimeout(() => {
+              router.push(RoutePaths.Payment_Success);
+            }, 2000);
+          } else {
+            setActiveStep(0);
+            setTimeout(() => {
+              router.push(RoutePaths.Document_Success);
+            }, 2000);
+          }
+          showToast(true, "Documents Successfully Uploaded");
         }
       })
       .catch((err) => {
@@ -549,9 +572,6 @@ const ApplicationForm = () => {
     const response = await getAllDocumentsDetails();
     setValue("document.documentDetails", response?.data);
   };
-
-
-  
 
   const getNationalData = () => {
     CommonAPI.get(CommonApi.NATIONALITYSTATUS)
@@ -767,6 +787,7 @@ const ApplicationForm = () => {
                       showToast={showToast}
                       isManagementStudentType={isManagementStudentType}
                       isApplicationEnrolled={isApplicationEnrolled}
+                      onSubmit={uploadStudentDocs}
                     />
                   </>
                 )}
