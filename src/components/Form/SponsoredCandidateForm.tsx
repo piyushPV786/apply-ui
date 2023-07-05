@@ -426,6 +426,16 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               {...register(`${sponsorAddress}`, {
                                 required: true,
                               })}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const name = e.target.name;
+
+                                setValue(
+                                  name,
+                                  capitalizeFirstLetter(value),
+                                  formDirtyState
+                                );
+                              }}
                             />
                             {error && error?.address && (
                               <div className="invalid-feedback">
