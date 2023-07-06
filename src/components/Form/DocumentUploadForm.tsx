@@ -189,19 +189,25 @@ const DocumentUploadForm = ({
   const [uploadDocs, setUploadDocs] = useState<
     (File & { error: boolean; typeCode: string })[]
   >([]);
-  const isDocumentRequired = allFields?.document?.documentDetails?.length === 0;
 
-  // const documentTypeList = isApplicationEnrolled
-  //   ? [...(documentType || [])]?.filter((doc) => doc.code === "PAYMENTPROOF")
-  //   : [...(documentType || []), ...[{ name: "Other", code: "other" }]]?.filter(
-  //       (doc) => doc.code !== "PAYMENTPROOF"
-  //     );
   const documentTypeList = documentType?.filter(
     (item) => item?.code !== "PAYMENTPROOF"
   );
-  const documentIds = documentFormDataDetail?.map((document) => document.id);
+  const documentIds = documentFormDataDetail
+    ?.filter(
+      (doc) =>
+        doc.status?.toLowerCase() !== "approved" &&
+        doc.status?.toLowerCase() !== "submitted"
+    )
+    .map((document) => document.id);
   const areAllDocumentsUploaded = documentIds?.every((id) =>
-    uploadDocs.some((doc) => doc.typeCode === id)
+    uploadDocs
+      ?.filter(
+        (doc: any) =>
+          doc.status?.toLowerCase() !== "approved" &&
+          doc.status?.toLowerCase() !== "submitted"
+      )
+      ?.some((doc) => doc.typeCode === id)
   );
 
   const documentStatusDetail = deepClone(documentFormDataDetail);
