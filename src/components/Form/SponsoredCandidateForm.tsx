@@ -328,11 +328,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                   const value = e.target.value;
                                   const name = e.target.name;
 
-                                  setValue(
-                                    name,
-                                    capitalizeFirstLetter(value),
-                                    formDirtyState
-                                  );
+                                  setValue(name, value, formDirtyState);
                                 }}
                               />
 

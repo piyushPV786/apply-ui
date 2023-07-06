@@ -192,11 +192,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                         const value = e.target.value;
                         const name = e.target.name;
 
-                        setValue(
-                          name,
-                          capitalizeFirstLetter(value),
-                          formOptions
-                        );
+                        setValue(name, value, formOptions);
                       }}
                     />
                     {error && error?.email && (
