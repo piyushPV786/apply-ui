@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Green,
   GreenFormHeading,
@@ -31,8 +31,7 @@ import {
   showErrorToast,
   transformDate,
 } from "../../Util/Util";
-import { Grid, IconButton, Tooltip } from "@material-ui/core";
-import { CachedOutlined } from "@material-ui/icons";
+import { Grid } from "@material-ui/core";
 
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
@@ -242,7 +241,7 @@ export const ApplicationDashboard = (props: any) => {
                         <div className="d-flex justify-content-end">
                           <StyledButton
                             onClick={onApplyNow}
-                            title="Apply New Application"
+                            title="Apply a New Course "
                           />
                         </div>
                       </div>
@@ -391,13 +390,10 @@ function ApplicationCard({
     status.includes(CommonEnums.APP_FEE_DOC_VER_PEND) ||
     status.includes(CommonEnums.DRAFT_STATUS) ||
     isAcceptedApplication;
-  const showDocumentUploadBtn =
-    status.includes(CommonEnums.RESUB_APP_DOC) ||
-    status.includes(CommonEnums.APP_ENROLLED_STATUS);
+
   const showPayBtn =
     status.includes(CommonEnums.RESUB_APP_FEE_PROOF) || isAcceptedApplication;
   const isProgramAddmitted = status.includes(CommonEnums.PROG_ADMITTED);
-  // const isProgramAddmitted = true;
   const isIntakeAssignmentPending = status.includes(
     APPLICATION_STATUS.INTAKE_ASSIGNMENT_PENDING
   );
