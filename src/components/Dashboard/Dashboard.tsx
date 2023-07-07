@@ -15,6 +15,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
 import {
+  APPLICATION_STATUS,
   CommonApi,
   CommonEnums,
   ErrorMessage,
@@ -26,6 +27,7 @@ import {
   clearRoute,
   downloadDocument,
   getCommonUploadDocumentUrl,
+  getStatusColor,
   showErrorToast,
   transformDate,
 } from "../../Util/Util";
@@ -269,7 +271,7 @@ export const ApplicationDashboard = (props: any) => {
                           },
                           idx
                         ) => (
-                          <div key={applicationCode} className="col-md-4 mb-2">
+                          <div key={applicationCode} className="col-md-6 mb-2">
                             <ApplicationCard
                               key={applicationCode}
                               status={status}
@@ -394,6 +396,11 @@ function ApplicationCard({
     status.includes(CommonEnums.APP_ENROLLED_STATUS);
   const showPayBtn =
     status.includes(CommonEnums.RESUB_APP_FEE_PROOF) || isAcceptedApplication;
+  const isProgramAddmitted = status.includes(CommonEnums.PROG_ADMITTED);
+  // const isProgramAddmitted = true;
+  const isIntakeAssignmentPending = status.includes(
+    APPLICATION_STATUS.INTAKE_ASSIGNMENT_PENDING
+  );
   const showCredentialBtn = status.includes(CommonEnums.PROG_ADMITTED);
   const enrollmentNumber = status.includes(CommonEnums.APP_ENROLLED_STATUS)
     ? enrolmentCode
@@ -408,10 +415,264 @@ function ApplicationCard({
     status.includes(CommonEnums.APP_ENROLLED_STATUS) ||
     status.includes(CommonEnums.APP_FEE_ACCEPTED) ||
     status.includes(CommonEnums.RESUB_APP_DOC);
+
+  const isProgramAddmittedOrIsIntakeAssigned =
+    isProgramAddmitted || isIntakeAssignmentPending;
+
   return (
     <>
-      <ApplicationContainer className="container bg-white p-3 app-card border rounded ">
-        <div className="d-flex justify-content-between">
+      <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
+        <div className="d-flex justify-content-end">
+          <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
+        </div>
+        <div className="row px-4">
+          <div className="col-md-4">
+            <div className="mt-2 w-100 app-card-block">
+              <p className="mb-0" style={{ color: `#5a636a` }}>
+                Name
+              </p>
+              <strong>{name}</strong>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="mt-2 w-100 app-card-block">
+              <p className="mb-0" style={{ color: `#5a636a` }}>
+                Last updated
+              </p>
+              <strong>{transformDate(new Date(updatedAt))}</strong>
+            </div>
+          </div>
+        </div>
+        <div className="row px-4">
+          <div className="col-md-4">
+            <div className="mt-2 w-100 app-card-block">
+              <p className="mb-0" style={{ color: `#5a636a` }}>
+                Interested Program
+              </p>
+              <strong>{programName}</strong>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="mt-2 w-100 app-card-block">
+              <p className="mb-0" style={{ color: `#5a636a` }}>
+                Study Type
+              </p>
+              <strong>Regular</strong>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="mt-2 w-100 app-card-block">
+              <p className="mb-0" style={{ color: `#5a636a` }}>
+                Study Mode
+              </p>
+              <strong>{studyModeCode}</strong>
+            </div>
+          </div>
+        </div>
+        {isProgramAddmittedOrIsIntakeAssigned && (
+          <div className="row px-4">
+            <div className="d-flex flex-column">
+              <StudentIdCard>
+                Student No: <span>{studentCode}</span>
+              </StudentIdCard>
+              {enrollmentNumber && (
+                <StudentIdCard>Enrollment No: {enrollmentNumber}</StudentIdCard>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="w-100 mt-4 ">
+          <Grid
+            style={{
+              padding: "10px 59px",
+              borderTop: `1px solid ${Green}`,
+              backgroundColor: "#f4f2f1",
+            }}
+            container
+            spacing={1}
+          >
+            {showEditBtn && (
+              <Grid item>
+                <StyledButton
+                  isEditBtn
+                  className="card-button"
+                  isGreenWhiteCombination={true}
+                  title="Edit"
+                  onClick={() =>
+                    onEdit(
+                      applicationNumber,
+                      leadCode,
+                      status,
+                      educationDetail,
+                      id
+                    )
+                  }
+                />
+              </Grid>
+            )}
+            {showRMATBtn && (
+              <Grid item>
+                <StyledButton
+                  onClick={() => {
+                    router.push(RoutePaths.RMATView, {
+                      query: { enrolmentCode },
+                    });
+                  }}
+                  isRMATBtn
+                  title="Take RMAT Test"
+                />
+              </Grid>
+            )}
+            {showPayBtn && (
+              <Grid item>
+                <StyledButton
+                  onClick={() =>
+                    isAcceptedApplication
+                      ? onPay(
+                          applicationNumber,
+                          leadCode,
+                          status,
+                          educationDetail
+                        )
+                      : onPay(
+                          applicationNumber,
+                          leadCode,
+                          status,
+                          educationDetail
+                        )
+                  }
+                  isPayBtn
+                  className="card-button"
+                  title={payBtnTitle}
+                />
+              </Grid>
+            )}
+            {showUploadBtn && (
+              <Grid item>
+                <StyledButton
+                  onClick={() =>
+                    onUploadDocuments(applicationNumber, leadCode, true, status)
+                  }
+                  isUploadBtn
+                  className="card-button"
+                  title="Upload Documents"
+                />
+              </Grid>
+            )}
+            {isAcceptedApplication &&
+              educationDetail?.studentTypeCode === "BURSARY" &&
+              sponsorModeType === "EMPBURSARY" && (
+                <Grid item>
+                  <StyledButton
+                    onClick={() =>
+                      onUploadBursaryDocuments(
+                        applicationNumber,
+                        leadCode,
+                        status
+                      )
+                    }
+                    isUploadBtn
+                    className="card-button"
+                    title="Upload Employee Bursary Letter"
+                  />
+                </Grid>
+              )}
+            {isProgramAddmittedOrIsIntakeAssigned && (
+              <Grid item>
+                <StyledButton
+                  isDownloadBtn
+                  isGreenWhiteCombination
+                  onClick={() =>
+                    onDownloadAcceptence(
+                      document,
+                      CommonEnums.CONFIRMATION_LETTER
+                    )
+                  }
+                  className="card-button"
+                  title="Confirmation Letter"
+                />
+              </Grid>
+            )}
+
+            {isProgramAddmittedOrIsIntakeAssigned && (
+              <Grid item>
+                <StyledButton
+                  onClick={() =>
+                    onDownloadAcceptence(
+                      document,
+                      CommonEnums.ACCEPTANCE_LETTER
+                    )
+                  }
+                  isGreenWhiteCombination
+                  isDownloadBtn
+                  className="card-button"
+                  title="Acceptence Letter"
+                />
+              </Grid>
+            )}
+            {isProgramAddmittedOrIsIntakeAssigned && (
+              <Grid item>
+                <StyledButton
+                  onClick={() =>
+                    onDownloadAcceptence(document, CommonEnums.WELCOME_LETTER)
+                  }
+                  isGreenWhiteCombination
+                  isDownloadBtn
+                  className="card-button"
+                  title="Welcome Letter"
+                />
+              </Grid>
+            )}
+            {isProgramAddmitted && (
+              <Grid item>
+                <StyledButton
+                  onClick={() =>
+                    router.push("/student-registration-form/credentials", {
+                      query: `state=${status}`,
+                    })
+                  }
+                  className="card-button"
+                  title="view login credentials"
+                />
+              </Grid>
+            )}
+
+            {showCredentialBtn && (
+              <Grid item>
+                <StyledButton
+                  onClick={() =>
+                    router.push("/student-registration-form/credentials", {
+                      query: `state=${status}`,
+                    })
+                  }
+                  className="card-button"
+                  title="view login credentials"
+                />
+              </Grid>
+            )}
+
+            {isAcceptedApplication &&
+              educationDetail?.studentTypeCode === "BURSARY" &&
+              sponsorModeType === "EMPBURSARY" && (
+                <Grid item>
+                  <StyledButton
+                    onClick={() =>
+                      onUploadBursaryDocuments(
+                        applicationNumber,
+                        leadCode,
+                        status
+                      )
+                    }
+                    isUploadBtn
+                    className="card-button"
+                    title="Upload Employee Bursary Letter"
+                  />
+                </Grid>
+              )}
+          </Grid>
+        </div>
+        {/* <div className="d-flex justify-content-between">
           <Tooltip title="Refresh Application">
             <IconButton color="inherit">
               {" "}
@@ -621,30 +882,40 @@ function ApplicationCard({
                 )}
             </Grid>
           </div>
-        </ContentCard>
+        </ContentCard> */}
       </ApplicationContainer>
     </>
   );
 }
 
-const StyledStatusBedge = styled.div<any>`
-  background: ${({ status }) => {
-    if (status === CommonEnums.FEES_PENDING_STATUS) return "#ffde9e";
-    if (status === (CommonEnums.DRAFT_STATUS || "DRAFT")) return "#c1c1c1";
-    if (
-      status === (CommonEnums.RESUB_APP_DOC || CommonEnums.RESUB_APP_FEE_PROOF)
-    )
-      return "#b7fffa";
-    if (status === CommonEnums.APP_ENROLLED_STATUS) return "#e0f8ef";
-    else return "#ffde9e";
-  }};
-  border-radius: 5px;
-  color: #2d3d54;
-  padding: 2px 5px;
-  border: 1px solid;
+const StudentIdCard = styled.div<{ bgColor?: string }>`
+  background: ${({ bgColor }) => bgColor || "#239083"};
+  color: white;
+  max-width: 250px;
+  border-radius: 3px;
+  padding: 2px 8px;
+  margin: 15px 0;
+  span {
+    font-weight: bold;
+  }
 `;
 
-const ApplicationContainer = styled.div``;
+const StyledStatusBedge = styled.div<any>`
+  background: ${({ status }) => `${getStatusColor(status)}`};
+  color: white;
+  padding: 2px 5px;
+  border: 1px solid;
+  position: relative;
+  margin-right: 0 !important;
+  border-top: 0;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 5px 20px;
+`;
+
+const ApplicationContainer = styled.div`
+  position: relative;
+`;
 const ContentCard = styled.div`
   display: flex;
   flex-wrap: wrap;
