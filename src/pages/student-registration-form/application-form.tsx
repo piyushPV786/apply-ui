@@ -504,12 +504,14 @@ const ApplicationForm = () => {
         });
       });
     }
+
     payload = {
       files,
       amount: allFields.payment?.finalFee,
       paymentModeCode: "OFFLINE",
       discountCode: allFields?.payment?.discountCode,
       discountAmount: allFields?.payment?.discountAmount,
+      currencyCode: allFields?.payment?.selectedCurrency,
       // studentTypeCode: allFields?.education?.studentTypeCode,
     };
     getUploadDocumentUrl(payload)
