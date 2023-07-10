@@ -96,6 +96,7 @@ const Payment = (props: any) => {
       : 250 * Number(allFields?.payment?.conversionRate);
   const rmatFee = !isApplicationEnrolled ? rmatFeeAmount : 0;
   const totalAmount = +convertedProgramFee - +discountAmount + rmatFee;
+
   useEffect(() => {
     const programDetails = sessionStorage.getItem("activeLeadDetail")
       ? JSON.parse(sessionStorage.getItem("activeLeadDetail")!)?.educationDetail
