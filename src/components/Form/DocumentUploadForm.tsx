@@ -110,7 +110,7 @@ interface IDocumentUploadProps {
   onSubmit: (formValue: ILeadFormValues) => void;
   onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
-function mapStatusToFormData(response, formData) {
+const mapStatusToFormData = (response, formData) => {
   if (response?.length > 0) {
     for (const item of response) {
       const matchingFormData = formData?.find((formDataItem) => {
@@ -138,7 +138,7 @@ function mapStatusToFormData(response, formData) {
     }
     return formData;
   } else return formData;
-}
+};
 
 const mapStatusDocument = (documentData) => {
   if (documentData?.length > 0) {
@@ -310,7 +310,7 @@ const DocumentUploadForm = ({
   return (
     <div className="row mx-3 document-container">
       <div className="col-md-8">
-        {(documentFormData || []).map(
+        {mapStatusToFormData(documentDetails, documentFormData)?.map(
           ({ name, disabled, status, id, isDeclaration = false }) => {
             const customFileds = id?.includes("nationalIdPassport") ? (
               <NationalityPassportFields />
