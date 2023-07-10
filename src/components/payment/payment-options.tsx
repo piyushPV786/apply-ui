@@ -53,6 +53,7 @@ const PaymentOption = (props: any) => {
       feeModeCode: props?.isApplicationEnrolled
         ? allFields?.payment?.selectedFeeMode
         : "APPLICATION",
+      currencyCode: allFields?.payment?.selectedCurrency,
     };
     const appCode = getApplicationCode();
     AuthApi.post(`application/${appCode}/payment/payu`, payload)
@@ -131,7 +132,10 @@ const PaymentOption = (props: any) => {
               <StyledButton
                 form={getSelectedFormId() as any}
                 type="submit"
-                disabled={!allFields?.payment?.paymentType && !paymentPayload || !props?.totalAmount}
+                disabled={
+                  (!allFields?.payment?.paymentType && !paymentPayload) ||
+                  !props?.totalAmount
+                }
                 onClick={() => {}}
                 title="Pay Now"
               />
