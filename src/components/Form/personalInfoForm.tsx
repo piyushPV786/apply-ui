@@ -17,7 +17,7 @@ import { IOption } from "../common/types";
 import {
   formDirtyState,
   isValidDate,
-  isValidEmail,
+  emailValidation,
   onlyAlphabets,
   capitalizeFirstLetter,
   sortAscending,
@@ -305,28 +305,10 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     id="email"
                     onBlur={async (e) => {
                       if (e.target.value) {
-                        await AuthApi.get(
-                          `${CommonApi.EMAILCHECK}/${e.target.value}`
-                        ).then((data) => {
-                          if (
-                            data &&
-                            data?.data?.data?.message ==
-                              "Provided email address alredy exists"
-                          ) {
-                            setError(emailKey, {
-                              type: "custom",
-                              message: "Provided email address alredy exists",
-                            });
-                          } else {
-                            if (isValidEmail(e.target.value) == false) {
-                              setError(emailKey, {
-                                type: "validate",
-                                message: "",
-                              });
-                            } else {
-                              clearErrors(emailKey);
-                            }
-                          }
+                        const res = await emailValidation(e);
+                        setError(emailKey, {
+                          type: res.type,
+                          message: res.message,
                         });
                       } else {
                         setError(emailKey, {
