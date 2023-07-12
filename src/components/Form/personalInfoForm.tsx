@@ -299,7 +299,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     defaultValue={email}
                     {...register(emailKey, {
                       required: true,
-                      validate: isValidEmail,
                     })}
                     type="text"
                     className="form-control"
@@ -319,7 +318,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                               message: "Provided email address alredy exists",
                             });
                           } else {
-                            clearErrors(emailKey);
+                            if (isValidEmail(e.target.value) == false) {
+                              setError(emailKey, {
+                                type: "validate",
+                                message: "",
+                              });
+                            } else {
+                              clearErrors(emailKey);
+                            }
                           }
                         });
                       } else {
