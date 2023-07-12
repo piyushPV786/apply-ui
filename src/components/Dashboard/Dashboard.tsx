@@ -33,6 +33,14 @@ import {
 } from "../../Util/Util";
 import { Grid } from "@material-ui/core";
 
+const sortApplicationOnLastUpdate = (application: any[]) => {
+  return application?.sort((a, b) => {
+    const dateA = new Date(a.updatedAt);
+    const dateB = new Date(b.updatedAt);
+    return dateA.getTime() - dateB.getTime();
+  });
+};
+
 export const ApplicationDashboard = (props: any) => {
   const [studentId, setStudenId] = useState<string | null>(null);
   const [studentApplications, setStudentApplications] = useState<
@@ -217,6 +225,7 @@ export const ApplicationDashboard = (props: any) => {
     setToast((prevState) => ({ ...prevState, show: !prevState?.show }));
   };
   const { message, show, success } = showToast;
+
   return (
     <>
       {loading ? (
@@ -241,65 +250,74 @@ export const ApplicationDashboard = (props: any) => {
                         <div className="d-flex justify-content-end">
                           <StyledButton
                             onClick={onApplyNow}
-                            title="New Application a New Course "
+                            title="Apply a New Course "
                           />
                         </div>
                       </div>
                     </div>
                     <div className="row">
-                      {studentApplications.map(
-                        (
-                          {
-                            status,
-                            applicationCode,
-                            programName,
-                            updatedAt,
-                            enrolmentCode,
-                            id,
-                            lead: {
-                              firstName,
-                              lastName,
-                              middleName = "",
-                              leadCode,
-                            },
-                            education,
-                            studentCode,
-                            document,
+                      {studentApplications
+                        ?.sort((a: any, b: any) => {
+                          const dateA = new Date(a.updatedAt);
+                          const dateB = new Date(b.updatedAt);
+                          return dateB.getTime() - dateA.getTime();
+                        })
+                        ?.map(
+                          (
+                            {
+                              status,
+                              applicationCode,
+                              programName,
+                              updatedAt,
+                              enrolmentCode,
+                              id,
+                              lead: {
+                                firstName,
+                                lastName,
+                                middleName = "",
+                                leadCode,
+                              },
+                              education,
+                              studentCode,
+                              document,
 
-                            ...rest
-                          },
-                          idx
-                        ) => (
-                          <div key={applicationCode} className="col-md-6 mb-2">
-                            <ApplicationCard
+                              ...rest
+                            },
+                            idx
+                          ) => (
+                            <div
                               key={applicationCode}
-                              status={status}
-                              applicationNumber={applicationCode}
-                              name={`${firstName} ${middleName} ${lastName}`}
-                              programName={programName}
-                              onEdit={onEdit}
-                              onPay={onPay}
-                              onDownloadAcceptence={onDownloadAcceptence}
-                              onUploadDocuments={onUploadDocuments}
-                              onUploadBursaryDocuments={
-                                onUploadBursaryDocuments
-                              }
-                              getStudentApplications={() =>
-                                getStudentApplications(studentId)
-                              }
-                              leadCode={leadCode}
-                              id={id}
-                              studyModeCode={education?.studyModeCode}
-                              updatedAt={updatedAt}
-                              educationDetail={education}
-                              document={document}
-                              enrolmentCode={enrolmentCode}
-                              studentCode={studentCode}
-                              {...rest}
-                            />
-                          </div>
-                        )
-                      )}
+                              className="col-md-6 mb-2"
+                            >
+                              <ApplicationCard
+                                key={applicationCode}
+                                status={status}
+                                applicationNumber={applicationCode}
+                                name={`${firstName} ${middleName} ${lastName}`}
+                                programName={programName}
+                                onEdit={onEdit}
+                                onPay={onPay}
+                                onDownloadAcceptence={onDownloadAcceptence}
+                                onUploadDocuments={onUploadDocuments}
+                                onUploadBursaryDocuments={
+                                  onUploadBursaryDocuments
+                                }
+                                getStudentApplications={() =>
+                                  getStudentApplications(studentId)
+                                }
+                                leadCode={leadCode}
+                                id={id}
+                                studyModeCode={education?.studyModeCode}
+                                updatedAt={updatedAt}
+                                educationDetail={education}
+                                document={document}
+                                enrolmentCode={enrolmentCode}
+                                studentCode={studentCode}
+                                {...rest}
+                              />
+                            </div>
+                          )
+                        )}
                     </div>
                   </div>
                 ) : (
@@ -335,7 +353,7 @@ export const ApplicationDashboard = (props: any) => {
                           </p>
                           <StyledButton
                             onClick={onApplyNow}
-                            title="New Application"
+                            title="Apply Now"
                           />
                         </div>
                       </div>
@@ -481,9 +499,10 @@ function ApplicationCard({
         <div className="w-100 mt-4 ">
           <Grid
             style={{
-              padding: "10px 59px",
+              padding: "10px 16px 10px 0",
               borderTop: `1px solid ${Green}`,
               backgroundColor: "#f4f2f1",
+              justifyContent: "flex-end",
             }}
             container
             spacing={1}
