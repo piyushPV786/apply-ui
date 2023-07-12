@@ -27,7 +27,6 @@ import {
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { AuthApi } from "../../service/Axios";
 import { CommonApi } from "../../components/common/constant";
-import { Mail } from "@material-ui/icons";
 
 interface IPersonalInfoProps {
   genders: IOption[];
@@ -306,16 +305,27 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     className="form-control"
                     id="email"
                     onBlur={async (e) => {
-                      const res = await AuthApi.get(
-                        `${CommonApi.EMAILCHECK}/${e.target.value}`
-                      );
-                      if (
-                        res?.data?.data?.message ==
-                        "Provided email address alredy exists"
-                      ) {
+                      if (e.target.value) {
+                        await AuthApi.get(
+                          `${CommonApi.EMAILCHECK}/${e.target.value}`
+                        ).then((data) => {
+                          if (
+                            data &&
+                            data?.data?.data?.message ==
+                              "Provided email address alredy exists"
+                          ) {
+                            setError(emailKey, {
+                              type: "custom",
+                              message: "Provided email address alredy exists",
+                            });
+                          } else {
+                            clearErrors(emailKey);
+                          }
+                        });
+                      } else {
                         setError(emailKey, {
                           type: "custom",
-                          message: "Provided email address alredy exists",
+                          message: "Please enter Email",
                         });
                       }
                     }}
@@ -327,9 +337,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   />
                   {Errors?.email && (
                     <div className="invalid-feedback">
-                      {Errors?.email?.type === "validate"
-                        ? "you have entered an invalid email address. Please try again"
-                        : "Please enter Email"}
+                      {Errors?.email?.type === "validate" &&
+                        "you have entered an invalid email address. Please try again"}
 
                       {Errors?.email?.type === "custom" &&
                         Errors?.email?.message}
