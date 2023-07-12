@@ -450,6 +450,31 @@ export const transformFormData = (formData: any) => {
   return formData;
 };
 
+export const emailValidation = async (e) => {
+  let returnVal = { type: "", message: "" };
+  await AuthApi.get(`${CommonApi.EMAILCHECK}/${e.target.value}`).then(
+    (data) => {
+      if (
+        data &&
+        data?.data?.data?.message == "Provided email address alredy exists"
+      ) {
+        returnVal = {
+          type: "custom",
+          message: "Provided email address alredy exists",
+        };
+      } else {
+        if (isValidEmail(e.target.value) == false) {
+          returnVal = {
+            type: "validate",
+            message: "",
+          };
+        }
+      }
+    }
+  );
+  return returnVal;
+};
+
 export const downloadDocument = (url, fileName: string) => {
   let alink = document.createElement("a");
   alink.href = url;
