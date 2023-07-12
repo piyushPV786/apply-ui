@@ -25,6 +25,9 @@ import {
   transformDate,
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
+import { AuthApi } from "../../service/Axios";
+import { CommonApi } from "../../components/common/constant";
+import { Mail } from "@material-ui/icons";
 
 interface IPersonalInfoProps {
   genders: IOption[];
@@ -66,14 +69,16 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const {
     setValue,
     register,
+    clearErrors,
+    setError,
     watch,
     formState: { errors, touchedFields },
   } = useFormContext();
+
   const TouchFields = touchedFields[parentKey] as any;
   const Errors = errors[parentKey] as any;
   const [countryCodeRef, setCountryCode] = useState<any>();
   const [mobNum, setMobile] = useState<any>("");
-  const [isDocument, setDocument] = useState<boolean>(false);
   const [isNationality, setNationality] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isYes, setIsYes] = useState<boolean>(false);
@@ -87,6 +92,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     );
     setCountryCode(userNumberDetail?.countryCode);
     setValue(studentNumberKey, userNumberDetail?.mobileNumber);
+
     setValue(mobileCountryCodeKey, userNumberDetail?.countryCodeNumber);
   }, []);
   const firstName = watch(firstNameKey);
@@ -299,6 +305,20 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     type="text"
                     className="form-control"
                     id="email"
+                    onBlur={async (e) => {
+                      const res = await AuthApi.get(
+                        `${CommonApi.EMAILCHECK}/${e.target.value}`
+                      );
+                      if (
+                        res?.data?.data?.message ==
+                        "Provided email address alredy exists"
+                      ) {
+                        setError(emailKey, {
+                          type: "custom",
+                          message: "Provided email address alredy exists",
+                        });
+                      }
+                    }}
                     onChange={(e) => {
                       const name = e.target.name;
                       const value = e.target.value;
@@ -310,6 +330,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       {Errors?.email?.type === "validate"
                         ? "you have entered an invalid email address. Please try again"
                         : "Please enter Email"}
+
+                      {Errors?.email?.type === "custom" &&
+                        Errors?.email?.message}
                     </div>
                   )}
                   {/* {email?.length > 1 && !isValidEmail(email) && (

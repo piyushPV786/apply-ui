@@ -123,6 +123,7 @@ export const CommonApi = {
   NATIONALITYSTATUS: "/nationality-status",
   AGENT_LIST: "/user/role/Sales",
   IDENTIFICATIONDOCUMENT: "/identification-Type",
+  EMAILCHECK: "/lead/check-duplicate-email",
 };
 
 export const RoutePaths = {

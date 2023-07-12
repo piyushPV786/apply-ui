@@ -250,7 +250,7 @@ export const ApplicationDashboard = (props: any) => {
                         <div className="d-flex justify-content-end">
                           <StyledButton
                             onClick={onApplyNow}
-                            title="Apply a New Course "
+                            title="New Application"
                           />
                         </div>
                       </div>
@@ -353,7 +353,7 @@ export const ApplicationDashboard = (props: any) => {
                           </p>
                           <StyledButton
                             onClick={onApplyNow}
-                            title="Apply Now"
+                            title="New Application"
                           />
                         </div>
                       </div>
