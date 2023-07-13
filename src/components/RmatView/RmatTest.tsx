@@ -110,7 +110,7 @@ const RmatTest: React.FC = () => {
               />
               &nbsp;&nbsp;&nbsp;
               <StyledButton
-                // onClick={onUploadDocument}
+                onClick={() => window.open("https://rmatuat.regenesys.net/")}
                 title={"Take RMAT Test"}
               />
             </>

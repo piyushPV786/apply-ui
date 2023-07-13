@@ -486,9 +486,9 @@ function ApplicationCard({
         {isProgramAddmittedOrIsIntakeAssigned && (
           <div className="row px-4">
             <div className="d-flex flex-column">
-              <StudentIdCard>
+              {studentCode && <StudentIdCard>
                 Student No: <span>{studentCode}</span>
-              </StudentIdCard>
+              </StudentIdCard>}
               {enrollmentNumber && (
                 <StudentIdCard>Enrollment No: {enrollmentNumber}</StudentIdCard>
               )}
