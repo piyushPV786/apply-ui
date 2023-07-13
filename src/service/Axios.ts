@@ -74,7 +74,8 @@ const useAxiosInterceptor = () => {
     if (
       !config.url.includes(CommonApi.GETSTUDYMODEPROGRAMS) &&
       !config.url.includes(CommonApi.GETCURRENCYCONVERSION) &&
-      !config.url.includes("/payment/payu")
+      !config.url.includes("/payment/payu") &&
+      !config.url.includes(CommonApi.EMAILCHECK)
     ) {
       setLoading(true);
     }

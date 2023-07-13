@@ -17,7 +17,7 @@ import { IOption } from "../common/types";
 import {
   formDirtyState,
   isValidDate,
-  isValidEmail,
+  emailValidation,
   onlyAlphabets,
   capitalizeFirstLetter,
   sortAscending,
@@ -25,6 +25,8 @@ import {
   transformDate,
 } from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
+import { AuthApi } from "../../service/Axios";
+import { CommonApi } from "../../components/common/constant";
 
 interface IPersonalInfoProps {
   genders: IOption[];
@@ -66,14 +68,16 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const {
     setValue,
     register,
+    clearErrors,
+    setError,
     watch,
     formState: { errors, touchedFields },
   } = useFormContext();
+
   const TouchFields = touchedFields[parentKey] as any;
   const Errors = errors[parentKey] as any;
   const [countryCodeRef, setCountryCode] = useState<any>();
   const [mobNum, setMobile] = useState<any>("");
-  const [isDocument, setDocument] = useState<boolean>(false);
   const [isNationality, setNationality] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isYes, setIsYes] = useState<boolean>(false);
@@ -87,6 +91,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     );
     setCountryCode(userNumberDetail?.countryCode);
     setValue(studentNumberKey, userNumberDetail?.mobileNumber);
+
     setValue(mobileCountryCodeKey, userNumberDetail?.countryCodeNumber);
   }, []);
   const firstName = watch(firstNameKey);
@@ -294,11 +299,24 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     defaultValue={email}
                     {...register(emailKey, {
                       required: true,
-                      validate: isValidEmail,
                     })}
                     type="text"
                     className="form-control"
                     id="email"
+                    onBlur={async (e) => {
+                      if (e.target.value) {
+                        const res = await emailValidation(e);
+                        setError(emailKey, {
+                          type: res.type,
+                          message: res.message,
+                        });
+                      } else {
+                        setError(emailKey, {
+                          type: "custom",
+                          message: "Please enter Email",
+                        });
+                      }
+                    }}
                     onChange={(e) => {
                       const name = e.target.name;
                       const value = e.target.value;
@@ -307,9 +325,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   />
                   {Errors?.email && (
                     <div className="invalid-feedback">
-                      {Errors?.email?.type === "validate"
-                        ? "you have entered an invalid email address. Please try again"
-                        : "Please enter Email"}
+                      {Errors?.email?.type === "validate" &&
+                        "you have entered an invalid email address. Please try again"}
+
+                      {Errors?.email?.type === "custom" &&
+                        Errors?.email?.message}
                     </div>
                   )}
                   {/* {email?.length > 1 && !isValidEmail(email) && (
