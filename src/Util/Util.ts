@@ -393,7 +393,7 @@ export const getAllDocumentsDetails = async (code?) => {
  * @param {string} [code] - The application code (optional).
  * @returns {Promise<any>} - The declaration letter data.
  */
-export const downloadDeclarationLetter = async (code) => {
+export const downloadDeclarationLetter = async (code?) => {
   const url = process.env.base_Url;
   const appCode = code || getApplicationCode();
 
