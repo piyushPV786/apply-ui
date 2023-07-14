@@ -101,20 +101,26 @@ const Payment = (props: any) => {
     const programDetails = sessionStorage.getItem("activeLeadDetail")
       ? JSON.parse(sessionStorage.getItem("activeLeadDetail")!)?.educationDetail
       : null;
+
     if (selectedProgram && programDetails) {
       (async () => {
         const selectedProgramCode = await getQualificationStudyModeData(
           programDetails?.programCode
         );
+
         setFeeOptions(
           selectedProgramCode[0]?.studyModes.find(
             (item) => item.studyModeCode === selectedStudyMode
           )?.fees
         );
-        const applicationDetail = selectedProgramCode[0]?.studyModes?.find(
-          (item) => item?.studyModeCode === "APPLICATION"
+        let applicationDetail = selectedProgramCode[0]?.studyModes?.find(
+          (item) => item.studyModeCode === programDetails.studyModeCode
         );
-        setValue("education.applicationFees", applicationDetail?.fees[0]?.fee);
+        applicationDetail = applicationDetail?.fees.find(
+          (item) => item.feeMode == "APPLICATION"
+        );
+
+        setValue("education.applicationFees", applicationDetail?.fee);
       })();
     }
     selectedNationality && getCurrencyConversion();
@@ -228,6 +234,7 @@ const Payment = (props: any) => {
     : isNaN(totalAmount)
     ? +rmatFee + +convertedProgramFee
     : totalAmount;
+
   return (
     <>
       {loadng ? (
