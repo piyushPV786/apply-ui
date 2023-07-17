@@ -358,7 +358,7 @@ export const getUploadDocumentUrl = async (payload, code?) => {
       const { data } = response;
       return data;
     }
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error.message);
     return error;
   }
@@ -382,7 +382,7 @@ export const getAllDocumentsDetails = async (code?) => {
       const { data } = response;
       return data;
     }
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error.message);
     return error;
   }
@@ -407,7 +407,7 @@ export const downloadDeclarationLetter = async (code?) => {
       const { data } = response;
       return data;
     }
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error.message);
     return error;
   }
@@ -428,7 +428,7 @@ export const getCommonUploadDocumentUrl = async (fileName) => {
       const { data } = response;
       return data;
     }
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error.message);
     return error;
   }
@@ -448,7 +448,7 @@ export const getQualificationStudyModeData = async (programCode) => {
     if (response.status === 200) {
       return response.data?.data;
     }
-  } catch (error:any) {
+  } catch (error: any) {
     return null;
   }
 };
@@ -468,7 +468,7 @@ export const uploadDocuments = async (uploadFileUrl, file) => {
     } else {
       return response.data;
     }
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error.message);
     return error;
   }
@@ -649,26 +649,28 @@ export const transformFormData = (formData: any) => {
 
 export const emailValidation = async (e) => {
   let returnVal = { type: "", message: "" };
-  await AuthApi.get(`${CommonApi.EMAILCHECK}/${e.target.value}`).then(
-    (data) => {
-      if (
-        data &&
-        data?.data?.data?.message == "Provided email address alredy exists"
-      ) {
+  await AuthApi.get(
+    `${CommonApi.EMAILCHECK}/${e.target.value}/leadCode/${
+      JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
+    }`
+  ).then((data) => {
+    if (
+      data &&
+      data?.data?.data?.message == "Provided email address alredy exists"
+    ) {
+      returnVal = {
+        type: "custom",
+        message: "Provided email address alredy exists",
+      };
+    } else {
+      if (isValidEmail(e.target.value) == false) {
         returnVal = {
-          type: "custom",
-          message: "Provided email address alredy exists",
+          type: "validate",
+          message: "",
         };
-      } else {
-        if (isValidEmail(e.target.value) == false) {
-          returnVal = {
-            type: "validate",
-            message: "",
-          };
-        }
       }
     }
-  );
+  });
   return returnVal;
 };
 
