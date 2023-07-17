@@ -167,7 +167,7 @@ const Payment = (props: any) => {
       });
   };
   const submitPaymentDocs = async () => {
-    if (paymentDocs.length) {
+    if (paymentDocs?.length) {
       setPaymentDocSubmit(false);
       const finalAmount =
         parseInt(programFee) -
@@ -282,7 +282,7 @@ const Payment = (props: any) => {
                         {isApplicationEnrolled && (
                           <div className="col-md-6">
                             <div className="mb-4 ">
-                              {feeOptions.length > 0 &&
+                              {feeOptions?.length > 0 &&
                                 feeOptions
                                   .sort((a, b) =>
                                     sortAscending(a, b, "feeMode")
@@ -604,7 +604,7 @@ const Payment = (props: any) => {
                                     </span>
                                   ))}
                               </div>
-                              {paymentDocs.length > 0 && !isInvalidFiles && (
+                              {paymentDocs?.length > 0 && !isInvalidFiles && (
                                 <div className="invalid-feedback">
                                   Max file size is 2 MB
                                 </div>
@@ -625,7 +625,7 @@ const Payment = (props: any) => {
                           <StyledButton
                             disabled={
                               !isInvalidFiles ||
-                              paymentDocs.length === 0 ||
+                              paymentDocs?.length === 0 ||
                               isPaymentDocSubmit ||
                               !totalPayuAmount
                             }
