@@ -136,6 +136,10 @@ export const RoutePaths = {
   RMATView: "/rmat",
 };
 
+export const FeemodeCode = {
+  APPLICATION: "APPLICATION",
+};
+
 export const PaymentTypes = [
   {
     name: "Payu",

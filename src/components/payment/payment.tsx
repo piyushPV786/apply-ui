@@ -23,7 +23,7 @@ import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com
 import Image from "next/image";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import { GreenText } from "../student/style";
-import { CommonApi, CommonEnums } from "../common/constant";
+import { CommonApi, CommonEnums, FeemodeCode } from "../common/constant";
 import CircleTick from "../../../public/assets/images/circle-tick.svg";
 import { FinanceApi } from "../../service/Axios";
 import { Button } from "@material-ui/core";
@@ -112,14 +112,14 @@ const Payment = (props: any) => {
           selectedProgramCode[0]?.studyModes
             .find((item) => item.studyModeCode === selectedStudyMode)
             ?.fees.filter((item) => {
-              item.feeMode != "APPLICATION";
+              item.feeMode != FeemodeCode.APPLICATION;
             })
         );
         let applicationDetail = selectedProgramCode[0]?.studyModes?.find(
           (item) => item.studyModeCode === programDetails.studyModeCode
         );
         applicationDetail = applicationDetail?.fees.find(
-          (item) => item.feeMode == "APPLICATION"
+          (item) => item.feeMode == FeemodeCode.APPLICATION
         );
 
         setValue("education.applicationFees", applicationDetail?.fee);
