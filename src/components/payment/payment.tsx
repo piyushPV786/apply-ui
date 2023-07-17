@@ -107,7 +107,6 @@ const Payment = (props: any) => {
         const selectedProgramCode = await getQualificationStudyModeData(
           programDetails?.programCode
         );
-        console.log("popoiku", selectedProgramCode);
 
         setFeeOptions(
           selectedProgramCode[0]?.studyModes.find(
