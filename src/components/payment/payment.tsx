@@ -109,9 +109,11 @@ const Payment = (props: any) => {
         );
 
         setFeeOptions(
-          selectedProgramCode[0]?.studyModes.find(
-            (item) => item.studyModeCode === selectedStudyMode
-          )?.fees
+          selectedProgramCode[0]?.studyModes
+            .find((item) => item.studyModeCode === selectedStudyMode)
+            ?.fees.filter((item) => {
+              item.feeMode != "APPLICATION";
+            })
         );
         let applicationDetail = selectedProgramCode[0]?.studyModes?.find(
           (item) => item.studyModeCode === programDetails.studyModeCode
