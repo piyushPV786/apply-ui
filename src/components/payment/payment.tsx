@@ -102,7 +102,7 @@ const Payment = (props: any) => {
       ? JSON.parse(sessionStorage.getItem("activeLeadDetail")!)?.educationDetail
       : null;
 
-    if (selectedProgram && programDetails) {
+    if (programDetails) {
       (async () => {
         const selectedProgramCode = await getQualificationStudyModeData(
           programDetails?.programCode
@@ -110,11 +110,12 @@ const Payment = (props: any) => {
 
         setFeeOptions(
           selectedProgramCode[0]?.studyModes
-            .find((item) => item.studyModeCode === selectedStudyMode)
+            .find((item) => item.studyModeCode === programDetails.studyModeCode)
             ?.fees.filter((item) => {
-              item.feeMode != FeemodeCode.APPLICATION;
+              return item.feeMode != "APPLICATION";
             })
         );
+
         let applicationDetail = selectedProgramCode[0]?.studyModes?.find(
           (item) => item.studyModeCode === programDetails.studyModeCode
         );
