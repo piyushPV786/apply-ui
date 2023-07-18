@@ -175,7 +175,7 @@ const DocumentUploadForm = ({
     formState: { errors },
   } = useFormContext();
   const documentDetails = allFields?.document?.documentDetails || [];
-  const isMBAProgram = allFields?.education?.programCode === "MBA-PROG";
+  const isMBAProgram = allFields?.education?.programCode === "MBA-PROG" || allFields?.education?.programCode === "MBA";
   useEffect(() => {
     if (documentDetails?.length > 0) {
       setDocumentFormDataDetail(
