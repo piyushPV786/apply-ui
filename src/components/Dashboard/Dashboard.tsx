@@ -32,6 +32,7 @@ import {
   transformDate,
 } from "../../Util/Util";
 import { Grid } from "@material-ui/core";
+import { CachedOutlined } from "@material-ui/icons";
 
 const sortApplicationOnLastUpdate = (application: any[]) => {
   return application?.sort((a, b) => {
@@ -436,6 +437,9 @@ function ApplicationCard({
   return (
     <>
       <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
+        <span className="cursor-pointer" onClick={getStudentApplications}>
+          <CachedOutlined className="m-2" />
+        </span>
         <div className="d-flex justify-content-end">
           <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
         </div>
@@ -486,9 +490,11 @@ function ApplicationCard({
         {isProgramAddmittedOrIsIntakeAssigned && (
           <div className="row px-4">
             <div className="d-flex flex-column">
-              {studentCode && <StudentIdCard>
-                Student No: <span>{studentCode}</span>
-              </StudentIdCard>}
+              {studentCode && (
+                <StudentIdCard>
+                  Student No: <span>{studentCode}</span>
+                </StudentIdCard>
+              )}
               {enrollmentNumber && (
                 <StudentIdCard>Enrollment No: {enrollmentNumber}</StudentIdCard>
               )}
