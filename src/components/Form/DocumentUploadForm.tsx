@@ -235,6 +235,26 @@ const DocumentUploadForm = ({
     allFields?.education?.programCode === "MBA-PROG" ||
     allFields?.education?.programCode === "MBA";
   useEffect(() => {
+    const existingPaymentProof = allFields?.payment?.paymentProof;
+    if (existingPaymentProof && existingPaymentProof.length > 0) {
+      existingPaymentProof?.forEach((element) => {
+        element.typeCode = "PAYMENTPROOF";
+      });
+
+      const allUploadedFiles = uniqueArrayOfObject(
+        [...uploadDocs, ...existingPaymentProof],
+        "size"
+      );
+      setValue("document.uploadedDocs", allUploadedFiles, formOptions);
+      setUploadDocs(allUploadedFiles);
+    }
+  }, [leadId]);
+  useEffect(() => {
+    if (isMBAProgram) {
+      setRemainingDocs((prevState) => [
+        ...(new Set([...prevState, ...mbaDocs]) as any),
+      ]);
+    }
     if (documentDetails?.length > 0) {
       const mappedDocs = mapStatusToFormData(
         documentDetails,
@@ -248,6 +268,11 @@ const DocumentUploadForm = ({
             type: rest?.draftSaveDoc?.fileExtension,
             typeCode: rest?.draftSaveDoc?.documentTypeCode,
           }));
+        const remainDocs = remainingDocs?.filter(
+          (doc) =>
+            !existedDocuments?.find((document) => document?.typeCode === doc)
+        );
+        setRemainingDocs(remainDocs?.filter(Boolean));
         setUploadDocs([...existedDocuments]);
         setValue("document.uploadedDocs", existedDocuments);
       }
@@ -255,21 +280,16 @@ const DocumentUploadForm = ({
         mapStatusToFormData(documentDetails, documentUploadFormData)
       );
     }
-    if (isMBAProgram) {
-      setRemainingDocs((prevState) => [
-        ...(new Set([...prevState, ...mbaDocs]) as any),
-      ]);
-    }
   }, [isMBAProgram]);
 
-  useEffect(() => {
-    if (uploadDocs?.length > 0) {
-      const remainDocs = remainingDocs?.filter(
-        (doc) => !uploadDocs?.find((document) => document?.typeCode === doc)
-      );
-      setRemainingDocs(remainDocs?.filter(Boolean));
-    }
-  }, [uploadDocs]);
+  // useEffect(() => {
+  //   if (uploadDocs?.length > 0) {
+  //     const remainDocs = remainingDocs?.filter(
+  //       (doc) => !uploadDocs?.find((document) => document?.typeCode === doc)
+  //     );
+  //     setRemainingDocs(remainDocs?.filter(Boolean));
+  //   }
+  // }, [uploadDocs]);
 
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
@@ -287,42 +307,7 @@ const DocumentUploadForm = ({
         )
         ?.map((document) => document.id);
 
-  const areAllDocumentsUploaded = areIdsPresent(
-    documentIds.map((obj) => obj.id),
-    uploadDocs
-  );
-  // console.log([...documentFormDataDetail, ...mbaProgramDocuments], {
-  //   uploadDocs,
-  //   remainingDocs,
-  // });
-
-  // const areAllDocumentsUploaded = documentIds?.every((id) =>
-  //   uploadDocs
-  //     ?.filter(
-  //       (doc: any) =>
-  //         doc.status?.toLowerCase() !== "approved" &&
-  //         doc.status?.toLowerCase() !== "submitted"
-  //     )
-  //     ?.some((doc) => doc.typeCode === id)
-  // );
-  // console.log({ uploadDocs, areAllDocumentsUploaded, documentIds });
   const documentStatusDetail = deepClone(documentFormDataDetail);
-
-  useEffect(() => {
-    const existingPaymentProof = allFields?.payment?.paymentProof;
-    if (existingPaymentProof && existingPaymentProof.length > 0) {
-      existingPaymentProof?.forEach((element) => {
-        element.typeCode = "PAYMENTPROOF";
-      });
-
-      const allUploadedFiles = uniqueArrayOfObject(
-        [...uploadDocs, ...existingPaymentProof],
-        "size"
-      );
-      setValue("document.uploadedDocs", allUploadedFiles, formOptions);
-      setUploadDocs(allUploadedFiles);
-    }
-  }, [leadId]);
 
   const deleteDocs = (index: number, file: File & { typeCode: string }) => {
     const remainingDocs = [
@@ -347,6 +332,10 @@ const DocumentUploadForm = ({
     });
     setUploadDocs((prevState) => [...prevState, ...(uploadedFiles as any)]);
     const allFiles = [...uploadDocs, ...uploadedFiles];
+    const remainDocs = remainingDocs?.filter(
+      (doc) => !allFiles?.find((document) => document?.typeCode === doc)
+    );
+    setRemainingDocs(remainDocs?.filter(Boolean));
     setValue("document.uploadedDocs", allFiles);
   };
 
@@ -409,8 +398,6 @@ const DocumentUploadForm = ({
     mapStatusToFormData(documentDetails, documentFormData),
     uploadDocs
   );
-
-  // console.log({ uploadedDocuments, documentDetails });
 
   return (
     <div className="row mx-3 document-container">
