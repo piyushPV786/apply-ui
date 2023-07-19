@@ -98,34 +98,31 @@ const Payment = (props: any) => {
   const totalAmount = +convertedProgramFee - +discountAmount + rmatFee;
 
   useEffect(() => {
-    const programDetails = sessionStorage.getItem("activeLeadDetail")
-      ? JSON.parse(sessionStorage.getItem("activeLeadDetail")!)?.educationDetail
-      : null;
+    (async () => {
+      const selectedProgramCode = await getQualificationStudyModeData(
+        allFields?.education?.programCode
+      );
 
-    if (programDetails) {
-      (async () => {
-        const selectedProgramCode = await getQualificationStudyModeData(
-          programDetails?.programCode
-        );
+      setFeeOptions(
+        selectedProgramCode[0]?.studyModes
+          .find(
+            (item) => item.studyModeCode === allFields?.education?.studyModeCode
+          )
+          ?.fees.filter((item) => {
+            return item.feeMode != "APPLICATION";
+          })
+      );
 
-        setFeeOptions(
-          selectedProgramCode[0]?.studyModes
-            .find((item) => item.studyModeCode === programDetails.studyModeCode)
-            ?.fees.filter((item) => {
-              return item.feeMode != "APPLICATION";
-            })
-        );
+      let applicationDetail = selectedProgramCode[0]?.studyModes?.find(
+        (item) => item.studyModeCode === allFields?.education?.studyModeCode
+      );
+      applicationDetail = applicationDetail?.fees.find(
+        (item) => item.feeMode == FeemodeCode.APPLICATION
+      );
 
-        let applicationDetail = selectedProgramCode[0]?.studyModes?.find(
-          (item) => item.studyModeCode === programDetails.studyModeCode
-        );
-        applicationDetail = applicationDetail?.fees.find(
-          (item) => item.feeMode == FeemodeCode.APPLICATION
-        );
+      setValue("education.applicationFees", applicationDetail?.fee);
+    })();
 
-        setValue("education.applicationFees", applicationDetail?.fee);
-      })();
-    }
     selectedNationality && getCurrencyConversion();
   }, [selectedProgram]);
 
