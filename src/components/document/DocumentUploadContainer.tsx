@@ -1,4 +1,4 @@
-import React, { useRef, useState, SyntheticEvent } from "react";
+import React, { useRef, useState, SyntheticEvent, useEffect } from "react";
 import styled from "styled-components";
 import { Container, Typography, Button, Modal } from "@mui/material";
 import StyledButton from "../button/button";
@@ -39,6 +39,7 @@ interface DocumentUploadContainerProps {
   reasonText?: string;
   isDeclaration?: boolean;
   disabled?: boolean;
+  draftSaveDoc?: File | any;
   customComponent?:
     | React.ReactComponentElement<any>
     | React.ReactNode
@@ -66,6 +67,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   documentType,
   onRemove,
   customComponent,
+  draftSaveDoc,
   disabled = false,
   selectedDocuments = [],
 }) => {
@@ -83,6 +85,14 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
 
   const isApproved = statusType?.includes("submitted");
   const isSubmitted = statusType?.includes("approved");
+
+  useEffect(() => {
+    if (draftSaveDoc) {
+      const uploadedDocuments = [...uploadDocs, draftSaveDoc];
+      setUploadDocs(uploadedDocuments);
+      onUpload && onUpload(uploadedDocuments);
+    }
+  }, [draftSaveDoc]);
 
   const uploadDocuments = (files: any) => {
     const uploadedFiles = files;
