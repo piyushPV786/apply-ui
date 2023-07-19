@@ -107,19 +107,33 @@ interface IDocumentUploadProps {
   leadId: string;
   onUpload?: (file: File | File[]) => void;
   onRemove?: (index: number) => void;
-  onSubmit: (formValue: ILeadFormValues) => void;
+  onSubmit: () => void;
   onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
 
+// function areIdsPresent(idsToCheck, arrayOfObjects) {
+//   const idSet = new Set(idsToCheck);
+
+//   for (const obj of arrayOfObjects) {
+//     if (!idSet.has(obj.id)) {
+//       return false;
+//     }
+//   }
+
+//   return true;
+// }
+function isIdPresent(id, arrayOfObjects) {
+  return arrayOfObjects.some((obj) => obj.id === id);
+}
 function areIdsPresent(idsToCheck, arrayOfObjects) {
   const idSet = new Set(idsToCheck);
+  const uploadedIds: any = new Set(arrayOfObjects.map((obj) => obj.id) as any);
 
-  for (const obj of arrayOfObjects) {
-    if (!idSet.has(obj.id)) {
+  for (const id of uploadedIds) {
+    if (!idSet.has(id)) {
       return false;
     }
   }
-
   return true;
 }
 const mapStatusToFormData = (response, formData) => {
@@ -188,6 +202,14 @@ const mapStatusDocument = (documentData) => {
     return documentData;
   } else return documentData;
 };
+const requiredDocs = [
+  "declarationForm",
+  "nationalIdPassport",
+  "highestQualification",
+  "matricCertificate",
+  "detailCV",
+];
+const mbaDocs = ["motivationLetter", "interviewNotes"];
 const DocumentUploadForm = ({
   allFields,
   documentType,
@@ -205,8 +227,9 @@ const DocumentUploadForm = ({
     typeof documentUploadFormData
   >(documentUploadFormData);
   const [uploadDocs, setUploadDocs] = useState<
-    (File & { error: boolean; typeCode: string })[]
+    (File & { error: boolean; typeCode: string; id: string })[]
   >([]);
+  const [remainingDocs, setRemainingDocs] = useState<string[]>(requiredDocs);
   const documentDetails = allFields?.document?.documentDetails || [];
   const isMBAProgram =
     allFields?.education?.programCode === "MBA-PROG" ||
@@ -232,7 +255,21 @@ const DocumentUploadForm = ({
         mapStatusToFormData(documentDetails, documentUploadFormData)
       );
     }
+    if (isMBAProgram) {
+      setRemainingDocs((prevState) => [
+        ...(new Set([...prevState, ...mbaDocs]) as any),
+      ]);
+    }
   }, [isMBAProgram]);
+
+  useEffect(() => {
+    if (uploadDocs?.length > 0) {
+      const remainDocs = remainingDocs?.filter(
+        (doc) => !uploadDocs?.find((document) => document?.typeCode === doc)
+      );
+      setRemainingDocs(remainDocs?.filter(Boolean));
+    }
+  }, [uploadDocs]);
 
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
@@ -254,6 +291,10 @@ const DocumentUploadForm = ({
     documentIds.map((obj) => obj.id),
     uploadDocs
   );
+  // console.log([...documentFormDataDetail, ...mbaProgramDocuments], {
+  //   uploadDocs,
+  //   remainingDocs,
+  // });
 
   // const areAllDocumentsUploaded = documentIds?.every((id) =>
   //   uploadDocs
@@ -287,6 +328,7 @@ const DocumentUploadForm = ({
     const remainingDocs = [
       ...uploadDocs.filter((item, idx) => item?.typeCode !== file?.typeCode),
     ];
+    setRemainingDocs((prevState) => [...prevState, file?.typeCode]);
     setValue("document.uploadedDocs", remainingDocs, formOptions);
     setUploadDocs(remainingDocs);
   };
@@ -368,7 +410,7 @@ const DocumentUploadForm = ({
     uploadDocs
   );
 
-  // console.log({uploadedDocuments,documentDetails})
+  // console.log({ uploadedDocuments, documentDetails });
 
   return (
     <div className="row mx-3 document-container">
@@ -414,8 +456,12 @@ const DocumentUploadForm = ({
               onClick={onSaveDraft}
             />
             <StyledButton
-              disabled={!areAllDocumentsUploaded}
-              onClick={onSubmit}
+              disabled={remainingDocs?.length > 0}
+              onClick={() => {
+                setUploadDocs([]);
+                setDocumentFormDataDetail([]);
+                onSubmit();
+              }}
               title="Submit Documents"
             />
           </div>
