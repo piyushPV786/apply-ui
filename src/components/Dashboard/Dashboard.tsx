@@ -437,11 +437,16 @@ function ApplicationCard({
   return (
     <>
       <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
-        <span className="cursor-pointer" onClick={getStudentApplications}>
-          <CachedOutlined className="m-2" />
-        </span>
-        <div className="d-flex justify-content-end">
-          <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
+        <div
+          className=" d-flex flex-row justify-content-between"
+          onClick={getStudentApplications}
+        >
+          <div className="cursor-pointer">
+            <CachedOutlined className="m-2" />
+          </div>
+          <div>
+            <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
+          </div>
         </div>
         <div className="row px-4">
           <div className="col-md-4">
