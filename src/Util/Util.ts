@@ -7,6 +7,7 @@ import {
   CommonApi,
   DARK_GRAY,
   GREEN,
+  MagicNumbers,
   NAVY_BLUE,
   ORANGE,
   removedKeysToMap,
@@ -26,11 +27,14 @@ const ignorKeys = {
  * Maps form data by removing specific keys and values based on conditions.
  * @param {Object} data - The form data to be mapped.
  * @param {boolean} isDraft - Flag indicating whether the form is in draft mode.
+ * @param {number} activeStep - indicate active step.
  * @returns {Object} - The mapped form data.
  */
-export const mapFormData = (data, isDraft = false) => {
+export const mapFormData = (data, isDraft?: boolean, activeStep?: number) => {
   let formData = data;
-
+  if (activeStep == MagicNumbers.TWO && isDraft && ignorKeys.document) {
+    delete (ignorKeys as any).document;
+  }
   if (formData) {
     for (let [key, value] of Object.entries(formData)) {
       // Remove specific keys from the formData object

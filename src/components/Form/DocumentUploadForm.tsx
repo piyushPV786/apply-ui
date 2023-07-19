@@ -111,7 +111,7 @@ interface IDocumentUploadProps {
   onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
 const mapStatusToFormData = (response, formData) => {
-  if (response?.length > 0) {
+  if (response && response?.length > 0) {
     for (const item of response) {
       const matchingFormData = formData?.find((formDataItem) => {
         if (
@@ -126,7 +126,8 @@ const mapStatusToFormData = (response, formData) => {
         const status = item?.status?.replace("SALES_", "");
 
         if (status === "PENDING") {
-          return;
+          matchingFormData.draftSaveDoc = item;
+          continue;
         }
         if (status === "REJECT") {
           matchingFormData.status = "Rejected";
@@ -175,7 +176,9 @@ const DocumentUploadForm = ({
     formState: { errors },
   } = useFormContext();
   const documentDetails = allFields?.document?.documentDetails || [];
-  const isMBAProgram = allFields?.education?.programCode === "MBA-PROG" || allFields?.education?.programCode === "MBA";
+  const isMBAProgram =
+    allFields?.education?.programCode === "MBA-PROG" ||
+    allFields?.education?.programCode === "MBA";
   useEffect(() => {
     if (documentDetails?.length > 0) {
       setDocumentFormDataDetail(
@@ -305,13 +308,20 @@ const DocumentUploadForm = ({
     );
   };
   const documentFormData = isMBAProgram
-    ? [...documentFormDataDetail, ...mbaProgramDocuments]
+    ? [...(documentFormDataDetail || []), ...mbaProgramDocuments]
     : documentFormDataDetail;
   return (
     <div className="row mx-3 document-container">
       <div className="col-md-8">
         {mapStatusToFormData(documentDetails, documentFormData)?.map(
-          ({ name, disabled, status, id, isDeclaration = false }) => {
+          ({
+            name,
+            disabled,
+            status,
+            id,
+            isDeclaration = false,
+            draftSaveDoc = null,
+          }) => {
             const customFileds = id?.includes("nationalIdPassport") ? (
               <NationalityPassportFields />
             ) : null;
@@ -319,6 +329,7 @@ const DocumentUploadForm = ({
               <DocumentUploadContainer
                 key={`${name}_${id}`}
                 title={name}
+                draftSaveDoc={draftSaveDoc}
                 status={status}
                 isDeclaration={isDeclaration}
                 disabled={disabled}

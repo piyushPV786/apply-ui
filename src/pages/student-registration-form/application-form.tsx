@@ -180,8 +180,8 @@ const ApplicationForm = () => {
     status: string,
     draftSave: boolean | undefined
   ) => {
-    if (activeStep === MagicNumbers.TWO && !draftSave) {
-      uploadStudentDocs();
+    if (activeStep === MagicNumbers.TWO) {
+      uploadStudentDocs(draftSave);
       return;
     }
     let methodType;
@@ -365,9 +365,13 @@ const ApplicationForm = () => {
       ...rest
     } = { ...(formData as any) };
 
-    let request = mapFormData({
-      ...rest,
-    });
+    let request = mapFormData(
+      {
+        ...rest,
+      },
+      isDraftSave,
+      activeStep
+    );
     const appCode = localStorage?.getItem("leadData")
       ? JSON.parse(localStorage?.getItem("leadData") as any)?.applicationData
           ?.applicationCode
@@ -398,8 +402,22 @@ const ApplicationForm = () => {
       );
       return;
     }
+    debugger;
+    if (leadCode && isDraftSave && activeStep === MagicNumbers.TWO) {
+      setSubmitted(true);
+      request.lead.leadCode = leadCode;
+      updateLead(
+        request,
+        leadCode,
+        draftUpdateCode,
+        activeLeadDetail,
+        AppStatus,
+        isDraftSave
+      );
+      return;
+    }
 
-    if (isDraftSave && checkValidationForDraftSave()) {
+    if (isDraftSave && checkValidationForDraftSave() && activeStep !== MagicNumbers.TWO) {
       checkValidationForDraftSave();
 
       updateLead(
@@ -463,7 +481,7 @@ const ApplicationForm = () => {
     Dates.getHours() +
     Dates.getMinutes();
 
-  const uploadStudentDocs = async () => {
+  const uploadStudentDocs = async (isDraft: boolean = false) => {
     const {
       document: { uploadedDocs = [] as File[] },
       payment,
@@ -512,6 +530,7 @@ const ApplicationForm = () => {
       discountCode: allFields?.payment?.discountCode,
       discountAmount: allFields?.payment?.discountAmount,
       currencyCode: allFields?.payment?.selectedCurrency,
+      isDraft
       // studentTypeCode: allFields?.education?.studentTypeCode,
     };
     getUploadDocumentUrl(payload)
