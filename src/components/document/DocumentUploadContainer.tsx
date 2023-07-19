@@ -71,10 +71,9 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   disabled = false,
   selectedDocuments = [],
 }) => {
-  const [uploadDocs, setUploadDocs] =
-    useState<(File & { error: boolean; typeCode: string })[]>(
-      selectedDocuments
-    );
+  const [uploadDocs, setUploadDocs] = useState<
+    (File & { error: boolean; typeCode: string })[]
+  >([]);
   const fileUploadRef = useRef<any>(null);
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[0] as any;
@@ -87,12 +86,10 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   const isSubmitted = statusType?.includes("approved");
 
   useEffect(() => {
-    if (draftSaveDoc) {
-      const uploadedDocuments = [...uploadDocs, draftSaveDoc];
-      setUploadDocs(uploadedDocuments);
-      onUpload && onUpload(uploadedDocuments);
+    if (selectedDocuments?.length > 0) {
+      setUploadDocs(selectedDocuments?.filter((item) => Boolean(item)));
     }
-  }, [draftSaveDoc]);
+  }, []);
 
   const uploadDocuments = (files: any) => {
     const uploadedFiles = files;
@@ -103,7 +100,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     onUpload && onUpload(files);
   };
   const onRemoveDoc = (index: number, file: File & { typeCode: string }) => {
-    const remainingDocs = [...uploadDocs.filter((item, idx) => idx !== index)];
+    const remainingDocs = [...uploadDocs!.filter((item, idx) => idx !== index)];
     setUploadDocs(remainingDocs);
     onRemove && onRemove(index, file);
   };
@@ -204,7 +201,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
                   handleModalOpen(); // Open the modal if file size exceeds the limit
                 } else {
                   file.typeCode = documentType;
-                  const files = [...uploadDocs, file];
+                  const files = [...uploadDocs!, file];
 
                   uploadDocuments(files);
                 }

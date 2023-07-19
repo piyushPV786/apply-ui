@@ -110,6 +110,18 @@ interface IDocumentUploadProps {
   onSubmit: (formValue: ILeadFormValues) => void;
   onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
+
+function areIdsPresent(idsToCheck, arrayOfObjects) {
+  const idSet = new Set(idsToCheck);
+
+  for (const obj of arrayOfObjects) {
+    if (!idSet.has(obj.id)) {
+      return false;
+    }
+  }
+
+  return true;
+}
 const mapStatusToFormData = (response, formData) => {
   if (response && response?.length > 0) {
     for (const item of response) {
@@ -141,6 +153,23 @@ const mapStatusToFormData = (response, formData) => {
   } else return formData;
 };
 
+const mergeDraftSaveDoc = (newDocs, existedDocs) => {
+  const mergedDocs = newDocs.map((newDoc) => {
+    const matchedDoc = existedDocs.find(
+      (existedDoc) => existedDoc.id === newDoc.id
+    );
+    if (matchedDoc) {
+      return {
+        ...newDoc,
+        draftSaveDoc: matchedDoc.draftSaveDoc,
+      };
+    }
+    return newDoc;
+  });
+
+  return mergedDocs;
+};
+
 const mapStatusDocument = (documentData) => {
   if (documentData?.length > 0) {
     for (const item of documentData) {
@@ -167,20 +196,38 @@ const DocumentUploadForm = ({
   onSaveDraft,
   onSubmit,
 }: IDocumentUploadProps) => {
-  const [documentFormDataDetail, setDocumentFormDataDetail] = useState<
-    typeof documentUploadFormData
-  >(documentUploadFormData);
   const {
     register,
     setValue,
     formState: { errors },
   } = useFormContext();
+  const [documentFormDataDetail, setDocumentFormDataDetail] = useState<
+    typeof documentUploadFormData
+  >(documentUploadFormData);
+  const [uploadDocs, setUploadDocs] = useState<
+    (File & { error: boolean; typeCode: string })[]
+  >([]);
   const documentDetails = allFields?.document?.documentDetails || [];
   const isMBAProgram =
     allFields?.education?.programCode === "MBA-PROG" ||
     allFields?.education?.programCode === "MBA";
   useEffect(() => {
     if (documentDetails?.length > 0) {
+      const mappedDocs = mapStatusToFormData(
+        documentDetails,
+        documentUploadFormData
+      );
+      if (mappedDocs?.length > 0) {
+        const existedDocuments = mappedDocs
+          ?.filter((docs) => Boolean(docs?.draftSaveDoc))
+          .map(({ documentTypeCode, fileExtension, ...rest }) => ({
+            ...rest,
+            type: rest?.draftSaveDoc?.fileExtension,
+            typeCode: rest?.draftSaveDoc?.documentTypeCode,
+          }));
+        setUploadDocs([...existedDocuments]);
+        setValue("document.uploadedDocs", existedDocuments);
+      }
       setDocumentFormDataDetail(
         mapStatusToFormData(documentDetails, documentUploadFormData)
       );
@@ -189,30 +236,35 @@ const DocumentUploadForm = ({
 
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
-  const [uploadDocs, setUploadDocs] = useState<
-    (File & { error: boolean; typeCode: string })[]
-  >([]);
 
   const documentTypeList = documentType?.filter(
     (item) => item?.code !== "PAYMENTPROOF"
   );
-  const documentIds = documentFormDataDetail
-    ?.filter(
-      (doc) =>
-        doc.status?.toLowerCase() !== "approved" &&
-        doc.status?.toLowerCase() !== "submitted"
-    )
-    .map((document) => document.id);
-  const areAllDocumentsUploaded = documentIds?.every((id) =>
+  const documentIds = isMBAProgram
+    ? [...documentFormDataDetail, ...mbaProgramDocuments]
+    : documentFormDataDetail
+        ?.filter(
+          (doc) =>
+            doc.status?.toLowerCase() !== "approved" &&
+            doc.status?.toLowerCase() !== "submitted"
+        )
+        ?.map((document) => document.id);
+
+  const areAllDocumentsUploaded = areIdsPresent(
+    documentIds.map((obj) => obj.id),
     uploadDocs
-      ?.filter(
-        (doc: any) =>
-          doc.status?.toLowerCase() !== "approved" &&
-          doc.status?.toLowerCase() !== "submitted"
-      )
-      ?.some((doc) => doc.typeCode === id)
   );
 
+  // const areAllDocumentsUploaded = documentIds?.every((id) =>
+  //   uploadDocs
+  //     ?.filter(
+  //       (doc: any) =>
+  //         doc.status?.toLowerCase() !== "approved" &&
+  //         doc.status?.toLowerCase() !== "submitted"
+  //     )
+  //     ?.some((doc) => doc.typeCode === id)
+  // );
+  // console.log({ uploadDocs, areAllDocumentsUploaded, documentIds });
   const documentStatusDetail = deepClone(documentFormDataDetail);
 
   useEffect(() => {
@@ -310,10 +362,18 @@ const DocumentUploadForm = ({
   const documentFormData = isMBAProgram
     ? [...(documentFormDataDetail || []), ...mbaProgramDocuments]
     : documentFormDataDetail;
+
+  const uploadedDocuments = mergeDraftSaveDoc(
+    mapStatusToFormData(documentDetails, documentFormData),
+    uploadDocs
+  );
+
+  // console.log({uploadedDocuments,documentDetails})
+
   return (
     <div className="row mx-3 document-container">
       <div className="col-md-8">
-        {mapStatusToFormData(documentDetails, documentFormData)?.map(
+        {uploadedDocuments?.map(
           ({
             name,
             disabled,
@@ -329,7 +389,9 @@ const DocumentUploadForm = ({
               <DocumentUploadContainer
                 key={`${name}_${id}`}
                 title={name}
-                draftSaveDoc={draftSaveDoc}
+                selectedDocuments={
+                  draftSaveDoc ? [draftSaveDoc] : (null as any)
+                }
                 status={status}
                 isDeclaration={isDeclaration}
                 disabled={disabled}
