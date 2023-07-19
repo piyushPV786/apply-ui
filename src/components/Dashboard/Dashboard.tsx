@@ -434,11 +434,8 @@ function ApplicationCard({
   return (
     <>
       <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
-        <div
-          className=" d-flex flex-row justify-content-between"
-          onClick={getStudentApplications}
-        >
-          <div className="cursor-pointer">
+        <div className=" d-flex flex-row justify-content-between">
+          <div className="cursor-pointer" onClick={getStudentApplications}>
             <CachedOutlined className="m-2" />
           </div>
           <div>
