@@ -417,7 +417,11 @@ const ApplicationForm = () => {
       return;
     }
 
-    if (isDraftSave && checkValidationForDraftSave() && activeStep !== MagicNumbers.TWO) {
+    if (
+      isDraftSave &&
+      checkValidationForDraftSave() &&
+      activeStep !== MagicNumbers.TWO
+    ) {
       checkValidationForDraftSave();
 
       updateLead(
@@ -493,26 +497,28 @@ const ApplicationForm = () => {
 
     const files = [] as any[];
     if (activeStep === MagicNumbers.TWO) {
-      uploadedDocs.map((file: File & { typeCode: string }) => {
-        if (file?.typeCode === "nationalIdPassport") {
-          files.push({
-            documentTypeCode:
-              allFields?.document?.identificationDocumentType?.includes(
-                "others"
-              )
-                ? allFields?.document?.other
-                : allFields?.document?.identificationDocumentType ||
-                  "nationalIdPassport",
-            fileName: file.name,
-            fileType: file.type,
-          });
-        } else
-          files.push({
-            documentTypeCode: file?.typeCode,
-            fileName: file.name,
-            fileType: file.type,
-          });
-      });
+      uploadedDocs.map(
+        (file: File & { typeCode: string; documentTypeCode: string }) => {
+          if (file?.typeCode === "nationalIdPassport") {
+            files.push({
+              documentTypeCode:
+                allFields?.document?.identificationDocumentType?.includes(
+                  "others"
+                )
+                  ? allFields?.document?.other
+                  : allFields?.document?.identificationDocumentType ||
+                    "nationalIdPassport",
+              fileName: file.name,
+              fileType: file.type,
+            });
+          } else
+            files.push({
+              documentTypeCode: file?.documentTypeCode || file?.typeCode,
+              fileName: file.name,
+              fileType: file.type,
+            });
+        }
+      );
     } else if (activeStep === MagicNumbers.ONE) {
       paymentProof.map((file) => {
         files.push({
@@ -530,7 +536,7 @@ const ApplicationForm = () => {
       discountCode: allFields?.payment?.discountCode,
       discountAmount: allFields?.payment?.discountAmount,
       currencyCode: allFields?.payment?.selectedCurrency,
-      isDraft
+      isDraft,
       // studentTypeCode: allFields?.education?.studentTypeCode,
     };
     getUploadDocumentUrl(payload)
