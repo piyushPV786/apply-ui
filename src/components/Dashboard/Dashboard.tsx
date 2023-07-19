@@ -207,11 +207,7 @@ export const ApplicationDashboard = (props: any) => {
           setTimeout(() => {
             setToast({
               show: true,
-              message: `${
-                documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
-                  ? "Acceptance"
-                  : "Confirmation"
-              } Letter Downloaded Successfully`,
+              message: `${documentTypeCode.toLowerCase()} Letter Downloaded Successfully`,
               success: true,
             });
           }, 1000);
@@ -431,8 +427,9 @@ function ApplicationCard({
     status.includes(CommonEnums.APP_FEE_ACCEPTED) ||
     status.includes(CommonEnums.RESUB_APP_DOC);
 
-  const isProgramAddmittedOrIsIntakeAssigned =
-    isProgramAddmitted || isIntakeAssignmentPending;
+  const isProgramAddmittedOrIsIntakeAssigned = status.includes(
+    CommonEnums.APP_ENROLLED_STATUS
+  );
 
   return (
     <>
@@ -492,20 +489,19 @@ function ApplicationCard({
             </div>
           </div>
         </div>
-        {isProgramAddmittedOrIsIntakeAssigned && (
-          <div className="row px-4">
-            <div className="d-flex flex-column">
-              {studentCode && (
-                <StudentIdCard>
-                  Student No: <span>{studentCode}</span>
-                </StudentIdCard>
-              )}
-              {enrollmentNumber && (
-                <StudentIdCard>Enrollment No: {enrollmentNumber}</StudentIdCard>
-              )}
-            </div>
+
+        <div className="row px-4">
+          <div className="d-flex flex-row ">
+            {studentCode && (
+              <StudentIdCard>Student No: {studentCode}</StudentIdCard>
+            )}
+            {enrolmentCode && (
+              <EnrollmentIdCard>
+                Enrollment No: {enrolmentCode}
+              </EnrollmentIdCard>
+            )}
           </div>
-        )}
+        </div>
 
         <div className="w-100 mt-4 ">
           <Grid
@@ -621,7 +617,7 @@ function ApplicationCard({
               </Grid>
             )}
 
-            {isProgramAddmittedOrIsIntakeAssigned && (
+            {enrolmentCode && (
               <Grid item>
                 <StyledButton
                   onClick={() =>
@@ -637,7 +633,7 @@ function ApplicationCard({
                 />
               </Grid>
             )}
-            {isProgramAddmittedOrIsIntakeAssigned && (
+            {studentCode && (
               <Grid item>
                 <StyledButton
                   onClick={() =>
@@ -915,6 +911,18 @@ function ApplicationCard({
 }
 
 const StudentIdCard = styled.div<{ bgColor?: string }>`
+  background: ${({ bgColor }) => bgColor || "#235290"};
+  color: white;
+  max-width: 250px;
+  border-radius: 3px;
+  padding: 2px 8px;
+  margin: 15px;
+  span {
+    font-weight: bold;
+  }
+`;
+
+const EnrollmentIdCard = styled.div<{ bgColor?: string }>`
   background: ${({ bgColor }) => bgColor || "#239083"};
   color: white;
   max-width: 250px;
@@ -925,7 +933,6 @@ const StudentIdCard = styled.div<{ bgColor?: string }>`
     font-weight: bold;
   }
 `;
-
 const StyledStatusBedge = styled.div<any>`
   background: ${({ status }) => `${getStatusColor(status)}`};
   color: white;
