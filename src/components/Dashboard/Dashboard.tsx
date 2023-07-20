@@ -926,6 +926,7 @@ const EnrollmentIdCard = styled.div<{ bgColor?: string }>`
   border-radius: 3px;
   padding: 2px 8px;
   margin: 15px 0;
+  font-size: 14px;
   span {
     font-weight: bold;
   }

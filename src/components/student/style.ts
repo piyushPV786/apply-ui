@@ -67,8 +67,11 @@ export const Item = styled.div`
 `;
 export const GreenText = styled.span`
   color: #008554;
-  font-weight: 700;
+  font-weight: bold;
   font-size: 14px;
+  line-height:50px;
+  font-family: "Roboto";
+  letter-spacing:1px;
 `;
 export const Title = styled(GreenText)``;
 

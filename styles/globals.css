@@ -94,7 +94,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .document-container {
-  max-width: 1200px !important;
+  max-width: 1280px !important;
   margin: 0 auto;
   width: 100%;
   padding: 0 15px;
@@ -133,7 +133,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .form-label .text-danger {
   color: red;
-  font-family: roboto;
+  font-family: sans-serif;
   font-weight: bold;
   font-size: 20px;
   position: absolute;
@@ -318,4 +318,71 @@ button {
 .disabled {
   opacity: 0.4;
   pointer-events: none;
+}
+
+
+.upload-box
+{
+  border: 1px dashed #888 !important;
+  border-radius: 5px;
+}
+
+.sticky-wrapper{
+  position: sticky;
+  top: 10px;
+  justify-content: flex-start;
+}
+
+.sidebar-text
+{
+  font-size: 13px !important;
+  margin-top: 1rem !important;
+}
+
+.MuiButton-root.Mui-disabled
+{
+  border: 1px solid #CCC !important;
+}
+
+.widget-list
+{
+
+}
+
+.document-infotext, .doc-upload-text{
+  font-size: 14px !important;
+}
+
+.MuiButton-label {
+  font-size: 14px !important;
+  height: 20px;
+  line-height: 20px;
+}
+
+.upload-file-name
+{
+  width: 100%;
+}
+
+.upload-button-section, .upload-button-section div, .pr-0
+{
+padding-right: 0 !important;
+}
+.upload-button-section .MuiSvgIcon-root
+{
+  width: 20px;
+  height: 20px;
+}
+
+.document-container header .form-label, .sticky-wrapper header
+{
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+.sidebar-widget .MuiSvgIcon-root
+{
+width: 16px;
+height: 16px;
 }

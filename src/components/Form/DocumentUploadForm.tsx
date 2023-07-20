@@ -341,7 +341,7 @@ const DocumentUploadForm = ({
 
   const NationalityPassportFields = () => {
     return (
-      <div className="row mt-2">
+      <div className="row mt-4">
         <div className="col-md-6">
           <div className="mb-4">
             <AdvanceDropDown
@@ -401,7 +401,7 @@ const DocumentUploadForm = ({
 
   return (
     <div className="row mx-3 document-container">
-      <div className="col-md-8">
+      <div className="col-md-9">
         {uploadedDocuments?.map(
           ({
             name,
@@ -433,7 +433,8 @@ const DocumentUploadForm = ({
           }
         )}
       </div>
-      <div className="col-md-4">
+      <div className="col-md-3">
+        <div className="sticky-wrapper">
         <MainContainer>
           <div className="d-flex flex-column">
             <StyledButton
@@ -454,13 +455,14 @@ const DocumentUploadForm = ({
           </div>
         </MainContainer>
 
-        <MainContainer className="px-1">
+        <MainContainer className="sidebar-widget">
           <div className="d-flex flex-column">
             <Typography textAlign="left" component="header" fontWeight="bold">
               Document Status
             </Typography>
             {mapStatusDocument(documentStatusDetail).map(({ name, status }) => (
-              <TickWithText
+              <TickWithText 
+              className=""
                 key={name}
                 status={status?.toLowerCase()}
                 text={name}
@@ -468,12 +470,12 @@ const DocumentUploadForm = ({
             ))}
           </div>
         </MainContainer>
-        <MainContainer className="px-1">
+        <MainContainer className="sidebar-widget">
           <div className="d-flex flex-column py-1">
             <Typography textAlign="left" component="header" fontWeight="bold">
               Document Criteria
             </Typography>
-            <Typography color="black" textAlign="left" component="caption">
+            <Typography color="black" textAlign="left" className="sidebar-text">
               Documents not following the below guidelines will not be accepted
               and you will be asked to submit the documents again
             </Typography>
@@ -488,6 +490,7 @@ const DocumentUploadForm = ({
             ))}
           </div>
         </MainContainer>
+        </div>
       </div>
     </div>
   );
