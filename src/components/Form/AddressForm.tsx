@@ -236,6 +236,57 @@ export const AddressForm = ({
                 </div>
               </div>
             </div>
+
+            <div className="row">
+              <div className="col-md-12">
+                <div className="mb-4">
+                  <input
+                    className="form-check-input me-2"
+                    type="checkbox"
+                    id="flexCheckDefault"
+                    checked={isSameAsPostalAddressVal}
+                    {...register(`${isSameAsPostalAddress}`, {
+                      required: false,
+                    })}
+                    onClick={(e) => {
+                      setValue(
+                        `${isSameAsPostalAddress}`,
+                        e?.currentTarget?.checked,
+                        formOptions
+                      );
+                      if (e?.currentTarget?.checked) {
+                        setValue(
+                          `${postalAddress}`,
+                          resPostalAddressVal,
+                          formOptions
+                        );
+                        setValue(
+                          `${postalZipCode}`,
+                          resPostalCodeVal,
+                          formOptions
+                        );
+                        setValue(`${postalCity}`, resCityVal, formOptions);
+                        setValue(`${postalState}`, resStateVal, formOptions);
+                        setValue(
+                          `${postalCountry}`,
+                          resCountryVal,
+                          formOptions
+                        );
+                      } else if (!e?.currentTarget?.checked) {
+                        setValue(`${postalAddress}`, "");
+                        setValue(`${postalZipCode}`, "");
+                        setValue(`${postalCity}`, "");
+                        setValue(`${postalState}`, "");
+                        setValue(`${postalCountry}`, "");
+                      }
+                    }}
+                  />
+                  <label className="form-check-label ms-2">
+                    Select if same as Residential Address
+                  </label>
+                </div>
+              </div>
+            </div>
             <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
@@ -300,9 +351,15 @@ export const AddressForm = ({
                 <div className="mb-4">
                   <AdvanceDropDown
                     value={postalStateVal}
-                    options={posStateData?.sort((a, b) =>
-                      sortAscending(a, b, "name")
-                    )}
+                    options={
+                      isSameAsPostalAddressVal == false
+                        ? posStateData?.sort((a, b) =>
+                            sortAscending(a, b, "name")
+                          )
+                        : resStateData.sort((a, b) =>
+                            sortAscending(a, b, "name")
+                          )
+                    }
                     register={register}
                     mapKey="isoCode"
                     name={postalState}
@@ -379,56 +436,6 @@ export const AddressForm = ({
                         : "Please enter Zip/Postal Code"}
                     </div>
                   )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-12">
-                <div className="mb-4">
-                  <input
-                    className="form-check-input me-2"
-                    type="checkbox"
-                    id="flexCheckDefault"
-                    checked={isSameAsPostalAddressVal}
-                    {...register(`${isSameAsPostalAddress}`, {
-                      required: false,
-                    })}
-                    onClick={(e) => {
-                      setValue(
-                        `${isSameAsPostalAddress}`,
-                        e?.currentTarget?.checked,
-                        formOptions
-                      );
-                      if (e?.currentTarget?.checked) {
-                        setValue(
-                          `${resPostalAddress}`,
-                          postalAddressVal,
-                          formOptions
-                        );
-                        setValue(
-                          `${resPostalCode}`,
-                          postalZipCodeVal,
-                          formOptions
-                        );
-                        setValue(`${resCity}`, postalCityVal, formOptions);
-                        setValue(`${resState}`, postalStateVal, formOptions);
-                        setValue(
-                          `${resCountry}`,
-                          postalCountryVal,
-                          formOptions
-                        );
-                      } else if (!e?.currentTarget?.checked) {
-                        setValue(`${resPostalAddress}`, "");
-                        setValue(`${resPostalCode}`, "");
-                        setValue(`${resCity}`, "");
-                        setValue(`${resState}`, "");
-                        setValue(`${resCountry}`, "");
-                      }
-                    }}
-                  />
-                  <label className="form-check-label ms-2">
-                    Select if same with Postal Address
-                  </label>
                 </div>
               </div>
             </div>
