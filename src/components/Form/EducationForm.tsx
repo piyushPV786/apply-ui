@@ -101,7 +101,7 @@ export const EducationForm = (props: IEducationProps) => {
   const internationDegreeVal = watch(internationDegree);
   const educationFormError = errors[parentKey] as any;
   const touchFields = touchedFields[parentKey];
-
+  console.log(studentTypeVal);
   useEffect(() => {
     if (
       leadId &&
@@ -404,8 +404,8 @@ export const EducationForm = (props: IEducationProps) => {
 
                   <select
                     defaultValue={studentTypeVal}
-                    disabled={studentTypeVal}
-                    value={studentTypeVal}
+                    disabled={true}
+                    value={"REGULAR"}
                     className="form-select"
                     {...register(`${studentTypeName}`, { required: true })}
                     onChange={({ target: { value } }) => {
