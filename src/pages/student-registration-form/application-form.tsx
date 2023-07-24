@@ -853,6 +853,12 @@ const ApplicationForm = () => {
                       isApplicationEnrolled={isNewApplication}
                       onSubmit={() => submitFormData(allFields, false) as any}
                       onSaveDraft={() => onSubmit(getValues(), true) as any}
+                      selectedPrograms={
+                        programs?.find(
+                          (prog) =>
+                            prog?.code === allFields?.education?.programCode
+                        )!
+                      }
                     />
                   </>
                 )}
