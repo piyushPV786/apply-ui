@@ -101,7 +101,7 @@ export const EducationForm = (props: IEducationProps) => {
   const internationDegreeVal = watch(internationDegree);
   const educationFormError = errors[parentKey] as any;
   const touchFields = touchedFields[parentKey];
-  console.log(studentTypeVal);
+
   useEffect(() => {
     if (
       leadId &&
