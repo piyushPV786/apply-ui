@@ -32,7 +32,13 @@ const postalState = `${Address}[0].state`;
 const isSameAsPostalAddress = `${Address}.isSameAsPostalAddress`;
 const addressType = `${Address}[0].addressType`;
 const addressTypeResidential = `${Address}[1].addressType`;
-export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
+export const AddressForm = ({
+  countryData = [],
+  leadId = "",
+  getStateData,
+  posStateData,
+  resStateData,
+}: any) => {
   const CountryData = countryData;
   const {
     setValue,
@@ -56,6 +62,13 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
   useEffect(() => {
     setValue(`${addressType}`, "POSTAL");
     setValue(`${addressTypeResidential}`, "RESIDENTIAL");
+    if (postalCountryVal) {
+      getStateData(postalCountryVal, "POSTAL");
+    }
+
+    if (resCountryVal) {
+      getStateData(resCountryVal, "RESIDENTIAL");
+    }
   }, [leadId]);
 
   return (
@@ -108,6 +121,65 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
+                  <AdvanceDropDown
+                    value={postalCountryVal}
+                    options={CountryData.sort((a, b) =>
+                      sortAscending(a, b, "name")
+                    )}
+                    register={register}
+                    mapKey="code"
+                    name={postalCountry}
+                    onChange={(e: any) => {
+                      getStateData(e.target.value, "POSTAL");
+                      const value = e.target.value;
+                      setValue(
+                        postalCountry,
+                        capitalizeFirstLetter(value),
+                        formOptions
+                      );
+                    }}
+                    label="Country"
+                  />
+
+                  {error && error[0]?.country && (
+                    <div className="invalid-feedback">
+                      Please enter Postal Country
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="mb-4">
+                  <AdvanceDropDown
+                    value={postalStateVal}
+                    options={posStateData?.sort((a, b) =>
+                      sortAscending(a, b, "name")
+                    )}
+                    register={register}
+                    mapKey="isoCode"
+                    name={postalState}
+                    onChange={(e: any) => {
+                      const value = e.target.value;
+                      setValue(
+                        postalState,
+                        capitalizeFirstLetter(value),
+                        formOptions
+                      );
+                    }}
+                    label="State/Provinces"
+                  />
+
+                  {error && error[0]?.state && (
+                    <div className="invalid-feedback">
+                      Please enter Postal State
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-4">
+                <div className="mb-4">
                   <StyledLabel required>City</StyledLabel>
                   <input
                     value={postalCityVal}
@@ -133,65 +205,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                   )}
                 </div>
               </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>State/Provinces</StyledLabel>
-                  <input
-                    {...register(`${postalState}`, {
-                      required: true,
-                    })}
-                    className="form-control"
-                    value={postalStateVal}
-                    defaultValue={postalStateVal}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const name = e.target.name;
-                      if (onlyAlphabets(value)) {
-                        setValue(
-                          name,
-                          capitalizeFirstLetter(value),
-                          formDirtyState
-                        );
-                      }
-                    }}
-                  />
-                  {error && error[0]?.state && (
-                    <div className="invalid-feedback">
-                      Please enter Postal State
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <AdvanceDropDown
-                    value={postalCountryVal}
-                    options={CountryData.sort((a, b) =>
-                      sortAscending(a, b, "name")
-                    )}
-                    register={register}
-                    mapKey="code"
-                    name={postalCountry}
-                    onChange={(e: any) => {
-                      const value = e.target.value;
-                      setValue(
-                        postalCountry,
-                        capitalizeFirstLetter(value),
-                        formOptions
-                      );
-                    }}
-                    label="Country"
-                  />
 
-                  {error && error[0]?.country && (
-                    <div className="invalid-feedback">
-                      Please enter Postal Country
-                    </div>
-                  )}
-                </div>
-              </div>
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel required>Pin Code</StyledLabel>
@@ -305,6 +319,62 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-4">
+                    <AdvanceDropDown
+                      value={resCountryVal}
+                      label="Country"
+                      options={CountryData?.sort((a, b) =>
+                        sortAscending(a, b, "name")
+                      )}
+                      name={resCountry}
+                      register={register}
+                      mapKey="code"
+                      onChange={(e: any) => {
+                        getStateData(e.target.value, "RESIDENTIAL");
+                        const value = e.target.value;
+                        setValue(resCountry, value, formOptions);
+                      }}
+                    />
+                    {error && error[1]?.country && (
+                      <div className="invalid-feedback">
+                        Please enter Residential Country
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <AdvanceDropDown
+                      register={register}
+                      options={resStateData?.sort((a, b) =>
+                        sortAscending(a, b, "name")
+                      )}
+                      mapKey="isoCode"
+                      value={resStateVal}
+                      name={resState}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(
+                            name,
+                            capitalizeFirstLetter(value),
+                            formDirtyState
+                          );
+                        }
+                      }}
+                      label="State/Provinces"
+                    />
+                    {error && error[1]?.state && (
+                      <div className="invalid-feedback">
+                        Please enter Residential State
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4">
+                  <div className="mb-4">
                     <StyledLabel required>City</StyledLabel>
                     <input
                       {...register(`${resCity}`, {
@@ -332,61 +402,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                     )}
                   </div>
                 </div>
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <StyledLabel required>State/Provinces</StyledLabel>
-                    <input
-                      {...register(`${resState}`, {
-                        required: true,
-                      })}
-                      className="form-control"
-                      value={resStateVal}
-                      defaultValue={resStateVal}
-                      name={resState}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        const name = e.target.name;
-                        if (onlyAlphabets(value)) {
-                          setValue(
-                            name,
-                            capitalizeFirstLetter(value),
-                            formDirtyState
-                          );
-                        }
-                      }}
-                    />
-                    {error && error[1]?.state && (
-                      <div className="invalid-feedback">
-                        Please enter Residential State
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <AdvanceDropDown
-                      value={resCountryVal}
-                      label="Country"
-                      options={CountryData?.sort((a, b) =>
-                        sortAscending(a, b, "name")
-                      )}
-                      name={resCountry}
-                      register={register}
-                      mapKey="code"
-                      onChange={(e: any) => {
-                        const value = e.target.value;
-                        setValue(resCountry, value, formOptions);
-                      }}
-                    />
-                    {error && error[1]?.country && (
-                      <div className="invalid-feedback">
-                        Please enter Residential Country
-                      </div>
-                    )}
-                  </div>
-                </div>
+
                 <div className="col-md-4">
                   <div className="mb-4">
                     <StyledLabel required>Pin Code</StyledLabel>

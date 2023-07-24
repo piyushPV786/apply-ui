@@ -73,7 +73,10 @@ const ApplicationForm = () => {
     useState<any>([]);
   const [nationalityStatus, setNationalityStatus] = useState([]);
   const [termsOpen, settermsOpen] = useState<any>(false);
-
+  const [posStateData, setPosStateData] = useState([]);
+  const [resStateData, setResStateData] = useState([]);
+  const [sponsorStateData, setSponsorStateData] = useState([]);
+  const [employedStateData, setEmployedStateData] = useState([]);
   const methods = useForm<ILeadFormValues>({
     mode: "all",
     reValidateMode: "onBlur",
@@ -610,6 +613,20 @@ const ApplicationForm = () => {
         console.error(err);
       });
   };
+
+  const getStateData = async (countryCode, varient) => {
+    const data = await CommonAPI.get(`${CommonApi.STATE}/${countryCode}`);
+    if (varient == "POSTAL") {
+      setPosStateData(data?.data?.data);
+    } else if (varient == "RESIDENTIAL") {
+      setResStateData(data?.data?.data);
+    } else if (varient == "SPONSOR") {
+      setSponsorStateData(data?.data?.data);
+    } else if (varient == "EMPLOYED") {
+      setEmployedStateData(data?.data?.data);
+    }
+  };
+
   const getUserDetail = () => {
     const isAuthenticate = JSON.parse(
       sessionStorage?.getItem("authenticate") as any
@@ -768,6 +785,9 @@ const ApplicationForm = () => {
                             key="AddressForm"
                             leadId={leadId}
                             countryData={countryData}
+                            getStateData={getStateData}
+                            posStateData={posStateData}
+                            resStateData={resStateData}
                           />
                           <EducationForm
                             key="EducationForm"
@@ -785,6 +805,8 @@ const ApplicationForm = () => {
                             sponsorModeArr={sponsorModes}
                             relationData={relationData}
                             countryData={countryData}
+                            getStateData={getStateData}
+                            sponsorStateData={sponsorStateData}
                           />
                           <EmployedForm
                             leadId={leadId}
@@ -792,6 +814,8 @@ const ApplicationForm = () => {
                             employmentStatusArr={employmentStatus}
                             employmentIndustries={employmentIndustries}
                             countryData={countryData}
+                            getStateData={getStateData}
+                            employedStateData={employedStateData}
                           />
                           <KinDetailsForm
                             relationData={relationData}
