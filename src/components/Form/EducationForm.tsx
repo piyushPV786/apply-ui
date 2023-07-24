@@ -120,6 +120,10 @@ export const EducationForm = (props: IEducationProps) => {
     }
   }, [internationDegreeVal]);
 
+  useEffect(() => {
+    setValue(studentTypeName, "REGULAR");
+  }, []);
+
   const getQualificationStudyModeData = async (programCode: string) => {
     setLoading(true);
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
@@ -405,7 +409,7 @@ export const EducationForm = (props: IEducationProps) => {
                   <select
                     defaultValue={studentTypeVal}
                     disabled={true}
-                    value={"REGULAR"}
+                    value={studentTypeVal}
                     className="form-select"
                     {...register(`${studentTypeName}`, { required: true })}
                     onChange={({ target: { value } }) => {
