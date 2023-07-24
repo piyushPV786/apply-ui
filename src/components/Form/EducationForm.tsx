@@ -404,7 +404,8 @@ export const EducationForm = (props: IEducationProps) => {
 
                   <select
                     defaultValue={studentTypeVal}
-                    value={studentTypeVal}
+                    disabled={true}
+                    value={"REGULAR"}
                     className="form-select"
                     {...register(`${studentTypeName}`, { required: true })}
                     onChange={({ target: { value } }) => {
