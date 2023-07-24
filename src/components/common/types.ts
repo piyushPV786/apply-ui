@@ -160,6 +160,7 @@ export interface IOption {
   deletedAt?: any;
   name: string;
   code: string;
+  category?: string;
 }
 
 export interface Mode {
