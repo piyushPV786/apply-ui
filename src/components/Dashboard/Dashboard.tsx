@@ -207,7 +207,7 @@ export const ApplicationDashboard = (props: any) => {
           setTimeout(() => {
             setToast({
               show: true,
-              message: `${documentTypeCode.toLowerCase()} Letter Downloaded Successfully`,
+              message: `${documentTypeCode.toLowerCase()}  Downloaded Successfully`,
               success: true,
             });
           }, 1000);
@@ -597,7 +597,9 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-            {isProgramAddmittedOrIsIntakeAssigned && (
+            {document.find(
+              (doc) => doc?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER
+            ) && (
               <Grid item>
                 <StyledButton
                   isDownloadBtn
@@ -614,7 +616,9 @@ function ApplicationCard({
               </Grid>
             )}
 
-            {enrolmentCode && (
+            {document.find(
+              (doc) => doc?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
+            ) && (
               <Grid item>
                 <StyledButton
                   onClick={() =>
@@ -630,7 +634,9 @@ function ApplicationCard({
                 />
               </Grid>
             )}
-            {studentCode && (
+            {document.find(
+              (doc) => doc?.documentTypeCode === CommonEnums.WELCOME_LETTER
+            ) && (
               <Grid item>
                 <StyledButton
                   onClick={() =>
