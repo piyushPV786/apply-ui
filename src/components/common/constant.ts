@@ -125,6 +125,7 @@ export const CommonApi = {
   AGENT_LIST: "/user/role/Sales",
   IDENTIFICATIONDOCUMENT: "/identification-Type",
   EMAILCHECK: "/lead/check-duplicate-email",
+  STATE: "state",
 };
 
 export const RoutePaths = {
