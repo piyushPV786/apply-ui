@@ -89,6 +89,154 @@ export const AddressForm = ({
         <AccordionDetails>
           <div className="container-fluid form-padding">
             <div className="row">
+              <div className="row">
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <StyledLabel required>Residential Address</StyledLabel>
+                    <input
+                      type="text"
+                      {...register(`${resPostalAddress}`, {
+                        required: true,
+                      })}
+                      value={resPostalAddressVal}
+                      className="form-control"
+                      id="postalAddress"
+                      placeholder="e.g 10 church street"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabetsOrNumbersDash(value)) {
+                          setValue(
+                            name,
+                            capitalizeFirstLetter(value),
+                            formDirtyState
+                          );
+                        }
+                      }}
+                    />
+                    {error && error[1]?.street && (
+                      <div className="invalid-feedback">
+                        Please enter Residential Address
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <AdvanceDropDown
+                      value={resCountryVal}
+                      label="Country"
+                      options={CountryData?.sort((a, b) =>
+                        sortAscending(a, b, "name")
+                      )}
+                      name={resCountry}
+                      register={register}
+                      mapKey="code"
+                      onChange={(e: any) => {
+                        getStateData(e.target.value, "RESIDENTIAL");
+                        const value = e.target.value;
+                        setValue(resCountry, value, formOptions);
+                      }}
+                    />
+                    {error && error[1]?.country && (
+                      <div className="invalid-feedback">
+                        Please enter Residential Country
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <AdvanceDropDown
+                      register={register}
+                      options={resStateData?.sort((a, b) =>
+                        sortAscending(a, b, "name")
+                      )}
+                      mapKey="isoCode"
+                      value={resStateVal}
+                      name={resState}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(
+                            name,
+                            capitalizeFirstLetter(value),
+                            formDirtyState
+                          );
+                        }
+                      }}
+                      label="State/Provinces"
+                    />
+                    {error && error[1]?.state && (
+                      <div className="invalid-feedback">
+                        Please enter Residential State
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <StyledLabel required>City</StyledLabel>
+                    <input
+                      {...register(`${resCity}`, {
+                        required: true,
+                      })}
+                      className="form-control"
+                      value={resCityVal}
+                      defaultValue={resCityVal}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const name = e.target.name;
+                        if (onlyAlphabets(value)) {
+                          setValue(
+                            name,
+                            capitalizeFirstLetter(value),
+                            formDirtyState
+                          );
+                        }
+                      }}
+                    />
+                    {error && error[1]?.city && (
+                      <div className="invalid-feedback">
+                        Please enter Residential City
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <StyledLabel required>Pin Code</StyledLabel>
+                    <input
+                      value={resPostalCodeVal}
+                      defaultValue={resPostalCodeVal}
+                      {...register(`${resPostalCode}`, {
+                        required: true,
+                        maxLength: 6,
+                        minLength: 4,
+                      })}
+                      type="number"
+                      className="form-control"
+                      id="postalCode"
+                      placeholder="Enter Zip/Postal Code"
+                    />
+                    {error && error[1]?.zipcode && (
+                      <div className="invalid-feedback">
+                        {error[1]?.zipcode.type === "maxLength"
+                          ? "Max length exceeded"
+                          : error[1]?.zipcode.type === "minLength"
+                          ? "Minimum length should be 4"
+                          : "Please enter Zip/Postal Code"}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel required>Postal Address</StyledLabel>
@@ -281,154 +429,6 @@ export const AddressForm = ({
                   <label className="form-check-label ms-2">
                     Select if same with Postal Address
                   </label>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="row">
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <StyledLabel required>Residential Address</StyledLabel>
-                    <input
-                      type="text"
-                      {...register(`${resPostalAddress}`, {
-                        required: true,
-                      })}
-                      value={resPostalAddressVal}
-                      className="form-control"
-                      id="postalAddress"
-                      placeholder="e.g 10 church street"
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        const name = e.target.name;
-                        if (onlyAlphabetsOrNumbersDash(value)) {
-                          setValue(
-                            name,
-                            capitalizeFirstLetter(value),
-                            formDirtyState
-                          );
-                        }
-                      }}
-                    />
-                    {error && error[1]?.street && (
-                      <div className="invalid-feedback">
-                        Please enter Residential Address
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <AdvanceDropDown
-                      value={resCountryVal}
-                      label="Country"
-                      options={CountryData?.sort((a, b) =>
-                        sortAscending(a, b, "name")
-                      )}
-                      name={resCountry}
-                      register={register}
-                      mapKey="code"
-                      onChange={(e: any) => {
-                        getStateData(e.target.value, "RESIDENTIAL");
-                        const value = e.target.value;
-                        setValue(resCountry, value, formOptions);
-                      }}
-                    />
-                    {error && error[1]?.country && (
-                      <div className="invalid-feedback">
-                        Please enter Residential Country
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <AdvanceDropDown
-                      register={register}
-                      options={resStateData?.sort((a, b) =>
-                        sortAscending(a, b, "name")
-                      )}
-                      mapKey="isoCode"
-                      value={resStateVal}
-                      name={resState}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        const name = e.target.name;
-                        if (onlyAlphabets(value)) {
-                          setValue(
-                            name,
-                            capitalizeFirstLetter(value),
-                            formDirtyState
-                          );
-                        }
-                      }}
-                      label="State/Provinces"
-                    />
-                    {error && error[1]?.state && (
-                      <div className="invalid-feedback">
-                        Please enter Residential State
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <StyledLabel required>City</StyledLabel>
-                    <input
-                      {...register(`${resCity}`, {
-                        required: true,
-                      })}
-                      className="form-control"
-                      value={resCityVal}
-                      defaultValue={resCityVal}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        const name = e.target.name;
-                        if (onlyAlphabets(value)) {
-                          setValue(
-                            name,
-                            capitalizeFirstLetter(value),
-                            formDirtyState
-                          );
-                        }
-                      }}
-                    />
-                    {error && error[1]?.city && (
-                      <div className="invalid-feedback">
-                        Please enter Residential City
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="col-md-4">
-                  <div className="mb-4">
-                    <StyledLabel required>Pin Code</StyledLabel>
-                    <input
-                      value={resPostalCodeVal}
-                      defaultValue={resPostalCodeVal}
-                      {...register(`${resPostalCode}`, {
-                        required: true,
-                        maxLength: 6,
-                        minLength: 4,
-                      })}
-                      type="number"
-                      className="form-control"
-                      id="postalCode"
-                      placeholder="Enter Zip/Postal Code"
-                    />
-                    {error && error[1]?.zipcode && (
-                      <div className="invalid-feedback">
-                        {error[1]?.zipcode.type === "maxLength"
-                          ? "Max length exceeded"
-                          : error[1]?.zipcode.type === "minLength"
-                          ? "Minimum length should be 4"
-                          : "Please enter Zip/Postal Code"}
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
             </div>
