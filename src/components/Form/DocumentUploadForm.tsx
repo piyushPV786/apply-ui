@@ -1,16 +1,9 @@
 import { useState, useEffect } from "react";
-import { PaymentContainer } from "../payment/payment";
 import { useFormContext } from "react-hook-form";
 import styled from "styled-components";
-import { Green, StyledLabel } from "../common/common";
+import { StyledLabel } from "../common/common";
 import StyledButton from "../button/button";
-import {
-  deepClone,
-  formDirtyState,
-  formOptions,
-  isInvalidFileType,
-  uniqueArrayOfObject,
-} from "../../Util/Util";
+import { deepClone, formDirtyState, formOptions, isInvalidFileType } from "../../Util/Util";
 
 import { ILeadFormValues, IOption } from "../common/types";
 import DocumentUploadContainer, {
@@ -21,6 +14,7 @@ import { Typography } from "@mui/material";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { identificationDocumentTypeKey } from "./personalInfoForm";
 import { CloseOutlined } from "@material-ui/icons";
+import { GraduationType } from "../common/constant";
 
 const documentUploadFormData = [
   {
@@ -102,6 +96,7 @@ interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
   isApplicationEnrolled: boolean;
+  selectedPrograms: IOption;
   isLoading?: boolean;
   documentType: IOption[];
   leadId: string;
@@ -111,31 +106,6 @@ interface IDocumentUploadProps {
   onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
 
-// function areIdsPresent(idsToCheck, arrayOfObjects) {
-//   const idSet = new Set(idsToCheck);
-
-//   for (const obj of arrayOfObjects) {
-//     if (!idSet.has(obj.id)) {
-//       return false;
-//     }
-//   }
-
-//   return true;
-// }
-function isIdPresent(id, arrayOfObjects) {
-  return arrayOfObjects.some((obj) => obj.id === id);
-}
-function areIdsPresent(idsToCheck, arrayOfObjects) {
-  const idSet = new Set(idsToCheck);
-  const uploadedIds: any = new Set(arrayOfObjects.map((obj) => obj.id) as any);
-
-  for (const id of uploadedIds) {
-    if (!idSet.has(id)) {
-      return false;
-    }
-  }
-  return true;
-}
 const mapStatusToFormData = (response, formData) => {
   if (response && response?.length > 0) {
     for (const item of response) {
@@ -217,6 +187,7 @@ const DocumentUploadForm = ({
   isApplicationEnrolled,
   onSaveDraft,
   onSubmit,
+  selectedPrograms,
 }: IDocumentUploadProps) => {
   const {
     register,
@@ -234,27 +205,10 @@ const DocumentUploadForm = ({
   const isMBAProgram =
     allFields?.education?.programCode === "MBA-PROG" ||
     allFields?.education?.programCode === "MBA";
-  useEffect(() => {
-    const existingPaymentProof = allFields?.payment?.paymentProof;
-    if (existingPaymentProof && existingPaymentProof.length > 0) {
-      existingPaymentProof?.forEach((element) => {
-        element.typeCode = "PAYMENTPROOF";
-      });
 
-      const allUploadedFiles = uniqueArrayOfObject(
-        [...uploadDocs, ...existingPaymentProof],
-        "size"
-      );
-      setValue("document.uploadedDocs", allUploadedFiles, formOptions);
-      setUploadDocs(allUploadedFiles);
-    }
-  }, [leadId]);
+  const isPostGraduation = selectedPrograms?.category === GraduationType.PG; /// upload CV in the upload document section mandatory for Post Graduate Programs and Non mandatory for Under Graduate Programs.
+
   useEffect(() => {
-    if (isMBAProgram) {
-      setRemainingDocs((prevState) => [
-        ...(new Set([...prevState, ...mbaDocs]) as any),
-      ]);
-    }
     if (documentDetails?.length > 0) {
       const mappedDocs = mapStatusToFormData(
         documentDetails,
@@ -297,15 +251,6 @@ const DocumentUploadForm = ({
   const documentTypeList = documentType?.filter(
     (item) => item?.code !== "PAYMENTPROOF"
   );
-  const documentIds = isMBAProgram
-    ? [...documentFormDataDetail, ...mbaProgramDocuments]
-    : documentFormDataDetail
-        ?.filter(
-          (doc) =>
-            doc.status?.toLowerCase() !== "approved" &&
-            doc.status?.toLowerCase() !== "submitted"
-        )
-        ?.map((document) => document.id);
 
   const documentStatusDetail = deepClone(documentFormDataDetail);
 
@@ -332,13 +277,15 @@ const DocumentUploadForm = ({
     });
     setUploadDocs((prevState) => [...prevState, ...(uploadedFiles as any)]);
     const allFiles = [...uploadDocs, ...uploadedFiles];
-    const remainDocs = remainingDocs?.filter(
+    const remainingDocuments = isPostGraduation
+      ? remainingDocs?.filter((doc) => !doc?.includes("detailCV"))
+      : remainingDocs;
+    const remainDocs = remainingDocuments?.filter(
       (doc) => !allFiles?.find((document) => document?.typeCode === doc)
     );
     setRemainingDocs(remainDocs?.filter(Boolean));
     setValue("document.uploadedDocs", allFiles);
   };
-
   const NationalityPassportFields = () => {
     return (
       <div className="row mt-2">
@@ -398,6 +345,24 @@ const DocumentUploadForm = ({
     mapStatusToFormData(documentDetails, documentFormData),
     uploadDocs
   );
+  const allRequiredDocuments = isMBAProgram
+    ? [...remainingDocs, ...mbaDocs]?.filter(
+        (remainDoc) =>
+          !uploadDocs?.find((doc) =>
+            doc?.name?.toLowerCase()?.includes(remainDoc?.toLowerCase())
+          )
+      )
+    : [...remainingDocs]?.filter(
+        (remainDoc) =>
+          !uploadDocs?.find((doc) =>
+            doc?.name?.toLowerCase()?.includes(remainDoc?.toLowerCase())
+          )
+      );
+  const documentsNeedTOBeUpload = isPostGraduation
+    ? allRequiredDocuments
+        ?.filter(Boolean)
+        ?.filter((item) => !item?.includes("detailCV"))
+    : allRequiredDocuments?.filter(Boolean);
 
   return (
     <div className="row mx-3 document-container">
@@ -434,99 +399,78 @@ const DocumentUploadForm = ({
         )}
       </div>
       <div className="col-md-4">
-        <MainContainer>
-          <div className="d-flex flex-column">
-            <StyledButton
-              isGreenWhiteCombination
-              className="my-2"
-              title="Save as Draft"
-              onClick={onSaveDraft}
-            />
-            <StyledButton
-              disabled={remainingDocs?.length > 0}
-              onClick={() => {
-                setUploadDocs([]);
-                setDocumentFormDataDetail([]);
-                onSubmit();
-              }}
-              title="Submit Documents"
-            />
-          </div>
-        </MainContainer>
+        <div>
+          <MainContainer>
+            <div className="d-flex flex-column">
+              <StyledButton
+                isGreenWhiteCombination
+                className="my-2"
+                title="Save as Draft"
+                onClick={onSaveDraft}
+              />
+              <StyledButton
+                disabled={documentsNeedTOBeUpload?.length > 0}
+                onClick={() => {
+                  setUploadDocs([]);
+                  setDocumentFormDataDetail([]);
+                  onSubmit();
+                }}
+                title="Submit Documents"
+              />
+            </div>
+          </MainContainer>
 
-        <MainContainer className="px-1">
-          <div className="d-flex flex-column">
-            <Typography textAlign="left" component="header" fontWeight="bold">
-              Document Status
-            </Typography>
-            {mapStatusDocument(documentStatusDetail).map(({ name, status }) => (
-              <TickWithText
-                key={name}
-                status={status?.toLowerCase()}
-                text={name}
-              />
-            ))}
-          </div>
-        </MainContainer>
-        <MainContainer className="px-1">
-          <div className="d-flex flex-column py-1">
-            <Typography textAlign="left" component="header" fontWeight="bold">
-              Document Criteria
-            </Typography>
-            <Typography color="black" textAlign="left" component="caption">
-              Documents not following the below guidelines will not be accepted
-              and you will be asked to submit the documents again
-            </Typography>
-            {documentCriteria.map(({ text, icon, isInnerText }: any) => (
-              <TickWithText
-                key={text}
-                text={text}
-                icon={icon}
-                isInnerText={isInnerText}
-                required={false}
-              />
-            ))}
-          </div>
-        </MainContainer>
+          <MainContainer className="px-1">
+            <div className="d-flex flex-column">
+              <Typography textAlign="left" component="header" fontWeight="bold">
+                Document Status
+              </Typography>
+              {mapStatusDocument(documentStatusDetail).map(
+                ({ name, status }) => (
+                  <TickWithText
+                    key={name}
+                    status={status?.toLowerCase()}
+                    text={name}
+                  />
+                )
+              )}
+            </div>
+          </MainContainer>
+          <MainContainer className="px-1">
+            <div className="d-flex flex-column py-1">
+              <Typography textAlign="left" component="header" fontWeight="bold">
+                Document Criteria
+              </Typography>
+              <Typography color="black" textAlign="left" component="caption">
+                Documents not following the below guidelines will not be
+                accepted and you will be asked to submit the documents again
+              </Typography>
+              {documentCriteria.map(({ text, icon, isInnerText }: any) => (
+                <TickWithText
+                  key={text}
+                  text={text}
+                  icon={icon}
+                  isInnerText={isInnerText}
+                  required={false}
+                />
+              ))}
+            </div>
+          </MainContainer>
+        </div>
       </div>
     </div>
   );
 };
 
 export default DocumentUploadForm;
-const DocumentCriteriaContainer = styled.div`
-  background: #dde1e3;
-  padding: 1rem;
-`;
-const StyleHeading = styled.div``;
-const PaymentHeading = styled(PaymentContainer)`
-  border-bottom: 2px solid ${Green};
-  padding: 1rem 10px;
-`;
 
-const StyledUploadDocumentContainer = styled.div`
-  text-align: center;
-`;
-const CustomContainer = styled.div`
-  padding: 1.5rem;
-  max-width: 350px;
-  cursor: pointer;
-  background-color: #f5f5f5;
-  width: 100%;
-  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='green' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
-`;
-
-const UploadedFilesContainer = styled.div``;
-
-const ImageContainer = styled.div`
-  background: white;
-  display: flex;
-  padding: 0.5rem;
-  max-width: 160px;
-  width: 100%;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  max-width: 160px;
-  border: 2px solid ${Green};
+const FixedContainer = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px; /* Adjust the width to your requirement */
+  height: 100vh;
+  overflow-y: auto;
+  background-color: white;
+  padding: 20px;
 `;
