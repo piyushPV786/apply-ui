@@ -194,12 +194,9 @@ export const ApplicationDashboard = (props: any) => {
       | CommonEnums.CONFIRMATION_LETTER
       | CommonEnums.ACCEPTANCE_LETTER
   ) => {
-    console.log("res", documentDetail);
     const documentDetails = documentDetail?.find(
       (doc) => doc?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
     );
-
-    console.log("res1", documentDetails);
 
     if (documentDetails) {
       const { name = "" } = { ...documentDetails };
