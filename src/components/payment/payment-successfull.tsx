@@ -10,6 +10,7 @@ import PayIcon from "../../../public/assets/images/pay.png";
 import Image from "next/image";
 import { RoutePaths } from "../common/constant";
 import { DocumentSuccess } from "../document/DocumentUploadSuccess";
+import { DocumentSaveSuccess } from "../document/DocumentSaveSuccess";
 
 const PaymentSuccessFull = (props: any) => {
   const router = useRouter();
@@ -223,6 +224,9 @@ const PaymentSuccessFull = (props: any) => {
           {props?.pageType === "success" && <OnlinePaymentSuccess />}
           {props?.pageType === "document-success" && <DocumentUploadSuccess />}
           {props?.pageType === "document-upload-success" && <DocumentSuccess />}
+          {props?.pageType === "document-save-success" && (
+            <DocumentSaveSuccess />
+          )}
           {props?.pageType === "document-failure" && <DocumentUploadFailed />}
           {props?.pageType === "application-enrolled-success" && (
             <ApplicationEnrolledSuccess />
