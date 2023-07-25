@@ -64,6 +64,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     setValue,
     register,
     watch,
+
     unregister,
     control,
     formState: { errors, touchedFields },
@@ -142,6 +143,20 @@ export const SponsoredForm = (props: ISponsorProps) => {
     }
   };
 
+  const reset = () => {
+    setValue(sponsorAddress, "");
+    setValue(sponsorCity, "");
+    setValue(sponsorEmail, "");
+    setValue(sponsorCountry, "");
+    setValue(sponsorMobileCode, "");
+    setValue(sponsorPhoneNumber, "");
+    setValue(sponsorState, "");
+    setValue(sponsorName, "");
+    setValue(relationShip, "");
+    setValue(sponsorPinCode, "");
+    setValue(sponsorMode, "");
+  };
+
   return (
     <>
       <StyledAccordion defaultExpanded={isSponserNeed}>
@@ -174,10 +189,13 @@ export const SponsoredForm = (props: ISponsorProps) => {
             <input
               disabled={isBursaryStudentType}
               className="form-check-input me-2"
+              onClick={(e) => {
+                reset();
+              }}
               type="radio"
               {...register(`${isSponsor}`, { required: isSponserNeed })}
               value="no"
-              checked={isSponsorVal === "no"}
+              checked={!isSponsorVal || isSponsorVal === "no"}
             />
             <label className="form-check-label">No</label>
           </div>

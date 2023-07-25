@@ -489,7 +489,7 @@ function ApplicationCard({
 
         <div className="row px-4">
           <div className="d-flex flex-row ">
-            {studentCode && (
+            {applicationNumber && (
               <StudentIdCard>Application No: {applicationNumber}</StudentIdCard>
             )}
             {studentCode && (

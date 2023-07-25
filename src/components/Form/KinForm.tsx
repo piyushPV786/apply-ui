@@ -90,6 +90,14 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
     }
   }, [isKinDetailExist, error]);
 
+  const reset = () => {
+    setValue(fullName, "");
+    setValue(relationShip, "");
+    setValue(Email, "");
+    setValue(phoneNumber, "");
+    setValue(mobileCountryCode, "");
+  };
+
   return (
     <>
       <StyledAccordion defaultExpanded={isKinNeed}>
@@ -123,7 +131,10 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
               type="radio"
               {...register(`${isKin}`, { required: true })}
               value="no"
-              checked={isNextKinVal === "no"}
+              onClick={() => {
+                reset();
+              }}
+              checked={!isNextKinVal || isNextKinVal === "no"}
             />
             <label className="form-check-label">No</label>
           </div>

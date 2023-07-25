@@ -112,6 +112,22 @@ export const EmployedForm = (props: IEmployeProps) => {
       });
     }
   }, [isEmployedNeed]);
+
+  const reset = () => {
+    setValue(employer, "");
+    setValue(jobTitle, "");
+    setValue(industry, "");
+    setValue(managerName, "");
+    setValue(officeAddress, "");
+    setValue(officeNumber, "");
+    setValue(officePhoneCode, "");
+    setValue(isEmployed, "");
+    setValue(employmentCountry, "");
+    setValue(employmentCity, "");
+    setValue(employmentPinCode, "");
+    setValue(employmentState, "");
+    setValue(employmentStatus, "");
+  };
   return (
     <>
       <StyledAccordion defaultExpanded={isEmployedNeed}>
@@ -145,7 +161,10 @@ export const EmployedForm = (props: IEmployeProps) => {
               type="radio"
               {...register(`${isEmployed}`, { required: true })}
               value="no"
-              checked={isEmployedVal === "no"}
+              checked={!isEmployedVal || isEmployedVal === "no"}
+              onClick={(e) => {
+                reset();
+              }}
               onFocus={(e) => {
                 if (e.target.checked) {
                   unregister(`${employmentCountry}`, {
