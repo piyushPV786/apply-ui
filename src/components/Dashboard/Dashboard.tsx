@@ -502,7 +502,6 @@ function ApplicationCard({
             )}
           </div>
         </div>
-
         <div className="w-100 mt-4 ">
           <Grid
             style={{
@@ -600,7 +599,7 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-            {document.find(
+            {document?.find(
               (doc) => doc?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER
             ) && (
               <Grid item>
@@ -619,7 +618,7 @@ function ApplicationCard({
               </Grid>
             )}
 
-            {document.find(
+            {document?.find(
               (doc) => doc?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
             ) && (
               <Grid item>
@@ -637,7 +636,7 @@ function ApplicationCard({
                 />
               </Grid>
             )}
-            {document.find(
+            {document?.find(
               (doc) => doc?.documentTypeCode === CommonEnums.WELCOME_LETTER
             ) && (
               <Grid item>
