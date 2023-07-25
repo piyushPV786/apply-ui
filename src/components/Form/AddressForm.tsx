@@ -374,7 +374,7 @@ export const AddressForm = ({
                     label="State/Provinces"
                   />
 
-                  {error && error[0]?.state && (
+                  {!isSameAsPostalAddressVal && error && error[0]?.state && (
                     <div className="invalid-feedback">
                       Please enter Postal State
                     </div>
