@@ -395,6 +395,7 @@ const ApplicationForm = () => {
     if (leadCode && !isDraftSave) {
       setSubmitted(true);
       request.lead.leadCode = leadCode;
+
       updateLead(
         request,
         leadCode,
@@ -405,7 +406,7 @@ const ApplicationForm = () => {
       );
       return;
     }
-    debugger;
+
     if (leadCode && isDraftSave && activeStep === MagicNumbers.TWO) {
       setSubmitted(true);
       request.lead.leadCode = leadCode;
@@ -566,7 +567,11 @@ const ApplicationForm = () => {
           } else {
             setActiveStep(0);
             setTimeout(() => {
-              router.push(RoutePaths.Document_Success);
+              if (isDraft) {
+                router.push(RoutePaths.Document_Save_Success);
+              } else {
+                router.push(RoutePaths.Document_Success);
+              }
             }, 2000);
           }
           showToast(true, "Documents Successfully Uploaded");

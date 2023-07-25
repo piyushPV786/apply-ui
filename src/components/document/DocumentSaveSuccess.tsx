@@ -4,7 +4,7 @@ import { PaymentContainer, MainContainer } from "../payment/payment";
 import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
 
-export const DocumentSuccess = (props: any) => {
+export const DocumentSaveSuccess = (props: any) => {
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
@@ -16,7 +16,7 @@ export const DocumentSuccess = (props: any) => {
               </div>
               <div className="text-center w-100">
                 <GreenFormHeading style={{ fontSize: "24px" }}>
-                  Document Submitted Successfully
+                  Document Saved Successfully
                 </GreenFormHeading>
                 <p>
                   We will verify and get back to you. You wil receive an order
