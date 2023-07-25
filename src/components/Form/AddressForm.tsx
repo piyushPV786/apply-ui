@@ -252,21 +252,21 @@ export const AddressForm = ({
                       setValue(
                         `${isSameAsPostalAddress}`,
                         e?.currentTarget?.checked,
-                        formOptions
+                        formDirtyState
                       );
                       if (e?.currentTarget?.checked) {
                         setValue(
                           `${postalAddress}`,
                           resPostalAddressVal,
-                          formOptions
+                          formDirtyState
                         );
                         setValue(
                           `${postalZipCode}`,
                           resPostalCodeVal,
-                          formOptions
+                          formDirtyState
                         );
-                        setValue(`${postalCity}`, resCityVal, formOptions);
-                        setValue(`${postalState}`, resStateVal, formOptions);
+                        setValue(`${postalCity}`, resCityVal, formDirtyState);
+                        setValue(`${postalState}`, resStateVal, formDirtyState);
                         setValue(
                           `${postalCountry}`,
                           resCountryVal,
