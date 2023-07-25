@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
-import styled from "styled-components";
 import { StyledLabel } from "../common/common";
 import StyledButton from "../button/button";
-import { deepClone, formDirtyState, formOptions, isInvalidFileType } from "../../Util/Util";
+import {
+  deepClone,
+  formDirtyState,
+  formOptions,
+  isInvalidFileType,
+} from "../../Util/Util";
 
 import { ILeadFormValues, IOption } from "../common/types";
 import DocumentUploadContainer, {
@@ -362,7 +366,20 @@ const DocumentUploadForm = ({
     ? allRequiredDocuments
         ?.filter(Boolean)
         ?.filter((item) => !item?.includes("detailCV"))
-    : allRequiredDocuments?.filter(Boolean);
+        ?.filter((doc) => uploadDocs?.find((item) => item?.name?.includes(doc)))
+    : allRequiredDocuments
+        ?.filter(Boolean)
+        ?.filter((doc) =>
+          uploadDocs?.find((item) => item?.name?.includes(doc))
+        );
+
+  // console.log({
+  //   remainingDocs,
+  //   uploadDocs,
+  //   allRequiredDocuments,
+  //   documentsNeedTOBeUpload,
+  //   isPostGraduation,
+  // });
 
   return (
     <div className="row mx-3 document-container">
@@ -409,7 +426,9 @@ const DocumentUploadForm = ({
                 onClick={onSaveDraft}
               />
               <StyledButton
-                disabled={documentsNeedTOBeUpload?.length > 0}
+                disabled={
+                  [...documentsNeedTOBeUpload, ...remainingDocs]?.length > 0
+                }
                 onClick={() => {
                   setUploadDocs([]);
                   setDocumentFormDataDetail([]);
@@ -463,14 +482,3 @@ const DocumentUploadForm = ({
 };
 
 export default DocumentUploadForm;
-
-const FixedContainer = styled.div`
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 400px; /* Adjust the width to your requirement */
-  height: 100vh;
-  overflow-y: auto;
-  background-color: white;
-  padding: 20px;
-`;
