@@ -215,7 +215,7 @@ export const AddressForm = ({
                       defaultValue={resPostalCodeVal}
                       {...register(`${resPostalCode}`, {
                         required: true,
-                        maxLength: 6,
+                        maxLength: 10,
                         minLength: 4,
                       })}
                       type="number"
@@ -418,7 +418,7 @@ export const AddressForm = ({
                     value={postalZipCodeVal}
                     {...register(`${postalZipCode}`, {
                       required: true,
-                      maxLength: 6,
+                      maxLength: 10,
                       minLength: 4,
                     })}
                     type="number"
