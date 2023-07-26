@@ -313,7 +313,7 @@ export const TickWithText = ({
                 }}
                 noBg
                 status={status}
-              >{`-${status}`}</Status>
+              >{`${status}`}</Status>
             )}
           </>
         }
