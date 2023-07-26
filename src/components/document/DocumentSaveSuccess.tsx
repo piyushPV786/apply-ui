@@ -3,8 +3,12 @@ import { GreenFormHeading } from "../common/common";
 import { PaymentContainer, MainContainer } from "../payment/payment";
 import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
+import StyledButton from "../button/button";
+import { useRouter } from "next/router";
+import { RoutePaths } from "../common/constant";
 
 export const DocumentSaveSuccess = (props: any) => {
+  const router = useRouter();
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
@@ -24,6 +28,19 @@ export const DocumentSaveSuccess = (props: any) => {
                   email with details soon.
                 </p>
               </div>
+            </div>
+
+            <div>
+              <StyledButton
+                onClick={() => {
+                  localStorage.setItem("leadData", "");
+                  sessionStorage.setItem("activeLeadDetail", "");
+                  router.push(RoutePaths.Dashboard);
+                }}
+                title="Back to Dashboard"
+                isGreenWhiteCombination
+                className="me-2"
+              />
             </div>
           </div>
         </PaymentContainer>
