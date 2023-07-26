@@ -215,7 +215,7 @@ export const AddressForm = ({
                       defaultValue={resPostalCodeVal}
                       {...register(`${resPostalCode}`, {
                         required: true,
-                        maxLength: 6,
+                        maxLength: 10,
                         minLength: 4,
                       })}
                       type="number"
@@ -374,7 +374,7 @@ export const AddressForm = ({
                     label="State/Provinces"
                   />
 
-                  {error && error[0]?.state && (
+                  {!resStateVal && error && error[0]?.state && (
                     <div className="invalid-feedback">
                       Please enter Postal State
                     </div>
@@ -418,7 +418,7 @@ export const AddressForm = ({
                     value={postalZipCodeVal}
                     {...register(`${postalZipCode}`, {
                       required: true,
-                      maxLength: 6,
+                      maxLength: 10,
                       minLength: 4,
                     })}
                     type="number"
