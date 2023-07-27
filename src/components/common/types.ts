@@ -57,6 +57,7 @@ export interface IStudyModeQualification {
 export interface IStudyMode {
   studyModeCode: string;
   fees: IFee[];
+  description: string;
 }
 
 export interface IFee {

@@ -76,6 +76,7 @@ const ApplicationForm = () => {
   const [posStateData, setPosStateData] = useState([]);
   const [resStateData, setResStateData] = useState([]);
   const [sponsorStateData, setSponsorStateData] = useState([]);
+  const [studyModeData, setStudyModeData] = useState([]);
   const [employedStateData, setEmployedStateData] = useState([]);
   const methods = useForm<ILeadFormValues>({
     mode: "all",
@@ -96,6 +97,7 @@ const ApplicationForm = () => {
     getAgentDetails();
     getNationalData();
     identificationDocumentType();
+    getStudyModeData();
   }, []);
 
   useEffect(() => {
@@ -292,6 +294,12 @@ const ApplicationForm = () => {
           show: true,
         });
       });
+  };
+
+  const getStudyModeData = () => {
+    CommonAPI.get(`/study-mode`).then((data) => {
+      setStudyModeData(data?.data?.data);
+    });
   };
 
   const createDraft = (data) => {
@@ -803,6 +811,7 @@ const ApplicationForm = () => {
                             studyTypeData={studyTypeData}
                             isApplicationEnrolled={isApplicationEnrolled}
                             leadId={leadId}
+                            studyModeData={studyModeData}
                           />
                           <SponsoredForm
                             leadId={leadId}

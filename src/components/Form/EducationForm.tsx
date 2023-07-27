@@ -12,6 +12,7 @@ import { useFormContext } from "react-hook-form";
 import { IFee, IOption, IStudyModeQualification } from "../common/types";
 import styled from "styled-components";
 import { capitalizeFirstLetter } from "../../Util/Util";
+import Tooltip from "@mui/material/Tooltip";
 import {
   formDirtyState,
   onlyAlphaNumericSpace,
@@ -19,7 +20,7 @@ import {
 } from "../../Util/Util";
 import EducationImg from "../../../public/assets/images/education-svgrepo-com.svg";
 import Image from "next/image";
-import { FinanceApi } from "../../service/Axios";
+import { FinanceApi, CommonAPI } from "../../service/Axios";
 import {
   AgentandSocialMedia,
   CommonApi,
@@ -48,6 +49,7 @@ interface IEducationProps {
   studyTypeData: IOption[];
   isApplicationEnrolled: boolean;
   leadId: string;
+  studyModeData: any;
 }
 
 const FeeCard = (props: any) => {
@@ -90,6 +92,7 @@ export const EducationForm = (props: IEducationProps) => {
     studyTypeData,
     isApplicationEnrolled,
     leadId,
+    studyModeData,
   } = props;
   const programVal = watch(program);
   const studyModeVal = watch(studyMode);
@@ -127,9 +130,24 @@ export const EducationForm = (props: IEducationProps) => {
 
   const getQualificationStudyModeData = async (programCode: string) => {
     setLoading(true);
+
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
       .then((res) => {
-        const courseFeesDetail = res?.data?.data;
+        let courseFeesDetail = res?.data?.data;
+
+        const updatedStudymode = courseFeesDetail[0]?.studyModes?.map(
+          (element) => {
+            const filter = studyModeData.find((item) => {
+              if (String(item.code) == String(element.studyModeCode)) {
+                return item;
+              }
+            });
+            element.description = filter?.description;
+            return element;
+          }
+        );
+        courseFeesDetail[0].studyModes = updatedStudymode;
+
         let applicationFees;
         courseFeesDetail.forEach((item) =>
           item.studyModes.forEach((application) => {
@@ -146,6 +164,7 @@ export const EducationForm = (props: IEducationProps) => {
           applicationFees?.fees[0]?.fee,
           formDirtyState
         );
+        console.log("cd", courseFeesDetail);
         setStudyModeQualification(courseFeesDetail);
       })
       .catch((err) => {
@@ -177,7 +196,7 @@ export const EducationForm = (props: IEducationProps) => {
         <AccordionDetails>
           <div className="container-fluid form-padding">
             <div className="row">
-              <div className="col-md-4">
+              <div className="col">
                 <div className="mb-4">
                   <StyledLabel required>Interested Program</StyledLabel>
                   <select
@@ -224,46 +243,49 @@ export const EducationForm = (props: IEducationProps) => {
                 <div className="col-md-4">
                   <StyledLabel required>Study Mode & Fee</StyledLabel>
 
-                  <div className="mb-4">
-                    {studyModeQualification &&
-                      studyModeQualification.map(({ studyModes }) => {
-                        {
+                  <div className="mb-4 mr-4">
+                    {studyModeQualification[0]?.studyModes &&
+                      studyModeQualification[0].studyModes.map(
+                        ({ studyModeCode, description }) => {
                           return (
-                            studyModes &&
-                            studyModes.map(({ studyModeCode }) => {
-                              return (
-                                <>
-                                  {studyModeCode === "APPLICATION" ? null : (
-                                    <div className="form-check form-check-inline">
-                                      <input
-                                        disabled={isApplicationEnrolled}
-                                        key={studyMode}
-                                        className="form-check-input me-2"
-                                        type="radio"
-                                        {...register(`${studyMode}`, {
-                                          required: true,
-                                        })}
-                                        onClick={(e: any) => {
-                                          setValue(
-                                            studyMode,
-                                            e.target.value,
-                                            formDirtyState
-                                          );
-                                        }}
-                                        value={studyModeCode}
-                                        checked={studyModeVal == studyModeCode}
-                                      />
-                                      <label className="form-check-label">
-                                        {studyModeCode}
-                                      </label>
-                                    </div>
-                                  )}
-                                </>
-                              );
-                            })
+                            <>
+                              {studyModeCode === "APPLICATION" ? null : (
+                                <Tooltip
+                                  title={description}
+                                  placement="top"
+                                  arrow
+                                  open={true}
+                                >
+                                  <span className="form-check form-check-inline">
+                                    <input
+                                      disabled={isApplicationEnrolled}
+                                      key={studyMode}
+                                      className="form-check-input me-2"
+                                      type="radio"
+                                      {...register(`${studyMode}`, {
+                                        required: true,
+                                      })}
+                                      onClick={(e: any) => {
+                                        setValue(
+                                          studyMode,
+                                          e.target.value,
+                                          formDirtyState
+                                        );
+                                      }}
+                                      value={studyModeCode}
+                                      checked={studyModeVal == studyModeCode}
+                                    />
+                                    <label className="form-check-label">
+                                      {studyModeCode}
+                                    </label>
+                                  </span>
+                                </Tooltip>
+                              )}
+                            </>
                           );
                         }
-                      })}
+                      )}
+
                     <StyleContainer>
                       {studyModeQualification &&
                         studyModeQualification[0]?.studyModes[
@@ -586,6 +608,8 @@ export const EducationForm = (props: IEducationProps) => {
 
 const StyleFeeCards = styled.div`
   background: ${DefaultGrey};
+  height: 200;
+  width: 200;
   padding: 6px 10px;
   font-size: 14px;
   font-family: roboto;
@@ -600,8 +624,50 @@ const StyleFeeCards = styled.div`
   -o-transition: all 0.5s;
 `;
 
+const Tooltipdiv = styled.div`
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+`;
+
 const StyleContainer = styled.div`
   display: flex;
   column-gap: 10px;
   padding: 1rem 0.2rem;
+  width: 500;
 `;
