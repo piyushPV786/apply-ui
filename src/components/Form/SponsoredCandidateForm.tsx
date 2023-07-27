@@ -47,12 +47,16 @@ interface ISponsorProps {
   sponsorModeArr: IOption[];
   relationData: IOption[];
   countryData: any;
+  getStateData: any;
+  sponsorStateData: any;
 }
 export const SponsoredForm = (props: ISponsorProps) => {
   const {
     sponsorModeArr = [],
     relationData = [],
     countryData = [],
+    getStateData,
+    sponsorStateData,
   } = { ...props };
   const CountryData = countryData;
 
@@ -104,15 +108,6 @@ export const SponsoredForm = (props: ISponsorProps) => {
     .includes(CommonEnums.EMPLOYEE_BURSARY);
   const disableSponsorForm =
     studentType?.toLowerCase() === CommonEnums.MANAGEMENT;
-  // useEffect(() => {
-  //   if (
-  //     !isObjectEmpty(isSponserDetailExist) &&
-  //     props?.leadId &&
-  //     isSponserDetailExist
-  //   ) {
-  //     setValue(isSponsor, "yes", formDirtyState);
-  //   }
-  // }, [isSponserDetailExist]);
 
   useEffect(() => {
     if (!props?.leadId) {
@@ -126,6 +121,9 @@ export const SponsoredForm = (props: ISponsorProps) => {
         keepError: false,
         keepIsValid: true,
       });
+    }
+    if (sponsorCountryVal) {
+      getStateData(sponsorCountryVal, "SPONSOR");
     }
   }, [isSponserNeed]);
   const isRequired =
@@ -455,6 +453,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               mapKey="code"
                               name={sponsorCountry}
                               onChange={(e: any) => {
+                                getStateData(e.target.value, "SPONSOR");
                                 const value = e.target.value;
                                 setValue(sponsorCountry, value, formDirtyState);
                               }}
@@ -467,39 +466,17 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               </div>
                             )}
                           </div>
-                        </div>
-                        <div className="col-md-4">
-                          <div className="mb-4">
-                            <StyledLabel required>
-                              {" "}
-                              Pin Code / Zip Code
-                            </StyledLabel>
-                            <input
-                              className="form-control"
-                              value={sponsorPinCodeVal}
-                              defaultValue={sponsorPinCodeVal}
-                              {...register(`${sponsorPinCode}`, {
-                                required: isSponserNeed,
-                              })}
-                              type="number"
-                            />
-                            {error && error?.zipCode && (
-                              <div className="invalid-feedback">
-                                Please enter Pin Code
-                              </div>
-                            )}
-                          </div>
                         </div>{" "}
                         <div className="col-md-4">
                           <div className="mb-4">
-                            <StyledLabel required> State/Provinces</StyledLabel>
-                            <input
-                              className="form-control"
+                            <AdvanceDropDown
                               value={sponsorStateVal}
-                              defaultValue={sponsorStateVal}
-                              {...register(`${sponsorState}`, {
-                                required: isSponserNeed,
-                              })}
+                              options={sponsorStateData.sort((a, b) =>
+                                sortAscending(a, b, "name")
+                              )}
+                              register={register}
+                              mapKey="code"
+                              name={sponsorState}
                               onChange={(e) => {
                                 const value = e.target.value;
                                 const name = e.target.name;
@@ -511,6 +488,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                   );
                                 }
                               }}
+                              label="State/Provinces"
                             />
                             {error && error?.state && (
                               <div className="invalid-feedback">
@@ -548,6 +526,35 @@ export const SponsoredForm = (props: ISponsorProps) => {
                             )}
                           </div>
                         </div>{" "}
+                        <div className="col-md-4">
+                          <div className="mb-4">
+                            <StyledLabel required>
+                              {" "}
+                              Pin Code / Zip Code
+                            </StyledLabel>
+                            <input
+                              className="form-control"
+                              value={sponsorPinCodeVal}
+                              defaultValue={sponsorPinCodeVal}
+                              {...register(`${sponsorPinCode}`, {
+                                required: isSponserNeed,
+                                maxLength: 10,
+                                minLength: 4,
+                              })}
+                              type="number"
+                            />
+
+                            {error?.zipCode && (
+                              <div className="invalid-feedback">
+                                {error?.zipCode?.type === "maxLength"
+                                  ? "Max length exceeded"
+                                  : error?.zipcode?.type === "minLength"
+                                  ? "Minimum length should be 4"
+                                  : "Please enter Zip/Postal Code"}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </>
                     )}
                   </>

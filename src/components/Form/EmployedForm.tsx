@@ -41,12 +41,16 @@ interface IEmployeProps {
   employmentIndustries: IOption[];
   leadId: string;
   countryData: any;
+  getStateData: any;
+  employedStateData: any;
 }
 export const EmployedForm = (props: IEmployeProps) => {
   const {
     employmentIndustries,
     employmentStatusArr,
     countryData = [],
+    getStateData,
+    employedStateData,
   } = {
     ...props,
   };
@@ -82,6 +86,9 @@ export const EmployedForm = (props: IEmployeProps) => {
     );
 
     setCountryCode(userNumberDetail?.countryCode);
+    if (employmentCountryVal) {
+      getStateData(employmentCountryVal, "EMPLOYED");
+    }
   }, []);
 
   const uppdateMobNumber = () => {
@@ -405,6 +412,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                             name={employmentCountry}
                             onChange={(e: any) => {
                               const value = e.target.value;
+                              getStateData(value, "EMPLOYED");
                               setValue(
                                 employmentCountry,
                                 value,
@@ -422,42 +430,18 @@ export const EmployedForm = (props: IEmployeProps) => {
                         </div>
                       </div>
                     )}
-                    {!isSelfEmployed && (
-                      <div className="col-md-4">
-                        <div className="mb-4">
-                          <StyledLabel required>
-                            {" "}
-                            Pin Code / Zip Code
-                          </StyledLabel>
-                          <input
-                            className="form-control"
-                            value={employmentPinCodeVal}
-                            defaultValue={employmentPinCodeVal}
-                            {...register(`${employmentPinCode}`, {
-                              required: true,
-                            })}
-                            type="number"
-                          />
-                          {error && error?.zipCode && (
-                            <div className="invalid-feedback">
-                              Please enter Pin Code
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
 
                     {!isSelfEmployed && (
                       <div className="col-md-4">
                         <div className="mb-4">
-                          <StyledLabel required> State/Provinces</StyledLabel>
-                          <input
-                            className="form-control"
+                          <AdvanceDropDown
                             value={employmentStateVal}
-                            defaultValue={employmentStateVal}
-                            {...register(`${employmentState}`, {
-                              required: true,
-                            })}
+                            options={employedStateData.sort((a, b) =>
+                              sortAscending(a, b, "name")
+                            )}
+                            register={register}
+                            mapKey="ioscode"
+                            name={employmentState}
                             onChange={(e) => {
                               const value = e.target.value;
                               const name = e.target.name;
@@ -469,7 +453,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                                 );
                               }
                             }}
+                            label="State/Provinces"
                           />
+
                           {error && error?.state && (
                             <div className="invalid-feedback">
                               Please enter State Name
@@ -505,6 +491,37 @@ export const EmployedForm = (props: IEmployeProps) => {
                           {error && error?.city && (
                             <div className="invalid-feedback">
                               Please enter City Name
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {!isSelfEmployed && (
+                      <div className="col-md-4">
+                        <div className="mb-4">
+                          <StyledLabel required>
+                            {" "}
+                            Pin Code / Zip Code
+                          </StyledLabel>
+                          <input
+                            className="form-control"
+                            value={employmentPinCodeVal}
+                            defaultValue={employmentPinCodeVal}
+                            {...register(`${employmentPinCode}`, {
+                              required: true,
+                              maxLength: 10,
+                              minLength: 4,
+                            })}
+                            type="number"
+                          />
+                          {error?.zipCode && (
+                            <div className="invalid-feedback">
+                              {error?.zipCode?.type === "maxLength"
+                                ? "Max length exceeded"
+                                : error?.zipcode?.type === "minLength"
+                                ? "Minimum length should be 4"
+                                : "Please enter Zip/Postal Code"}
                             </div>
                           )}
                         </div>

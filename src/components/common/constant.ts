@@ -24,6 +24,11 @@ export enum CommonEnums {
   WELCOME_LETTER = "WELCOME-LETTER",
 }
 
+export enum GraduationType {
+  PG = "postgraduate",
+  UG = "undergraduate",
+}
+
 export const DARK_GRAY = "#4f4f4f";
 export const ORANGE = "#dd6d0b";
 export const BLUE = "#0070c0";
@@ -125,12 +130,14 @@ export const CommonApi = {
   AGENT_LIST: "/user/role/Sales",
   IDENTIFICATIONDOCUMENT: "/identification-Type",
   EMAILCHECK: "/lead/check-duplicate-email",
+  STATE: "state",
 };
 
 export const RoutePaths = {
   Application_Form: "/student-registration-form/application-form",
   Payment_Success: "/payment/document-success",
   Document_Success: "/payment/document-upload-success",
+  Document_Save_Success: "/payment/document-save-success",
   APPLICATION_ENROLLED_SUCCESS: "/payment/application-enrolled-success",
   Dashboard: "/student-registration-form/dashboard",
   StudentDashboard: "/dashboard",

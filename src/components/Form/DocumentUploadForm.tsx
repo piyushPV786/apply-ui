@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react";
-import { PaymentContainer } from "../payment/payment";
 import { useFormContext } from "react-hook-form";
-import styled from "styled-components";
-import { Green, StyledLabel } from "../common/common";
+import { StyledLabel } from "../common/common";
 import StyledButton from "../button/button";
 import {
   deepClone,
   formDirtyState,
   formOptions,
   isInvalidFileType,
-  uniqueArrayOfObject,
 } from "../../Util/Util";
 
 import { ILeadFormValues, IOption } from "../common/types";
@@ -103,6 +100,7 @@ interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
   isApplicationEnrolled: boolean;
+  selectedPrograms: IOption;
   isLoading?: boolean;
   documentType: IOption[];
   leadId: string;
@@ -112,31 +110,6 @@ interface IDocumentUploadProps {
   onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
 }
 
-// function areIdsPresent(idsToCheck, arrayOfObjects) {
-//   const idSet = new Set(idsToCheck);
-
-//   for (const obj of arrayOfObjects) {
-//     if (!idSet.has(obj.id)) {
-//       return false;
-//     }
-//   }
-
-//   return true;
-// }
-function isIdPresent(id, arrayOfObjects) {
-  return arrayOfObjects.some((obj) => obj.id === id);
-}
-function areIdsPresent(idsToCheck, arrayOfObjects) {
-  const idSet = new Set(idsToCheck);
-  const uploadedIds: any = new Set(arrayOfObjects.map((obj) => obj.id) as any);
-
-  for (const id of uploadedIds) {
-    if (!idSet.has(id)) {
-      return false;
-    }
-  }
-  return true;
-}
 const mapStatusToFormData = (response, formData) => {
   if (response && response?.length > 0) {
     for (const item of response) {
@@ -218,6 +191,7 @@ const DocumentUploadForm = ({
   isApplicationEnrolled,
   onSaveDraft,
   onSubmit,
+  selectedPrograms,
 }: IDocumentUploadProps) => {
   const {
     register,
@@ -235,27 +209,10 @@ const DocumentUploadForm = ({
   const isMBAProgram =
     allFields?.education?.programCode === "MBA-PROG" ||
     allFields?.education?.programCode === "MBA";
-  useEffect(() => {
-    const existingPaymentProof = allFields?.payment?.paymentProof;
-    if (existingPaymentProof && existingPaymentProof.length > 0) {
-      existingPaymentProof?.forEach((element) => {
-        element.typeCode = "PAYMENTPROOF";
-      });
 
-      const allUploadedFiles = uniqueArrayOfObject(
-        [...uploadDocs, ...existingPaymentProof],
-        "size"
-      );
-      setValue("document.uploadedDocs", allUploadedFiles, formOptions);
-      setUploadDocs(allUploadedFiles);
-    }
-  }, [leadId]);
+  const isPostGraduation = selectedPrograms?.category === GraduationType.PG; /// upload CV in the upload document section mandatory for Post Graduate Programs and Non mandatory for Under Graduate Programs.
+
   useEffect(() => {
-    if (isMBAProgram) {
-      setRemainingDocs((prevState) => [
-        ...(new Set([...prevState, ...mbaDocs]) as any),
-      ]);
-    }
     if (documentDetails?.length > 0) {
       const mappedDocs = mapStatusToFormData(
         documentDetails,
@@ -268,6 +225,7 @@ const DocumentUploadForm = ({
             ...rest,
             type: rest?.draftSaveDoc?.fileExtension,
             typeCode: rest?.draftSaveDoc?.documentTypeCode,
+            name: rest?.draftSaveDoc?.name,
           }));
         const remainDocs = remainingDocs?.filter(
           (doc) =>
@@ -283,30 +241,12 @@ const DocumentUploadForm = ({
     }
   }, [isMBAProgram]);
 
-  // useEffect(() => {
-  //   if (uploadDocs?.length > 0) {
-  //     const remainDocs = remainingDocs?.filter(
-  //       (doc) => !uploadDocs?.find((document) => document?.typeCode === doc)
-  //     );
-  //     setRemainingDocs(remainDocs?.filter(Boolean));
-  //   }
-  // }, [uploadDocs]);
-
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
 
   const documentTypeList = documentType?.filter(
     (item) => item?.code !== "PAYMENTPROOF"
   );
-  const documentIds = isMBAProgram
-    ? [...documentFormDataDetail, ...mbaProgramDocuments]
-    : documentFormDataDetail
-        ?.filter(
-          (doc) =>
-            doc.status?.toLowerCase() !== "approved" &&
-            doc.status?.toLowerCase() !== "submitted"
-        )
-        ?.map((document) => document.id);
 
   const documentStatusDetail = deepClone(documentFormDataDetail);
 
@@ -333,13 +273,15 @@ const DocumentUploadForm = ({
     });
     setUploadDocs((prevState) => [...prevState, ...(uploadedFiles as any)]);
     const allFiles = [...uploadDocs, ...uploadedFiles];
-    const remainDocs = remainingDocs?.filter(
+    const remainingDocuments = isPostGraduation
+      ? remainingDocs?.filter((doc) => !doc?.includes("detailCV"))
+      : remainingDocs;
+    const remainDocs = remainingDocuments?.filter(
       (doc) => !allFiles?.find((document) => document?.typeCode === doc)
     );
     setRemainingDocs(remainDocs?.filter(Boolean));
     setValue("document.uploadedDocs", allFiles);
   };
-
   const NationalityPassportFields = () => {
     return (
       <div className="row mt-4">
@@ -399,6 +341,37 @@ const DocumentUploadForm = ({
     mapStatusToFormData(documentDetails, documentFormData),
     uploadDocs
   );
+  const allRequiredDocuments = isMBAProgram
+    ? [...remainingDocs, ...mbaDocs]?.filter(
+        (remainDoc) =>
+          !uploadDocs?.find((doc) =>
+            doc?.name?.toLowerCase()?.includes(remainDoc?.toLowerCase())
+          )
+      )
+    : [...remainingDocs]?.filter(
+        (remainDoc) =>
+          !uploadDocs?.find((doc) =>
+            doc?.name?.toLowerCase()?.includes(remainDoc?.toLowerCase())
+          )
+      );
+  const documentsNeedTOBeUpload = isPostGraduation
+    ? allRequiredDocuments
+        ?.filter(Boolean)
+        ?.filter((item) => !item?.includes("detailCV"))
+        ?.filter((doc) => uploadDocs?.find((item) => item?.name?.includes(doc)))
+    : allRequiredDocuments
+        ?.filter(Boolean)
+        ?.filter((doc) =>
+          uploadDocs?.find((item) => item?.name?.includes(doc))
+        );
+
+  // console.log({
+  //   remainingDocs,
+  //   uploadDocs,
+  //   allRequiredDocuments,
+  //   documentsNeedTOBeUpload,
+  //   isPostGraduation,
+  // });
 
   return (
     <div className="row mx-3 document-container">
@@ -501,39 +474,3 @@ const DocumentUploadForm = ({
 };
 
 export default DocumentUploadForm;
-const DocumentCriteriaContainer = styled.div`
-  background: #dde1e3;
-  padding: 1rem;
-`;
-const StyleHeading = styled.div``;
-const PaymentHeading = styled(PaymentContainer)`
-  border-bottom: 2px solid ${Green};
-  padding: 1rem 10px;
-`;
-
-const StyledUploadDocumentContainer = styled.div`
-  text-align: center;
-`;
-const CustomContainer = styled.div`
-  padding: 1.5rem;
-  max-width: 350px;
-  cursor: pointer;
-  background-color: #f5f5f5;
-  width: 100%;
-  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='green' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
-`;
-
-const UploadedFilesContainer = styled.div``;
-
-const ImageContainer = styled.div`
-  background: white;
-  display: flex;
-  padding: 0.5rem;
-  max-width: 160px;
-  width: 100%;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  max-width: 160px;
-  border: 2px solid ${Green};
-`;
