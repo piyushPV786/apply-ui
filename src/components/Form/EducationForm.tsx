@@ -30,6 +30,7 @@ import Spinner from "../../../public/assets/images/spinner.svg";
 
 const parentKey = "education";
 const program = `${parentKey}.programCode`;
+const programName = `${parentKey}.programName`;
 const studyMode = `${parentKey}.studyModeCode`;
 const highestQualification = `${parentKey}.qualificationCode`;
 const highSchoolName = `${parentKey}.highSchoolName`;
@@ -137,6 +138,8 @@ export const EducationForm = (props: IEducationProps) => {
             }
           })
         );
+
+        setValue(programName, String(res.data.data[0].programName));
 
         setValue(
           applicationFeesKey,

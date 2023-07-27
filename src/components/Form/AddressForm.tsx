@@ -215,7 +215,7 @@ export const AddressForm = ({
                       defaultValue={resPostalCodeVal}
                       {...register(`${resPostalCode}`, {
                         required: true,
-                        maxLength: 6,
+                        maxLength: 10,
                         minLength: 4,
                       })}
                       type="number"
@@ -252,21 +252,21 @@ export const AddressForm = ({
                       setValue(
                         `${isSameAsPostalAddress}`,
                         e?.currentTarget?.checked,
-                        formOptions
+                        formDirtyState
                       );
                       if (e?.currentTarget?.checked) {
                         setValue(
                           `${postalAddress}`,
                           resPostalAddressVal,
-                          formOptions
+                          formDirtyState
                         );
                         setValue(
                           `${postalZipCode}`,
                           resPostalCodeVal,
-                          formOptions
+                          formDirtyState
                         );
-                        setValue(`${postalCity}`, resCityVal, formOptions);
-                        setValue(`${postalState}`, resStateVal, formOptions);
+                        setValue(`${postalCity}`, resCityVal, formDirtyState);
+                        setValue(`${postalState}`, resStateVal, formDirtyState);
                         setValue(
                           `${postalCountry}`,
                           resCountryVal,
@@ -373,8 +373,13 @@ export const AddressForm = ({
                     }}
                     label="State/Provinces"
                   />
+                  {isSameAsPostalAddress && !resStateVal && (
+                    <div className="invalid-feedback">
+                      Please enter Postal State
+                    </div>
+                  )}
 
-                  {error && error[0]?.state && (
+                  {!isSameAsPostalAddress && error && error[0]?.state && (
                     <div className="invalid-feedback">
                       Please enter Postal State
                     </div>
@@ -418,7 +423,7 @@ export const AddressForm = ({
                     value={postalZipCodeVal}
                     {...register(`${postalZipCode}`, {
                       required: true,
-                      maxLength: 6,
+                      maxLength: 10,
                       minLength: 4,
                     })}
                     type="number"

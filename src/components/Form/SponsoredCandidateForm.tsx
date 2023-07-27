@@ -538,12 +538,19 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               defaultValue={sponsorPinCodeVal}
                               {...register(`${sponsorPinCode}`, {
                                 required: isSponserNeed,
+                                maxLength: 10,
+                                minLength: 4,
                               })}
                               type="number"
                             />
-                            {error && error?.zipCode && (
+
+                            {error?.zipCode && (
                               <div className="invalid-feedback">
-                                Please enter Pin Code
+                                {error?.zipCode?.type === "maxLength"
+                                  ? "Max length exceeded"
+                                  : error?.zipcode?.type === "minLength"
+                                  ? "Minimum length should be 4"
+                                  : "Please enter Zip/Postal Code"}
                               </div>
                             )}
                           </div>
