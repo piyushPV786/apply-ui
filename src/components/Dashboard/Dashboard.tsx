@@ -230,23 +230,23 @@ export const ApplicationDashboard = (props: any) => {
       ) : (
         <ParentContainer>
           <Header />
-          <div className="container-fluid application-page mt-5">
+          <div className="container-fluid application-page mt-4">
             <div style={{ paddingBottom: "1rem" }}>
               <PaymentContainer>
                 {studentId && studentApplications.length > 0 ? (
                   <div>
                     <div className="row">
-                      <div className="col">
+                      <div className="col-md-8">
                         <h2 className="app-header">My Applications</h2>
                         <p className="grey-text">
                           Here are all applications that you've applied through
                           Regenesys
                         </p>
                       </div>
-                      <div className="col pe-0">
+                      <div className="col-md-4 d-flex align-items-start justify-content-end">
                         <div className="d-flex justify-content-end">
                           <StyledButton
-                            onClick={onApplyNow}
+                            onClick={onApplyNow} className="button-shadow"
                             title="Apply a New Application"
                           />
                         </div>
@@ -434,25 +434,25 @@ function ApplicationCard({
   return (
     <>
       <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
-        <div className=" d-flex flex-row justify-content-between">
-          <div className="cursor-pointer" onClick={getStudentApplications}>
-            <CachedOutlined className="m-2" />
+        <div className="d-flex flex-row justify-content-between">
+          <div className="cursor-pointer refresh-icon" onClick={getStudentApplications}>
+            <CachedOutlined className="m-2 refresh-button" />
           </div>
-          <div>
+          <div className="status-sec">
             <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
           </div>
         </div>
         <div className="row px-4">
-          <div className="col-md-4">
-            <div className="mt-2 w-100 app-card-block">
+          <div className="col-md-6">
+            <div className="mt-3 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Name
               </p>
               <strong>{name}</strong>
             </div>
           </div>
-          <div className="col-md-4">
-            <div className="mt-2 w-100 app-card-block">
+          <div className="col-md-6">
+            <div className="mt-3 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Last updated
               </p>
@@ -461,7 +461,7 @@ function ApplicationCard({
           </div>
         </div>
         <div className="row px-4">
-          <div className="col-md-4">
+          <div className="col-md-6">
             <div className="mt-2 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Interested Program
@@ -469,7 +469,7 @@ function ApplicationCard({
               <strong>{programName}</strong>
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <div className="mt-2 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Study Type
@@ -477,7 +477,7 @@ function ApplicationCard({
               <strong>Regular</strong>
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <div className="mt-2 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Study Mode
@@ -921,7 +921,8 @@ const StudentIdCard = styled.div<{ bgColor?: string }>`
   max-width: 250px;
   border-radius: 3px;
   padding: 2px 8px;
-  margin: 15px;
+  margin: 15px 5px 0 0;
+  font-size: 13px;
   span {
     font-weight: bold;
   }
@@ -933,7 +934,8 @@ const EnrollmentIdCard = styled.div<{ bgColor?: string }>`
   max-width: 250px;
   border-radius: 3px;
   padding: 2px 8px;
-  margin: 15px 0;
+  margin: 15px 5px 0 0;
+  font-size: 13px;
   span {
     font-weight: bold;
   }
@@ -947,8 +949,10 @@ const StyledStatusBedge = styled.div<any>`
   margin-right: 0 !important;
   border-top: 0;
   border-bottom-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-right-radius: 5px;
   padding: 5px 20px;
+  letter-spacing: .5px;
+  font-size: 14px;
 `;
 
 const ApplicationContainer = styled.div`

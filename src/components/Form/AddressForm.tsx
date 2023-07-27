@@ -73,7 +73,7 @@ export const AddressForm = ({
 
   return (
     <>
-      <StyledAccordion defaultExpanded={true}>
+      <StyledAccordion defaultExpanded={true} className="card-shadow">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"

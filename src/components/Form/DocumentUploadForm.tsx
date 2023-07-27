@@ -18,7 +18,7 @@ import { Typography } from "@mui/material";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { identificationDocumentTypeKey } from "./personalInfoForm";
 import { CloseOutlined } from "@material-ui/icons";
-import { GraduationType } from "../common/constant";
+import { List } from "@material-ui/core";
 
 const documentUploadFormData = [
   {
@@ -77,23 +77,23 @@ const documentCriteria = [
     text: `ID should be at least valid for <strong>6 months.</strong>`,
     isInnerText: true,
   },
-  { text: "Document must be clear visible" },
   { text: "Upload a color scan of the original document." },
-  {
-    text: "Do not upload black & white scans",
-    icon: (
-      <div
-        style={{
-          backgroundColor: "#ffe9e9",
-          borderRadius: "50%",
-          padding: "1px",
-          marginRight: "3px",
-        }}
-      >
-        <CloseOutlined color="error" />
-      </div>
-    ),
-  },
+  //{ text: "Document must be clear visible" },  
+  // {
+  //   text: "Do not upload black & white scans",
+  //   icon: (
+  //     <div
+  //       style={{
+  //         backgroundColor: "#ffe9e9",
+  //         borderRadius: "50%",
+  //         padding: "1px",
+  //         marginRight: "3px",
+  //       }}
+  //     >
+  //       <CloseOutlined color="error" />
+  //     </div>
+  //   ),
+  // },
 ];
 
 interface IDocumentUploadProps {
@@ -210,7 +210,7 @@ const DocumentUploadForm = ({
     allFields?.education?.programCode === "MBA-PROG" ||
     allFields?.education?.programCode === "MBA";
 
-  const isPostGraduation = selectedPrograms?.category === GraduationType.PG; /// upload CV in the upload document section mandatory for Post Graduate Programs and Non mandatory for Under Graduate Programs.
+  const isPostGraduation = selectedPrograms?.category; 
 
   useEffect(() => {
     if (documentDetails?.length > 0) {
@@ -284,7 +284,7 @@ const DocumentUploadForm = ({
   };
   const NationalityPassportFields = () => {
     return (
-      <div className="row mt-2">
+      <div className="row mt-4">
         <div className="col-md-6">
           <div className="mb-4">
             <AdvanceDropDown
@@ -375,7 +375,7 @@ const DocumentUploadForm = ({
 
   return (
     <div className="row mx-3 document-container">
-      <div className="col-md-8">
+      <div className="col-md-9">
         {uploadedDocuments?.map(
           ({
             name,
@@ -407,66 +407,66 @@ const DocumentUploadForm = ({
           }
         )}
       </div>
-      <div className="col-md-4">
-        <div>
-          <MainContainer>
-            <div className="d-flex flex-column">
-              <StyledButton
-                isGreenWhiteCombination
-                className="my-2"
-                title="Save as Draft"
-                onClick={onSaveDraft}
-              />
-              <StyledButton
-                disabled={
-                  [...documentsNeedTOBeUpload, ...remainingDocs]?.length > 0
-                }
-                onClick={() => {
-                  setUploadDocs([]);
-                  setDocumentFormDataDetail([]);
-                  onSubmit();
-                }}
-                title="Submit Documents"
-              />
-            </div>
-          </MainContainer>
+      <div className="col-md-3">
+        <div className="sticky-wrapper">
 
-          <MainContainer className="px-1">
-            <div className="d-flex flex-column">
-              <Typography textAlign="left" component="header" fontWeight="bold">
-                Document Status
-              </Typography>
-              {mapStatusDocument(documentStatusDetail).map(
-                ({ name, status }) => (
-                  <TickWithText
-                    key={name}
-                    status={status?.toLowerCase()}
-                    text={name}
-                  />
-                )
-              )}
-            </div>
-          </MainContainer>
-          <MainContainer className="px-1">
-            <div className="d-flex flex-column py-1">
-              <Typography textAlign="left" component="header" fontWeight="bold">
-                Document Criteria
-              </Typography>
-              <Typography color="black" textAlign="left" component="caption">
-                Documents not following the below guidelines will not be
-                accepted and you will be asked to submit the documents again
-              </Typography>
-              {documentCriteria.map(({ text, icon, isInnerText }: any) => (
-                <TickWithText
-                  key={text}
-                  text={text}
-                  icon={icon}
-                  isInnerText={isInnerText}
-                  required={false}
-                />
-              ))}
-            </div>
-          </MainContainer>
+        <MainContainer className="mt-0 card-shadow">
+          <div className="d-flex justify-content-center flex-column">
+            <StyledButton
+              isGreenWhiteCombination
+              className="mb-2"   
+              title="Save as Draft"
+              onClick={onSaveDraft}
+            />
+            <StyledButton
+              disabled={remainingDocs?.length > 0}
+              onClick={() => {
+                setUploadDocs([]);
+                setDocumentFormDataDetail([]);
+                onSubmit();
+              }}
+              title="Submit Documents"
+            />
+          </div>
+        </MainContainer>
+
+        <MainContainer className="sidebar-widget card-shadow">
+          <div className="d-flex flex-column">
+            <Typography textAlign="left" component="header">
+              Document Status
+            </Typography>
+
+            <List>
+            {mapStatusDocument(documentStatusDetail).map(({ name, status }) => (
+              <TickWithText 
+              className=""
+                key={name}
+                status={status?.toLowerCase()}
+                text={name}
+              />
+            ))}
+            </List>
+          </div>
+        </MainContainer>
+        <MainContainer className="sidebar-widget doc-criteria card-shadow">
+          <div className="d-flex flex-column py-1">
+            <Typography textAlign="left" component="header">
+              Document Acceptance Criteria
+            </Typography>
+          
+            <List>
+            {documentCriteria.map(({ text, icon, isInnerText }: any) => (
+              <TickWithText
+                key={text}
+                text={text}
+                icon={icon}
+                isInnerText={isInnerText}
+                required={false}
+              />
+            ))}
+              </List>
+          </div>
+        </MainContainer>
         </div>
       </div>
     </div>

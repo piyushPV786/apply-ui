@@ -144,7 +144,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
 
   return (
     <>
-      <StyledAccordion defaultExpanded={isSponserNeed}>
+      <StyledAccordion defaultExpanded={isSponserNeed} className="card-shadow">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
