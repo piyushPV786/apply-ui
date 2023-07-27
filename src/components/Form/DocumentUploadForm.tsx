@@ -210,7 +210,7 @@ const DocumentUploadForm = ({
     allFields?.education?.programCode === "MBA-PROG" ||
     allFields?.education?.programCode === "MBA";
 
-  const isPostGraduation = selectedPrograms?.category === GraduationType.PG; /// upload CV in the upload document section mandatory for Post Graduate Programs and Non mandatory for Under Graduate Programs.
+  const isPostGraduation = selectedPrograms?.category; 
 
   useEffect(() => {
     if (documentDetails?.length > 0) {
