@@ -60,7 +60,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
 
   return (
     <>
-      <StyledAccordion defaultExpanded={true}>
+      <StyledAccordion defaultExpanded={true} className="card-shadow">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -264,7 +264,7 @@ export const AddressForm = ({ countryData = [], leadId = "" }: any) => {
                       }
                     }}
                   />
-                  <label className="form-check-label ms-2">
+                  <label className="form-check-label ms-1 text-label">
                     Select if same with Postal Address
                   </label>
                 </div>

@@ -154,7 +154,7 @@ export const EducationForm = (props: IEducationProps) => {
     );
   return (
     <>
-      <StyledAccordion defaultExpanded={true} key="education" id="education">
+      <StyledAccordion className="card-shadow" defaultExpanded={true} key="education" id="education">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -503,9 +503,8 @@ export const EducationForm = (props: IEducationProps) => {
                   )}
                 </div>
 
-                {referredByeVal === "AGENT" && (
-                  <div className="">
-                    <div className="mb-4">
+                {referredByeVal === "AGENT" && (                
+                    <div className="mb-4 others">
                       <StyledLabel required>Agent Name</StyledLabel>
                       <select
                         className="form-select"
@@ -532,11 +531,11 @@ export const EducationForm = (props: IEducationProps) => {
                         </div>
                       )}
                     </div>
-                  </div>
+                  
                 )}
                 {referredByeVal === "SOCIALMEDIA" && (
                   <div className="">
-                    <div className="mb-4">
+                    <div className="mb-4 others">
                       <StyledLabel required>Social Media</StyledLabel>
                       <select
                         className="form-select"

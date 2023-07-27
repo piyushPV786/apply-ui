@@ -72,7 +72,7 @@ const PaymentOption = (props: any) => {
         <PaymentHeading>
           <div className="col-md-12">
             <StyleHeading>
-              <GreenFormHeading style={{ fontSize: "20px" }}>
+              <GreenFormHeading>
                 Payment Options
               </GreenFormHeading>
             </StyleHeading>

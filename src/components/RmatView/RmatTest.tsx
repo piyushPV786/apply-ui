@@ -6,7 +6,7 @@ import { AlertEnums, CommonApi, RoutePaths } from "../common/constant";
 import AlertBox from "../alert/Alert";
 import { GreenText } from "../student/style";
 import StyledButton from "../button/button";
-import { useRouter } from "next/router";
+import { useRouter } from "next/router";                   NG 
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { AuthApi } from "../../service/Axios";
 import DocumentUploadContainer from "../document/DocumentUploadContainer";
@@ -99,6 +99,10 @@ const RmatTest: React.FC = () => {
             <>
               <StyledButton
                 className="mb-1"
+
+
+
+
                 type="button"
                 isGreenWhiteCombination={true}
                 title={"Back to Dashboard"}

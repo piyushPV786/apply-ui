@@ -128,7 +128,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   };
 
   return (
-    <MainContainer>
+    <MainContainer className="card-shadow mt-0">
       <Typography
         textAlign="left"
         component="header"
@@ -211,6 +211,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           <div className="mr-2">
             <StyledButton
               title={fileUploadButtonText}
+              className="doc-upload"
               style={{ width: "100px" }}
               onClick={onDocUploadClick}
               disabled={isApproved || isSubmitted}
@@ -297,7 +298,7 @@ export const TickWithText = ({
   const labelId = `list-secondary-label-${text}`;
   const title = () => (
     <StyledLabel
-      style={{ fontSize: "12px", fonWeight: 600 }}
+    className="sidebar-label"    
       required={required}
     >
       {isInnerText ? (
@@ -308,20 +309,14 @@ export const TickWithText = ({
     </StyledLabel>
   );
   return (
-    <List>
+
       <ListItem
         key={text}
         secondaryAction={
           <>
             {status && (
               <Status
-                className=""
-                style={{
-                  fontSize: "12px",
-                  position: "relative",
-                  left: "10px",
-                  fontWeight: "bold",
-                }}
+                className="sidebar-status"
                 noBg
                 status={status}
               >{`-${status}`}</Status>
@@ -332,21 +327,18 @@ export const TickWithText = ({
         dense
         sx={{
           width: "100%",
-          maxWidth: 360,
           bgcolor: "background.paper",
           marginRight: "5px",
         }}
-      >
-        <ListItemButton>
+      >     
           {icon || (
             <div className={classes.roundBackground}>
               <CheckOutlined className={classes.icon} />
             </div>
           )}
           <ListItemText id={labelId} primary={title()} />
-        </ListItemButton>
       </ListItem>
-    </List>
+ 
   );
 };
 

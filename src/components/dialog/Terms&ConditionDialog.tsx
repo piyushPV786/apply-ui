@@ -31,10 +31,10 @@ export const EditGroup = ({
 
   return (
     <Grid>
-      <label className="form-check-label">
-        I have read and agreed to
+      <label className="form-check-label terms-conditions">
+        I have read and agreed to 
         <a
-          style={{ color: "Green", fontWeight: "bold" }}
+          style={{ color: "Green", fontFamily: "roboto-medium" }}
           href="#"
           onClick={() => {
             termsHandelOpen();
@@ -46,14 +46,12 @@ export const EditGroup = ({
       </label>
 
       <Dialog
-        fullWidth
-        open={dialogShow || termsOpen}
-        maxWidth="xl"
+        open={dialogShow || termsOpen}   
         scroll="body"
         onClose={() => termsHandelClose}
       >
         <Box sx={{ mt: 5, textAlign: "center" }}>
-          <Typography variant="h5" sx={{ mb: 3, lineHeight: "2rem" }}>
+          <Typography className="popup-title" sx={{ mb: 3, lineHeight: "2rem" }}>
             Terms and Conditions
           </Typography>
         </Box>
@@ -1917,7 +1915,7 @@ export const EditGroup = ({
         </Grid>
 
         <DialogActions
-          sx={{ pb: { xs: 8, sm: 12.5 }, justifyContent: "center" }}
+          sx={{ pb: { xs: 2, sm: 2 }, justifyContent: "center" }}
         >
           <StyledButton
             type="button"

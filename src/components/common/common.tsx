@@ -44,7 +44,6 @@ export const StyledLabel = (props: any) => {
 
 export const StyledAccordion = styled(Accordion)`
   .MuiAccordionSummary-root {
-    border-bottom: 3px solid ${Green}!important;
     height: 45px;
   }
 
