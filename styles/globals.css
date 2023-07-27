@@ -648,3 +648,29 @@ width: calc( 100% - 80px );
   height: 18px;
   margin-right: 2px;
 }
+
+.fee-cards
+{
+  display: flex;
+  flex-flow: row wrap;
+  align-content: space-between;
+  margin-bottom: 5px;
+  border-radius: 10px !important;
+}
+
+.fee-card-list div:first-child
+{
+  border-radius: 5px !important;
+  padding: 3px;
+}
+
+.fee-cards .fee-mode
+{
+  font-size: 11px !important;
+  padding: 0 !important;
+}
+
+.fee-card-list
+{
+  margin-bottom: 10px;
+}
