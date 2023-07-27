@@ -929,6 +929,7 @@ const ApplicationForm = () => {
                             </>
                             {activeStep !== 2 && (
                               <StyledButton
+                              className="form-button"
                                 onClick={() => {
                                   if (
                                     JSON.parse(
@@ -950,6 +951,7 @@ const ApplicationForm = () => {
                             )}
                             &nbsp;&nbsp;&nbsp;
                             <StyledButton
+                            className="form-button"
                               onClick={() => {
                                 activeStep === 2
                                   ? (submitFormData(allFields, false) as any)
@@ -980,7 +982,7 @@ const ApplicationForm = () => {
                               }}
                               isGreenWhiteCombination
                               title={"Back to Dashboard"}
-                              className="me-3"
+                              className="me-3 form-button"
                             />
                             <StyledButton
                               onClick={() => {
@@ -1091,8 +1093,6 @@ export const MainContainer = styled.div`
 `;
 const FooterConatiner = styled.div`
   width: 100%;
-  min-height: 200px;
-  margin-bottom: 4rem;
   .form-check-input:checked {
     background-color: ${Green};
     border-color: #0d6efd;

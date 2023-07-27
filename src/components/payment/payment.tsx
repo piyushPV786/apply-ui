@@ -248,7 +248,7 @@ const Payment = (props: any) => {
                 <PaymentHeading>
                   <div className="col-md-12">
                     <StyleHeading>
-                      <GreenFormHeading style={{ fontSize: "20px" }}>
+                      <GreenFormHeading>
                         Order Summary
                       </GreenFormHeading>
                     </StyleHeading>
@@ -260,21 +260,21 @@ const Payment = (props: any) => {
                       <div className="row">
                         <div className="col-md-6">
                           <div className="mb-4">
-                            <StyledLabel style={{ fontSize: "16px" }}>
+                            <StyledLabel>
                               Proposal Qualification
                             </StyledLabel>
-                            <div>
-                              <strong>{selectedProgram?.name}</strong>
+                            <div className="fields">
+                             {selectedProgram?.name}
                             </div>
                           </div>
                         </div>
                         <div className="col-md-6">
                           <div className="mb-4">
-                            <StyledLabel style={{ fontSize: "16px" }}>
+                            <StyledLabel>
                               Study Mode
                             </StyledLabel>
-                            <div>
-                              <strong>{selectedStudyMode}</strong>
+                            <div className="fields">
+                                {selectedStudyMode}
                             </div>
                           </div>
                         </div>
@@ -336,7 +336,7 @@ const Payment = (props: any) => {
                         )}
                         <div className="col-md-6">
                           <div className="mb-4">
-                            <StyledLabel style={{ fontSize: "16px" }}>
+                            <StyledLabel>
                               {isApplicationEnrolled
                                 ? "Program Fee"
                                 : "Application Fee"}{" "}
@@ -344,8 +344,7 @@ const Payment = (props: any) => {
                                 ({`R ${Math.trunc(+programFee)}`})
                               </strong>
                             </StyledLabel>
-                            <div>
-                              <strong>
+                            <div className="fields">                           
                                 {selectedCurrency}{" "}
                                 {isApplicationEnrolled
                                   ? getConvertedProgramFees(
@@ -357,7 +356,7 @@ const Payment = (props: any) => {
                                 <span className="fw-normal fs-6">
                                   ( Non-refundable )
                                 </span>
-                              </strong>
+                             
                             </div>
                           </div>
                         </div>
@@ -367,13 +366,13 @@ const Payment = (props: any) => {
                       <div className="w-100 p-4 promo-card">
                         <div className="mb-4 d-flex justify-content-between flex-column">
                           <div>
-                            <h6>Subtotal - ({selectedCurrency})</h6>
+                            <h6>Subtotal <div className="payment-values"> ({selectedCurrency})</div></h6>
                           </div>
                           <div>
                             {" "}
                             {isApplicationEnrolled ? (
                               <h6>
-                                Total Program Fees: {selectedCurrency} &nbsp;{" "}
+                                Total Program Fees<div className="payment-values">{selectedCurrency} &nbsp;{""}
                                 {isManagementPromoCode
                                   ? getConvertedProgramFees(
                                       conversionRate,
@@ -383,39 +382,43 @@ const Payment = (props: any) => {
                                       conversionRate,
                                       programFee
                                     )}
+                                    </div> 
                               </h6>
                             ) : (
                               <h6>
-                                Total Application - {selectedCurrency} &nbsp;
+                                Total Application<div className="payment-values">{selectedCurrency} &nbsp;
                                 {isManagementPromoCode
                                   ? getConvertedProgramFees(
                                       conversionRate,
                                       allFields?.payment?.discountedFee
                                     )
                                   : convertedProgramFee}
+                                  </div>
                               </h6>
                             )}
                             {!isApplicationEnrolled && (
                               <h6>
-                                RMAT Fee - {selectedCurrency} &nbsp;
+                                RMAT Fee <div className="payment-values">{selectedCurrency} &nbsp;
                                 {isNaN(rmatFee) ? 0 : rmatFee}
+                                </div> 
                               </h6>
                             )}
                             {!isManagementPromoCode && (
                               <>
                                 <h6>
-                                  Discount - {selectedCurrency} &nbsp;
+                                  Discount <div className="payment-values"> {selectedCurrency} &nbsp;
                                   {isNaN(discountAmount) ? 0 : discountAmount}
                                   {discountPercentage && (
                                     <span className="ms-2">
                                       ({discountPercentage}%)
                                     </span>
                                   )}
+                                  </div>
                                 </h6>
 
                                 {props?.isApplicationEnrolled ? (
-                                  <h6>
-                                    Total Amount - &nbsp;{selectedCurrency}
+                                 <h4 className="subtotal">
+                                    Total Amount  <div className="payment-values"> {selectedCurrency} 
                                     &nbsp;
                                     {isNaN(totalAmount)
                                       ? getConvertedProgramFees(
@@ -423,14 +426,15 @@ const Payment = (props: any) => {
                                           programFee
                                         )
                                       : totalAmount}
-                                  </h6>
+                                      </div>
+                                  </h4>
                                 ) : (
-                                  <h6>
+                                  <h4 className="subtotal">
                                     Total Amount - &nbsp;{selectedCurrency}{" "}
                                     {isNaN(totalAmount)
                                       ? +rmatFee + +convertedProgramFee
                                       : totalAmount}
-                                  </h6>
+                                  </h4>
                                 )}
                               </>
                             )}
@@ -540,7 +544,7 @@ const Payment = (props: any) => {
                     <PaymentHeading>
                       <div className="col-md-12">
                         <StyleHeading>
-                          <GreenFormHeading style={{ fontSize: "20px" }}>
+                          <GreenFormHeading style={{ fontSize: "16px" }}>
                             Upload Payment Proof
                           </GreenFormHeading>
                         </StyleHeading>

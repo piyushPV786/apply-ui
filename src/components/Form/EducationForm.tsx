@@ -53,8 +53,8 @@ interface IEducationProps {
 const FeeCard = (props: any) => {
   const { setSelectedMode = () => {}, ...rest } = { ...props };
   return (
-    <>
-      <StyleFeeCards
+    <> 
+      <StyleFeeCards 
         style={{
           border:
             props?.selected === props?.fee
@@ -62,9 +62,8 @@ const FeeCard = (props: any) => {
               : "2px solid #dde1e3",
         }}
       >
-        <span>R {props?.fee}</span>
-        <br />
-        <span style={{ color: `${Green}` }}>{props?.feeMode}</span>
+        <div className="fee-details">R {props?.fee}</div>
+        <div className="fee-mode" style={{ color: `${Green}` }}>{props?.feeMode}</div>
       </StyleFeeCards>
     </>
   );
@@ -161,7 +160,7 @@ export const EducationForm = (props: IEducationProps) => {
     );
   return (
     <>
-      <StyledAccordion defaultExpanded={true} key="education" id="education">
+      <StyledAccordion className="card-shadow" defaultExpanded={true} key="education" id="education">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -264,19 +263,19 @@ export const EducationForm = (props: IEducationProps) => {
                           );
                         }
                       })}
-                    <StyleContainer>
+                    <StyleContainer className="fee-cards">
                       {studyModeQualification &&
                         studyModeQualification[0]?.studyModes[
                           selectedStudyModeIndex
                         ]?.fees
                           ?.sort((a, b) => sortAscending(a, b, "feeMode"))
                           .map(({ fee, feeMode }: IFee, index) => (
-                            <div key={index}>
+                            <div key={index} className="fee-card-list">
                               <FeeCard
                                 key={fee}
                                 fee={fee}
                                 feeMode={feeMode}
-                                uniqueId={fee}
+                                uniqueId={fee}                             
                               />
                             </div>
                           ))}
@@ -511,9 +510,8 @@ export const EducationForm = (props: IEducationProps) => {
                   )}
                 </div>
 
-                {referredByeVal === "AGENT" && (
-                  <div className="">
-                    <div className="mb-4">
+                {referredByeVal === "AGENT" && (                
+                    <div className="mb-4 others">
                       <StyledLabel required>Agent Name</StyledLabel>
                       <select
                         className="form-select"
@@ -540,11 +538,11 @@ export const EducationForm = (props: IEducationProps) => {
                         </div>
                       )}
                     </div>
-                  </div>
+                  
                 )}
                 {referredByeVal === "SOCIALMEDIA" && (
                   <div className="">
-                    <div className="mb-4">
+                    <div className="mb-4 others">
                       <StyledLabel required>Social Media</StyledLabel>
                       <select
                         className="form-select"
@@ -586,7 +584,7 @@ export const EducationForm = (props: IEducationProps) => {
 
 const StyleFeeCards = styled.div`
   background: ${DefaultGrey};
-  padding: 6px 10px;
+  padding: 6px;
   font-size: 14px;
   font-family: roboto;
   font-weight: 600;
