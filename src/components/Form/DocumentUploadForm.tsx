@@ -225,6 +225,7 @@ const DocumentUploadForm = ({
             ...rest,
             type: rest?.draftSaveDoc?.fileExtension,
             typeCode: rest?.draftSaveDoc?.documentTypeCode,
+            name: rest?.draftSaveDoc?.name,
           }));
         const remainDocs = remainingDocs?.filter(
           (doc) =>
@@ -239,15 +240,6 @@ const DocumentUploadForm = ({
       );
     }
   }, [isMBAProgram]);
-
-  // useEffect(() => {
-  //   if (uploadDocs?.length > 0) {
-  //     const remainDocs = remainingDocs?.filter(
-  //       (doc) => !uploadDocs?.find((document) => document?.typeCode === doc)
-  //     );
-  //     setRemainingDocs(remainDocs?.filter(Boolean));
-  //   }
-  // }, [uploadDocs]);
 
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
