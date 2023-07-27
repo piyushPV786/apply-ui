@@ -549,7 +549,9 @@ const ApplicationForm = () => {
           count = count + 1;
           successLength.push("true");
           res?.data.forEach((url, index) => {
-            uploadFiles(url, uploadedDocs[index]);
+            const filesTakenForm =
+              activeStep === MagicNumbers.ONE ? paymentProof : uploadedDocs;
+            uploadFiles(url, filesTakenForm[index]);
           });
         } else {
           showToast(false, res.message);
