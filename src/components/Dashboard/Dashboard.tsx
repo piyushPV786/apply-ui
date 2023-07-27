@@ -921,7 +921,8 @@ const StudentIdCard = styled.div<{ bgColor?: string }>`
   max-width: 250px;
   border-radius: 3px;
   padding: 2px 8px;
-  margin: 15px 0 0;
+  margin: 15px 5px 0 0;
+  font-size: 13px;
   span {
     font-weight: bold;
   }
@@ -933,7 +934,7 @@ const EnrollmentIdCard = styled.div<{ bgColor?: string }>`
   max-width: 250px;
   border-radius: 3px;
   padding: 2px 8px;
-  margin: 15px 0 0;
+  margin: 15px 5px 0 0;
   font-size: 13px;
   span {
     font-weight: bold;
