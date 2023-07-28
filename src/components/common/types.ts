@@ -181,6 +181,8 @@ export interface IApplication {
   lead: ILead;
   document: IDocument;
   studentCode: string;
+  username: string;
+  password: string;
 }
 
 export interface IDocument {

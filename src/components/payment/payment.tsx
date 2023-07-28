@@ -248,9 +248,7 @@ const Payment = (props: any) => {
                 <PaymentHeading>
                   <div className="col-md-12">
                     <StyleHeading>
-                      <GreenFormHeading>
-                        Order Summary
-                      </GreenFormHeading>
+                      <GreenFormHeading>Order Summary</GreenFormHeading>
                     </StyleHeading>
                   </div>
                 </PaymentHeading>
@@ -260,22 +258,16 @@ const Payment = (props: any) => {
                       <div className="row">
                         <div className="col-md-6">
                           <div className="mb-4">
-                            <StyledLabel>
-                              Proposal Qualification
-                            </StyledLabel>
+                            <StyledLabel>Proposal Qualification</StyledLabel>
                             <div className="fields">
-                             {selectedProgram?.name}
+                              {selectedProgram?.name}
                             </div>
                           </div>
                         </div>
                         <div className="col-md-6">
                           <div className="mb-4">
-                            <StyledLabel>
-                              Study Mode
-                            </StyledLabel>
-                            <div className="fields">
-                                {selectedStudyMode}
-                            </div>
+                            <StyledLabel>Study Mode</StyledLabel>
+                            <div className="fields">{selectedStudyMode}</div>
                           </div>
                         </div>
 
@@ -344,19 +336,18 @@ const Payment = (props: any) => {
                                 ({`R ${Math.trunc(+programFee)}`})
                               </strong>
                             </StyledLabel>
-                            <div className="fields">                           
-                                {selectedCurrency}{" "}
-                                {isApplicationEnrolled
-                                  ? getConvertedProgramFees(
-                                      conversionRate,
-                                      programFee
-                                    )
-                                  : convertedProgramFee}
-                                &nbsp;
-                                <span className="fw-normal fs-6">
-                                  ( Non-refundable )
-                                </span>
-                             
+                            <div className="fields">
+                              {selectedCurrency}{" "}
+                              {isApplicationEnrolled
+                                ? getConvertedProgramFees(
+                                    conversionRate,
+                                    programFee
+                                  )
+                                : convertedProgramFee}
+                              &nbsp;
+                              <span className="fw-normal fs-6">
+                                ( Non-refundable )
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -366,75 +357,96 @@ const Payment = (props: any) => {
                       <div className="w-100 p-4 promo-card">
                         <div className="mb-4 d-flex justify-content-between flex-column">
                           <div>
-                            <h6>Subtotal <div className="payment-values"> ({selectedCurrency})</div></h6>
+                            <h6>
+                              Subtotal{" "}
+                              <div className="payment-values">
+                                {" "}
+                                ({selectedCurrency})
+                              </div>
+                            </h6>
                           </div>
                           <div>
                             {" "}
                             {isApplicationEnrolled ? (
                               <h6>
-                                Total Program Fees<div className="payment-values">{selectedCurrency} &nbsp;{""}
-                                {isManagementPromoCode
-                                  ? getConvertedProgramFees(
-                                      conversionRate,
-                                      allFields?.payment?.discountedFee
-                                    )
-                                  : getConvertedProgramFees(
-                                      conversionRate,
-                                      programFee
-                                    )}
-                                    </div> 
+                                Total Program Fees
+                                <div className="payment-values">
+                                  {selectedCurrency} &nbsp;{""}
+                                  {isManagementPromoCode
+                                    ? getConvertedProgramFees(
+                                        conversionRate,
+                                        allFields?.payment?.discountedFee
+                                      )
+                                    : getConvertedProgramFees(
+                                        conversionRate,
+                                        programFee
+                                      )}
+                                </div>
                               </h6>
                             ) : (
                               <h6>
-                                Total Application<div className="payment-values">{selectedCurrency} &nbsp;
-                                {isManagementPromoCode
-                                  ? getConvertedProgramFees(
-                                      conversionRate,
-                                      allFields?.payment?.discountedFee
-                                    )
-                                  : convertedProgramFee}
-                                  </div>
+                                Total Application
+                                <div className="payment-values">
+                                  {selectedCurrency} &nbsp;
+                                  {isManagementPromoCode
+                                    ? getConvertedProgramFees(
+                                        conversionRate,
+                                        allFields?.payment?.discountedFee
+                                      )
+                                    : convertedProgramFee}
+                                </div>
                               </h6>
                             )}
                             {!isApplicationEnrolled && (
                               <h6>
-                                RMAT Fee <div className="payment-values">{selectedCurrency} &nbsp;
-                                {isNaN(rmatFee) ? 0 : rmatFee}
-                                </div> 
+                                RMAT Fee{" "}
+                                <div className="payment-values">
+                                  {selectedCurrency} &nbsp;
+                                  {isNaN(rmatFee) ? 0 : rmatFee}
+                                </div>
                               </h6>
                             )}
                             {!isManagementPromoCode && (
                               <>
                                 <h6>
-                                  Discount <div className="payment-values"> {selectedCurrency} &nbsp;
-                                  {isNaN(discountAmount) ? 0 : discountAmount}
-                                  {discountPercentage && (
-                                    <span className="ms-2">
-                                      ({discountPercentage}%)
-                                    </span>
-                                  )}
+                                  Discount{" "}
+                                  <div className="payment-values">
+                                    {" "}
+                                    {selectedCurrency} &nbsp;
+                                    {isNaN(discountAmount) ? 0 : discountAmount}
+                                    {discountPercentage && (
+                                      <span className="ms-2">
+                                        ({discountPercentage}%)
+                                      </span>
+                                    )}
                                   </div>
                                 </h6>
 
                                 {props?.isApplicationEnrolled ? (
-                                 <h4 className="subtotal">
-                                    Total Amount  <div className="payment-values"> {selectedCurrency} 
-                                    &nbsp;
-                                    {isNaN(totalAmount)
-                                      ? getConvertedProgramFees(
-                                          conversionRate,
-                                          programFee
-                                        )
-                                      : totalAmount}
-                                      </div>
+                                  <h4 className="subtotal">
+                                    Total Amount{" "}
+                                    <div className="payment-values">
+                                      {" "}
+                                      {selectedCurrency}
+                                      &nbsp;
+                                      {isNaN(totalAmount)
+                                        ? getConvertedProgramFees(
+                                            conversionRate,
+                                            programFee
+                                          )
+                                        : totalAmount}
+                                    </div>
                                   </h4>
                                 ) : (
                                   <h4 className="subtotal">
-                                    Total Amount <div className="payment-values"> &nbsp;{selectedCurrency}{" "}
-                                    {isNaN(totalAmount)
-                                      ? +rmatFee + +convertedProgramFee
-                                      : totalAmount}
-                                      </div>
+                                    Total Amount{" "}
+                                    <div className="payment-values">
+                                      {" "}
+                                      &nbsp;{selectedCurrency}{" "}
+                                      {isNaN(totalAmount)
+                                        ? +rmatFee + +convertedProgramFee
+                                        : totalAmount}
+                                    </div>
                                   </h4>
                                 )}
                               </>
@@ -530,7 +542,7 @@ const Payment = (props: any) => {
             {!props?.isManagementStudentType && (
               <>
                 <div className="col-md-6">
-                  <PaymentOption 
+                  <PaymentOption
                     totalAmount={totalPayuAmount}
                     navigateNext={props?.navigateNext}
                     setLoading={(loading) => setLoading(loading)}
@@ -560,7 +572,7 @@ const Payment = (props: any) => {
                           >
                             <div ref={fileUploadRef} className="text-center">
                               <Image
-                              className="upload-icon"
+                                className="upload-icon"
                                 src={FIleUploadImg}
                                 width="35"
                                 alt="file-upload-svgrepo"
@@ -656,9 +668,6 @@ export default Payment;
 
 export const MainContainer = styled.div`
   background: #fff;
-  width: 100%;
-  margin: 1rem 0;
-  height: 100%;
 `;
 
 export const PaymentContainer = styled.div`
