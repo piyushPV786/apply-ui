@@ -455,10 +455,7 @@ const DocumentUploadForm = ({
               <Typography textAlign="left" component="header" fontWeight="bold">
                 Document Acceptance Criteria
               </Typography>
-              <Typography color="black" textAlign="left" component="caption">
-                Documents not following the below guidelines will not be
-                accepted and you will be asked to submit the documents again
-              </Typography>
+
               <List>
                 {documentCriteria.map(({ text, icon, isInnerText }: any) => (
                   <TickWithText
