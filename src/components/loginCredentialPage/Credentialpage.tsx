@@ -50,11 +50,23 @@ export const LoginCredentials = (props: any) => {
               <CredentialContainer>
                 <div className="text-center w-100">
                   <p>Username</p>
-                  <h5>Karn.Sharma@gmail.com</h5>
+                  <h5>
+                    {
+                      JSON.parse(
+                        sessionStorage?.getItem("activeLeadDetail") as any
+                      )?.username
+                    }
+                  </h5>
                 </div>
                 <div className="text-center w-100">
                   <p>Password</p>
-                  <h5>wp9dh%sKgK</h5>
+                  <h5>
+                    {
+                      JSON.parse(
+                        sessionStorage?.getItem("activeLeadDetail") as any
+                      )?.password
+                    }
+                  </h5>
                 </div>
               </CredentialContainer>
               <ButtonContainer>
