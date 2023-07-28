@@ -281,7 +281,7 @@ export const AddressForm = ({
                       }
                     }}
                   />
-                  <label className="form-check-label ms-2">
+                  <label className="form-check-label m1-2 same-address">
                     Select if same as Residential Address
                   </label>
                 </div>
