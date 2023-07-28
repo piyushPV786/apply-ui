@@ -242,8 +242,8 @@ const Payment = (props: any) => {
       ) : (
         <div className="payment-conatiner">
           <div className="row">
-            <div className="col-12 col-md-12 mb-5">
-              <MainContainer>
+            <div className="col-md-12 mb-4">
+              <MainContainer className="card-shadow">
                 {" "}
                 <PaymentHeading>
                   <div className="col-md-12">
@@ -255,7 +255,7 @@ const Payment = (props: any) => {
                   </div>
                 </PaymentHeading>
                 <PaymentContainer>
-                  <div className="row p-4">
+                  <div className="row">
                     <div className="col-md-8">
                       <div className="row">
                         <div className="col-md-6">
@@ -430,10 +430,11 @@ const Payment = (props: any) => {
                                   </h4>
                                 ) : (
                                   <h4 className="subtotal">
-                                    Total Amount - &nbsp;{selectedCurrency}{" "}
+                                    Total Amount <div className="payment-values"> &nbsp;{selectedCurrency}{" "}
                                     {isNaN(totalAmount)
                                       ? +rmatFee + +convertedProgramFee
                                       : totalAmount}
+                                      </div>
                                   </h4>
                                 )}
                               </>
@@ -453,7 +454,7 @@ const Payment = (props: any) => {
                             </div>
 
                             <div className="w-100 text-center ps-4 pe-4">
-                              <div className="input-group mb-2 mt-4">
+                              <div className="input-group mb-2 mt-2">
                                 <input
                                   type="text"
                                   className="form-control"
@@ -529,7 +530,7 @@ const Payment = (props: any) => {
             {!props?.isManagementStudentType && (
               <>
                 <div className="col-md-6">
-                  <PaymentOption
+                  <PaymentOption 
                     totalAmount={totalPayuAmount}
                     navigateNext={props?.navigateNext}
                     setLoading={(loading) => setLoading(loading)}
@@ -540,7 +541,7 @@ const Payment = (props: any) => {
                   <StyledDiv>Or</StyledDiv>
                 </div>
                 <div className="col-md-5">
-                  <MainContainer>
+                  <MainContainer className="card-shadow">
                     <PaymentHeading>
                       <div className="col-md-12">
                         <StyleHeading>
@@ -559,6 +560,7 @@ const Payment = (props: any) => {
                           >
                             <div ref={fileUploadRef} className="text-center">
                               <Image
+                              className="upload-icon"
                                 src={FIleUploadImg}
                                 width="35"
                                 alt="file-upload-svgrepo"
@@ -583,7 +585,7 @@ const Payment = (props: any) => {
                               <GreenFormHeading>
                                 Drag and drop, or browse your files
                               </GreenFormHeading>
-                              <p className="grey-text">
+                              <p className="offline-text">
                                 Only PNG, JPEG and PDF files with max size of
                                 2MB
                               </p>
@@ -666,7 +668,7 @@ export const PaymentContainer = styled.div`
 
 const PaymentHeading = styled(PaymentContainer)`
   border-bottom: 2px solid ${Green};
-  padding: 1rem 10px;
+  padding: 10px;
 `;
 const StyleHeading = styled.div``;
 const StyledDiv = styled.div`
@@ -690,11 +692,12 @@ const UploadPaymentDocsContainer = styled.div`
   align-items: center;
   cursor: pointer;
   min-width: 400px;
-  min-height: 150px;
+  min-height: 100px;
   padding: 1rem;
   width: 100%;
   overflow: hidden;
-  border: 2px dashed #008554;
+  border: 1px dashed #008554;
+  border-radius: 5px;
   @media (max-width: 900px) {
     padding: 1rem 4.7rem;
   }

@@ -330,25 +330,24 @@ export const ApplicationDashboard = (props: any) => {
                             }}
                           >
                             <Image
-                              width="60"
-                              height="60"
+                              width="50"
+                              height="50"
                               src={ApplicationIcon}
                               alt="Application Icon"
                             />
                           </div>
                         </div>
                         <div className="text-center w-100">
-                          <GreenFormHeading
-                            style={{ fontSize: "24px", color: "#000" }}
-                          >
+                          <GreenFormHeading className="apply-text" >
                             No application yet
                           </GreenFormHeading>
-                          <p className="grey-text mt-2">
+                          <p className="grey-text mt-2 mb-3">
                             Thank you for trusting Regenesys as your educational
                             institution. Please apply for your interested
                             qualification now.
                           </p>
                           <StyledButton
+                          className="button-shadow"
                             onClick={onApplyNow}
                             title="Apply Now"
                           />

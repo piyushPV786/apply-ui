@@ -12,10 +12,10 @@ import Image from "next/image";
 import Spinner from "../../../public/assets/images/spinner.svg";
 
 export const GreenFormHeading = styled.p`
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 500;
   color: #008554;
-  margin: 0;
+  margin: 0 0 2px;
 
   @media (max-width: 510px) {
     font-size: 11px;

@@ -41,7 +41,7 @@ export const EditGroup = ({
           }}
         >
           {" "}
-          Terms and Conditions
+          terms and conditions
         </a>
       </label>
 
