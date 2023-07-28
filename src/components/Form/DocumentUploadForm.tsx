@@ -18,6 +18,7 @@ import { Typography } from "@mui/material";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { identificationDocumentTypeKey } from "./personalInfoForm";
 import { CloseOutlined } from "@material-ui/icons";
+import { List } from "@material-ui/core";
 import { GraduationType } from "../common/constant";
 
 const documentUploadFormData = [
@@ -53,7 +54,6 @@ const documentUploadFormData = [
     status: "Upload Pending",
   },
 ];
-
 const mbaProgramDocuments: any = [
   {
     name: "Motivation Letter",
@@ -78,23 +78,23 @@ const documentCriteria = [
     text: `ID should be at least valid for <strong>6 months.</strong>`,
     isInnerText: true,
   },
-  { text: "Document must be clear visible" },
   { text: "Upload a color scan of the original document." },
-  {
-    text: "Do not upload black & white scans",
-    icon: (
-      <div
-        style={{
-          backgroundColor: "#ffe9e9",
-          borderRadius: "50%",
-          padding: "1px",
-          marginRight: "3px",
-        }}
-      >
-        <CloseOutlined color="error" />
-      </div>
-    ),
-  },
+  //{ text: "Document must be clear visible" },
+  // {
+  //   text: "Do not upload black & white scans",
+  //   icon: (
+  //     <div
+  //       style={{
+  //         backgroundColor: "#ffe9e9",
+  //         borderRadius: "50%",
+  //         padding: "1px",
+  //         marginRight: "3px",
+  //       }}
+  //     >
+  //       <CloseOutlined color="error" />
+  //     </div>
+  //   ),
+  // },
 ];
 
 interface IDocumentUploadProps {
@@ -185,7 +185,6 @@ const requiredDocs = [
   "detailCV",
 ];
 const mbaDocs = ["motivationLetter", "interviewNotes"];
-
 const DocumentUploadForm = ({
   allFields,
   documentType,
@@ -198,22 +197,16 @@ const DocumentUploadForm = ({
   const {
     register,
     setValue,
-    setError,
     formState: { errors },
   } = useFormContext();
-
   const [documentFormDataDetail, setDocumentFormDataDetail] = useState<
     typeof documentUploadFormData
   >(documentUploadFormData);
-
   const [uploadDocs, setUploadDocs] = useState<
     (File & { error: boolean; typeCode: string; id: string })[]
   >([]);
-
   const [remainingDocs, setRemainingDocs] = useState<string[]>(requiredDocs);
-
   const documentDetails = allFields?.document?.documentDetails || [];
-
   const isMBAProgram =
     allFields?.education?.programCode === "MBA-PROG" ||
     allFields?.education?.programCode === "MBA";
@@ -233,6 +226,7 @@ const DocumentUploadForm = ({
             ...rest,
             type: rest?.draftSaveDoc?.fileExtension,
             typeCode: rest?.draftSaveDoc?.documentTypeCode,
+            name: rest?.draftSaveDoc?.name,
           }));
         const remainDocs = remainingDocs?.filter(
           (doc) =>
@@ -248,17 +242,7 @@ const DocumentUploadForm = ({
     }
   }, [isMBAProgram]);
 
-  // useEffect(() => {
-  //   if (uploadDocs?.length > 0) {
-  //     const remainDocs = remainingDocs?.filter(
-  //       (doc) => !uploadDocs?.find((document) => document?.typeCode === doc)
-  //     );
-  //     setRemainingDocs(remainDocs?.filter(Boolean));
-  //   }
-  // }, [uploadDocs]);
-
   const documentFormFields = allFields?.document;
-
   const documentFieldErrors = errors?.document as any;
 
   const documentTypeList = documentType?.filter(
@@ -281,7 +265,6 @@ const DocumentUploadForm = ({
 
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
-
       if (!item?.typeCode && isApplicationEnrolled) {
         item.typeCode = "BURSARYLETTER";
       }
@@ -290,23 +273,19 @@ const DocumentUploadForm = ({
       }
     });
     setUploadDocs((prevState) => [...prevState, ...(uploadedFiles as any)]);
-
     const allFiles = [...uploadDocs, ...uploadedFiles];
-
     const remainingDocuments = isPostGraduation
       ? remainingDocs?.filter((doc) => !doc?.includes("detailCV"))
       : remainingDocs;
-
     const remainDocs = remainingDocuments?.filter(
       (doc) => !allFiles?.find((document) => document?.typeCode === doc)
     );
     setRemainingDocs(remainDocs?.filter(Boolean));
     setValue("document.uploadedDocs", allFiles);
   };
-
   const NationalityPassportFields = () => {
     return (
-      <div className="row mt-2">
+      <div className="row mt-4">
         <div className="col-md-6">
           <div className="mb-4">
             <AdvanceDropDown
@@ -355,7 +334,6 @@ const DocumentUploadForm = ({
       </div>
     );
   };
-
   const documentFormData = isMBAProgram
     ? [...(documentFormDataDetail || []), ...mbaProgramDocuments]
     : documentFormDataDetail;
@@ -388,9 +366,17 @@ const DocumentUploadForm = ({
           uploadDocs?.find((item) => item?.name?.includes(doc))
         );
 
+  // console.log({
+  //   remainingDocs,
+  //   uploadDocs,
+  //   allRequiredDocuments,
+  //   documentsNeedTOBeUpload,
+  //   isPostGraduation,
+  // });
+
   return (
     <div className="row mx-3 document-container">
-      <div className="col-md-8">
+      <div className="col-md-9">
         {uploadedDocuments?.map(
           ({
             name,
@@ -422,20 +408,18 @@ const DocumentUploadForm = ({
           }
         )}
       </div>
-      <div className="col-md-4">
-        <div>
-          <MainContainer>
-            <div className="d-flex flex-column">
+      <div className="col-md-3">
+        <div className="sticky-wrapper">
+          <MainContainer className="mt-0 card-shadow">
+            <div className="d-flex justify-content-center flex-column">
               <StyledButton
                 isGreenWhiteCombination
-                className="my-2"
+                className="mb-2"
                 title="Save as Draft"
                 onClick={onSaveDraft}
               />
               <StyledButton
-                disabled={
-                  [...documentsNeedTOBeUpload, ...remainingDocs]?.length > 0
-                }
+                disabled={remainingDocs?.length > 0}
                 onClick={() => {
                   setUploadDocs([]);
                   setDocumentFormDataDetail([]);
@@ -446,41 +430,43 @@ const DocumentUploadForm = ({
             </div>
           </MainContainer>
 
-          <MainContainer className="px-1">
+          <MainContainer className="sidebar-widget card-shadow">
             <div className="d-flex flex-column">
-              <Typography textAlign="left" component="header" fontWeight="bold">
+              <Typography textAlign="left" component="header">
                 Document Status
               </Typography>
-              {mapStatusDocument(documentStatusDetail).map(
-                ({ name, status }) => (
-                  <TickWithText
-                    key={name}
-                    status={status?.toLowerCase()}
-                    text={name}
-                  />
-                )
-              )}
+
+              <List>
+                {mapStatusDocument(documentStatusDetail).map(
+                  ({ name, status }) => (
+                    <TickWithText
+                      className=""
+                      key={name}
+                      status={status?.toLowerCase()}
+                      text={name}
+                    />
+                  )
+                )}
+              </List>
             </div>
           </MainContainer>
-
-          <MainContainer className="px-1">
+          <MainContainer className="sidebar-widget doc-criteria card-shadow">
             <div className="d-flex flex-column py-1">
-              <Typography textAlign="left" component="header" fontWeight="bold">
-                Document Criteria
+              <Typography textAlign="left" component="header">
+                Document Acceptance Criteria
               </Typography>
-              <Typography color="black" textAlign="left" component="caption">
-                Documents not following the below guidelines will not be
-                accepted and you will be asked to submit the documents again
-              </Typography>
-              {documentCriteria.map(({ text, icon, isInnerText }: any) => (
-                <TickWithText
-                  key={text}
-                  text={text}
-                  icon={icon}
-                  isInnerText={isInnerText}
-                  required={false}
-                />
-              ))}
+
+              <List>
+                {documentCriteria.map(({ text, icon, isInnerText }: any) => (
+                  <TickWithText
+                    key={text}
+                    text={text}
+                    icon={icon}
+                    isInnerText={isInnerText}
+                    required={false}
+                  />
+                ))}
+              </List>
             </div>
           </MainContainer>
         </div>
