@@ -221,7 +221,7 @@ export const EducationForm = (props: IEducationProps) => {
               )}
               {studyModeQualification.length > 0 && (
                 <div className="col-md-4">
-                  <StyledLabel required>Study Mode & Fee</StyledLabel>
+                  <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
 
                   <div className="mb-4">
                     {studyModeQualification &&
