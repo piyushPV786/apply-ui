@@ -65,7 +65,7 @@ export const LoginCredentials = () => {
                     {typeof window !== "undefined" &&
                       JSON.parse(
                         sessionStorage.getItem("activeLeadDetail") as any
-                      ).username}
+                      ).password}
                   </h5>
                 </div>
               </CredentialContainer>
