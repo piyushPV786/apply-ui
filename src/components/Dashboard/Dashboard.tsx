@@ -32,7 +32,7 @@ import {
   transformDate,
 } from "../../Util/Util";
 import { Grid } from "@material-ui/core";
-import { CachedOutlined } from "@material-ui/icons";
+import { CachedOutlined, Height } from "@material-ui/icons";
 
 const sortApplicationOnLastUpdate = (application: any[]) => {
   return application?.sort((a, b) => {
@@ -342,7 +342,7 @@ export const ApplicationDashboard = (props: any) => {
                           <GreenFormHeading className="apply-text" >
                             No application yet
                           </GreenFormHeading>
-                          <p className="grey-text mt-2 mb-3">
+                          <p className="grey-text mt-2 mb-3 mx-auto">
                             Thank you for trusting Regenesys as your educational
                             institution. Please apply for your interested
                             qualification now.
@@ -508,10 +508,11 @@ function ApplicationCard({
         <div className="w-100 mt-4 ">
           <Grid
             style={{
-              padding: "10px 16px 10px 0",
+              padding: "10px 16px 10px",
               borderTop: `1px solid ${Green}`,
               backgroundColor: "#f4f2f1",
               justifyContent: "flex-end",
+              minHeight: "64px",
             }}
             container
             spacing={1}

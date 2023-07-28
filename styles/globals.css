@@ -258,7 +258,6 @@ font-size: 14px;
 .grey-text {
   color: #6a767c !important;
   font-size: 14px!important;
-    margin: 0 auto;
     max-width: 600px;
     font-family: roboto-medium;
 }
@@ -412,7 +411,7 @@ button {
 }
 
 .document-infotext, .doc-upload-text{
-  font-size: 14px !important;
+  font-size: 13px !important;
 }
 
 .MuiButton-label {
@@ -648,6 +647,19 @@ p.popup-title
   margin-top: 10px !important;
 }
 
+.offline-filename
+{
+  color: #008554 !important;
+  font-family: roboto-medium !important;
+  font-size: 13px !important;
+  margin: 15px !important;
+  min-height: 24px;
+}
+
+.offline-filename svg{
+  fill: red;
+}
+
 .form-button
 {
   box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px;
@@ -656,7 +668,7 @@ p.popup-title
 .sidebar-label
 {
 font-family: roboto-medium;
-font-size: 13px;
+font-size: 12px;
 width: calc( 100% - 80px );
 }
 
@@ -712,4 +724,8 @@ width: calc( 100% - 80px );
   width: 30px;
   height: auto;
   margin-bottom: 10px;
+}
+
+.sticky-wrapper ul li{
+  margin:3px 0;
 }

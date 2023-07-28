@@ -78,23 +78,7 @@ const documentCriteria = [
     text: `ID should be at least valid for <strong>6 months.</strong>`,
     isInnerText: true,
   },
-  { text: "Document must be clear visible" },
   { text: "Upload a color scan of the original document." },
-  {
-    text: "Do not upload black & white scans",
-    icon: (
-      <div
-        style={{
-          backgroundColor: "#ffe9e9",
-          borderRadius: "50%",
-          padding: "1px",
-          marginRight: "3px",
-        }}
-      >
-        <CloseOutlined color="error" />
-      </div>
-    ),
-  },
 ];
 
 interface IDocumentUploadProps {

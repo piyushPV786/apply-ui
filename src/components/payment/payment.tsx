@@ -600,7 +600,7 @@ const Payment = (props: any) => {
                                         color: file?.error ? "red" : "#000",
                                         wordBreak: "break-all",
                                       }}
-                                      className="w-100"
+                                      className="w-100 offline-filename"
                                       key={file.lastModified}
                                     >
                                       {file?.name}{" "}
@@ -682,7 +682,7 @@ const StyledDiv = styled.div`
   top: 50%;
   color: ${Green};
   font-size: 18px;
-  font-weight: bolder;
+  font-family: roboto-bold;
 `;
 
 const UploadPaymentDocsContainer = styled.div`
