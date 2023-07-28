@@ -381,7 +381,11 @@ const Status = styled.span<{ status: string; noBg?: boolean }>`
       color:#31a0b7
       `;
     }
-    if (statusType === "upload pending" || statusType === "pending") {
+    if (
+      statusType === "upload pending" ||
+      statusType === "pending" ||
+      statusType === "uploaded"
+    ) {
       return `
       background:#fcefd0;
       color:#af7300

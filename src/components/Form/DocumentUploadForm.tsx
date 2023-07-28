@@ -131,6 +131,7 @@ const mergeDraftSaveDoc = (newDocs, existedDocs) => {
     const matchedDoc = existedDocs.find(
       (existedDoc) => existedDoc.id === newDoc.id
     );
+
     if (matchedDoc) {
       return {
         ...newDoc,
@@ -248,6 +249,7 @@ const DocumentUploadForm = ({
     const uploadedFiles = files;
 
     uploadedFiles.forEach((item: any) => {
+      item.isUploadedNow = true;
       item.error = isInvalidFileType(item.type);
       if (!item?.typeCode && isApplicationEnrolled) {
         item.typeCode = "BURSARYLETTER";
@@ -324,7 +326,7 @@ const DocumentUploadForm = ({
 
   const uploadedDocuments = mergeDraftSaveDoc(
     mapStatusToFormData(documentDetails, documentFormData),
-    uploadDocs
+    deepClone(uploadDocs)
   );
   const allRequiredDocuments = isMBAProgram
     ? [...remainingDocs, ...mbaDocs]?.filter(
@@ -350,14 +352,6 @@ const DocumentUploadForm = ({
           uploadDocs?.find((item) => item?.name?.includes(doc))
         );
 
-  // console.log({
-  //   remainingDocs,
-  //   uploadDocs,
-  //   allRequiredDocuments,
-  //   documentsNeedTOBeUpload,
-  //   isPostGraduation,
-  // });
-
   return (
     <div className="row mx-3 document-container">
       <div className="col-md-9">
@@ -370,6 +364,15 @@ const DocumentUploadForm = ({
             isDeclaration = false,
             draftSaveDoc = null,
           }) => {
+            const newDocumentAdded: any = [...(uploadDocs as any)]?.find(
+              (doc) => {
+                if (doc?.isUploadedNow && doc?.typeCode === id) return doc;
+                else return null;
+              }
+            );
+            const newDocStatus = newDocumentAdded?.isUploadedNow
+              ? "Uploaded"
+              : false;
             const customFileds = id?.includes("nationalIdPassport") ? (
               <NationalityPassportFields />
             ) : null;
@@ -380,7 +383,7 @@ const DocumentUploadForm = ({
                 selectedDocuments={
                   draftSaveDoc ? [draftSaveDoc] : (null as any)
                 }
-                status={status}
+                status={newDocStatus || status}
                 isDeclaration={isDeclaration}
                 disabled={disabled}
                 onUpload={uploadDocuments}
@@ -423,13 +426,26 @@ const DocumentUploadForm = ({
               </Typography>
               <List>
                 {mapStatusDocument(documentStatusDetail).map(
-                  ({ name, status }) => (
-                    <TickWithText
-                      key={name}
-                      status={status?.toLowerCase()}
-                      text={name}
-                    />
-                  )
+                  ({ name, status, id }) => {
+                    const newDocumentAdded: any = [
+                      ...(uploadDocs as any),
+                    ]?.find((doc) => {
+                      if (doc?.isUploadedNow && doc?.typeCode === id)
+                        return doc;
+                      else return null;
+                    });
+                    const newDocStatus = newDocumentAdded?.isUploadedNow
+                      ? "Uploaded"
+                      : false;
+                    const docListStatus = newDocStatus || status;
+                    return (
+                      <TickWithText
+                        key={name}
+                        status={docListStatus?.toLowerCase()}
+                        text={name}
+                      />
+                    );
+                  }
                 )}
               </List>
             </div>
