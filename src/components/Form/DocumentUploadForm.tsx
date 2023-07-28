@@ -19,6 +19,7 @@ import AdvanceDropDown from "../dropdown/Dropdown";
 import { identificationDocumentTypeKey } from "./personalInfoForm";
 import { CloseOutlined } from "@material-ui/icons";
 import { List } from "@material-ui/core";
+import { GraduationType } from "../common/constant";
 
 const documentUploadFormData = [
   {
@@ -70,7 +71,7 @@ const mbaProgramDocuments: any = [
 
 const documentCriteria = [
   {
-    text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</stroong>`,
+    text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</strong>`,
     isInnerText: true,
   },
   {
@@ -78,7 +79,7 @@ const documentCriteria = [
     isInnerText: true,
   },
   { text: "Upload a color scan of the original document." },
-  //{ text: "Document must be clear visible" },  
+  //{ text: "Document must be clear visible" },
   // {
   //   text: "Do not upload black & white scans",
   //   icon: (
@@ -210,7 +211,7 @@ const DocumentUploadForm = ({
     allFields?.education?.programCode === "MBA-PROG" ||
     allFields?.education?.programCode === "MBA";
 
-  const isPostGraduation = selectedPrograms?.category; 
+  const isPostGraduation = selectedPrograms?.category === GraduationType.PG; /// upload CV in the upload document section mandatory for Post Graduate Programs and Non mandatory for Under Graduate Programs.
 
   useEffect(() => {
     if (documentDetails?.length > 0) {
@@ -409,64 +410,65 @@ const DocumentUploadForm = ({
       </div>
       <div className="col-md-3">
         <div className="sticky-wrapper">
-
-        <MainContainer className="mt-0 card-shadow">
-          <div className="d-flex justify-content-center flex-column">
-            <StyledButton
-              isGreenWhiteCombination
-              className="mb-2"   
-              title="Save as Draft"
-              onClick={onSaveDraft}
-            />
-            <StyledButton
-              disabled={remainingDocs?.length > 0}
-              onClick={() => {
-                setUploadDocs([]);
-                setDocumentFormDataDetail([]);
-                onSubmit();
-              }}
-              title="Submit Documents"
-            />
-          </div>
-        </MainContainer>
-
-        <MainContainer className="sidebar-widget card-shadow">
-          <div className="d-flex flex-column">
-            <Typography textAlign="left" component="header">
-              Document Status
-            </Typography>
-
-            <List>
-            {mapStatusDocument(documentStatusDetail).map(({ name, status }) => (
-              <TickWithText 
-              className=""
-                key={name}
-                status={status?.toLowerCase()}
-                text={name}
+          <MainContainer className="mt-0 card-shadow">
+            <div className="d-flex justify-content-center flex-column">
+              <StyledButton
+                isGreenWhiteCombination
+                className="mb-2"
+                title="Save as Draft"
+                onClick={onSaveDraft}
               />
-            ))}
-            </List>
-          </div>
-        </MainContainer>
-        <MainContainer className="sidebar-widget doc-criteria card-shadow">
-          <div className="d-flex flex-column py-1">
-            <Typography textAlign="left" component="header">
-              Document Acceptance Criteria
-            </Typography>
-          
-            <List>
-            {documentCriteria.map(({ text, icon, isInnerText }: any) => (
-              <TickWithText
-                key={text}
-                text={text}
-                icon={icon}
-                isInnerText={isInnerText}
-                required={false}
+              <StyledButton
+                disabled={remainingDocs?.length > 0}
+                onClick={() => {
+                  setUploadDocs([]);
+                  setDocumentFormDataDetail([]);
+                  onSubmit();
+                }}
+                title="Submit Documents"
               />
-            ))}
+            </div>
+          </MainContainer>
+
+          <MainContainer className="sidebar-widget card-shadow">
+            <div className="d-flex flex-column">
+              <Typography textAlign="left" component="header">
+                Document Status
+              </Typography>
+
+              <List>
+                {mapStatusDocument(documentStatusDetail).map(
+                  ({ name, status }) => (
+                    <TickWithText
+                      className=""
+                      key={name}
+                      status={status?.toLowerCase()}
+                      text={name}
+                    />
+                  )
+                )}
               </List>
-          </div>
-        </MainContainer>
+            </div>
+          </MainContainer>
+          <MainContainer className="sidebar-widget doc-criteria card-shadow">
+            <div className="d-flex flex-column py-1">
+              <Typography textAlign="left" component="header">
+                Document Acceptance Criteria
+              </Typography>
+
+              <List>
+                {documentCriteria.map(({ text, icon, isInnerText }: any) => (
+                  <TickWithText
+                    key={text}
+                    text={text}
+                    icon={icon}
+                    isInnerText={isInnerText}
+                    required={false}
+                  />
+                ))}
+              </List>
+            </div>
+          </MainContainer>
         </div>
       </div>
     </div>
