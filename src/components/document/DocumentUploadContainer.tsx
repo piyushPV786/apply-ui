@@ -134,7 +134,6 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     setOpenModal(true);
   };
 
-  console.log(errorType);
   const handleModalClose = () => {
     setOpenModal(false);
   };
@@ -215,7 +214,6 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
                 const file = e.target?.files![0] as any;
 
                 if (file?.size > 2 * 1024 * 1024) {
-                  console.log("if");
                   handleModalOpen("Size");
                 } else {
                   if (
