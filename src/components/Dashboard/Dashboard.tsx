@@ -138,6 +138,7 @@ export const ApplicationDashboard = (props: any) => {
     username,
     password
   ) => {
+    clearRoute();
     const isdraftSave = status === CommonEnums.DRAFT_STATUS ? true : false;
 
     const leadDetail = {
