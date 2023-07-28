@@ -128,6 +128,34 @@ export const ApplicationDashboard = (props: any) => {
       : RoutePaths.Application_Form;
     router.push(url);
   };
+
+  const onLoginCredentialsClick = (
+    applicationCode: string | number,
+    leadCode: string,
+    status,
+    educationDetail,
+    draftId,
+    username,
+    password
+  ) => {
+    const isdraftSave = status === CommonEnums.DRAFT_STATUS ? true : false;
+
+    const leadDetail = {
+      applicationCode,
+      leadCode,
+      isdraftSave,
+      educationDetail,
+      status,
+      draftId,
+      username,
+      password,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    router.push("/student-registration-form/credentials", {
+      query: `state=${status}`,
+    });
+  };
+
   const onPay = (
     applicationCode: string | number,
     leadCode: string,
@@ -278,6 +306,8 @@ export const ApplicationDashboard = (props: any) => {
                               education,
                               studentCode,
                               document,
+                              username,
+                              password,
 
                               ...rest
                             },
@@ -294,6 +324,9 @@ export const ApplicationDashboard = (props: any) => {
                                 name={`${firstName} ${middleName} ${lastName}`}
                                 programName={programName}
                                 onEdit={onEdit}
+                                onLoginCredentialsClick={
+                                  onLoginCredentialsClick
+                                }
                                 onPay={onPay}
                                 onDownloadAcceptence={onDownloadAcceptence}
                                 onUploadDocuments={onUploadDocuments}
@@ -311,6 +344,8 @@ export const ApplicationDashboard = (props: any) => {
                                 document={document}
                                 enrolmentCode={enrolmentCode}
                                 studentCode={studentCode}
+                                username={username}
+                                password={password}
                                 {...rest}
                               />
                             </div>
@@ -339,7 +374,7 @@ export const ApplicationDashboard = (props: any) => {
                           </div>
                         </div>
                         <div className="text-center w-100">
-                          <GreenFormHeading className="apply-text" >
+                          <GreenFormHeading className="apply-text">
                             No application yet
                           </GreenFormHeading>
                           <p className="grey-text mt-2 mb-3 mx-auto">
@@ -348,7 +383,7 @@ export const ApplicationDashboard = (props: any) => {
                             qualification now.
                           </p>
                           <StyledButton
-                          className="button-shadow"
+                            className="button-shadow"
                             onClick={onApplyNow}
                             title="Apply Now"
                           />
@@ -381,6 +416,7 @@ function ApplicationCard({
   programName,
   leadCode,
   onEdit = (...args) => {},
+  onLoginCredentialsClick = (...args) => {},
   getStudentApplications = () => {},
   onPay = (...args) => {},
   onUploadDocuments = (...args) => {},
@@ -392,6 +428,8 @@ function ApplicationCard({
   document,
   studentCode,
   id,
+  username,
+  password,
   ...rest
 }) {
   const { sponsor = null } = { ...(rest as any) };
@@ -658,11 +696,17 @@ function ApplicationCard({
             {isProgramAddmitted && (
               <Grid item>
                 <StyledButton
-                  onClick={() =>
-                    router.push("/student-registration-form/credentials", {
-                      query: `state=${status}`,
-                    })
-                  }
+                  onClick={() => {
+                    onLoginCredentialsClick(
+                      applicationNumber,
+                      leadCode,
+                      status,
+                      educationDetail,
+                      id,
+                      username,
+                      password
+                    );
+                  }}
                   className="card-button"
                   title="view login credentials"
                 />
