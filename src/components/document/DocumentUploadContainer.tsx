@@ -212,9 +212,8 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             onChange={(e) => {
               if (e?.target) {
                 const file = e.target?.files![0] as any;
-                console.log(file);
+
                 if (file?.size > 2 * 1024 * 1024) {
-                  console.log("if");
                   handleModalOpen("Size");
                 } else {
                   if (
