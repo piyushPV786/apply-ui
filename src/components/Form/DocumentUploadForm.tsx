@@ -8,6 +8,7 @@ import {
   formOptions,
   isInvalidFileType,
 } from "../../Util/Util";
+import { List } from "@material-ui/core";
 
 import { ILeadFormValues, IOption } from "../common/types";
 import DocumentUploadContainer, {
@@ -284,7 +285,7 @@ const DocumentUploadForm = ({
   };
   const NationalityPassportFields = () => {
     return (
-      <div className="row mt-2">
+      <div className="row mt-4">
         <div className="col-md-6">
           <div className="mb-4">
             <AdvanceDropDown
@@ -375,7 +376,7 @@ const DocumentUploadForm = ({
 
   return (
     <div className="row mx-3 document-container">
-      <div className="col-md-8">
+      <div className="col-md-9">
         {uploadedDocuments?.map(
           ({
             name,
@@ -407,13 +408,13 @@ const DocumentUploadForm = ({
           }
         )}
       </div>
-      <div className="col-md-4">
-        <div>
-          <MainContainer>
-            <div className="d-flex flex-column">
+      <div className="col-md-3">
+        <div className="sticky-wrapper">
+          <MainContainer className="mt-0 card-shadow">
+            <div className="d-flex justify-content-center flex-column">
               <StyledButton
                 isGreenWhiteCombination
-                className="my-2"
+                className="mb-2"
                 title="Save as Draft"
                 onClick={onSaveDraft}
               />
@@ -431,40 +432,44 @@ const DocumentUploadForm = ({
             </div>
           </MainContainer>
 
-          <MainContainer className="px-1">
+          <MainContainer className="sidebar-widget card-shadow">
             <div className="d-flex flex-column">
-              <Typography textAlign="left" component="header" fontWeight="bold">
+              <Typography textAlign="left" component="header">
                 Document Status
               </Typography>
-              {mapStatusDocument(documentStatusDetail).map(
-                ({ name, status }) => (
-                  <TickWithText
-                    key={name}
-                    status={status?.toLowerCase()}
-                    text={name}
-                  />
-                )
-              )}
+              <List>
+                {mapStatusDocument(documentStatusDetail).map(
+                  ({ name, status }) => (
+                    <TickWithText
+                      key={name}
+                      status={status?.toLowerCase()}
+                      text={name}
+                    />
+                  )
+                )}
+              </List>
             </div>
           </MainContainer>
-          <MainContainer className="px-1">
+          <MainContainer className="sidebar-widget doc-criteria card-shadow">
             <div className="d-flex flex-column py-1">
               <Typography textAlign="left" component="header" fontWeight="bold">
-                Document Criteria
+                Document Acceptance Criteria
               </Typography>
               <Typography color="black" textAlign="left" component="caption">
                 Documents not following the below guidelines will not be
                 accepted and you will be asked to submit the documents again
               </Typography>
-              {documentCriteria.map(({ text, icon, isInnerText }: any) => (
-                <TickWithText
-                  key={text}
-                  text={text}
-                  icon={icon}
-                  isInnerText={isInnerText}
-                  required={false}
-                />
-              ))}
+              <List>
+                {documentCriteria.map(({ text, icon, isInnerText }: any) => (
+                  <TickWithText
+                    key={text}
+                    text={text}
+                    icon={icon}
+                    isInnerText={isInnerText}
+                    required={false}
+                  />
+                ))}
+              </List>
             </div>
           </MainContainer>
         </div>
