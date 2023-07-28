@@ -8,6 +8,7 @@ import {
   formOptions,
   isInvalidFileType,
 } from "../../Util/Util";
+import { List } from "@material-ui/core";
 
 import { ILeadFormValues, IOption } from "../common/types";
 import DocumentUploadContainer, {
@@ -18,7 +19,6 @@ import { Typography } from "@mui/material";
 import AdvanceDropDown from "../dropdown/Dropdown";
 import { identificationDocumentTypeKey } from "./personalInfoForm";
 import { CloseOutlined } from "@material-ui/icons";
-import { List } from "@material-ui/core";
 import { GraduationType } from "../common/constant";
 
 const documentUploadFormData = [
@@ -71,30 +71,30 @@ const mbaProgramDocuments: any = [
 
 const documentCriteria = [
   {
-    text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</strong>`,
+    text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</stroong>`,
     isInnerText: true,
   },
   {
     text: `ID should be at least valid for <strong>6 months.</strong>`,
     isInnerText: true,
   },
+  { text: "Document must be clear visible" },
   { text: "Upload a color scan of the original document." },
-  //{ text: "Document must be clear visible" },
-  // {
-  //   text: "Do not upload black & white scans",
-  //   icon: (
-  //     <div
-  //       style={{
-  //         backgroundColor: "#ffe9e9",
-  //         borderRadius: "50%",
-  //         padding: "1px",
-  //         marginRight: "3px",
-  //       }}
-  //     >
-  //       <CloseOutlined color="error" />
-  //     </div>
-  //   ),
-  // },
+  {
+    text: "Do not upload black & white scans",
+    icon: (
+      <div
+        style={{
+          backgroundColor: "#ffe9e9",
+          borderRadius: "50%",
+          padding: "1px",
+          marginRight: "3px",
+        }}
+      >
+        <CloseOutlined color="error" />
+      </div>
+    ),
+  },
 ];
 
 interface IDocumentUploadProps {
@@ -419,7 +419,9 @@ const DocumentUploadForm = ({
                 onClick={onSaveDraft}
               />
               <StyledButton
-                disabled={remainingDocs?.length > 0}
+                disabled={
+                  [...documentsNeedTOBeUpload, ...remainingDocs]?.length > 0
+                }
                 onClick={() => {
                   setUploadDocs([]);
                   setDocumentFormDataDetail([]);
@@ -435,12 +437,10 @@ const DocumentUploadForm = ({
               <Typography textAlign="left" component="header">
                 Document Status
               </Typography>
-
               <List>
                 {mapStatusDocument(documentStatusDetail).map(
                   ({ name, status }) => (
                     <TickWithText
-                      className=""
                       key={name}
                       status={status?.toLowerCase()}
                       text={name}
@@ -452,7 +452,7 @@ const DocumentUploadForm = ({
           </MainContainer>
           <MainContainer className="sidebar-widget doc-criteria card-shadow">
             <div className="d-flex flex-column py-1">
-              <Typography textAlign="left" component="header">
+              <Typography textAlign="left" component="header" fontWeight="bold">
                 Document Acceptance Criteria
               </Typography>
 

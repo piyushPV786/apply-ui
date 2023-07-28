@@ -246,7 +246,8 @@ export const ApplicationDashboard = (props: any) => {
                       <div className="col-md-4 d-flex align-items-start justify-content-end">
                         <div className="d-flex justify-content-end">
                           <StyledButton
-                            onClick={onApplyNow} className="button-shadow"
+                            onClick={onApplyNow}
+                            className="button-shadow"
                             title="Apply a New Application"
                           />
                         </div>
@@ -434,7 +435,10 @@ function ApplicationCard({
     <>
       <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
         <div className="d-flex flex-row justify-content-between">
-          <div className="cursor-pointer refresh-icon" onClick={getStudentApplications}>
+          <div
+            className="cursor-pointer refresh-icon"
+            onClick={getStudentApplications}
+          >
             <CachedOutlined className="m-2 refresh-button" />
           </div>
           <div className="status-sec">
@@ -651,20 +655,6 @@ function ApplicationCard({
               </Grid>
             )}
             {isProgramAddmitted && (
-              <Grid item>
-                <StyledButton
-                  onClick={() =>
-                    router.push("/student-registration-form/credentials", {
-                      query: `state=${status}`,
-                    })
-                  }
-                  className="card-button"
-                  title="view login credentials"
-                />
-              </Grid>
-            )}
-
-            {showCredentialBtn && (
               <Grid item>
                 <StyledButton
                   onClick={() =>
@@ -950,7 +940,7 @@ const StyledStatusBedge = styled.div<any>`
   border-bottom-left-radius: 10px;
   border-top-right-radius: 5px;
   padding: 5px 20px;
-  letter-spacing: .5px;
+  letter-spacing: 0.5px;
   font-size: 14px;
 `;
 

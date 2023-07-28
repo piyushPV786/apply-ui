@@ -153,11 +153,11 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {errorType == "size" ? "File Size Exceeded" : "File type mis match"}
+            {errorType == "Size" ? "File Size Exceeded" : "File type mismatch"}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {errorType == "size"
+              {errorType == "Size"
                 ? "The file size exceeds the limit of 2MB. Please upload a file belowor equal to 2MB."
                 : "File type not accepted. Please convert the file to accepted file type"}
             </DialogContentText>
