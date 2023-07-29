@@ -67,14 +67,12 @@ const PaymentOption = (props: any) => {
   };
   return (
     <>
-      <MainContainer>
+      <MainContainer className="card-shadow mt-0">
         {" "}
         <PaymentHeading>
           <div className="col-md-12">
             <StyleHeading>
-              <GreenFormHeading style={{ fontSize: "20px" }}>
-                Payment Options
-              </GreenFormHeading>
+              <GreenFormHeading>Payment Options</GreenFormHeading>
             </StyleHeading>
           </div>
         </PaymentHeading>
@@ -171,7 +169,7 @@ const PaymentCardContainer = styled.div<any>``;
 
 const PaymentHeading = styled(PaymentContainer)`
   border-bottom: 2px solid ${Green};
-  padding: 1rem 10px;
+  padding: 10px;
 `;
 const StyleHeading = styled.div``;
 

@@ -57,6 +57,7 @@ export interface IStudyModeQualification {
 export interface IStudyMode {
   studyModeCode: string;
   fees: IFee[];
+  description: string;
 }
 
 export interface IFee {
@@ -180,6 +181,8 @@ export interface IApplication {
   lead: ILead;
   document: IDocument;
   studentCode: string;
+  username: string;
+  password: string;
 }
 
 export interface IDocument {

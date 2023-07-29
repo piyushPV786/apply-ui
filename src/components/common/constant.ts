@@ -137,6 +137,7 @@ export const RoutePaths = {
   Application_Form: "/student-registration-form/application-form",
   Payment_Success: "/payment/document-success",
   Document_Success: "/payment/document-upload-success",
+  Document_Save_Success: "/payment/document-save-success",
   APPLICATION_ENROLLED_SUCCESS: "/payment/application-enrolled-success",
   Dashboard: "/student-registration-form/dashboard",
   StudentDashboard: "/dashboard",

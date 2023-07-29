@@ -5,6 +5,7 @@ import StyledButton from "../button/button";
 import { Green, StyledLabel } from "../common/common";
 import { AlertEnums } from "../common/constant";
 import AlertBox from "../alert/Alert";
+
 import {
   downloadDeclarationLetter,
   downloadDocument,
@@ -18,6 +19,7 @@ import ListItemText from "@mui/material/ListItemText";
 import {
   CheckOutlined,
   CloseOutlined,
+  ContactsOutlined,
   VisibilityOutlined,
 } from "@material-ui/icons";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
@@ -48,6 +50,7 @@ interface DocumentUploadContainerProps {
   onRemove?: (index: number, file: File) => void;
   selectedDocuments?: (File & { error: boolean; typeCode: string })[];
 }
+
 const showPdf = (e: SyntheticEvent, item: File) => {
   e.preventDefault();
   const file = new Blob([item], {
@@ -67,6 +70,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   documentType,
   onRemove,
   customComponent,
+
   draftSaveDoc,
   disabled = false,
   selectedDocuments = [],
@@ -74,12 +78,17 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   const [uploadDocs, setUploadDocs] = useState<
     (File & { error: boolean; typeCode: string })[]
   >([]);
+
   const fileUploadRef = useRef<any>(null);
+
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[0] as any;
     fileElement?.click() as any;
   };
+
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [errorType, setErrorType] = useState<string>("");
+
   const statusType = status?.toLowerCase();
 
   const isApproved = statusType?.includes("submitted");
@@ -99,6 +108,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     setUploadDocs(uploadedFiles as any);
     onUpload && onUpload(files);
   };
+
   const onRemoveDoc = (index: number, file: File & { typeCode: string }) => {
     const remainingDocs = [...uploadDocs!.filter((item, idx) => idx !== index)];
     setUploadDocs(remainingDocs);
@@ -119,7 +129,8 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     URL.revokeObjectURL(downloadLink.href);
   };
 
-  const handleModalOpen = () => {
+  const handleModalOpen = (errortype) => {
+    setErrorType(errortype);
     setOpenModal(true);
   };
 
@@ -128,11 +139,11 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   };
 
   return (
-    <MainContainer>
+    <MainContainer className="card-shadow mt-0">
       <Typography
         textAlign="left"
         component="header"
-        style={{ fontWeight: "bolder" }}
+        style={{ fontFamily: "roboto-medium", fontSize:"14px" }}
         fontWeight="bold"
       >
         <Dialog
@@ -141,11 +152,14 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">File Size Exceeded</DialogTitle>
+          <DialogTitle id="alert-dialog-title">
+            {errorType == "Size" ? "File Size Exceeded" : "File type mismatch"}
+          </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              The file size exceeds the limit of 2MB. Please upload a file below
-              or equal to 2MB.
+              {errorType == "Size"
+                ? "The file size exceeds the limit of 2MB. Please upload a file belowor equal to 2MB."
+                : "File type not accepted. Please convert the file to accepted file type"}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -161,7 +175,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
       {isDeclaration && (
         <InnerContainer>
           <div>
-            <Typography textAlign="left" className="mr-2" variant="body1">
+          <Typography textAlign="left" className="mr-2 document-infotext" variant="body1">
               Please download the declaration form, print, fill it out and
               upload it here
             </Typography>
@@ -186,8 +200,10 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           </AlertBox>
         </>
       )}
+
       {customComponent || null}
-      <FileUploadContainer style={{ border: "1px dotted" }}>
+
+      <FileUploadContainer className="upload-box">
         <div className="d-flex align-items-center" ref={fileUploadRef}>
           <input
             className="d-none"
@@ -196,14 +212,22 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             onChange={(e) => {
               if (e?.target) {
                 const file = e.target?.files![0] as any;
-                if (file?.size > 2 * 1024 * 1024) {
-                  // Check file size (2MB limit)
-                  handleModalOpen(); // Open the modal if file size exceeds the limit
-                } else {
-                  file.typeCode = documentType;
-                  const files = [...uploadDocs!, file];
 
-                  uploadDocuments(files);
+                if (file?.size > 2 * 1024 * 1024) {
+                  handleModalOpen("Size");
+                } else {
+                  if (
+                    file?.type == "application/pdf" ||
+                    file?.type == "image/jpeg" ||
+                    file?.type == "image/png"
+                  ) {
+                    file.typeCode = documentType;
+                    const files = [...uploadDocs!, file];
+
+                    uploadDocuments(files);
+                  } else {
+                    handleModalOpen("Type");
+                  }
                 }
               }
             }}
@@ -216,19 +240,24 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
               disabled={isApproved || isSubmitted}
             />
           </div>
-          <Typography variant="body1">
+          <Typography className="doc-upload-text">
             Drop files here or click browse through your machine
           </Typography>
         </div>
       </FileUploadContainer>
+
       {uploadDocs &&
         uploadDocs?.length > 0 &&
         uploadDocs?.map((file, index) => (
-          <UploadedFileViewContainer
+          <UploadedFileViewContainer  className="pr-0"
             key={`file_${file?.name}_${index}_uploaded`}
           >
+             <div className="row w-100">
+            <div className="col-md-8">
             <GreenText>{file?.name}</GreenText>
-            <ActionContainer>
+            </div>
+            <div className="col-md-4 upload-button-section">
+            <ActionContainer className="upload-file-name">
               <CircleIconContainer onClick={(e) => showPdf(e, file)}>
                 {" "}
                 <VisibilityOutlined />
@@ -241,6 +270,8 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
                 <CloseOutlined />
               </CircleIconContainer>
             </ActionContainer>
+            </div>
+            </div>
           </UploadedFileViewContainer>
         ))}
     </MainContainer>
@@ -257,7 +288,6 @@ const useStyles = makeStyles({
   },
   icon: {
     color: "#00C853",
-    fontSize: 18,
   },
   text: {
     fontSize: 14,
@@ -265,8 +295,12 @@ const useStyles = makeStyles({
   roundBackground: {
     backgroundColor: "#dfefe9",
     borderRadius: "50%",
-    padding: "1px",
-    marginRight: "3px",
+    marginRight: "5px",
+    height:"20px",
+    width:"20px",
+    display:"inline-flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   labelContainer: {
     display: "flex",
@@ -285,10 +319,7 @@ export const TickWithText = ({
   const classes = useStyles();
   const labelId = `list-secondary-label-${text}`;
   const title = () => (
-    <StyledLabel
-      style={{ fontSize: "11px", fonWeight: 600 }}
-      required={required}
-    >
+    <StyledLabel  className="sidebar-label"  required={required} >
       {isInnerText ? (
         <div dangerouslySetInnerHTML={{ __html: text }}></div>
       ) : (
@@ -297,20 +328,13 @@ export const TickWithText = ({
     </StyledLabel>
   );
   return (
-    <List>
+
       <ListItem
         key={text}
         secondaryAction={
           <>
             {status && (
-              <Status
-                className=""
-                style={{
-                  fontSize: "12px",
-                  position: "relative",
-                  left: "10px",
-                  fontWeight: "bold",
-                }}
+              <Status className="sidebar-status"
                 noBg
                 status={status}
               >{`-${status}`}</Status>
@@ -321,21 +345,18 @@ export const TickWithText = ({
         dense
         sx={{
           width: "100%",
-          maxWidth: 360,
           bgcolor: "background.paper",
           marginRight: "5px",
         }}
       >
-        <ListItemButton>
+     
           {icon || (
             <div className={classes.roundBackground}>
               <CheckOutlined className={classes.icon} />
             </div>
           )}
           <ListItemText id={labelId} primary={title()} />
-        </ListItemButton>
       </ListItem>
-    </List>
   );
 };
 
@@ -360,10 +381,14 @@ const Status = styled.span<{ status: string; noBg?: boolean }>`
       color:#31a0b7
       `;
     }
-    if (statusType === "upload pending" || statusType === "pending") {
+    if (
+      statusType === "upload pending" ||
+      statusType === "pending" ||
+      statusType === "uploaded"
+    ) {
       return `
       background:#fcefd0;
-      color:#d8a035
+      color:#af7300
       `;
     }
   }};
@@ -383,8 +408,8 @@ const CircleIconContainer = styled("div")<{ disabled?: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: 2px solid green;
   margin-right: 10px;
@@ -420,7 +445,7 @@ const UploadedFileViewContainer = styled(Container)`
   align-items: center;
   justify-content: space-between;
   margin-top: 1.5rem;
-  border-left: 7px solid ${Green};
+  border-left: 5px solid ${Green};
   & > span {
     word-break: break-all;
   }

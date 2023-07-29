@@ -495,11 +495,14 @@ export const applyDiscountCode = async (
   const url = process.env.base_Url;
 
   try {
-    const response = await baseAuth.get(
-      `${url}application/${appCode}/discount/${disCode}?studentType=${studentType}`
-    );
-
-    return response.data;
+    if (disCode) {
+      const response = await baseAuth.get(
+        `${url}application/${appCode}/discount/${disCode}?studentType=${studentType}`
+      );
+      return response.data;
+    } else {
+      return null;
+    }
   } catch (err) {
     return err;
   }

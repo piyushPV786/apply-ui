@@ -80,7 +80,7 @@ const StyledButton = ({
           </span>
         )}
         {isDownloadBtn && (
-          <StyledDownloadIcon className="me-3 icon-additinal">
+          <StyledDownloadIcon className="me-1 icon-additinal">
             <ArrowDownwardOutlined />
             {/* <Image alt="download" src={DownloadIcon} width={18} height={18} /> */}
           </StyledDownloadIcon>

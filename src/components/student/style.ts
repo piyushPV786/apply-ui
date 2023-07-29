@@ -51,7 +51,7 @@ export const ApplicationFormContainer = styled.div<any>`
   padding: 30px;
   max-width: 420px;
   border-radius: 5px;
-  margin-top: 30px;
+  margin-top: 16px;
   @media (max-width: 400px) {
     top: ${({ isProceed }) => (isProceed ? "62%" : "55%")};
   }
@@ -67,8 +67,9 @@ export const Item = styled.div`
 `;
 export const GreenText = styled.span`
   color: #008554;
-  font-weight: 700;
   font-size: 14px;
+  line-height:50px;
+  font-family: "Roboto-Medium";
 `;
 export const Title = styled(GreenText)``;
 

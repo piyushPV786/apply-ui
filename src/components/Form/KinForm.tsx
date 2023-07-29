@@ -100,7 +100,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
 
   return (
     <>
-      <StyledAccordion defaultExpanded={isKinNeed}>
+      <StyledAccordion defaultExpanded={isKinNeed} className="card-shadow">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"

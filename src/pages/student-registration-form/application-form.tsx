@@ -76,6 +76,7 @@ const ApplicationForm = () => {
   const [posStateData, setPosStateData] = useState([]);
   const [resStateData, setResStateData] = useState([]);
   const [sponsorStateData, setSponsorStateData] = useState([]);
+  const [studyModeData, setStudyModeData] = useState([]);
   const [employedStateData, setEmployedStateData] = useState([]);
   const methods = useForm<ILeadFormValues>({
     mode: "all",
@@ -96,6 +97,7 @@ const ApplicationForm = () => {
     getAgentDetails();
     getNationalData();
     identificationDocumentType();
+    getStudyModeData();
   }, []);
 
   useEffect(() => {
@@ -294,6 +296,12 @@ const ApplicationForm = () => {
       });
   };
 
+  const getStudyModeData = () => {
+    CommonAPI.get(`/study-mode`).then((data) => {
+      setStudyModeData(data?.data?.data);
+    });
+  };
+
   const createDraft = (data) => {
     if (data?.education?.isInternationDegree === "yes") {
       data.education.isInternationDegree = true;
@@ -395,6 +403,7 @@ const ApplicationForm = () => {
     if (leadCode && !isDraftSave) {
       setSubmitted(true);
       request.lead.leadCode = leadCode;
+
       updateLead(
         request,
         leadCode,
@@ -405,7 +414,7 @@ const ApplicationForm = () => {
       );
       return;
     }
-    debugger;
+
     if (leadCode && isDraftSave && activeStep === MagicNumbers.TWO) {
       setSubmitted(true);
       request.lead.leadCode = leadCode;
@@ -548,7 +557,9 @@ const ApplicationForm = () => {
           count = count + 1;
           successLength.push("true");
           res?.data.forEach((url, index) => {
-            uploadFiles(url, uploadedDocs[index]);
+            const filesTakenForm =
+              activeStep === MagicNumbers.ONE ? paymentProof : uploadedDocs;
+            uploadFiles(url, filesTakenForm[index]);
           });
         } else {
           showToast(false, res.message);
@@ -566,7 +577,11 @@ const ApplicationForm = () => {
           } else {
             setActiveStep(0);
             setTimeout(() => {
-              router.push(RoutePaths.Document_Success);
+              if (isDraft) {
+                router.push(RoutePaths.Document_Save_Success);
+              } else {
+                router.push(RoutePaths.Document_Success);
+              }
             }, 2000);
           }
           showToast(true, "Documents Successfully Uploaded");
@@ -798,6 +813,7 @@ const ApplicationForm = () => {
                             studyTypeData={studyTypeData}
                             isApplicationEnrolled={isApplicationEnrolled}
                             leadId={leadId}
+                            studyModeData={studyModeData}
                           />
                           <SponsoredForm
                             leadId={leadId}
@@ -924,6 +940,7 @@ const ApplicationForm = () => {
                             </>
                             {activeStep !== 2 && (
                               <StyledButton
+                              className="form-button"
                                 onClick={() => {
                                   if (
                                     JSON.parse(
@@ -945,6 +962,7 @@ const ApplicationForm = () => {
                             )}
                             &nbsp;&nbsp;&nbsp;
                             <StyledButton
+                            className="form-button"
                               onClick={() => {
                                 activeStep === 2
                                   ? (submitFormData(allFields, false) as any)
@@ -975,7 +993,7 @@ const ApplicationForm = () => {
                               }}
                               isGreenWhiteCombination
                               title={"Back to Dashboard"}
-                              className="me-3"
+                              className="me-3 form-button"
                             />
                             <StyledButton
                               onClick={() => {
@@ -1086,8 +1104,6 @@ export const MainContainer = styled.div`
 `;
 const FooterConatiner = styled.div`
   width: 100%;
-  min-height: 200px;
-  margin-bottom: 4rem;
   .form-check-input:checked {
     background-color: ${Green};
     border-color: #0d6efd;
