@@ -553,10 +553,10 @@ const Payment = (props: any) => {
                 <div className="col-md-1">
                   <StyledDiv>Or</StyledDiv>
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-5 ">
                   <MainContainer className="card-shadow">
                     <PaymentHeading>
-                      <div className="col-md-12">
+                      <div className="col-md-12 ">
                         <StyleHeading>
                           <GreenFormHeading style={{ fontSize: "16px" }}>
                             Upload Payment Proof
@@ -640,7 +640,7 @@ const Payment = (props: any) => {
                     </PaymentContainer>
                     <div className="container">
                       <div className="row">
-                        <div className="col align-self-center text-center ">
+                        <div className="col align-self-center text-center pb-4 ">
                           <StyledButton
                             disabled={
                               !isInvalidFiles ||
