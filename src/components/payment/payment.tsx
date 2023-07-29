@@ -220,6 +220,9 @@ const Payment = (props: any) => {
       setValue("payment.percent", percent);
       setValue("payment.discountAmount", (+programFee * percent) / 100);
       props.showToast(true, result?.message);
+    } else if (result == null) {
+      setValue("payment.discountAmount", "0.00");
+      setValue("payment.percent", "");
     } else {
       props.showToast(false, "Invalid Code");
     }
@@ -293,6 +296,8 @@ const Payment = (props: any) => {
                                             }
                                           ) as any)}
                                           onChange={() => {
+                                            setPromoCode("");
+                                            applyDiscount();
                                             getCurrencyConversion();
                                             setValue(
                                               "payment.selectedFeeMode",
@@ -513,10 +518,6 @@ const Payment = (props: any) => {
                                       setPromoCode("");
                                       setCouponApplied(false);
                                       setValue("payment.discountedFee", "0.00");
-                                      setValue(
-                                        "payment.discountAmount",
-                                        "0.00"
-                                      );
                                     }}
                                   />
                                 </GreenText>
