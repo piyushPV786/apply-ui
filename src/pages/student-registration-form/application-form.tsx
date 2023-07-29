@@ -938,31 +938,35 @@ const ApplicationForm = () => {
                                 />
                               )} */}
                             </>
-                            {activeStep !== 2 && (
-                              <StyledButton
-                              className="form-button"
-                                onClick={() => {
-                                  if (
-                                    JSON.parse(
-                                      sessionStorage?.getItem(
-                                        "activeLeadDetail"
-                                      ) as any
-                                    )?.isdraftSave == true
-                                  ) {
-                                    updateUserAsDraft(allFields);
-                                  } else {
-                                    createDraft(allFields);
-                                  }
-                                }}
-                                type="button"
-                                disabled={!isDirty}
-                                isGreenWhiteCombination={true}
-                                title={"Save as Draft"}
-                              />
-                            )}
+                            {activeStep !== 2 &&
+                              JSON.parse(
+                                sessionStorage?.getItem(
+                                  "activeLeadDetail"
+                                ) as any
+                              )?.applicationCode.length != 12 && (
+                                <StyledButton
+                                  onClick={() => {
+                                    if (
+                                      JSON.parse(
+                                        sessionStorage?.getItem(
+                                          "activeLeadDetail"
+                                        ) as any
+                                      )?.isdraftSave == true
+                                    ) {
+                                      updateUserAsDraft(allFields);
+                                    } else {
+                                      createDraft(allFields);
+                                    }
+                                  }}
+                                  type="button"
+                                  disabled={!isDirty}
+                                  isGreenWhiteCombination={true}
+                                  title={"Save as Draft"}
+                                />
+                              )}
                             &nbsp;&nbsp;&nbsp;
                             <StyledButton
-                            className="form-button"
+                              className="form-button"
                               onClick={() => {
                                 activeStep === 2
                                   ? (submitFormData(allFields, false) as any)
