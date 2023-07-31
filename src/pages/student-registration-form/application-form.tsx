@@ -856,6 +856,7 @@ const ApplicationForm = () => {
                       isManagementStudentType={isManagementStudentType}
                       isApplicationEnrolled={isApplicationEnrolled}
                       onSubmit={uploadStudentDocs}
+                      studyModeData={studyModeData}
                     />
                   </>
                 )}
@@ -944,7 +945,7 @@ const ApplicationForm = () => {
                                 sessionStorage?.getItem(
                                   "activeLeadDetail"
                                 ) as any
-                              )?.applicationCode.length != 12 && (
+                              )?.applicationCode?.length != 12 && (
                                 <StyledButton
                                   onClick={() => {
                                     if (
