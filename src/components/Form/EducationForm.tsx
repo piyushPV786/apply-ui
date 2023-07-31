@@ -404,11 +404,7 @@ export const EducationForm = (props: IEducationProps) => {
                       checked={internationDegreeVal === "yes"}
                     />
                     <label className="form-check-label">
-                      {internationDegreeVal === "yes" ? (
-                        <GreenText>Yes</GreenText>
-                      ) : (
-                        "Yes"
-                      )}
+                      Yes
                       <br />
                     </label>
                   </div>
@@ -427,11 +423,7 @@ export const EducationForm = (props: IEducationProps) => {
                       checked={internationDegreeVal === "no"}
                     />
                     <label className="form-check-label">
-                      {internationDegreeVal === "No" ? (
-                        <GreenText>No</GreenText>
-                      ) : (
-                        "No"
-                      )}
+                      No
                       <br />
                     </label>
                   </div>

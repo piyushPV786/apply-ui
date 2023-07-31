@@ -209,7 +209,7 @@ export const AddressForm = ({
 
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Pin Code</StyledLabel>
+                    <StyledLabel required>Pin Code / Zip Code</StyledLabel>
                     <input
                       value={resPostalCodeVal}
                       defaultValue={resPostalCodeVal}
@@ -418,7 +418,7 @@ export const AddressForm = ({
 
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Pin Code</StyledLabel>
+                  <StyledLabel required>Pin Code / Zip Code</StyledLabel>
                   <input
                     value={postalZipCodeVal}
                     {...register(`${postalZipCode}`, {
@@ -426,6 +426,11 @@ export const AddressForm = ({
                       maxLength: 10,
                       minLength: 4,
                     })}
+                    onKeyUp={(e) => {
+                      if (e.code === "Minus") {
+                        setValue(`${postalZipCode}`, "");
+                      }
+                    }}
                     type="number"
                     maxLength={6}
                     className="form-control"

@@ -214,7 +214,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             accept="image/jpeg, application/pdf"
             type="file"
             onChange={(e) => {
-              if (e?.target?.files) {
+              if (e?.target) {
                 const file = e.target?.files![0] as any;
                 if (file != undefined) {
                   if (file?.size > 2 * 1024 * 1024) {
