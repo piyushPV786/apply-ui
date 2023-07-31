@@ -939,7 +939,8 @@ const ApplicationForm = () => {
                                 />
                               )} */}
                             </>
-                            {activeStep !== 2 &&
+                            {typeof window !== "undefined" &&
+                              activeStep !== 2 &&
                               JSON.parse(
                                 sessionStorage?.getItem(
                                   "activeLeadDetail"
