@@ -370,15 +370,6 @@ const Payment = (props: any) => {
                       <div className="w-100 p-4 promo-card">
                         <div className="mb-4 d-flex justify-content-between flex-column">
                           <div>
-                            <h6>
-                              Subtotal{" "}
-                              <div className="payment-values">
-                                {" "}
-                                ({selectedCurrency})
-                              </div>
-                            </h6>
-                          </div>
-                          <div>
                             {" "}
                             {isApplicationEnrolled ? (
                               <h6>
@@ -470,47 +461,48 @@ const Payment = (props: any) => {
                           <>
                             <div className="text-center show-promo-code">
                               <a
-                                onClick={() => setShowPromoCOde(!showPromoCode)}
+                                onClick={() => setShowPromoCOde(true)}
                                 href="#"
                                 className="w-100 text-dark"
                               >
                                 Have a promo code?
                               </a>
                             </div>
-
-                            <div className="w-100 text-center ps-4 pe-4">
-                              <div className="input-group mb-2 mt-2">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  value={promoCode}
-                                  placeholder="Enter promo code"
-                                  onChange={(e) => {
-                                    setPromoCode(e?.target?.value);
-                                    setValue(
-                                      "payment.managementDiscountCode",
-                                      e.target.value
-                                    );
-                                  }}
-                                />
-                                <div className="input-group-append cursor-pointer">
-                                  <Button
-                                    onClick={applyDiscount}
-                                    style={{
-                                      background:
-                                        !promoCode || promoCode?.length === 0
-                                          ? `${DefaultGrey}`
-                                          : `${Green}`,
-                                      padding: "0.50rem 0.75rem",
+                            {showPromoCode && (
+                              <div className="w-100 text-center ps-4 pe-4">
+                                <div className="input-group mb-2 mt-2">
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    value={promoCode}
+                                    placeholder="Enter promo code"
+                                    onChange={(e) => {
+                                      setPromoCode(e?.target?.value);
+                                      setValue(
+                                        "payment.managementDiscountCode",
+                                        e.target.value
+                                      );
                                     }}
-                                    id="basic-addon2"
-                                    disabled={!promoCode}
-                                  >
-                                    Apply
-                                  </Button>
+                                  />
+                                  <div className="input-group-append cursor-pointer">
+                                    <Button
+                                      onClick={applyDiscount}
+                                      style={{
+                                        background:
+                                          !promoCode || promoCode?.length === 0
+                                            ? `${DefaultGrey}`
+                                            : `${Green}`,
+                                        padding: "0.50rem 0.75rem",
+                                      }}
+                                      id="basic-addon2"
+                                      disabled={!promoCode}
+                                    >
+                                      Apply
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            )}
                           </>
                         )}
                         {isManagementPromoCode && (
