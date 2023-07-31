@@ -96,7 +96,6 @@ const Payment = (props: any) => {
       : 250 * Number(allFields?.payment?.conversionRate);
   const rmatFee = !isApplicationEnrolled ? rmatFeeAmount : 0;
   const totalAmount = +convertedProgramFee - +discountAmount + rmatFee;
-  console.log(convertedProgramFee);
 
   useEffect(() => {
     (async () => {
