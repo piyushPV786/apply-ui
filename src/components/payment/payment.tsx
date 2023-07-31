@@ -96,6 +96,7 @@ const Payment = (props: any) => {
       : 250 * Number(allFields?.payment?.conversionRate);
   const rmatFee = !isApplicationEnrolled ? rmatFeeAmount : 0;
   const totalAmount = +convertedProgramFee - +discountAmount + rmatFee;
+  console.log(convertedProgramFee);
 
   useEffect(() => {
     (async () => {
@@ -431,13 +432,9 @@ const Payment = (props: any) => {
                                     Total Amount{" "}
                                     <div className="payment-values">
                                       {" "}
-                                      {selectedCurrency}
-                                      &nbsp;
+                                      {!isNaN(totalAmount) && selectedCurrency}
                                       {isNaN(totalAmount)
-                                        ? getConvertedProgramFees(
-                                            conversionRate,
-                                            programFee
-                                          )
+                                        ? "...Converting"
                                         : totalAmount}
                                     </div>
                                   </h4>
@@ -446,9 +443,10 @@ const Payment = (props: any) => {
                                     Total Amount{" "}
                                     <div className="payment-values">
                                       {" "}
-                                      &nbsp;{selectedCurrency}{" "}
+                                      {!isNaN(totalAmount) &&
+                                        selectedCurrency}{" "}
                                       {isNaN(totalAmount)
-                                        ? +rmatFee + +convertedProgramFee
+                                        ? "...Converting"
                                         : totalAmount}
                                     </div>
                                   </h4>
