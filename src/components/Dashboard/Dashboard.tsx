@@ -478,7 +478,7 @@ function ApplicationCard({
             className="cursor-pointer refresh-icon"
             onClick={getStudentApplications}
           >
-            <CachedOutlined className="m-2 refresh-button" />
+            <CachedOutlined titleAccess="Refresh Application" className="m-2 refresh-button" />
           </div>
           <div className="status-sec">
             <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
