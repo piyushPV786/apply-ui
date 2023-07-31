@@ -219,12 +219,10 @@ export const ApplicationDashboard = (props: any) => {
 
   const onDownloadAcceptence = async (
     documentDetail: IDocument[],
-    documentTypeCode:
-      | CommonEnums.CONFIRMATION_LETTER
-      | CommonEnums.ACCEPTANCE_LETTER
+    documentTypeCode
   ) => {
     const documentDetails = documentDetail?.find(
-      (doc) => doc?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
+      (doc) => doc?.documentTypeCode === documentTypeCode
     );
 
     if (documentDetails) {

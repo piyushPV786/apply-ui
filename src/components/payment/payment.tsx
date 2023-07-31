@@ -220,6 +220,9 @@ const Payment = (props: any) => {
       setValue("payment.percent", percent);
       setValue("payment.discountAmount", (+programFee * percent) / 100);
       props.showToast(true, result?.message);
+    } else if (result == null) {
+      setValue("payment.discountAmount", "0.00");
+      setValue("payment.percent", "");
     } else {
       props.showToast(false, "Invalid Code");
     }
@@ -293,6 +296,8 @@ const Payment = (props: any) => {
                                             }
                                           ) as any)}
                                           onChange={() => {
+                                            setPromoCode("");
+                                            applyDiscount();
                                             getCurrencyConversion();
                                             setValue(
                                               "payment.selectedFeeMode",
@@ -513,10 +518,6 @@ const Payment = (props: any) => {
                                       setPromoCode("");
                                       setCouponApplied(false);
                                       setValue("payment.discountedFee", "0.00");
-                                      setValue(
-                                        "payment.discountAmount",
-                                        "0.00"
-                                      );
                                     }}
                                   />
                                 </GreenText>
@@ -552,10 +553,10 @@ const Payment = (props: any) => {
                 <div className="col-md-1">
                   <StyledDiv>Or</StyledDiv>
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-5 ">
                   <MainContainer className="card-shadow">
                     <PaymentHeading>
-                      <div className="col-md-12">
+                      <div className="col-md-12 ">
                         <StyleHeading>
                           <GreenFormHeading style={{ fontSize: "16px" }}>
                             Upload Payment Proof
@@ -639,7 +640,7 @@ const Payment = (props: any) => {
                     </PaymentContainer>
                     <div className="container">
                       <div className="row">
-                        <div className="col align-self-center text-center ">
+                        <div className="col align-self-center text-center pb-4 ">
                           <StyledButton
                             disabled={
                               !isInvalidFiles ||

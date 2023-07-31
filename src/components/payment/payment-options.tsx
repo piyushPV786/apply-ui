@@ -67,14 +67,12 @@ const PaymentOption = (props: any) => {
   };
   return (
     <>
-      <MainContainer className="card-shadow">
+      <MainContainer className="card-shadow mt-0">
         {" "}
         <PaymentHeading>
           <div className="col-md-12">
             <StyleHeading>
-              <GreenFormHeading>
-                Payment Options
-              </GreenFormHeading>
+              <GreenFormHeading>Payment Options</GreenFormHeading>
             </StyleHeading>
           </div>
         </PaymentHeading>
