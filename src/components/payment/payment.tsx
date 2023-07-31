@@ -271,6 +271,14 @@ const Payment = (props: any) => {
                           <div className="mb-4">
                             <StyledLabel>Study Mode</StyledLabel>
                             <div className="fields">{selectedStudyMode}</div>
+                            <div className=" col-md-8">
+                              -{" "}
+                              {
+                                props.studyModeData.find((item) => {
+                                  return item.code == selectedStudyMode;
+                                })?.description
+                              }
+                            </div>
                           </div>
                         </div>
 
