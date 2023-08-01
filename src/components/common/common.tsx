@@ -10,6 +10,7 @@ import { Snackbar } from "@material-ui/core";
 import { CommonEnums } from "./constant";
 import Image from "next/image";
 import Spinner from "../../../public/assets/images/spinner.svg";
+import { IDynamicObject } from "./types";
 
 export const GreenFormHeading = styled.p`
   font-size: 16px;
@@ -214,3 +215,65 @@ const LoadinContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+export const studentApplicationAllStatus: IDynamicObject = {
+  "APP-FEE-DOC-VER-PEND": "Application Fee Verification Pending",
+  "RESUB-APP-FEE-PROOF": "Resubmit application Fee POP",
+  "APP-FEE-VER-PEND": "Application Fee POP Verification Pending",
+  "APP-FEE-ACCEPTED": "Application Fee Accepted",
+  "APP-FEE-REJECTED": "Application Fee Rejected",
+  "APP-ENROLLED": "Registration Confirmed",
+  "APP-DOC-VER-PEND": "Application Document Verification Pending",
+  "APP-DOC-REQUESTED": "Application Documents Requested",
+  "APP-DOC-ACCEPTED": "Application Documents Accepted",
+  "RMAT-PEND": "RMAT Pending",
+  "RMAT-PASS": "RMAT Pass",
+  "RMAT-FAIL": "RMAT Fail",
+  "ENRL-ACCEPTED": "Enrolment Accepted",
+  "PROG-FEE-PEND": "Program Fee Pending",
+  "BURSARY-REQUESTED": "Request for Bursary",
+  "BURSARY-DOC-VER-PEND": "Bursary Document Verification Pending",
+  "BURSARY-DOC-REQUESTED": "Bursary Documents Requested",
+  "BURSARY-PEND": "Bursary Confirmation Pending",
+  "BURSARY-APPROVED": "Bursary Approved",
+  "BURSARY-REJECTED": "Bursary Rejected",
+  "LOAN-REQUESTED": "Request for Loan",
+  "LOAN-DOC-VER-PEND": "Loan Document Verification Pending",
+  "LOAN-DOC-REQUESTED": "Loan Documents Requested",
+  "LOAN-PEND": "Loan Confirmation Pending",
+  "LOAN-APPROVED": "Loan Approved",
+  "LOAN-REJECTED": "Loan Rejected",
+  "PROG-FEE-DOC-VER-PEND": "Program Fees Document Verification Pending",
+  "RESUB-PROG-FEE-PROOF": "Resubmit Program Fee  POP",
+  "PROG-FEE-VER-PEND": "Program Fees POP Verification Pending",
+  "DEBIT-ORDER-FORM-PEND": "Debit Order Form Pending",
+  "DEBIT-ORDER-FORM-DOC-VER-PEND":
+    "Debit Order Form Document Verification Pending",
+  "DEBIT-ORDER-FORM-VER-PEND": "Debit Order Form Verification Pending",
+  "DEBIT-ORDER-FORM-ACCEPTED": "Debit Order Form Accepted",
+  "RESUB-DEBIT-ORDER-FORM": "Resubmit Debit Order Form",
+  "EFT-LETTER-PEND": "EFT Letter Pending",
+  "EFT-LETTER-DOC-VER-PEND": "EFT Letter Document Verification Pending",
+  "EFT-LETTER-VER-PEND": "EFT Letter Verification Pending",
+  "EFT-LETTER-ACCEPTED": "EFT Letter Accepted",
+  "RESUB-EFT-LETTER": "Resubmit EFT Letter",
+  "PROG-FEE-ACCEPTED": "Program Fee Accepted",
+  "INTAKE-ASSIGNMENT-PEND": "Intake Assignment Pending",
+  "INTAKE-ASSIGNED": "Intake Assigned",
+  "PROG-ADMITTED": "Enrolled to the Program",
+  ENROLLED: "Enrolled to the Program",
+  "APP-DRAFT": "In Draft",
+  "APP-FEE-PEND": "Application  Fee Pending",
+  "UPLD-APP-DOC": "Upload Application documents",
+  "APP-DOC-UPLOADED": "Application documents Uploaded",
+  "RESUB-APP-DOC": "Resubmit application Documents",
+  "UPLD-BURSARY-DOC": "Upload Bursary Documents",
+  "BURSARY-DOC-UPLOADED": "Bursary Document Uploaded",
+  "RESUB-BURSARY-DOC": "Resubmit Bursary Documents",
+  "BURSARY-DOC-ACCEPTED": "Bursary Documents Accepted",
+  "UPLD-LOAN-DOC": "Upload Loan Documents",
+  "LOAN-DOC-UPLOADED": "Loan Document Uploaded",
+  "RESUB-LOAN-DOC": "Resubmit Loan Documents",
+  "LOAN-DOC-ACCEPTED": "Loan Documents Accepted",
+  "INTAKE-ASSIGNMENT PENDING": "Intake Assignment Pending",
+};
