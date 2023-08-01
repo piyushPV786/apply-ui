@@ -215,3 +215,7 @@ export interface ILead {
   race: null;
   enrollmentCode?: string;
 }
+
+export interface IDynamicObject {
+  [key: string]: any;
+}

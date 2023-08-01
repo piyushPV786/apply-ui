@@ -343,7 +343,7 @@ export const TickWithText = ({
               className="sidebar-status"
               noBg
               status={status}
-            >{`-${status}`}</Status>
+            >{`${status}`}</Status>
           )}
         </>
       }

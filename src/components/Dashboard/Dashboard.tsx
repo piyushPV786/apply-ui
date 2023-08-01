@@ -4,6 +4,7 @@ import {
   GreenFormHeading,
   LoaderComponent,
   Toaster,
+  studentApplicationAllStatus,
 } from "../common/common";
 import { useRouter } from "next/router";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
@@ -479,7 +480,9 @@ function ApplicationCard({
             <CachedOutlined titleAccess="Refresh Application" className="m-2 refresh-button" />
           </div>
           <div className="status-sec">
-            <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
+            <StyledStatusBedge status={status}>
+              {studentApplicationAllStatus[status] ?? status}
+            </StyledStatusBedge>
           </div>
         </div>
         <div className="row px-4">
