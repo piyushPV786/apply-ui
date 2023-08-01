@@ -143,7 +143,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
       <Typography
         textAlign="left"
         component="header"
-        style={{ fontFamily: "roboto-medium", fontSize:"14px" }}
+        style={{ fontFamily: "roboto-medium", fontSize: "14px" }}
         fontWeight="bold"
       >
         <Dialog
@@ -175,7 +175,11 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
       {isDeclaration && (
         <InnerContainer>
           <div>
-          <Typography textAlign="left" className="mr-2 document-infotext" variant="body1">
+            <Typography
+              textAlign="left"
+              className="mr-2 document-infotext"
+              variant="body1"
+            >
               Please download the declaration form, print, fill it out and
               upload it here
             </Typography>
@@ -212,21 +216,22 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             onChange={(e) => {
               if (e?.target) {
                 const file = e.target?.files![0] as any;
-
-                if (file?.size > 2 * 1024 * 1024) {
-                  handleModalOpen("Size");
-                } else {
-                  if (
-                    file?.type == "application/pdf" ||
-                    file?.type == "image/jpeg" ||
-                    file?.type == "image/png"
-                  ) {
-                    file.typeCode = documentType;
-                    const files = [...uploadDocs!, file];
-
-                    uploadDocuments(files);
+                if (file != undefined) {
+                  if (file?.size > 2 * 1024 * 1024) {
+                    handleModalOpen("Size");
                   } else {
-                    handleModalOpen("Type");
+                    if (
+                      file?.type == "application/pdf" ||
+                      file?.type == "image/jpeg" ||
+                      file?.type == "image/png"
+                    ) {
+                      file.typeCode = documentType;
+                      const files = [...uploadDocs!, file];
+
+                      uploadDocuments(files);
+                    } else {
+                      handleModalOpen("Type");
+                    }
                   }
                 }
               }
@@ -249,28 +254,29 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
       {uploadDocs &&
         uploadDocs?.length > 0 &&
         uploadDocs?.map((file, index) => (
-          <UploadedFileViewContainer  className="pr-0"
+          <UploadedFileViewContainer
+            className="pr-0"
             key={`file_${file?.name}_${index}_uploaded`}
           >
-             <div className="row w-100">
-            <div className="col-md-8">
-            <GreenText>{file?.name}</GreenText>
-            </div>
-            <div className="col-md-4 upload-button-section">
-            <ActionContainer className="upload-file-name">
-              <CircleIconContainer onClick={(e) => showPdf(e, file)}>
-                {" "}
-                <VisibilityOutlined />
-              </CircleIconContainer>
-              <CircleIconContainer
-                onClick={() => onRemoveDoc(index, file)}
-                style={{ borderColor: "red", color: "red" }}
-                disabled={isApproved || isSubmitted}
-              >
-                <CloseOutlined />
-              </CircleIconContainer>
-            </ActionContainer>
-            </div>
+            <div className="row w-100">
+              <div className="col-md-8">
+                <GreenText>{file?.name}</GreenText>
+              </div>
+              <div className="col-md-4 upload-button-section">
+                <ActionContainer className="upload-file-name">
+                  <CircleIconContainer onClick={(e) => showPdf(e, file)}>
+                    {" "}
+                    <VisibilityOutlined />
+                  </CircleIconContainer>
+                  <CircleIconContainer
+                    onClick={() => onRemoveDoc(index, file)}
+                    style={{ borderColor: "red", color: "red" }}
+                    disabled={isApproved || isSubmitted}
+                  >
+                    <CloseOutlined />
+                  </CircleIconContainer>
+                </ActionContainer>
+              </div>
             </div>
           </UploadedFileViewContainer>
         ))}
@@ -296,9 +302,9 @@ const useStyles = makeStyles({
     backgroundColor: "#dfefe9",
     borderRadius: "50%",
     marginRight: "5px",
-    height:"20px",
-    width:"20px",
-    display:"inline-flex",
+    height: "20px",
+    width: "20px",
+    display: "inline-flex",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -319,7 +325,7 @@ export const TickWithText = ({
   const classes = useStyles();
   const labelId = `list-secondary-label-${text}`;
   const title = () => (
-    <StyledLabel  className="sidebar-label"  required={required} >
+    <StyledLabel className="sidebar-label" required={required}>
       {isInnerText ? (
         <div dangerouslySetInnerHTML={{ __html: text }}></div>
       ) : (
@@ -328,35 +334,34 @@ export const TickWithText = ({
     </StyledLabel>
   );
   return (
-
-      <ListItem
-        key={text}
-        secondaryAction={
-          <>
-            {status && (
-              <Status className="sidebar-status"
-                noBg
-                status={status}
-              >{`-${status}`}</Status>
-            )}
-          </>
-        }
-        disablePadding
-        dense
-        sx={{
-          width: "100%",
-          bgcolor: "background.paper",
-          marginRight: "5px",
-        }}
-      >
-     
-          {icon || (
-            <div className={classes.roundBackground}>
-              <CheckOutlined className={classes.icon} />
-            </div>
+    <ListItem
+      key={text}
+      secondaryAction={
+        <>
+          {status && (
+            <Status
+              className="sidebar-status"
+              noBg
+              status={status}
+            >{`-${status}`}</Status>
           )}
-          <ListItemText id={labelId} primary={title()} />
-      </ListItem>
+        </>
+      }
+      disablePadding
+      dense
+      sx={{
+        width: "100%",
+        bgcolor: "background.paper",
+        marginRight: "5px",
+      }}
+    >
+      {icon || (
+        <div className={classes.roundBackground}>
+          <CheckOutlined className={classes.icon} />
+        </div>
+      )}
+      <ListItemText id={labelId} primary={title()} />
+    </ListItem>
   );
 };
 

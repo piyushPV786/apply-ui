@@ -13,6 +13,7 @@ import { IFee, IOption, IStudyModeQualification } from "../common/types";
 import styled from "styled-components";
 import { capitalizeFirstLetter } from "../../Util/Util";
 import Tooltip from "@mui/material/Tooltip";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 import {
   formDirtyState,
   onlyAlphaNumericSpace,
@@ -81,6 +82,7 @@ export const EducationForm = (props: IEducationProps) => {
     formState: { errors, touchedFields },
     unregister,
   } = useFormContext();
+  const [open, setOpen] = useState(false);
   const [studyModeQualification, setStudyModeQualification] = useState<
     IStudyModeQualification[]
   >([]);
@@ -165,7 +167,7 @@ export const EducationForm = (props: IEducationProps) => {
           applicationFees?.fees[0]?.fee,
           formDirtyState
         );
-        console.log("cd", courseFeesDetail);
+
         setStudyModeQualification(courseFeesDetail);
       })
       .catch((err) => {
@@ -256,36 +258,45 @@ export const EducationForm = (props: IEducationProps) => {
                           return (
                             <>
                               {studyModeCode === "APPLICATION" ? null : (
-                                <Tooltip
-                                  title={description}
-                                  placement="top"
-                                  arrow
-                                  open={studyModeVal == studyModeCode}
+                                <ClickAwayListener
+                                  onClickAway={() => {
+                                    setTimeout(() => {
+                                      setOpen(false);
+                                    }, 6000);
+                                  }}
                                 >
-                                  <span className="form-check form-check-inline">
-                                    <input
-                                      disabled={isApplicationEnrolled}
-                                      key={studyMode}
-                                      className="form-check-input me-2"
-                                      type="radio"
-                                      {...register(`${studyMode}`, {
-                                        required: true,
-                                      })}
-                                      onClick={(e: any) => {
-                                        setValue(
-                                          studyMode,
-                                          e.target.value,
-                                          formDirtyState
-                                        );
-                                      }}
-                                      value={studyModeCode}
-                                      checked={studyModeVal == studyModeCode}
-                                    />
-                                    <label className="form-check-label">
-                                      {studyModeCode}
-                                    </label>
-                                  </span>
-                                </Tooltip>
+                                  <Tooltip
+                                    title={description}
+                                    placement="top"
+                                    arrow
+                                    open={open && studyModeVal == studyModeCode}
+                                  >
+                                    <span className="form-check form-check-inline">
+                                      <input
+                                        disabled={isApplicationEnrolled}
+                                        key={studyMode}
+                                        className="form-check-input me-2"
+                                        type="radio"
+                                        {...register(`${studyMode}`, {
+                                          required: true,
+                                        })}
+                                        onClick={(e: any) => {
+                                          setOpen(true);
+                                          setValue(
+                                            studyMode,
+                                            e.target.value,
+                                            formDirtyState
+                                          );
+                                        }}
+                                        value={studyModeCode}
+                                        checked={studyModeVal == studyModeCode}
+                                      />
+                                      <label className="form-check-label">
+                                        {studyModeCode}
+                                      </label>
+                                    </span>
+                                  </Tooltip>
+                                </ClickAwayListener>
                               )}
                             </>
                           );
@@ -393,11 +404,7 @@ export const EducationForm = (props: IEducationProps) => {
                       checked={internationDegreeVal === "yes"}
                     />
                     <label className="form-check-label">
-                      {internationDegreeVal === "yes" ? (
-                        <GreenText>Yes</GreenText>
-                      ) : (
-                        "Yes"
-                      )}
+                      Yes
                       <br />
                     </label>
                   </div>
@@ -416,11 +423,7 @@ export const EducationForm = (props: IEducationProps) => {
                       checked={internationDegreeVal === "no"}
                     />
                     <label className="form-check-label">
-                      {internationDegreeVal === "No" ? (
-                        <GreenText>No</GreenText>
-                      ) : (
-                        "No"
-                      )}
+                      No
                       <br />
                     </label>
                   </div>
