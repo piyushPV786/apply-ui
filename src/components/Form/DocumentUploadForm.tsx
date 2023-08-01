@@ -8,6 +8,7 @@ import {
   formOptions,
   isInvalidFileType,
 } from "../../Util/Util";
+import { List } from "@material-ui/core";
 
 import { ILeadFormValues, IOption } from "../common/types";
 import DocumentUploadContainer, {
@@ -77,23 +78,7 @@ const documentCriteria = [
     text: `ID should be at least valid for <strong>6 months.</strong>`,
     isInnerText: true,
   },
-  { text: "Document must be clear visible" },
   { text: "Upload a color scan of the original document." },
-  {
-    text: "Do not upload black & white scans",
-    icon: (
-      <div
-        style={{
-          backgroundColor: "#ffe9e9",
-          borderRadius: "50%",
-          padding: "1px",
-          marginRight: "3px",
-        }}
-      >
-        <CloseOutlined color="error" />
-      </div>
-    ),
-  },
 ];
 
 interface IDocumentUploadProps {
@@ -146,6 +131,7 @@ const mergeDraftSaveDoc = (newDocs, existedDocs) => {
     const matchedDoc = existedDocs.find(
       (existedDoc) => existedDoc.id === newDoc.id
     );
+
     if (matchedDoc) {
       return {
         ...newDoc,
@@ -225,6 +211,7 @@ const DocumentUploadForm = ({
             ...rest,
             type: rest?.draftSaveDoc?.fileExtension,
             typeCode: rest?.draftSaveDoc?.documentTypeCode,
+            name: rest?.draftSaveDoc?.name,
           }));
         const remainDocs = remainingDocs?.filter(
           (doc) =>
@@ -239,15 +226,6 @@ const DocumentUploadForm = ({
       );
     }
   }, [isMBAProgram]);
-
-  // useEffect(() => {
-  //   if (uploadDocs?.length > 0) {
-  //     const remainDocs = remainingDocs?.filter(
-  //       (doc) => !uploadDocs?.find((document) => document?.typeCode === doc)
-  //     );
-  //     setRemainingDocs(remainDocs?.filter(Boolean));
-  //   }
-  // }, [uploadDocs]);
 
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
@@ -271,6 +249,7 @@ const DocumentUploadForm = ({
     const uploadedFiles = files;
 
     uploadedFiles.forEach((item: any) => {
+      item.isUploadedNow = true;
       item.error = isInvalidFileType(item.type);
       if (!item?.typeCode && isApplicationEnrolled) {
         item.typeCode = "BURSARYLETTER";
@@ -292,7 +271,7 @@ const DocumentUploadForm = ({
   };
   const NationalityPassportFields = () => {
     return (
-      <div className="row mt-2">
+      <div className="row mt-4">
         <div className="col-md-6">
           <div className="mb-4">
             <AdvanceDropDown
@@ -347,7 +326,7 @@ const DocumentUploadForm = ({
 
   const uploadedDocuments = mergeDraftSaveDoc(
     mapStatusToFormData(documentDetails, documentFormData),
-    uploadDocs
+    deepClone(uploadDocs)
   );
   const allRequiredDocuments = isMBAProgram
     ? [...remainingDocs, ...mbaDocs]?.filter(
@@ -373,17 +352,9 @@ const DocumentUploadForm = ({
           uploadDocs?.find((item) => item?.name?.includes(doc))
         );
 
-  // console.log({
-  //   remainingDocs,
-  //   uploadDocs,
-  //   allRequiredDocuments,
-  //   documentsNeedTOBeUpload,
-  //   isPostGraduation,
-  // });
-
   return (
     <div className="row mx-3 document-container">
-      <div className="col-md-8">
+      <div className="col-md-9">
         {uploadedDocuments?.map(
           ({
             name,
@@ -393,6 +364,15 @@ const DocumentUploadForm = ({
             isDeclaration = false,
             draftSaveDoc = null,
           }) => {
+            const newDocumentAdded: any = [...(uploadDocs as any)]?.find(
+              (doc) => {
+                if (doc?.isUploadedNow && doc?.typeCode === id) return doc;
+                else return null;
+              }
+            );
+            const newDocStatus = newDocumentAdded?.isUploadedNow
+              ? "Uploaded"
+              : false;
             const customFileds = id?.includes("nationalIdPassport") ? (
               <NationalityPassportFields />
             ) : null;
@@ -403,7 +383,7 @@ const DocumentUploadForm = ({
                 selectedDocuments={
                   draftSaveDoc ? [draftSaveDoc] : (null as any)
                 }
-                status={status}
+                status={newDocStatus || status}
                 isDeclaration={isDeclaration}
                 disabled={disabled}
                 onUpload={uploadDocuments}
@@ -415,13 +395,13 @@ const DocumentUploadForm = ({
           }
         )}
       </div>
-      <div className="col-md-4">
-        <div>
-          <MainContainer>
-            <div className="d-flex flex-column">
+      <div className="col-md-3">
+        <div className="sticky-wrapper">
+          <MainContainer className="mt-0 card-shadow">
+            <div className="d-flex justify-content-center flex-column">
               <StyledButton
                 isGreenWhiteCombination
-                className="my-2"
+                className="mb-2"
                 title="Save as Draft"
                 onClick={onSaveDraft}
               />
@@ -439,40 +419,54 @@ const DocumentUploadForm = ({
             </div>
           </MainContainer>
 
-          <MainContainer className="px-1">
+          <MainContainer className="sidebar-widget card-shadow">
             <div className="d-flex flex-column">
-              <Typography textAlign="left" component="header" fontWeight="bold">
+              <Typography textAlign="left" component="header">
                 Document Status
               </Typography>
-              {mapStatusDocument(documentStatusDetail).map(
-                ({ name, status }) => (
-                  <TickWithText
-                    key={name}
-                    status={status?.toLowerCase()}
-                    text={name}
-                  />
-                )
-              )}
+              <List>
+                {mapStatusDocument(documentStatusDetail).map(
+                  ({ name, status, id }) => {
+                    const newDocumentAdded: any = [
+                      ...(uploadDocs as any),
+                    ]?.find((doc) => {
+                      if (doc?.isUploadedNow && doc?.typeCode === id)
+                        return doc;
+                      else return null;
+                    });
+                    const newDocStatus = newDocumentAdded?.isUploadedNow
+                      ? "Uploaded"
+                      : false;
+                    const docListStatus = newDocStatus || status;
+                    return (
+                      <TickWithText
+                        key={name}
+                        status={docListStatus?.toLowerCase()}
+                        text={name}
+                      />
+                    );
+                  }
+                )}
+              </List>
             </div>
           </MainContainer>
-          <MainContainer className="px-1">
+          <MainContainer className="sidebar-widget doc-criteria card-shadow">
             <div className="d-flex flex-column py-1">
               <Typography textAlign="left" component="header" fontWeight="bold">
-                Document Criteria
+                Document Acceptance Criteria
               </Typography>
-              <Typography color="black" textAlign="left" component="caption">
-                Documents not following the below guidelines will not be
-                accepted and you will be asked to submit the documents again
-              </Typography>
-              {documentCriteria.map(({ text, icon, isInnerText }: any) => (
-                <TickWithText
-                  key={text}
-                  text={text}
-                  icon={icon}
-                  isInnerText={isInnerText}
-                  required={false}
-                />
-              ))}
+
+              <List>
+                {documentCriteria.map(({ text, icon, isInnerText }: any) => (
+                  <TickWithText
+                    key={text}
+                    text={text}
+                    icon={icon}
+                    isInnerText={isInnerText}
+                    required={false}
+                  />
+                ))}
+              </List>
             </div>
           </MainContainer>
         </div>

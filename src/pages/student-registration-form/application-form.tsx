@@ -76,6 +76,7 @@ const ApplicationForm = () => {
   const [posStateData, setPosStateData] = useState([]);
   const [resStateData, setResStateData] = useState([]);
   const [sponsorStateData, setSponsorStateData] = useState([]);
+  const [studyModeData, setStudyModeData] = useState([]);
   const [employedStateData, setEmployedStateData] = useState([]);
   const methods = useForm<ILeadFormValues>({
     mode: "all",
@@ -96,6 +97,7 @@ const ApplicationForm = () => {
     getAgentDetails();
     getNationalData();
     identificationDocumentType();
+    getStudyModeData();
   }, []);
 
   useEffect(() => {
@@ -292,6 +294,12 @@ const ApplicationForm = () => {
           show: true,
         });
       });
+  };
+
+  const getStudyModeData = () => {
+    CommonAPI.get(`/study-mode`).then((data) => {
+      setStudyModeData(data?.data?.data);
+    });
   };
 
   const createDraft = (data) => {
@@ -549,7 +557,9 @@ const ApplicationForm = () => {
           count = count + 1;
           successLength.push("true");
           res?.data.forEach((url, index) => {
-            uploadFiles(url, uploadedDocs[index]);
+            const filesTakenForm =
+              activeStep === MagicNumbers.ONE ? paymentProof : uploadedDocs;
+            uploadFiles(url, filesTakenForm[index]);
           });
         } else {
           showToast(false, res.message);
@@ -803,6 +813,7 @@ const ApplicationForm = () => {
                             studyTypeData={studyTypeData}
                             isApplicationEnrolled={isApplicationEnrolled}
                             leadId={leadId}
+                            studyModeData={studyModeData}
                           />
                           <SponsoredForm
                             leadId={leadId}
@@ -845,6 +856,7 @@ const ApplicationForm = () => {
                       isManagementStudentType={isManagementStudentType}
                       isApplicationEnrolled={isApplicationEnrolled}
                       onSubmit={uploadStudentDocs}
+                      studyModeData={studyModeData}
                     />
                   </>
                 )}
@@ -927,29 +939,36 @@ const ApplicationForm = () => {
                                 />
                               )} */}
                             </>
-                            {activeStep !== 2 && (
-                              <StyledButton
-                                onClick={() => {
-                                  if (
-                                    JSON.parse(
-                                      sessionStorage?.getItem(
-                                        "activeLeadDetail"
-                                      ) as any
-                                    )?.isdraftSave == true
-                                  ) {
-                                    updateUserAsDraft(allFields);
-                                  } else {
-                                    createDraft(allFields);
-                                  }
-                                }}
-                                type="button"
-                                disabled={!isDirty}
-                                isGreenWhiteCombination={true}
-                                title={"Save as Draft"}
-                              />
-                            )}
+                            {typeof window !== "undefined" &&
+                              activeStep !== 2 &&
+                              JSON.parse(
+                                sessionStorage?.getItem(
+                                  "activeLeadDetail"
+                                ) as any
+                              )?.applicationCode?.length != 12 && (
+                                <StyledButton
+                                  onClick={() => {
+                                    if (
+                                      JSON.parse(
+                                        sessionStorage?.getItem(
+                                          "activeLeadDetail"
+                                        ) as any
+                                      )?.isdraftSave == true
+                                    ) {
+                                      updateUserAsDraft(allFields);
+                                    } else {
+                                      createDraft(allFields);
+                                    }
+                                  }}
+                                  type="button"
+                                  disabled={!isDirty}
+                                  isGreenWhiteCombination={true}
+                                  title={"Save as Draft"}
+                                />
+                              )}
                             &nbsp;&nbsp;&nbsp;
                             <StyledButton
+                              className="form-button"
                               onClick={() => {
                                 activeStep === 2
                                   ? (submitFormData(allFields, false) as any)
@@ -980,7 +999,7 @@ const ApplicationForm = () => {
                               }}
                               isGreenWhiteCombination
                               title={"Back to Dashboard"}
-                              className="me-3"
+                              className="me-3 form-button"
                             />
                             <StyledButton
                               onClick={() => {
@@ -1091,8 +1110,6 @@ export const MainContainer = styled.div`
 `;
 const FooterConatiner = styled.div`
   width: 100%;
-  min-height: 200px;
-  margin-bottom: 4rem;
   .form-check-input:checked {
     background-color: ${Green};
     border-color: #0d6efd;

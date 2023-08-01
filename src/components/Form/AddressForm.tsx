@@ -73,7 +73,7 @@ export const AddressForm = ({
 
   return (
     <>
-      <StyledAccordion defaultExpanded={true}>
+      <StyledAccordion defaultExpanded={true} className="card-shadow">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -209,7 +209,7 @@ export const AddressForm = ({
 
                 <div className="col-md-4">
                   <div className="mb-4">
-                    <StyledLabel required>Pin Code</StyledLabel>
+                    <StyledLabel required>Pin Code / Zip Code</StyledLabel>
                     <input
                       value={resPostalCodeVal}
                       defaultValue={resPostalCodeVal}
@@ -281,7 +281,7 @@ export const AddressForm = ({
                       }
                     }}
                   />
-                  <label className="form-check-label ms-2">
+                  <label className="form-check-label m1-2 same-address">
                     Select if same as Residential Address
                   </label>
                 </div>
@@ -373,13 +373,13 @@ export const AddressForm = ({
                     }}
                     label="State/Provinces"
                   />
-                  {isSameAsPostalAddress && !resStateVal && (
+                  {isSameAsPostalAddressVal && !resStateVal && (
                     <div className="invalid-feedback">
                       Please enter Postal State
                     </div>
                   )}
 
-                  {!isSameAsPostalAddress && error && error[0]?.state && (
+                  {error && error[0]?.state && (
                     <div className="invalid-feedback">
                       Please enter Postal State
                     </div>
@@ -418,7 +418,7 @@ export const AddressForm = ({
 
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Pin Code</StyledLabel>
+                  <StyledLabel required>Pin Code / Zip Code</StyledLabel>
                   <input
                     value={postalZipCodeVal}
                     {...register(`${postalZipCode}`, {
@@ -426,6 +426,11 @@ export const AddressForm = ({
                       maxLength: 10,
                       minLength: 4,
                     })}
+                    onKeyUp={(e) => {
+                      if (e.code === "Minus") {
+                        setValue(`${postalZipCode}`, "");
+                      }
+                    }}
                     type="number"
                     maxLength={6}
                     className="form-control"

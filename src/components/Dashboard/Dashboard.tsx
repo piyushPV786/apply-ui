@@ -4,6 +4,7 @@ import {
   GreenFormHeading,
   LoaderComponent,
   Toaster,
+  studentApplicationAllStatus,
 } from "../common/common";
 import { useRouter } from "next/router";
 import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
@@ -32,7 +33,7 @@ import {
   transformDate,
 } from "../../Util/Util";
 import { Grid } from "@material-ui/core";
-import { CachedOutlined } from "@material-ui/icons";
+import { CachedOutlined, Height } from "@material-ui/icons";
 
 const sortApplicationOnLastUpdate = (application: any[]) => {
   return application?.sort((a, b) => {
@@ -128,6 +129,35 @@ export const ApplicationDashboard = (props: any) => {
       : RoutePaths.Application_Form;
     router.push(url);
   };
+
+  const onLoginCredentialsClick = (
+    applicationCode: string | number,
+    leadCode: string,
+    status,
+    educationDetail,
+    draftId,
+    username,
+    password
+  ) => {
+    clearRoute();
+    const isdraftSave = status === CommonEnums.DRAFT_STATUS ? true : false;
+
+    const leadDetail = {
+      applicationCode,
+      leadCode,
+      isdraftSave,
+      educationDetail,
+      status,
+      draftId,
+      username,
+      password,
+    };
+    sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
+    router.push("/student-registration-form/credentials", {
+      query: `state=${status}`,
+    });
+  };
+
   const onPay = (
     applicationCode: string | number,
     leadCode: string,
@@ -190,12 +220,10 @@ export const ApplicationDashboard = (props: any) => {
 
   const onDownloadAcceptence = async (
     documentDetail: IDocument[],
-    documentTypeCode:
-      | CommonEnums.CONFIRMATION_LETTER
-      | CommonEnums.ACCEPTANCE_LETTER
+    documentTypeCode
   ) => {
     const documentDetails = documentDetail?.find(
-      (doc) => doc?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
+      (doc) => doc?.documentTypeCode === documentTypeCode
     );
 
     if (documentDetails) {
@@ -230,23 +258,24 @@ export const ApplicationDashboard = (props: any) => {
       ) : (
         <ParentContainer>
           <Header />
-          <div className="container-fluid application-page mt-5">
+          <div className="container-fluid application-page mt-4">
             <div style={{ paddingBottom: "1rem" }}>
               <PaymentContainer>
                 {studentId && studentApplications.length > 0 ? (
                   <div>
                     <div className="row">
-                      <div className="col">
+                      <div className="col-md-8">
                         <h2 className="app-header">My Applications</h2>
                         <p className="grey-text">
                           Here are all applications that you've applied through
                           Regenesys
                         </p>
                       </div>
-                      <div className="col pe-0">
+                      <div className="col-md-4 d-flex align-items-start justify-content-end">
                         <div className="d-flex justify-content-end">
                           <StyledButton
                             onClick={onApplyNow}
+                            className="button-shadow"
                             title="Apply a New Application"
                           />
                         </div>
@@ -277,6 +306,8 @@ export const ApplicationDashboard = (props: any) => {
                               education,
                               studentCode,
                               document,
+                              username,
+                              password,
 
                               ...rest
                             },
@@ -293,6 +324,9 @@ export const ApplicationDashboard = (props: any) => {
                                 name={`${firstName} ${middleName} ${lastName}`}
                                 programName={programName}
                                 onEdit={onEdit}
+                                onLoginCredentialsClick={
+                                  onLoginCredentialsClick
+                                }
                                 onPay={onPay}
                                 onDownloadAcceptence={onDownloadAcceptence}
                                 onUploadDocuments={onUploadDocuments}
@@ -310,6 +344,8 @@ export const ApplicationDashboard = (props: any) => {
                                 document={document}
                                 enrolmentCode={enrolmentCode}
                                 studentCode={studentCode}
+                                username={username}
+                                password={password}
                                 {...rest}
                               />
                             </div>
@@ -330,25 +366,24 @@ export const ApplicationDashboard = (props: any) => {
                             }}
                           >
                             <Image
-                              width="60"
-                              height="60"
+                              width="50"
+                              height="50"
                               src={ApplicationIcon}
                               alt="Application Icon"
                             />
                           </div>
                         </div>
                         <div className="text-center w-100">
-                          <GreenFormHeading
-                            style={{ fontSize: "24px", color: "#000" }}
-                          >
+                          <GreenFormHeading className="apply-text">
                             No application yet
                           </GreenFormHeading>
-                          <p className="grey-text mt-2">
+                          <p className="grey-text mt-2 mb-3 mx-auto">
                             Thank you for trusting Regenesys as your educational
                             institution. Please apply for your interested
                             qualification now.
                           </p>
                           <StyledButton
+                            className="button-shadow"
                             onClick={onApplyNow}
                             title="Apply Now"
                           />
@@ -381,6 +416,7 @@ function ApplicationCard({
   programName,
   leadCode,
   onEdit = (...args) => {},
+  onLoginCredentialsClick = (...args) => {},
   getStudentApplications = () => {},
   onPay = (...args) => {},
   onUploadDocuments = (...args) => {},
@@ -392,6 +428,8 @@ function ApplicationCard({
   document,
   studentCode,
   id,
+  username,
+  password,
   ...rest
 }) {
   const { sponsor = null } = { ...(rest as any) };
@@ -434,25 +472,30 @@ function ApplicationCard({
   return (
     <>
       <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
-        <div className=" d-flex flex-row justify-content-between">
-          <div className="cursor-pointer" onClick={getStudentApplications}>
-            <CachedOutlined className="m-2" />
+        <div className="d-flex flex-row justify-content-between">
+          <div
+            className="cursor-pointer refresh-icon"
+            onClick={getStudentApplications}
+          >
+            <CachedOutlined className="m-2 refresh-button" />
           </div>
-          <div>
-            <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
+          <div className="status-sec">
+            <StyledStatusBedge status={status}>
+              {studentApplicationAllStatus[status] ?? status}
+            </StyledStatusBedge>
           </div>
         </div>
         <div className="row px-4">
-          <div className="col-md-4">
-            <div className="mt-2 w-100 app-card-block">
+          <div className="col-md-6">
+            <div className="mt-3 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Name
               </p>
               <strong>{name}</strong>
             </div>
           </div>
-          <div className="col-md-4">
-            <div className="mt-2 w-100 app-card-block">
+          <div className="col-md-6">
+            <div className="mt-3 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Last updated
               </p>
@@ -461,7 +504,7 @@ function ApplicationCard({
           </div>
         </div>
         <div className="row px-4">
-          <div className="col-md-4">
+          <div className="col-md-6">
             <div className="mt-2 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Interested Program
@@ -469,7 +512,7 @@ function ApplicationCard({
               <strong>{programName}</strong>
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <div className="mt-2 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Study Type
@@ -477,7 +520,7 @@ function ApplicationCard({
               <strong>Regular</strong>
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <div className="mt-2 w-100 app-card-block">
               <p className="mb-0" style={{ color: `#5a636a` }}>
                 Study Mode
@@ -505,10 +548,11 @@ function ApplicationCard({
         <div className="w-100 mt-4 ">
           <Grid
             style={{
-              padding: "10px 16px 10px 0",
+              padding: "10px 16px 10px",
               borderTop: `1px solid ${Green}`,
               backgroundColor: "#f4f2f1",
               justifyContent: "flex-end",
+              minHeight: "64px",
             }}
             container
             spacing={1}
@@ -654,25 +698,17 @@ function ApplicationCard({
             {isProgramAddmitted && (
               <Grid item>
                 <StyledButton
-                  onClick={() =>
-                    router.push("/student-registration-form/credentials", {
-                      query: `state=${status}`,
-                    })
-                  }
-                  className="card-button"
-                  title="view login credentials"
-                />
-              </Grid>
-            )}
-
-            {showCredentialBtn && (
-              <Grid item>
-                <StyledButton
-                  onClick={() =>
-                    router.push("/student-registration-form/credentials", {
-                      query: `state=${status}`,
-                    })
-                  }
+                  onClick={() => {
+                    onLoginCredentialsClick(
+                      applicationNumber,
+                      leadCode,
+                      status,
+                      educationDetail,
+                      id,
+                      username,
+                      password
+                    );
+                  }}
                   className="card-button"
                   title="view login credentials"
                 />
@@ -921,7 +957,8 @@ const StudentIdCard = styled.div<{ bgColor?: string }>`
   max-width: 250px;
   border-radius: 3px;
   padding: 2px 8px;
-  margin: 15px;
+  margin: 15px 5px 0 0;
+  font-size: 13px;
   span {
     font-weight: bold;
   }
@@ -933,7 +970,8 @@ const EnrollmentIdCard = styled.div<{ bgColor?: string }>`
   max-width: 250px;
   border-radius: 3px;
   padding: 2px 8px;
-  margin: 15px 0;
+  margin: 15px 5px 0 0;
+  font-size: 13px;
   span {
     font-weight: bold;
   }
@@ -947,8 +985,10 @@ const StyledStatusBedge = styled.div<any>`
   margin-right: 0 !important;
   border-top: 0;
   border-bottom-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-right-radius: 5px;
   padding: 5px 20px;
+  letter-spacing: 0.5px;
+  font-size: 14px;
 `;
 
 const ApplicationContainer = styled.div`

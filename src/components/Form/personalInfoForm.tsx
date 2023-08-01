@@ -130,7 +130,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
 
   return (
     <>
-      <StyledAccordion defaultExpanded={true}>
+      <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -408,7 +408,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               <AccordionSummary>
                 <div className="me-4">
                   <span className="me-2">
-                    <Image src={AddressImg} alt="user" />
+                    <Image className="user-icon-circle" src={AddressImg} alt="user" />
                   </span>
                   <StyledLabel required>Nationality Status</StyledLabel>
                 </div>
@@ -422,13 +422,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   label="Nationality Status"
                   hideLabel
                 />
-                <span className="me-2">
+             
+                <div className="m-2">
                   {Errors?.nationalityStatus && (
                     <div className="invalid-feedback">
                       Please Select Nationality Status
                     </div>
                   )}
-                </span>
+                </div>
               </AccordionSummary>
               <AccordionDetails>
                 <div className="container-fluid form-padding">
