@@ -52,7 +52,8 @@ import {
 const isValidLeadEmail = (value: string) => isValidEmail(value);
 const ApplicationForm = () => {
   const router = useRouter();
-  const { AuthApi, loading, AcadmicApi, CommonAPI } = useAxiosInterceptor();
+  const { AuthApi, loading, AcadmicApi, CommonAPI, setLoading } =
+    useAxiosInterceptor();
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
 
@@ -553,40 +554,41 @@ const ApplicationForm = () => {
     };
     getUploadDocumentUrl(payload)
       .then((res) => {
+        setLoading(true);
         if (res.statusCode === 201) {
-          count = count + 1;
-          successLength.push("true");
           res?.data.forEach((url, index) => {
             const filesTakenForm =
               activeStep === MagicNumbers.ONE ? paymentProof : uploadedDocs;
             uploadFiles(url, filesTakenForm[index]);
+            count = count + 1;
           });
+
+          if (res?.data.length == count) {
+            setLoading(false);
+            setSubmitted(false);
+            if (activeStep === MagicNumbers.ONE) {
+              setPaymentDone(true);
+              setTimeout(() => {
+                router.push(RoutePaths.Payment_Success);
+              }, 2000);
+            } else {
+              setActiveStep(0);
+              setTimeout(() => {
+                if (isDraft) {
+                  router.push(RoutePaths.Document_Save_Success);
+                } else {
+                  router.push(RoutePaths.Document_Success);
+                }
+              }, 2000);
+            }
+            showToast(true, "Documents Successfully Uploaded");
+          }
         } else {
           showToast(false, res.message);
           console.log(res.message);
         }
       })
-      .then(() => {
-        if (count === successLength.length) {
-          setSubmitted(false);
-          if (activeStep === MagicNumbers.ONE) {
-            setPaymentDone(true);
-            setTimeout(() => {
-              router.push(RoutePaths.Payment_Success);
-            }, 2000);
-          } else {
-            setActiveStep(0);
-            setTimeout(() => {
-              if (isDraft) {
-                router.push(RoutePaths.Document_Save_Success);
-              } else {
-                router.push(RoutePaths.Document_Success);
-              }
-            }, 2000);
-          }
-          showToast(true, "Documents Successfully Uploaded");
-        }
-      })
+
       .catch((err) => {
         console.log(err);
       });
