@@ -212,6 +212,7 @@ const DocumentUploadForm = ({
             type: rest?.draftSaveDoc?.fileExtension,
             typeCode: rest?.draftSaveDoc?.documentTypeCode,
             name: rest?.draftSaveDoc?.name,
+            status: "Uploaded",
           }));
         const remainDocs = remainingDocs?.filter(
           (doc) =>
@@ -370,9 +371,10 @@ const DocumentUploadForm = ({
                 else return null;
               }
             );
-            const newDocStatus = newDocumentAdded?.isUploadedNow
-              ? "Uploaded"
-              : false;
+            const newDocStatus =
+              newDocumentAdded?.isUploadedNow || draftSaveDoc
+                ? "Uploaded"
+                : false;
             const customFileds = id?.includes("nationalIdPassport") ? (
               <NationalityPassportFields />
             ) : null;
@@ -426,7 +428,7 @@ const DocumentUploadForm = ({
               </Typography>
               <List>
                 {mapStatusDocument(documentStatusDetail).map(
-                  ({ name, status, id }) => {
+                  ({ name, status, id, draftSaveDoc }) => {
                     const newDocumentAdded: any = [
                       ...(uploadDocs as any),
                     ]?.find((doc) => {
@@ -434,7 +436,7 @@ const DocumentUploadForm = ({
                         return doc;
                       else return null;
                     });
-                    const newDocStatus = newDocumentAdded?.isUploadedNow
+                    const newDocStatus = newDocumentAdded?.isUploadedNow || draftSaveDoc
                       ? "Uploaded"
                       : false;
                     const docListStatus = newDocStatus || status;
