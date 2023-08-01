@@ -585,7 +585,6 @@ const ApplicationForm = () => {
           }
         } else {
           showToast(false, res.message);
-          console.log(res.message);
         }
       })
 
