@@ -52,8 +52,9 @@ export const ApplicationFormContainer = styled.div<any>`
   max-width: 420px;
   border-radius: 5px;
   margin-top: 16px;
-  @media (max-width: 400px) {
+  @media (max-width: 480px) {
     top: ${({ isProceed }) => (isProceed ? "62%" : "55%")};
+    margin:15px;
   }
 `;
 

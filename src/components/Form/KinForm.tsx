@@ -78,6 +78,23 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
           keepIsValid: true,
           keepValue: true,
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
       }
     } else {
       if (!isKinNeed) {

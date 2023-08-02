@@ -443,7 +443,7 @@ padding-right: 0 !important;
 .document-container header .form-label, .sticky-wrapper header
 {
   font-size: 15px;
-  font-weight: bold;
+  font-family: roboto-bold;
 }
 
 
@@ -600,6 +600,12 @@ padding: 10px 0 !important;
   font-size: 14px;
 }
 
+.payment-card-title
+{
+  font-family: roboto-bold;
+  font-size: 16px !important;
+    margin: 0;
+}
 
 .footer-text, .sidebar-status, .doc-upload .MuiButton-label, .offline-text
 {
@@ -729,3 +735,94 @@ width: calc( 100% - 80px );
 .sticky-wrapper ul li{
   margin:3px 0;
 }
+
+.pay-cards div:first-child
+{
+  border-radius: 10px !important;
+}
+
+.nationality-card .MuiAccordionSummary-content
+{
+align-items: center;
+}
+
+
+
+@media only screen and (max-width : 480px) {
+  .apply-button{
+       margin:0 0 20px !important;
+  }
+
+  .hoARiL
+  {
+    padding: 10px !important;
+  }
+
+  .or-div{
+    min-height: 80px !important;
+    align-items: baseline !important;
+  }
+  .document-container
+  {
+    padding: 0 !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  .mobile-block{
+    flex-wrap: wrap;
+}
+
+.mobile-block p {
+  margin-bottom: 1rem;
+}
+.upload-file-name
+{
+  justify-content: flex-start !important;
+  padding-left: 0 !important;
+}
+
+.document-container header .form-label
+{
+  font-size: 14px !important;
+}
+
+.MuiButton-root.Mui-disabled
+{
+  background-color: #d2d2d2!important;
+}
+
+.doc-status
+{
+  margin-left: 15px !important;
+  font-size: 12px;
+  padding: 5px !important;
+}
+
+.nationality-card .MuiAccordionSummary-content
+{
+  height: auto;
+  flex-direction: column;
+  align-items: baseline;
+}
+
+#panel1a-header 
+{
+  height: auto;
+}
+
+#panel1a-header .MuiAccordionSummary-content
+{
+  flex-wrap: wrap;
+}
+
+#panel1a-header .MuiAccordionSummary-content p
+{
+ min-width: 240px;
+}
+#panel1a-header .MuiAccordionSummary-content .form-check
+{
+  margin-top: 15px;
+}
+}
+

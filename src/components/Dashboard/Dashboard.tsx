@@ -273,9 +273,9 @@ export const ApplicationDashboard = (props: any) => {
                       </div>
                       <div className="col-md-4 d-flex align-items-start justify-content-end">
                         <div className="d-flex justify-content-end">
-                          <StyledButton
+                          <StyledButton 
                             onClick={onApplyNow}
-                            className="button-shadow"
+                            className="button-shadow apply-button"
                             title="Apply a New Application"
                           />
                         </div>
@@ -474,10 +474,10 @@ function ApplicationCard({
       <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
         <div className="d-flex flex-row justify-content-between">
           <div
-            className="cursor-pointer refresh-icon"
+            className="refresh-icon"
             onClick={getStudentApplications}
           >
-            <CachedOutlined className="m-2 refresh-button" />
+            <CachedOutlined titleAccess="Refresh Application" className="m-2 refresh-button" />
           </div>
           <div className="status-sec">
             <StyledStatusBedge status={status}>
@@ -554,6 +554,7 @@ function ApplicationCard({
               justifyContent: "flex-end",
               minHeight: "64px",
             }}
+
             container
             spacing={1}
           >

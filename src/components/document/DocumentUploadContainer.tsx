@@ -167,13 +167,13 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           </DialogActions>
         </Dialog>
         <StyledLabel required>{title}</StyledLabel>
-        <Status style={{ marginLeft: "2rem" }} status={status}>
+        <Status className="doc-status" style={{ marginLeft: "2rem" }} status={status}>
           {status}
         </Status>
       </Typography>
 
       {isDeclaration && (
-        <InnerContainer>
+        <InnerContainer className="mobile-block">
           <div>
             <Typography
               textAlign="left"
@@ -196,7 +196,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
       )}
       {status?.toLowerCase()?.includes("rejected") && (
         <>
-          <AlertBox
+          <AlertBox 
             style={{ width: "100%", maxWidth: "unset", margin: "10px 0" }}
             severity={AlertEnums.DANGER}
           >

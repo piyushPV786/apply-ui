@@ -133,14 +133,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
+          aria-controls="panel1a-content" 
           id="panel1a-header"
         >
           <GreenFormHeading>
             <span className="me-2">
               <Image src={UserCircleIcon} alt="user" />
             </span>
-            Personal Information
+            Personal Information 
           </GreenFormHeading>
         </AccordionSummary>
         <AccordionDetails>
@@ -405,7 +405,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               expanded={nationalityStatus}
               defaultExpanded={true}
             >
-              <AccordionSummary>
+              <AccordionSummary className="nationality-card">
                 <div className="me-4">
                   <span className="me-2">
                     <Image className="user-icon-circle" src={AddressImg} alt="user" />

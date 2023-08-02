@@ -354,7 +354,7 @@ const DocumentUploadForm = ({
         );
 
   return (
-    <div className="row mx-3 document-container">
+    <div className="row document-container">
       <div className="col-md-9">
         {uploadedDocuments?.map(
           ({
