@@ -22,6 +22,7 @@ import {
   capitalizeFirstLetter,
   sortAscending,
   formDirtyState,
+  onlyNumber,
 } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
@@ -559,7 +560,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 maxLength: 10,
                                 minLength: 4,
                               })}
-                              type="number"
+                              onChange={(e) => {
+                                if (onlyNumber(e.target.value)) {
+                                  setValue(sponsorPinCode, e.target.value);
+                                }
+                              }}
                             />
 
                             {error?.zipCode && (
