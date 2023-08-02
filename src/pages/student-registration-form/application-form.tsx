@@ -585,11 +585,14 @@ const ApplicationForm = () => {
           }
         } else {
           showToast(false, res.message);
+          setLoading(false);
         }
       })
 
       .catch((err) => {
         console.log(err);
+        showToast(false, err);
+        setLoading(false);
       });
   };
   const showToast = (success: boolean, message: string) => {
