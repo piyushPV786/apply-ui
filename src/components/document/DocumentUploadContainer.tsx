@@ -167,7 +167,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           </DialogActions>
         </Dialog>
         <StyledLabel required>{title}</StyledLabel>
-        <Status style={{ marginLeft: "2rem" }} status={status}>
+        <Status className="doc-status" style={{ marginLeft: "2rem" }} status={status}>
           {status}
         </Status>
       </Typography>

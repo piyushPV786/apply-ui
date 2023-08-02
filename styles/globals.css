@@ -736,6 +736,17 @@ width: calc( 100% - 80px );
   margin:3px 0;
 }
 
+.pay-cards div:first-child
+{
+  border-radius: 10px !important;
+}
+
+.nationality-card .MuiAccordionSummary-content
+{
+align-items: center;
+}
+
+
 
 @media only screen and (max-width : 480px) {
   .apply-button{
@@ -781,9 +792,37 @@ width: calc( 100% - 80px );
   background-color: #d2d2d2!important;
 }
 
+.doc-status
+{
+  margin-left: 15px !important;
+  font-size: 12px;
+  padding: 5px !important;
 }
 
-.pay-cards div:first-child
+.nationality-card .MuiAccordionSummary-content
 {
-  border-radius: 10px !important;
+  height: auto;
+  flex-direction: column;
+  align-items: baseline;
 }
+
+#panel1a-header 
+{
+  height: auto;
+}
+
+#panel1a-header .MuiAccordionSummary-content
+{
+  flex-wrap: wrap;
+}
+
+#panel1a-header .MuiAccordionSummary-content p
+{
+ min-width: 240px;
+}
+#panel1a-header .MuiAccordionSummary-content .form-check
+{
+  margin-top: 15px;
+}
+}
+
