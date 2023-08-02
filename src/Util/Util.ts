@@ -243,6 +243,7 @@ export const isValidFileType = (files) => {
  * @returns {boolean} - Whether the value contains only alphabets or not.
  */
 export const onlyAlphabets = (value) => /^[a-zA-Z ]*$/.test(value);
+export const onlyNumber = (value) => /^[0-9]*$/.test(value);
 
 /**
  * Capitalizes the first letter of a string.
