@@ -19,7 +19,6 @@ export const GreenFormHeading = styled.p`
   margin: 0 0 2px;
 
   @media (max-width: 510px) {
-    font-size: 11px;
     img {
       width: 25px;
       height: 25px;

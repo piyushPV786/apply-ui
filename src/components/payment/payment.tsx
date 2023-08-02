@@ -251,7 +251,7 @@ const Payment = (props: any) => {
                 <PaymentHeading>
                   <div className="col-md-12">
                     <StyleHeading>
-                      <GreenFormHeading>Order Summary</GreenFormHeading>
+                      <GreenFormHeading className="payment-card-title">Order Summary</GreenFormHeading>
                     </StyleHeading>
                   </div>
                 </PaymentHeading>
@@ -540,22 +540,21 @@ const Payment = (props: any) => {
             {!props?.isManagementStudentType && (
               <>
                 <div className="col-md-6">
-                  <PaymentOption
-                    totalAmount={totalPayuAmount}
+                  <PaymentOption totalAmount={totalPayuAmount}
                     navigateNext={props?.navigateNext}
                     setLoading={(loading) => setLoading(loading)}
                     isApplicationEnrolled={isApplicationEnrolled}
                   />
                 </div>
                 <div className="col-md-1">
-                  <StyledDiv>Or</StyledDiv>
+                  <StyledDiv className="or-div">Or</StyledDiv>
                 </div>
                 <div className="col-md-5 ">
                   <MainContainer className="card-shadow">
                     <PaymentHeading>
                       <div className="col-md-12 ">
                         <StyleHeading>
-                          <GreenFormHeading style={{ fontSize: "16px" }}>
+                          <GreenFormHeading className="payment-card-title">
                             Upload Payment Proof
                           </GreenFormHeading>
                         </StyleHeading>
@@ -563,7 +562,7 @@ const Payment = (props: any) => {
                     </PaymentHeading>
                     <PaymentContainer>
                       <div className="d-flex justify-content-center w-100">
-                        <div className="">
+                        <div className="w-100">
                           <UploadPaymentDocsContainer
                             onClick={onDocUploadClick}
                             className="w-100"
@@ -698,7 +697,6 @@ const UploadPaymentDocsContainer = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  min-width: 400px;
   min-height: 100px;
   padding: 1rem;
   width: 100%;
