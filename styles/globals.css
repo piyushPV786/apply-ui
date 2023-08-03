@@ -746,8 +746,6 @@ width: calc( 100% - 80px );
 align-items: center;
 }
 
-
-
 @media only screen and (max-width : 480px) {
   .apply-button{
        margin:0 0 20px !important;
@@ -799,16 +797,26 @@ align-items: center;
   padding: 5px !important;
 }
 
+.nationality-card
+{
+  height: auto !important;
+}
+
+.nationality-card .form-select
+{
+margin-top: 15px;
+}
+
 .nationality-card .MuiAccordionSummary-content
 {
-  height: auto;
+  height: auto !important;
   flex-direction: column;
   align-items: baseline;
 }
 
 #panel1a-header 
 {
-  height: auto;
+  height: auto !important;
 }
 
 #panel1a-header .MuiAccordionSummary-content
