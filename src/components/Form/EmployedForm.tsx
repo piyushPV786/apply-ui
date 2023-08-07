@@ -112,7 +112,12 @@ export const EmployedForm = (props: IEmployeProps) => {
         keepIsValid: true,
       });
     }
-  }, [isEmployedNeed]);
+    employmentStatusVal;
+
+    if (employmentStatusVal && employmentStatusVal != "") {
+      setValue(isEmployed, "yes");
+    }
+  }, [isEmployedNeed, employmentStatusVal]);
 
   const reset = () => {
     setValue(employer, "");
@@ -129,6 +134,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     setValue(employmentState, "");
     setValue(employmentStatus, "");
   };
+
   return (
     <>
       <StyledAccordion defaultExpanded={isEmployedNeed} className="card-shadow">
