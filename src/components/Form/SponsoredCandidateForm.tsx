@@ -127,7 +127,10 @@ export const SponsoredForm = (props: ISponsorProps) => {
     if (sponsorCountryVal) {
       getStateData(sponsorCountryVal, "SPONSOR");
     }
-  }, [isSponserNeed]);
+    if (sponsorModeVal && sponsorModeVal != "") {
+      setValue(isSponsor, "yes");
+    }
+  }, [isSponserNeed, sponsorModeVal]);
   const isRequired =
     sponsorModeVal?.toLowerCase() === CommonEnums.EMPLOYEE_BURSARY;
   const isGuardian = sponsorModeVal?.toLowerCase() === CommonEnums.GUARDIAN;
@@ -202,7 +205,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
           </div>
         </AccordionSummary>
         {!disableSponsorForm && (
-          <AccordionDetails hidden={!isSponsorVal || isSponsorVal === "no"}>
+          <AccordionDetails hidden={isSponsorVal && isSponsorVal === "no"}>
             <div className="container-fluid form-padding">
               <div className="row">
                 <div className="col-md-4">
