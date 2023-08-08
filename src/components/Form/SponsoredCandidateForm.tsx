@@ -131,6 +131,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
       setValue(isSponsor, "yes");
     }
   }, [isSponserNeed, sponsorModeVal]);
+
+  useEffect(() => {
+    setValue(sponsorState, sponsorStateVal);
+  }, [sponsorStateData, sponsorStateVal]);
+
   const isRequired =
     sponsorModeVal?.toLowerCase() === CommonEnums.EMPLOYEE_BURSARY;
   const isGuardian = sponsorModeVal?.toLowerCase() === CommonEnums.GUARDIAN;
