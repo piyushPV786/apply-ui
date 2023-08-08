@@ -1,6 +1,6 @@
 import React, { useRef, useState, SyntheticEvent, useEffect } from "react";
 import styled from "styled-components";
-import { Container, Typography, Button, Modal } from "@mui/material";
+import { Container, Typography, Button, Modal, Tooltip } from "@mui/material";
 import StyledButton from "../button/button";
 import { Green, StyledLabel } from "../common/common";
 import { AlertEnums } from "../common/constant";
@@ -42,6 +42,7 @@ interface DocumentUploadContainerProps {
   isDeclaration?: boolean;
   disabled?: boolean;
   draftSaveDoc?: File | any;
+  isOptional?: boolean;
   customComponent?:
     | React.ReactComponentElement<any>
     | React.ReactNode
@@ -70,7 +71,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   documentType,
   onRemove,
   customComponent,
-
+  isOptional = false,
   draftSaveDoc,
   disabled = false,
   selectedDocuments = [],
@@ -166,7 +167,19 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             <StyledButton color="" title="Close" onClick={handleModalClose} />
           </DialogActions>
         </Dialog>
-        <StyledLabel required>{title}</StyledLabel>
+        <StyledLabel required>
+          {title}{" "}
+          <Tooltip
+            title="Not mandatory for undergraduate students"
+            placement="top"
+          >
+            <span>
+              {isOptional && documentType === "detailCV" && (
+                <span>(Optional)</span>
+              )}
+            </span>
+          </Tooltip>
+        </StyledLabel>
         <Status style={{ marginLeft: "2rem" }} status={status}>
           {status}
         </Status>
