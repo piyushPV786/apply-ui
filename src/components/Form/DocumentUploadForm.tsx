@@ -197,7 +197,6 @@ const DocumentUploadForm = ({
     allFields?.education?.programCode === "MBA";
 
   const isPostGraduation = selectedPrograms?.category === GraduationType.PG; /// upload CV in the upload document section mandatory for Post Graduate Programs and Non mandatory for Under Graduate Programs.
-
   useEffect(() => {
     if (documentDetails?.length > 0) {
       const mappedDocs = mapStatusToFormData(
@@ -353,6 +352,11 @@ const DocumentUploadForm = ({
           uploadDocs?.find((item) => item?.name?.includes(doc))
         );
 
+  const requireDocs = !isPostGraduation
+    ? [...documentsNeedTOBeUpload, ...remainingDocs]?.filter(
+        (doc) => !doc?.includes("detailCV")
+      )
+    : [...documentsNeedTOBeUpload, ...remainingDocs];
   return (
     <div className="row document-container">
       <div className="col-md-9">
@@ -392,6 +396,7 @@ const DocumentUploadForm = ({
                 onRemove={deleteDocs as any}
                 documentType={id}
                 customComponent={customFileds}
+                isOptional={!isPostGraduation}
               />
             );
           }
@@ -408,9 +413,7 @@ const DocumentUploadForm = ({
                 onClick={onSaveDraft}
               />
               <StyledButton
-                disabled={
-                  [...documentsNeedTOBeUpload, ...remainingDocs]?.length > 0
-                }
+                disabled={requireDocs?.length > 0}
                 onClick={() => {
                   setUploadDocs([]);
                   setDocumentFormDataDetail([]);
@@ -436,9 +439,10 @@ const DocumentUploadForm = ({
                         return doc;
                       else return null;
                     });
-                    const newDocStatus = newDocumentAdded?.isUploadedNow || draftSaveDoc
-                      ? "Uploaded"
-                      : false;
+                    const newDocStatus =
+                      newDocumentAdded?.isUploadedNow || draftSaveDoc
+                        ? "Uploaded"
+                        : false;
                     const docListStatus = newDocStatus || status;
                     return (
                       <TickWithText
