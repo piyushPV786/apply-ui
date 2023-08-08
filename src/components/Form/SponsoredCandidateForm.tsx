@@ -22,6 +22,7 @@ import {
   capitalizeFirstLetter,
   sortAscending,
   formDirtyState,
+  onlyNumber,
 } from "../../Util/Util";
 import DollarIcon from "../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import Image from "next/image";
@@ -126,7 +127,10 @@ export const SponsoredForm = (props: ISponsorProps) => {
     if (sponsorCountryVal) {
       getStateData(sponsorCountryVal, "SPONSOR");
     }
-  }, [isSponserNeed]);
+    if (sponsorModeVal && sponsorModeVal != "") {
+      setValue(isSponsor, "yes");
+    }
+  }, [isSponserNeed, sponsorModeVal]);
   const isRequired =
     sponsorModeVal?.toLowerCase() === CommonEnums.EMPLOYEE_BURSARY;
   const isGuardian = sponsorModeVal?.toLowerCase() === CommonEnums.GUARDIAN;
@@ -201,7 +205,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
           </div>
         </AccordionSummary>
         {!disableSponsorForm && (
-          <AccordionDetails hidden={!isSponsorVal || isSponsorVal === "no"}>
+          <AccordionDetails hidden={isSponsorVal && isSponsorVal === "no"}>
             <div className="container-fluid form-padding">
               <div className="row">
                 <div className="col-md-4">
@@ -559,7 +563,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 maxLength: 10,
                                 minLength: 4,
                               })}
-                              type="number"
+                              onChange={(e) => {
+                                if (onlyNumber(e.target.value)) {
+                                  setValue(sponsorPinCode, e.target.value);
+                                }
+                              }}
                             />
 
                             {error?.zipCode && (

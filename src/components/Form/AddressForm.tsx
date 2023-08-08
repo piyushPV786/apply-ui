@@ -17,6 +17,7 @@ import {
   capitalizeFirstLetter,
   onlyAlphabetsOrNumbersDash,
   formDirtyState,
+  onlyNumber,
 } from "../../Util/Util";
 const Address = "address";
 const resPostalAddress = `${Address}[1].street`;
@@ -218,7 +219,11 @@ export const AddressForm = ({
                         maxLength: 10,
                         minLength: 4,
                       })}
-                      type="number"
+                      onChange={(e) => {
+                        if (onlyNumber(e.target.value)) {
+                          setValue(resPostalCode, e.target.value, formOptions);
+                        }
+                      }}
                       className="form-control"
                       id="postalCode"
                       placeholder="Enter Zip/Postal Code"
@@ -426,12 +431,11 @@ export const AddressForm = ({
                       maxLength: 10,
                       minLength: 4,
                     })}
-                    onKeyUp={(e) => {
-                      if (e.code === "Minus") {
-                        setValue(`${postalZipCode}`, "");
+                    onChange={(e) => {
+                      if (onlyNumber(e.target.value)) {
+                        setValue(postalZipCode, e.target.value, formOptions);
                       }
                     }}
-                    type="number"
                     maxLength={6}
                     className="form-control"
                     id="postalZipCode"

@@ -18,6 +18,7 @@ import {
   capitalizeFirstLetter,
   validateNumber,
   sortAscending,
+  onlyNumber,
 } from "../../Util/Util";
 import Image from "next/image";
 import EmployeeImg from "../../../public/assets/images/employeee.svg";
@@ -111,7 +112,12 @@ export const EmployedForm = (props: IEmployeProps) => {
         keepIsValid: true,
       });
     }
-  }, [isEmployedNeed]);
+    employmentStatusVal;
+
+    if (employmentStatusVal && employmentStatusVal != "") {
+      setValue(isEmployed, "yes");
+    }
+  }, [isEmployedNeed, employmentStatusVal]);
 
   const reset = () => {
     setValue(employer, "");
@@ -128,6 +134,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     setValue(employmentState, "");
     setValue(employmentStatus, "");
   };
+
   return (
     <>
       <StyledAccordion defaultExpanded={isEmployedNeed} className="card-shadow">
@@ -532,7 +539,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                               maxLength: 10,
                               minLength: 4,
                             })}
-                            type="number"
+                            onChange={(e) => {
+                              if (onlyNumber(e.target.value)) {
+                                setValue(employmentPinCode, e.target.value);
+                              }
+                            }}
                           />
                           {error?.zipCode && (
                             <div className="invalid-feedback">

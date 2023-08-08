@@ -88,6 +88,9 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
         });
       }
     }
+    if (relationShipVal && relationShipVal != "") {
+      setValue(isKin, "yes");
+    }
   }, [isKinDetailExist, error]);
 
   const reset = () => {
@@ -140,7 +143,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
           </div>
         </AccordionSummary>
 
-        <AccordionDetails hidden={!isNextKinVal || isNextKinVal === "no"}>
+        <AccordionDetails hidden={isNextKinVal && isNextKinVal === "no"}>
           {(isNextKinVal || isNextKinVal !== "no") && (
             <div className="container-fluid form-padding">
               <div className="row">

@@ -146,6 +146,7 @@ const useAxiosInterceptor = () => {
     CommonAPI,
     loading,
     UserManagementAPI,
+    setLoading,
   };
 };
 
