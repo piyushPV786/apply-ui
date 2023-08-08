@@ -92,6 +92,10 @@ export const EmployedForm = (props: IEmployeProps) => {
     }
   }, []);
 
+  useEffect(() => {
+    setValue(employmentState, employmentStateVal);
+  }, [employedStateData, employmentStateVal]);
+
   const uppdateMobNumber = () => {
     if (countryCodeRef) {
       const countryCode = getCountryCallingCode(countryCodeRef);
