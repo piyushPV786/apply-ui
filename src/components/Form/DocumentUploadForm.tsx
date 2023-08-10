@@ -260,7 +260,7 @@ const DocumentUploadForm = ({
     });
     setUploadDocs((prevState) => [...prevState, ...(uploadedFiles as any)]);
     const allFiles = [...uploadDocs, ...uploadedFiles];
-    const remainingDocuments = isPostGraduation
+    const remainingDocuments = !isPostGraduation
       ? remainingDocs?.filter((doc) => !doc?.includes("detailCV"))
       : remainingDocs;
     const remainDocs = remainingDocuments?.filter(
@@ -341,22 +341,16 @@ const DocumentUploadForm = ({
             doc?.name?.toLowerCase()?.includes(remainDoc?.toLowerCase())
           )
       );
-  const documentsNeedTOBeUpload = isPostGraduation
-    ? allRequiredDocuments
-        ?.filter(Boolean)
-        ?.filter((item) => !item?.includes("detailCV"))
-        ?.filter((doc) => uploadDocs?.find((item) => item?.name?.includes(doc)))
-    : allRequiredDocuments
-        ?.filter(Boolean)
-        ?.filter((doc) =>
-          uploadDocs?.find((item) => item?.name?.includes(doc))
-        );
+  const documentsNeedTOBeUpload = allRequiredDocuments
+    ?.filter(Boolean)
+    ?.filter((doc) => uploadDocs?.find((item) => item?.name?.includes(doc)));
 
   const requireDocs = !isPostGraduation
     ? [...documentsNeedTOBeUpload, ...remainingDocs]?.filter(
         (doc) => !doc?.includes("detailCV")
       )
     : [...documentsNeedTOBeUpload, ...remainingDocs];
+
   return (
     <div className="row document-container">
       <div className="col-md-9">
