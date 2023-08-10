@@ -89,6 +89,7 @@ interface Education {
   socialMediaCode: string;
   agentCode: string;
   studyModeDetail?: any;
+  programName?: string;
   internationDegreeVal: string;
 }
 export interface Payment {

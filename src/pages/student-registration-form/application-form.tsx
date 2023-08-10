@@ -50,6 +50,7 @@ import {
 } from "../../Util/applicationFormHelper";
 
 const isValidLeadEmail = (value: string) => isValidEmail(value);
+
 const ApplicationForm = () => {
   const router = useRouter();
   const { AuthApi, loading, AcadmicApi, CommonAPI, setLoading } =
@@ -877,7 +878,7 @@ const ApplicationForm = () => {
                       selectedPrograms={
                         programs?.find(
                           (prog) =>
-                            prog?.code === allFields?.education?.programCode
+                            prog?.name === allFields?.education?.programName
                         )!
                       }
                     />
