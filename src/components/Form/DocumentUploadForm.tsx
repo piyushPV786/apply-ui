@@ -378,7 +378,7 @@ const DocumentUploadForm = ({
             ) : null;
             return (
               <DocumentUploadContainer
-                key={`${name}_${id}`}
+                key={`${name}_${id}_${newDocStatus}`}
                 title={name}
                 selectedDocuments={
                   draftSaveDoc ? [draftSaveDoc] : (null as any)
