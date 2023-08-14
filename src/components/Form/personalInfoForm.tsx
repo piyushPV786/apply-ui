@@ -133,14 +133,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content" 
+          aria-controls="panel1a-content"
           id="panel1a-header"
         >
           <GreenFormHeading>
             <span className="me-2">
               <Image src={UserCircleIcon} alt="user" />
             </span>
-            Personal Information 
+            Personal Information
           </GreenFormHeading>
         </AccordionSummary>
         <AccordionDetails>
@@ -406,29 +406,37 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               defaultExpanded={true}
             >
               <AccordionSummary className="nationality-card">
-                <div className="me-4">
-                  <span className="me-2">
-                    <Image className="user-icon-circle" src={AddressImg} alt="user" />
-                  </span>
-                  <StyledLabel required>Nationality Status</StyledLabel>
-                </div>
+                <div
+                  className="d-flex flex-row"
+                  style={{ width: 400, alignItems: "center" }}
+                >
+                  <Image
+                    className="user-icon-circle me-2"
+                    src={AddressImg}
+                    alt="user"
+                  />
+                  <div className="me-1" style={{ width: 150 }}>
+                    <StyledLabel required>Nationality Status</StyledLabel>
+                  </div>
+                  <div className="mb-3" style={{ width: 300 }}>
+                    <AdvanceDropDown
+                      options={nationalityStatusData}
+                      value={nationalityStatus}
+                      name={nationalityStatusKey}
+                      register={register}
+                      onChange={handleInternationAccordian}
+                      label="Nationality Status"
+                      hideLabel
+                    />
 
-                <AdvanceDropDown
-                  options={nationalityStatusData}
-                  value={nationalityStatus}
-                  name={nationalityStatusKey}
-                  register={register}
-                  onChange={handleInternationAccordian}
-                  label="Nationality Status"
-                  hideLabel
-                />
-             
-                <div className="m-2">
-                  {Errors?.nationalityStatus && (
-                    <div className="invalid-feedback">
-                      Please Select Nationality Status
+                    <div className="m-2">
+                      {Errors?.nationalityStatus && (
+                        <div className="invalid-feedback">
+                          Please Select Nationality Status
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </AccordionSummary>
               <AccordionDetails>

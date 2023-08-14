@@ -2,6 +2,8 @@ import React from "react";
 import { UseFormRegister } from "react-hook-form";
 import { StyledLabel } from "../common/common";
 
+import TextField, { textFieldClasses } from "@mui/material/TextField";
+import Autocomplete, { autocompleteClasses } from "@mui/material/Autocomplete";
 interface IAdvanceDropDownProps {
   options: any[];
   label?: string;
@@ -37,31 +39,44 @@ const AdvanceDropDown = ({
       <StyledLabel hideLabel={!label} forceHide={hideLabel} required={required}>
         {!hideLabel && label}
       </StyledLabel>
-      <select
-        disabled={disabled}
-        className="form-select"
-        {...register(props?.name!, {
-          required: required,
-          onChange(event) {
-            onChange && onChange(event);
+      {/*  </ThemeProvider> */}
+      <Autocomplete
+        sx={{
+          [`& .${autocompleteClasses.inputRoot}`]: {
+            border: "2px solid #ced4da",
+            borderRadius: 1.5,
           },
-        })}
-        {...props}
-      >
-        <option value={""}>{(label && `Select ${label}`) || ``}</option>
-        {options &&
-          options.map(({ ...rest }) => {
-            return (
-              <option
-                selected={rest[mapKey] == value}
-                key={JSON.stringify(rest)}
-                value={rest[mapKey]}
-              >
-                {rest[displayItem]}
-              </option>
-            );
-          })}
-      </select>
+          "& .MuiIconButton-root": { padding: "3px !important" },
+        }}
+        fullWidth
+        style={{ width: "100%" }}
+        options={options}
+        getOptionLabel={(option) => option.name}
+        renderInput={(params) => (
+          <TextField
+            sx={{
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: "none !important",
+              },
+              "& .MuiAutocomplete-input": {
+                padding: "2px 4px 2px 3px !important",
+                fontSize: "14px !important",
+              },
+              "& .MuiOutlinedInput-root": {
+                padding: "0.375rem 0.75rem",
+              },
+            }}
+            {...register(props?.name!, {
+              required: required,
+              onChange(event) {
+                onChange && onChange(event);
+              },
+            })}
+            {...params}
+            fullWidth
+          />
+        )}
+      />
     </>
   );
 };
