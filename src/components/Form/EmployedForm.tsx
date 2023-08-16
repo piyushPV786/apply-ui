@@ -290,7 +290,19 @@ export const EmployedForm = (props: IEmployeProps) => {
 
                     <div className="col-md-4">
                       <div className="mb-4">
-                        <StyledLabel required>Industry</StyledLabel>
+                        <AdvanceDropDown
+                          value={industryVal}
+                          options={employmentIndustries && employmentIndustries}
+                          register={register}
+                          mapKey="code"
+                          name={industry}
+                          onChange={(e) => {
+                            setValue(industry, e, formDirtyState);
+                          }}
+                          label="Industry"
+                        />
+
+                        {/* <StyledLabel required>Industry</StyledLabel>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -309,7 +321,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                                 {name}
                               </option>
                             ))}
-                        </select>
+                        </select> */}
                         {error && error?.employmentIndustryCode && (
                           <div className="invalid-feedback">
                             Please select industry
@@ -432,22 +444,17 @@ export const EmployedForm = (props: IEmployeProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
+                            mapKey="code"
                             value={employmentCountryVal}
                             options={CountryData.sort((a, b) =>
                               sortAscending(a, b, "name")
                             )}
                             required={true}
                             register={register}
-                            mapKey="code"
                             name={employmentCountry}
                             onChange={(e: any) => {
-                              const value = e.target.value;
-                              getStateData(value, "EMPLOYED");
-                              setValue(
-                                employmentCountry,
-                                value,
-                                formDirtyState
-                              );
+                              getStateData(e, "EMPLOYED");
+                              setValue(employmentCountry, e, formDirtyState);
                             }}
                             label="Country"
                           />
@@ -473,14 +480,8 @@ export const EmployedForm = (props: IEmployeProps) => {
                             mapKey="ioscode"
                             name={employmentState}
                             onChange={(e) => {
-                              const value = e.target.value;
-                              const name = e.target.name;
-                              if (onlyAlphabets(value)) {
-                                setValue(
-                                  name,
-                                  capitalizeFirstLetter(value),
-                                  formDirtyState
-                                );
+                              if (onlyAlphabets(e)) {
+                                setValue(employmentState, e, formDirtyState);
                               }
                             }}
                             label="State/Provinces"

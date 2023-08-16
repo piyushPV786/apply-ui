@@ -12,6 +12,8 @@ import { useFormContext } from "react-hook-form";
 import { IFee, IOption, IStudyModeQualification } from "../common/types";
 import styled from "styled-components";
 import { capitalizeFirstLetter } from "../../Util/Util";
+
+import AdvanceDropDown from "../dropdown/Dropdown";
 import Tooltip from "@mui/material/Tooltip";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import {
@@ -206,7 +208,19 @@ export const EducationForm = (props: IEducationProps) => {
             <div className="row">
               <div className="col">
                 <div className="mb-4">
-                  <StyledLabel required>Interested Program</StyledLabel>
+                  <AdvanceDropDown
+                    options={programs && programs}
+                    value={programVal}
+                    name={program}
+                    register={register}
+                    onChange={(e) => {
+                      setValue(program, e, formDirtyState);
+                      getQualificationStudyModeData(e);
+                    }}
+                    label="Interested Program"
+                  />
+
+                  {/* <StyledLabel required>Interested Program</StyledLabel>
                   <select
                     className="form-select"
                     {...register(`${program}`, { required: true })}
@@ -229,7 +243,7 @@ export const EducationForm = (props: IEducationProps) => {
                           {name}
                         </option>
                       ))}
-                  </select>
+                  </select> */}
                   {educationFormError?.programCode && (
                     <div className="invalid-feedback">
                       select your interested program
@@ -325,7 +339,18 @@ export const EducationForm = (props: IEducationProps) => {
               )}
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Highest Qualification</StyledLabel>
+                  <AdvanceDropDown
+                    options={highestQualifications && highestQualifications}
+                    value={highestQualificationVal}
+                    name={highestQualification}
+                    register={register}
+                    onChange={(e) => {
+                      setValue(highestQualification, e);
+                    }}
+                    label="Highest Qualification"
+                  />
+
+                  {/* <StyledLabel required>Highest Qualification</StyledLabel>
                   <select
                     className="form-select"
                     value={highestQualificationVal}
@@ -343,7 +368,7 @@ export const EducationForm = (props: IEducationProps) => {
                           {name}
                         </option>
                       ))}
-                  </select>
+                  </select> */}
                   {educationFormError &&
                     educationFormError?.qualificationCode && (
                       <div className="invalid-feedback">
@@ -438,9 +463,17 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Student Type</StyledLabel>
-
-                  <select
+                  <AdvanceDropDown
+                    options={studyTypeData && studyTypeData}
+                    value={studentTypeVal}
+                    name={studentTypeName}
+                    register={register}
+                    onChange={(e) => {
+                      setValue(studentTypeName, e);
+                    }}
+                    label="Student Type"
+                  />
+                  {/* <select
                     defaultValue={studentTypeVal}
                     value={studentTypeVal}
                     className="form-select"
@@ -479,7 +512,7 @@ export const EducationForm = (props: IEducationProps) => {
                             {name}
                           </option>
                         ))}
-                  </select>
+                  </select> */}
                   {educationFormError &&
                     educationFormError?.studentTypeCode && (
                       <div className="invalid-feedback">
@@ -490,7 +523,35 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>
+                  <AdvanceDropDown
+                    options={AgentandSocialMedia && AgentandSocialMedia}
+                    value={referredByeVal}
+                    name={referredBy}
+                    register={register}
+                    onChange={(e) => {
+                      const value = e;
+
+                      setValue(referredBy, value, formDirtyState);
+                      setTimeout(() => {
+                        if (value === "AGENT") {
+                          setValue(socialMediaId, "", formDirtyState);
+                          unregister(socialMediaId, {
+                            keepError: false,
+                            keepIsValid: true,
+                          });
+                        }
+                        if (value === "SOCIALMEDIA") {
+                          setValue(agentName, "", formDirtyState);
+                          unregister(agentName, {
+                            keepError: false,
+                            keepIsValid: true,
+                          });
+                        }
+                      }, 0);
+                    }}
+                    label="Agent/Social Media"
+                  />
+                  {/* <StyledLabel required>
                     Referred by <strong>Agent/Social Media</strong>
                   </StyledLabel>
 
@@ -533,7 +594,7 @@ export const EducationForm = (props: IEducationProps) => {
                           {name}
                         </option>
                       ))}
-                  </select>
+                  </select> */}
                   {educationFormError && educationFormError?.referredById && (
                     <div className="invalid-feedback">
                       Please select Referred by
@@ -543,7 +604,18 @@ export const EducationForm = (props: IEducationProps) => {
 
                 {referredByeVal === "AGENT" && (
                   <div className="mb-4 others">
-                    <StyledLabel required>Agent Name</StyledLabel>
+                    <AdvanceDropDown
+                      options={agentArr && agentArr}
+                      value={agentNameVal}
+                      name={agentName}
+                      register={register}
+                      label="Agent Name"
+                      mapKey="name"
+                      onChange={(e) => {
+                        setValue(agentName, e);
+                      }}
+                    />
+                    {/* <StyledLabel required>Agent Name</StyledLabel>
                     <select
                       className="form-select"
                       {...register(`${agentName}`, {
@@ -562,7 +634,7 @@ export const EducationForm = (props: IEducationProps) => {
                             {name}
                           </option>
                         ))}
-                    </select>
+                    </select> */}
                     {educationFormError && educationFormError?.agentCode && (
                       <div className="invalid-feedback">
                         Please select agent

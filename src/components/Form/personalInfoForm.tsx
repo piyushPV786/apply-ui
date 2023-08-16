@@ -260,6 +260,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     value={genderId}
                     name={genderIdKey}
                     register={register}
+                    onChange={(e) => {
+                      setValue(genderIdKey, e);
+                    }}
                   />
                   {Errors?.gender && (
                     <div className="invalid-feedback">Please enter Gender</div>
@@ -377,6 +380,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     register={register}
                     options={homeLanguage}
                     value={homeLanguageId}
+                    onChange={(e) => {
+                      setValue(homeLanguageIdKey, e);
+                    }}
                   />
                   {Errors?.language && (
                     <div className="invalid-feedback">
@@ -393,6 +399,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     name={raceIdKey}
                     register={register}
                     options={race}
+                    onChange={(e) => {
+                      setValue(raceIdKey, e);
+                    }}
                   />
                   {Errors?.race && (
                     <div className="invalid-feedback">Please select Race</div>
@@ -454,6 +463,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                             name={permenantResidentKey}
                             register={register}
                             label="Permanent Resident"
+                            onChange={(e) => {
+                              setValue(permenantResidentKey, e);
+                            }}
                           />
                         </div>
                       </div>
@@ -470,6 +482,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           name={nationalityIdKey}
                           register={register}
                           label="Nationality"
+                          onChange={(e) => {
+                            setValue(nationalityIdKey, e);
+                          }}
                         />
                         {Errors?.nationalityId && (
                           <div className="invalid-feedback">
@@ -482,13 +497,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
-                          onChange={() =>
+                          onChange={(e) => {
                             setValue(
                               identificationNumberKey,
-                              "",
+                              e,
                               formDirtyState
-                            )
-                          }
+                            );
+                          }}
                           options={identityDocuments}
                           value={identificationDocumentType}
                           name={identificationDocumentTypeKey}

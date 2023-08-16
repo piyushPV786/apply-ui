@@ -34,6 +34,16 @@ const AdvanceDropDown = ({
   //@param Its require for to pick specific object key value in array of objects
   ...props
 }: IAdvanceDropDownProps) => {
+  const defaultvalue = options?.filter((item) => {
+    if (mapKey == "name") {
+      return item.name == value;
+    } else if (mapKey == "isoCode") {
+      return item.ioscode == value;
+    } else {
+      return item.code == value;
+    }
+  });
+
   return (
     <>
       <StyledLabel hideLabel={!label} forceHide={hideLabel} required={required}>
@@ -48,6 +58,14 @@ const AdvanceDropDown = ({
           },
           "& .MuiIconButton-root": { padding: "3px !important" },
         }}
+        onChange={(e, v) => {
+          onChange(v?.code);
+
+          if (mapKey == "name") {
+            onChange(v?.name);
+          }
+        }}
+        value={defaultvalue && defaultvalue[0]}
         fullWidth
         style={{ width: "100%" }}
         options={options}

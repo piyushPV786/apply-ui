@@ -31,6 +31,7 @@ interface IKinForm {
   leadId: string;
   relationData: IOption[];
 }
+
 export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
   const {
     setValue,
@@ -50,6 +51,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
   const phoneNumberVal = watch(phoneNumber);
   const isKinDetailExist = watch(KinDetails);
   const isKinNeed = isNextKinVal === "yes";
+
   const uppdateMobNumber = () => {
     if (countryCodeRef) {
       const countryCode = getCountryCallingCode(countryCodeRef);
@@ -183,6 +185,9 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                       name={relationShip}
                       register={register}
                       required={isKinNeed}
+                      onChange={(e) => {
+                        setValue(relationShip, e);
+                      }}
                     />
                     {error && error?.relationship && (
                       <div className="invalid-feedback">

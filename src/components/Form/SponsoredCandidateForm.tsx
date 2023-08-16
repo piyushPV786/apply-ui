@@ -253,9 +253,19 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     {" "}
                     {isGuardian && (
                       <div className="col-md-4">
-                        <StyledLabel required>Relationship Type</StyledLabel>
                         <div className="mb-4">
-                          <select
+                          <AdvanceDropDown
+                            value={relationshipVal}
+                            options={relationData && relationData}
+                            register={register}
+                            mapKey="code"
+                            name={relationShip}
+                            onChange={(e) => {
+                              setValue(relationShip, e, formDirtyState);
+                            }}
+                            label="Relationship Type"
+                          />
+                          {/* <select
                             value={relationshipVal}
                             className="form-select"
                             aria-label="Default select example"
@@ -275,7 +285,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                   {name}
                                 </option>
                               ))}
-                          </select>
+                          </select> */}
                           {error && error?.relationship && (
                             <div className="invalid-feedback">
                               Please select relationship type
@@ -480,8 +490,8 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               mapKey="code"
                               name={sponsorCountry}
                               onChange={(e: any) => {
-                                getStateData(e.target.value, "SPONSOR");
-                                const value = e.target.value;
+                                getStateData(e, "SPONSOR");
+                                const value = e;
                                 setValue(sponsorCountry, value, formDirtyState);
                               }}
                               label="Country"
@@ -505,14 +515,10 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               mapKey="code"
                               name={sponsorState}
                               onChange={(e) => {
-                                const value = e.target.value;
-                                const name = e.target.name;
+                                const value = e;
+
                                 if (onlyAlphabets(value)) {
-                                  setValue(
-                                    name,
-                                    capitalizeFirstLetter(value),
-                                    formDirtyState
-                                  );
+                                  setValue(sponsorState, e, formDirtyState);
                                 }
                               }}
                               label="State/Provinces"

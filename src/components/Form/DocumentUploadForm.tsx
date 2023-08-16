@@ -278,7 +278,7 @@ const DocumentUploadForm = ({
               onChange={(e) =>
                 setValue(
                   "document.identificationDocumentType",
-                  e?.target?.value,
+                  e,
                   formDirtyState
                 )
               }
@@ -288,6 +288,7 @@ const DocumentUploadForm = ({
               name={identificationDocumentTypeKey}
               register={register}
               label="Identification Document Type"
+              mapKey="code"
             />
             {documentFieldErrors?.identificationDocumentType && (
               <div className="invalid-feedback">

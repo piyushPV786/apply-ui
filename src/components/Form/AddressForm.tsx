@@ -134,8 +134,8 @@ export const AddressForm = ({
                       register={register}
                       mapKey="code"
                       onChange={(e: any) => {
-                        getStateData(e.target.value, "RESIDENTIAL");
-                        const value = e.target.value;
+                        getStateData(e, "RESIDENTIAL");
+                        const value = e;
                         setValue(resCountry, value, formOptions);
                       }}
                     />
@@ -157,12 +157,12 @@ export const AddressForm = ({
                       value={resStateVal}
                       name={resState}
                       onChange={(e) => {
-                        const value = e.target.value;
-                        const name = e.target.name;
+                        const value = e;
+
                         if (onlyAlphabets(value)) {
                           setValue(
-                            name,
-                            capitalizeFirstLetter(value),
+                            resState,
+                            capitalizeFirstLetter(String(value)),
                             formDirtyState
                           );
                         }
@@ -334,11 +334,11 @@ export const AddressForm = ({
                     mapKey="code"
                     name={postalCountry}
                     onChange={(e: any) => {
-                      getStateData(e.target.value, "POSTAL");
-                      const value = e.target.value;
+                      getStateData(e, "POSTAL");
+                      const value = e;
                       setValue(
                         postalCountry,
-                        capitalizeFirstLetter(value),
+                        capitalizeFirstLetter(String(value)),
                         formOptions
                       );
                     }}
