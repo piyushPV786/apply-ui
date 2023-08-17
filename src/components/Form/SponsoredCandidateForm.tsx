@@ -92,7 +92,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     }
   };
   const error = errors[SponsorCandidateDetail] as any;
-  const touchedField = touchedFields[SponsorCandidateDetail] as any;
+  const TouchFields = touchedFields[SponsorCandidateDetail] as any;
   const isSelfSponsored = sponsorModeVal === "SELF";
   const isSponserDetailExist = watch(SponsorCandidateDetail);
   const isSponserNeed = isSponsorVal === "yes";
@@ -255,14 +255,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
+                            setValue={setValue}
                             value={relationshipVal}
                             options={relationData && relationData}
                             register={register}
                             mapKey="code"
                             name={relationShip}
-                            onChange={(e) => {
-                              setValue(relationShip, e, formDirtyState);
-                            }}
                             label="Relationship Type"
                           />
                           {/* <select
@@ -286,11 +284,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 </option>
                               ))}
                           </select> */}
-                          {error && error?.relationship && (
-                            <div className="invalid-feedback">
-                              Please select relationship type
-                            </div>
-                          )}
+                          {TouchFields?.relationshipCodetextfeild &&
+                            !watch(relationShip) && (
+                              <div className="invalid-feedback">
+                                Please select relationship type
+                              </div>
+                            )}
                         </div>
                       </div>
                     )}
@@ -482,6 +481,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                         <div className="col-md-4">
                           <div className="mb-4">
                             <AdvanceDropDown
+                              setValue={setValue}
                               value={sponsorCountryVal}
                               options={CountryData.sort((a, b) =>
                                 sortAscending(a, b, "name")
@@ -491,22 +491,22 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               name={sponsorCountry}
                               onChange={(e: any) => {
                                 getStateData(e, "SPONSOR");
-                                const value = e;
-                                setValue(sponsorCountry, value, formDirtyState);
                               }}
                               label="Country"
                             />
 
-                            {error && error?.country && (
-                              <div className="invalid-feedback">
-                                Please enter Country
-                              </div>
-                            )}
+                            {TouchFields?.countrytextfeild &&
+                              !watch(sponsorCountry) && (
+                                <div className="invalid-feedback">
+                                  Please enter Country
+                                </div>
+                              )}
                           </div>
                         </div>{" "}
                         <div className="col-md-4">
                           <div className="mb-4">
                             <AdvanceDropDown
+                              setValue={setValue}
                               value={sponsorStateVal}
                               options={sponsorStateData.sort((a, b) =>
                                 sortAscending(a, b, "name")
@@ -523,11 +523,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               }}
                               label="State/Provinces"
                             />
-                            {error && error?.state && (
-                              <div className="invalid-feedback">
-                                Please enter State Name
-                              </div>
-                            )}
+                            {TouchFields?.statetextfeild &&
+                              !watch(sponsorState) && (
+                                <div className="invalid-feedback">
+                                  Please enter State Name
+                                </div>
+                              )}
                           </div>
                         </div>{" "}
                         <div className="col-md-4">

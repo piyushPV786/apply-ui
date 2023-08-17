@@ -43,7 +43,9 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
   } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
   const error = errors[KinDetails] as any;
-  const touchedField = touchedFields[KinDetails] as any;
+
+  const TouchFields = touchedFields[KinDetails] as any;
+
   const isNextKinVal = watch(isKin);
   const fullNameVal = watch(fullName);
   const relationShipVal = watch(relationShip);
@@ -179,21 +181,20 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                 <div className="col-md-4">
                   <div className="mb-4">
                     <AdvanceDropDown
+                      setValue={setValue}
                       options={relationData}
                       label={"Relationship"}
                       value={relationShipVal}
                       name={relationShip}
                       register={register}
                       required={isKinNeed}
-                      onChange={(e) => {
-                        setValue(relationShip, e);
-                      }}
                     />
-                    {error && error?.relationship && (
-                      <div className="invalid-feedback">
-                        Please enter relationship
-                      </div>
-                    )}
+                    {TouchFields?.relationshiptextfeild &&
+                      !watch(relationShip) && (
+                        <div className="invalid-feedback">
+                          Please enter relationship
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="col-md-4">

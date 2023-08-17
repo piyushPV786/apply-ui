@@ -104,7 +104,7 @@ export const EmployedForm = (props: IEmployeProps) => {
       setValue(`${officePhoneCode}`, "", formDirtyState);
     }
   };
-  const touchField = touchedFields[EmployementDetails] as any;
+  const TouchFields = touchedFields[EmployementDetails] as any;
   const error = errors[EmployementDetails] as any;
   const isEmployedNeed = isEmployedVal === "yes";
   const isSelfEmployed = employmentStatusVal === "SELFEMPLOYED";
@@ -291,14 +291,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
+                          setValue={setValue}
                           value={industryVal}
                           options={employmentIndustries && employmentIndustries}
                           register={register}
                           mapKey="code"
                           name={industry}
-                          onChange={(e) => {
-                            setValue(industry, e, formDirtyState);
-                          }}
                           label="Industry"
                         />
 
@@ -322,11 +320,12 @@ export const EmployedForm = (props: IEmployeProps) => {
                               </option>
                             ))}
                         </select> */}
-                        {error && error?.employmentIndustryCode && (
-                          <div className="invalid-feedback">
-                            Please select industry
-                          </div>
-                        )}
+                        {TouchFields?.employmentIndustryCodetextfeild &&
+                          !watch(industry) && (
+                            <div className="invalid-feedback">
+                              Please select industry
+                            </div>
+                          )}
                       </div>
                     </div>
 
@@ -444,6 +443,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
+                            setValue={setValue}
                             mapKey="code"
                             value={employmentCountryVal}
                             options={CountryData.sort((a, b) =>
@@ -454,16 +454,16 @@ export const EmployedForm = (props: IEmployeProps) => {
                             name={employmentCountry}
                             onChange={(e: any) => {
                               getStateData(e, "EMPLOYED");
-                              setValue(employmentCountry, e, formDirtyState);
                             }}
                             label="Country"
                           />
 
-                          {error && error?.country && (
-                            <div className="invalid-feedback">
-                              Please select Country
-                            </div>
-                          )}
+                          {TouchFields?.countrytextfeild &&
+                            !watch(employmentCountry) && (
+                              <div className="invalid-feedback">
+                                Please select Country
+                              </div>
+                            )}
                         </div>
                       </div>
                     )}
@@ -472,26 +472,23 @@ export const EmployedForm = (props: IEmployeProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
+                            setValue={setValue}
                             value={employmentStateVal}
                             options={employedStateData.sort((a, b) =>
                               sortAscending(a, b, "name")
                             )}
                             register={register}
-                            mapKey="ioscode"
+                            mapKey="isoCode"
                             name={employmentState}
-                            onChange={(e) => {
-                              if (onlyAlphabets(e)) {
-                                setValue(employmentState, e, formDirtyState);
-                              }
-                            }}
                             label="State/Provinces"
                           />
 
-                          {error && error?.state && (
-                            <div className="invalid-feedback">
-                              Please enter State Name
-                            </div>
-                          )}
+                          {TouchFields?.statetextfeild &&
+                            !watch(employmentState) && (
+                              <div className="invalid-feedback">
+                                Please enter State Name
+                              </div>
+                            )}
                         </div>
                       </div>
                     )}

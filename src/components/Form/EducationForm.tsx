@@ -109,7 +109,7 @@ export const EducationForm = (props: IEducationProps) => {
   const studentTypeVal = watch(studentTypeName);
   const internationDegreeVal = watch(internationDegree);
   const educationFormError = errors[parentKey] as any;
-  const touchFields = touchedFields[parentKey];
+  const TouchFields = touchedFields[parentKey];
 
   useEffect(() => {
     if (
@@ -209,12 +209,13 @@ export const EducationForm = (props: IEducationProps) => {
               <div className="col">
                 <div className="mb-4">
                   <AdvanceDropDown
+                    mapKey="code"
+                    setValue={setValue}
                     options={programs && programs}
                     value={programVal}
                     name={program}
                     register={register}
                     onChange={(e) => {
-                      setValue(program, e, formDirtyState);
                       getQualificationStudyModeData(e);
                     }}
                     label="Interested Program"
@@ -244,7 +245,7 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select> */}
-                  {educationFormError?.programCode && (
+                  {TouchFields?.programCodetextfeild && !watch(program) && (
                     <div className="invalid-feedback">
                       select your interested program
                     </div>
@@ -340,6 +341,7 @@ export const EducationForm = (props: IEducationProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
+                    setValue={setValue}
                     options={highestQualifications && highestQualifications}
                     value={highestQualificationVal}
                     name={highestQualification}
@@ -369,8 +371,8 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select> */}
-                  {educationFormError &&
-                    educationFormError?.qualificationCode && (
+                  {TouchFields?.qualificationCodetextfeild &&
+                    !watch(highestQualification) && (
                       <div className="invalid-feedback">
                         Please select Highest Qualification
                       </div>
@@ -464,13 +466,11 @@ export const EducationForm = (props: IEducationProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
+                    setValue={setValue}
                     options={studyTypeData && studyTypeData}
                     value={studentTypeVal}
                     name={studentTypeName}
                     register={register}
-                    onChange={(e) => {
-                      setValue(studentTypeName, e);
-                    }}
                     label="Student Type"
                   />
                   {/* <select
@@ -513,8 +513,8 @@ export const EducationForm = (props: IEducationProps) => {
                           </option>
                         ))}
                   </select> */}
-                  {educationFormError &&
-                    educationFormError?.studentTypeCode && (
+                  {TouchFields?.studentTypeCodetextfeild &&
+                    !watch(studentTypeName) && (
                       <div className="invalid-feedback">
                         Please select Student type
                       </div>
@@ -523,7 +523,8 @@ export const EducationForm = (props: IEducationProps) => {
               </div>
               <div className="col-md-4">
                 <div className="mb-4">
-                  <AdvanceDropDown
+                  {/* <AdvanceDropDown
+                    setValue={setValue}
                     options={AgentandSocialMedia && AgentandSocialMedia}
                     value={referredByeVal}
                     name={referredBy}
@@ -550,8 +551,8 @@ export const EducationForm = (props: IEducationProps) => {
                       }, 0);
                     }}
                     label="Agent/Social Media"
-                  />
-                  {/* <StyledLabel required>
+                  /> */}
+                  <StyledLabel required>
                     Referred by <strong>Agent/Social Media</strong>
                   </StyledLabel>
 
@@ -594,7 +595,7 @@ export const EducationForm = (props: IEducationProps) => {
                           {name}
                         </option>
                       ))}
-                  </select> */}
+                  </select>
                   {educationFormError && educationFormError?.referredById && (
                     <div className="invalid-feedback">
                       Please select Referred by
@@ -605,15 +606,13 @@ export const EducationForm = (props: IEducationProps) => {
                 {referredByeVal === "AGENT" && (
                   <div className="mb-4 others">
                     <AdvanceDropDown
+                      setValue={setValue}
                       options={agentArr && agentArr}
                       value={agentNameVal}
                       name={agentName}
                       register={register}
                       label="Agent Name"
                       mapKey="name"
-                      onChange={(e) => {
-                        setValue(agentName, e);
-                      }}
                     />
                     {/* <StyledLabel required>Agent Name</StyledLabel>
                     <select
@@ -635,7 +634,7 @@ export const EducationForm = (props: IEducationProps) => {
                           </option>
                         ))}
                     </select> */}
-                    {educationFormError && educationFormError?.agentCode && (
+                    {TouchFields?.agentCodetextfeild && !watch(agentName) && (
                       <div className="invalid-feedback">
                         Please select agent
                       </div>

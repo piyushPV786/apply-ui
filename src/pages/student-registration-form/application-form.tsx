@@ -987,7 +987,6 @@ const ApplicationForm = () => {
                                       }
                                     })();
                               }}
-                              disabled={isValidForm()}
                               title={activeStep < 2 ? "Save & Next" : "Submit"}
                             />
                           </>

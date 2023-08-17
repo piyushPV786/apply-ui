@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -60,6 +60,8 @@ export const AddressForm = ({
   const postalZipCodeVal: string = watch(postalZipCode);
   const postalCityVal: string = watch(postalCity);
   const postalStateVal: string = watch(postalState);
+  const [resStateValue, setResStateValue] = useState([]);
+  const [posStateValue, setPosStateValue] = useState([]);
   useEffect(() => {
     setValue(`${addressType}`, "POSTAL");
     setValue(`${addressTypeResidential}`, "RESIDENTIAL");
@@ -71,6 +73,23 @@ export const AddressForm = ({
       getStateData(resCountryVal, "RESIDENTIAL");
     }
   }, [leadId]);
+
+  useEffect(() => {
+    const val = resStateData
+      ?.sort((a, b) => sortAscending(a, b, "name"))
+      ?.find((item) => {
+        return item.isoCode == resStateVal;
+      });
+    setResStateValue(val);
+  }, [resStateData]);
+  useEffect(() => {
+    const posval = posStateData
+      ?.sort((a, b) => sortAscending(a, b, "name"))
+      ?.find((item) => {
+        return item.isoCode == postalStateVal;
+      });
+    setPosStateValue(posval);
+  }, [posStateData]);
 
   return (
     <>
@@ -125,6 +144,7 @@ export const AddressForm = ({
                 <div className="col-md-4">
                   <div className="mb-4">
                     <AdvanceDropDown
+                      setValue={setValue}
                       value={resCountryVal}
                       label="Country"
                       options={CountryData?.sort((a, b) =>
@@ -135,8 +155,6 @@ export const AddressForm = ({
                       mapKey="code"
                       onChange={(e: any) => {
                         getStateData(e, "RESIDENTIAL");
-                        const value = e;
-                        setValue(resCountry, value, formOptions);
                       }}
                     />
                     {error && error[1]?.country && (
@@ -149,23 +167,16 @@ export const AddressForm = ({
                 <div className="col-md-4">
                   <div className="mb-4">
                     <AdvanceDropDown
+                      setValue={setValue}
                       register={register}
                       options={resStateData?.sort((a, b) =>
                         sortAscending(a, b, "name")
                       )}
                       mapKey="isoCode"
-                      value={resStateVal}
+                      value={resStateValue}
                       name={resState}
                       onChange={(e) => {
-                        const value = e;
-
-                        if (onlyAlphabets(value)) {
-                          setValue(
-                            resState,
-                            capitalizeFirstLetter(String(value)),
-                            formDirtyState
-                          );
-                        }
+                        setResStateValue(e);
                       }}
                       label="State/Provinces"
                     />
@@ -326,6 +337,7 @@ export const AddressForm = ({
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
+                    setValue={setValue}
                     value={postalCountryVal}
                     options={CountryData.sort((a, b) =>
                       sortAscending(a, b, "name")
@@ -355,7 +367,8 @@ export const AddressForm = ({
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    value={postalStateVal}
+                    setValue={setValue}
+                    value={posStateValue && posStateValue}
                     options={
                       isSameAsPostalAddressVal == false
                         ? posStateData?.sort((a, b) =>
@@ -369,15 +382,11 @@ export const AddressForm = ({
                     mapKey="isoCode"
                     name={postalState}
                     onChange={(e: any) => {
-                      const value = e.target.value;
-                      setValue(
-                        postalState,
-                        capitalizeFirstLetter(value),
-                        formOptions
-                      );
+                      setPosStateValue(e);
                     }}
                     label="State/Provinces"
                   />
+
                   {isSameAsPostalAddressVal && !resStateVal && (
                     <div className="invalid-feedback">
                       Please enter Postal State
