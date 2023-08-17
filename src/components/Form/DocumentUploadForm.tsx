@@ -195,7 +195,6 @@ const DocumentUploadForm = ({
   const isMBAProgram =
     allFields?.education?.programCode === "MBA-PROG" ||
     allFields?.education?.programCode === "MBA";
-
   const isPostGraduation = selectedPrograms?.category === GraduationType.PG; /// upload CV in the upload document section mandatory for Post Graduate Programs and Non mandatory for Under Graduate Programs.
   useEffect(() => {
     if (documentDetails?.length > 0) {
@@ -378,7 +377,7 @@ const DocumentUploadForm = ({
             ) : null;
             return (
               <DocumentUploadContainer
-                key={`${name}_${id}_${newDocStatus}`}
+                key={`${name}_${id}`}
                 title={name}
                 selectedDocuments={
                   draftSaveDoc ? [draftSaveDoc] : (null as any)
