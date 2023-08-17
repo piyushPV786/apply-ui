@@ -106,7 +106,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
     });
-    setUploadDocs(uploadedFiles as any);
+    setUploadDocs(uploadedFiles);
     onUpload && onUpload(files);
   };
 
@@ -140,6 +140,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   const handleModalClose = () => {
     setOpenModal(false);
   };
+
   return (
     <MainContainer className="card-shadow mt-0">
       <Typography
@@ -181,7 +182,11 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             </span>
           </Tooltip>
         </StyledLabel>
-        <Status className="doc-status" style={{ marginLeft: "2rem" }} status={status}>
+        <Status
+          className="doc-status"
+          style={{ marginLeft: "2rem" }}
+          status={status}
+        >
           {status}
         </Status>
       </Typography>
@@ -230,7 +235,6 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             accept="image/jpeg, application/pdf"
             type="file"
             onChange={(e) => {
-              e.preventDefault();
               if (e?.target) {
                 const file = e.target?.files![0] as any;
                 if (file != undefined) {
