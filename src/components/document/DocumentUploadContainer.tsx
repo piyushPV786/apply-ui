@@ -83,7 +83,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   const fileUploadRef = useRef<any>(null);
 
   const onDocUploadClick = () => {
-    const fileElement = fileUploadRef.current?.childNodes[0] as any;
+    const fileElement = fileUploadRef.current as HTMLInputElement;
     fileElement?.click() as any;
   };
 
@@ -106,11 +106,12 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     uploadedFiles.forEach((item: any) => {
       item.error = isInvalidFileType(item.type);
     });
-    setUploadDocs(uploadedFiles as any);
+    setUploadDocs(uploadedFiles);
     onUpload && onUpload(files);
   };
 
   const onRemoveDoc = (index: number, file: File & { typeCode: string }) => {
+    fileUploadRef!.current!.value = "";
     const remainingDocs = [...uploadDocs!.filter((item, idx) => idx !== index)];
     setUploadDocs(remainingDocs);
     onRemove && onRemove(index, file);
@@ -130,7 +131,8 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
     URL.revokeObjectURL(downloadLink.href);
   };
 
-  const handleModalOpen = (errortype) => {
+  const handleModalOpen = (errortype, e) => {
+    e.target.value = "";
     setErrorType(errortype);
     setOpenModal(true);
   };
@@ -180,7 +182,11 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
             </span>
           </Tooltip>
         </StyledLabel>
-        <Status className="doc-status" style={{ marginLeft: "2rem" }} status={status}>
+        <Status
+          className="doc-status"
+          style={{ marginLeft: "2rem" }}
+          status={status}
+        >
           {status}
         </Status>
       </Typography>
@@ -209,7 +215,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
       )}
       {status?.toLowerCase()?.includes("rejected") && (
         <>
-          <AlertBox 
+          <AlertBox
             style={{ width: "100%", maxWidth: "unset", margin: "10px 0" }}
             severity={AlertEnums.DANGER}
           >
@@ -221,9 +227,11 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
       {customComponent || null}
 
       <FileUploadContainer className="upload-box">
-        <div className="d-flex align-items-center" ref={fileUploadRef}>
+        <div className="d-flex align-items-center">
           <input
+            id={`fileInput_${documentType}`}
             className="d-none"
+            ref={fileUploadRef}
             accept="image/jpeg, application/pdf"
             type="file"
             onChange={(e) => {
@@ -231,7 +239,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
                 const file = e.target?.files![0] as any;
                 if (file != undefined) {
                   if (file?.size > 2 * 1024 * 1024) {
-                    handleModalOpen("Size");
+                    handleModalOpen("Size", e);
                   } else {
                     if (
                       file?.type == "application/pdf" ||
@@ -240,10 +248,9 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
                     ) {
                       file.typeCode = documentType;
                       const files = [...uploadDocs!, file];
-
                       uploadDocuments(files);
                     } else {
-                      handleModalOpen("Type");
+                      handleModalOpen("Type", e);
                     }
                   }
                 }
