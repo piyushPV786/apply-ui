@@ -678,13 +678,6 @@ export const emailValidation = async (e) => {
         type: "custom",
         message: "Provided email address alredy exists",
       };
-    } else {
-      if (isValidEmail(e.target.value) == false) {
-        returnVal = {
-          type: "validate",
-          message: "",
-        };
-      }
     }
   });
   return returnVal;

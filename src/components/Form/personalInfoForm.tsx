@@ -326,9 +326,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   />
                   {Errors?.email && (
                     <div className="invalid-feedback">
-                      {Errors?.email?.type === "validate" &&
-                        "you have entered an invalid email address. Please try again"}
-
                       {Errors?.email?.type === "custom" &&
                         Errors?.email?.message}
                     </div>
