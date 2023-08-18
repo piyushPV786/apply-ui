@@ -117,6 +117,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const handleInternationAccordian = (state) => {
     if (state.target.value === "SA") {
       setValue(nationalityIdKey, "SA", formDirtyState);
+      clearErrors(nationalityIdKey);
     } else if (state.target.value == "PRSA") {
       setValue(permenantResidentKey, "SA", formDirtyState);
       setValue(nationalityIdKey, "", formDirtyState);
@@ -307,11 +308,17 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     onBlur={async (e) => {
                       if (e.target.value) {
                         const res = await emailValidation(e);
-                        setError(emailKey, {
-                          type: res.type,
-                          message: res.message,
-                        });
-                      } else {
+                        if (
+                          res.message == "Provided email address alredy exists"
+                        ) {
+                          setError(emailKey, {
+                            type: "custom",
+                            message: "Provided email address alredy exists",
+                          });
+                        } else {
+                          clearErrors(emailKey);
+                        }
+                      } else if (e.target.value == "") {
                         setError(emailKey, {
                           type: "custom",
                           message: "Please enter Email",
