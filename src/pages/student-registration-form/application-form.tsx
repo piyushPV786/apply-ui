@@ -754,7 +754,6 @@ const ApplicationForm = () => {
   const year = today.getFullYear();
 
   const isValidForm = () => {
-    console.log(errors);
     if (activeStep === 0) {
       if (Object.keys(errors).length === 0) {
         return false;
