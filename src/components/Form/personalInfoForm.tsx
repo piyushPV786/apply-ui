@@ -313,7 +313,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                         ) {
                           setError(emailKey, {
                             type: "custom",
-                            message: "Provided email address alredy exists",
+                            message: "Provided email address already exists",
                           });
                         } else {
                           clearErrors(emailKey);
