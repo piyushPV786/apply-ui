@@ -18,6 +18,7 @@ import {
   formDirtyState,
   isValidDate,
   emailValidation,
+  isValidEmail,
   onlyAlphabets,
   capitalizeFirstLetter,
   sortAscending,
@@ -133,14 +134,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
       <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content" 
+          aria-controls="panel1a-content"
           id="panel1a-header"
         >
           <GreenFormHeading>
             <span className="me-2">
               <Image src={UserCircleIcon} alt="user" />
             </span>
-            Personal Information 
+            Personal Information
           </GreenFormHeading>
         </AccordionSummary>
         <AccordionDetails>
@@ -332,12 +333,12 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                         Errors?.email?.message}
                     </div>
                   )}
-                  {/* {email?.length > 1 && !isValidEmail(email) && (
+                  {email?.length > 1 && !isValidEmail(email) && (
                     <div className="invalid-feedback">
                       you have entered an invalid email address. Please try
                       again
                     </div>
-                  )} */}
+                  )}
                 </div>
               </div>
             </div>
@@ -408,7 +409,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               <AccordionSummary className="nationality-card">
                 <div className="me-4">
                   <span className="me-2">
-                    <Image className="user-icon-circle" src={AddressImg} alt="user" />
+                    <Image
+                      className="user-icon-circle"
+                      src={AddressImg}
+                      alt="user"
+                    />
                   </span>
                   <StyledLabel required>Nationality Status</StyledLabel>
                 </div>
@@ -422,7 +427,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   label="Nationality Status"
                   hideLabel
                 />
-             
+
                 <div className="m-2">
                   {Errors?.nationalityStatus && (
                     <div className="invalid-feedback">

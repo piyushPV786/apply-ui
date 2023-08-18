@@ -755,7 +755,7 @@ const ApplicationForm = () => {
 
   const isValidForm = () => {
     if (activeStep === 0) {
-      return !isValid;
+      return !isValid || !isValidLeadEmail(allFields?.lead?.email);
     } else {
       return (
         activeStep === MagicNumbers.TWO &&

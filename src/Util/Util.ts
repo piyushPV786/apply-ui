@@ -191,11 +191,19 @@ export const isValidDate = (value) => {
  * @param {any} passValidator - A password validator.
  * @returns {boolean} - Whether the email is valid or not.
  */
-export const isValidEmail = (email, passValidator?) => {
+export const isValidEmail = async (email, passValidator?) => {
   if (passValidator) return true;
 
-  return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-    email
+  const res = await AuthApi.get(
+    `${CommonApi.EMAILCHECK}/${email}/leadCode/${
+      JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
+    }`
+  );
+
+  return (
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      email
+    ) && res?.data?.data?.message == "Provided email address alredy exists"
   );
 };
 
