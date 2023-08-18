@@ -40,6 +40,7 @@ const Payment = (props: any) => {
   );
   const [loadng, setLoading] = useState(false);
   const [feeOptions, setFeeOptions] = useState<IFee[]>([]);
+  const [rmatFees, setRmatFees] = useState<number>(0);
   const [promoCode, setPromoCode] = useState<string>("");
   const [isManagementPromoCode, setManagementPromoCode] =
     useState<boolean>(false);
@@ -47,6 +48,7 @@ const Payment = (props: any) => {
   const [isCouponApplied, setCouponApplied] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
+
   const selectedProgram =
     props?.programs?.length &&
     props.programs?.find(
@@ -92,8 +94,9 @@ const Payment = (props: any) => {
       : +programFee * (+allFields?.payment?.conversionRate || 1);
   const rmatFeeAmount =
     selectedNationality?.includes("SA") || selectedCurrency?.includes("RAND")
-      ? 250
-      : 250 * Number(allFields?.payment?.conversionRate);
+      ? rmatFees
+      : rmatFees * Number(allFields?.payment?.conversionRate);
+
   const rmatFee = !isApplicationEnrolled ? rmatFeeAmount : 0;
   const totalAmount = +convertedProgramFee - +discountAmount + rmatFee;
 
@@ -102,6 +105,7 @@ const Payment = (props: any) => {
       const selectedProgramCode = await getQualificationStudyModeData(
         allFields?.education?.programCode
       );
+      setRmatFees(Number(selectedProgramCode[0]?.rmatFee));
 
       setFeeOptions(
         selectedProgramCode[0]?.studyModes
@@ -437,7 +441,11 @@ const Payment = (props: any) => {
                                       {isNaN(totalAmount)
                                         ? "...Converting"
                                         : totalAmount}
-                                      ({`R ${Math.trunc(+programFee + 250)}`})
+                                      (
+                                      {`R ${Math.trunc(
+                                        +programFee + rmatFees
+                                      )}`}
+                                      )
                                     </div>
                                   </h4>
                                 ) : (
@@ -450,7 +458,11 @@ const Payment = (props: any) => {
                                       {isNaN(totalAmount)
                                         ? "...Converting"
                                         : totalAmount}
-                                      ({`R ${Math.trunc(+programFee + 250)}`})
+                                      (
+                                      {`R ${Math.trunc(
+                                        +programFee + rmatFees
+                                      )}`}
+                                      )
                                     </div>
                                   </h4>
                                 )}
