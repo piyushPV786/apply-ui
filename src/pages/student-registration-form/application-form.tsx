@@ -755,13 +755,13 @@ const ApplicationForm = () => {
 
   const isValidForm = () => {
     if (activeStep === 0) {
-      return !isValid || !isValidLeadEmail(allFields?.lead?.email);
+      if (Object.keys(errors).length === 0) {
+        return false;
+      } else {
+        return true;
+      }
     } else {
-      return (
-        activeStep === MagicNumbers.TWO &&
-        !isValid &&
-        !isValidLeadEmail(allFields?.lead?.email)
-      );
+      return activeStep === MagicNumbers.TWO && errors?.lead;
     }
   };
 
@@ -987,7 +987,7 @@ const ApplicationForm = () => {
                                       }
                                     })();
                               }}
-                              disabled={isValidForm()}
+                              disabled={isValidForm() as boolean}
                               title={activeStep < 2 ? "Save & Next" : "Submit"}
                             />
                           </>
