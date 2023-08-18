@@ -251,7 +251,9 @@ const Payment = (props: any) => {
                 <PaymentHeading>
                   <div className="col-md-12">
                     <StyleHeading>
-                      <GreenFormHeading className="payment-card-title">Order Summary</GreenFormHeading>
+                      <GreenFormHeading className="payment-card-title">
+                        Order Summary
+                      </GreenFormHeading>
                     </StyleHeading>
                   </div>
                 </PaymentHeading>
@@ -435,6 +437,7 @@ const Payment = (props: any) => {
                                       {isNaN(totalAmount)
                                         ? "...Converting"
                                         : totalAmount}
+                                      ({`R ${Math.trunc(+programFee)}`})
                                     </div>
                                   </h4>
                                 ) : (
@@ -447,6 +450,7 @@ const Payment = (props: any) => {
                                       {isNaN(totalAmount)
                                         ? "...Converting"
                                         : totalAmount}
+                                      ({`R ${Math.trunc(+programFee + 250)}`})
                                     </div>
                                   </h4>
                                 )}
@@ -540,7 +544,8 @@ const Payment = (props: any) => {
             {!props?.isManagementStudentType && (
               <>
                 <div className="col-md-6">
-                  <PaymentOption totalAmount={totalPayuAmount}
+                  <PaymentOption
+                    totalAmount={totalPayuAmount}
                     navigateNext={props?.navigateNext}
                     setLoading={(loading) => setLoading(loading)}
                     isApplicationEnrolled={isApplicationEnrolled}
