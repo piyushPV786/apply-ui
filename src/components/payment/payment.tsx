@@ -437,7 +437,7 @@ const Payment = (props: any) => {
                                       {isNaN(totalAmount)
                                         ? "...Converting"
                                         : totalAmount}
-                                      ({`R ${Math.trunc(+programFee)}`})
+                                      ({`R ${Math.trunc(+programFee + 250)}`})
                                     </div>
                                   </h4>
                                 ) : (
