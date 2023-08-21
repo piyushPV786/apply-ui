@@ -484,7 +484,6 @@ const ApplicationForm = () => {
   const uploadFiles = (fileUrl: string, file: File) => {
     return uploadDocuments(fileUrl, file)
       .then((res) => {
-        showToast(true, "Document Upload Successfully");
         return res;
       })
       .catch((err) => {
@@ -582,7 +581,7 @@ const ApplicationForm = () => {
                 }
               }, 2000);
             }
-            showToast(true, "Documents Successfully Uploaded");
+            showToast(true, "Documents Saved Successfully");
           }
         } else {
           showToast(false, res.message);
@@ -605,7 +604,6 @@ const ApplicationForm = () => {
   };
 
   const onSubmit = (data: any, isDrafSave?: boolean) => {
-    console.log(isDrafSave);
     submitFormData(data, isDrafSave);
   };
 
