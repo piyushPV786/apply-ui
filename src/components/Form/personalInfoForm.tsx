@@ -120,7 +120,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     if (state === "SA") {
       setValue(nationalityIdKey, "SA", formDirtyState);
       clearErrors(nationalityIdKey);
-    } else if (state.target.value == "PRSA") {
+    } else if (state == "PRSA") {
       setValue(permenantResidentKey, "SA", formDirtyState);
       setValue(nationalityIdKey, "", formDirtyState);
     } else {
@@ -449,6 +449,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   register={register}
                   onChange={(e) => {
                     handleInternationAccordian(e?.code);
+                    setValue(nationalityStatusKey, e?.code);
                   }}
                   label="Nationality Status"
                   hideLabel
