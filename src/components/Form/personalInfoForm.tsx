@@ -71,11 +71,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     register,
     clearErrors,
     setError,
+    trigger,
     watch,
     formState: { errors, touchedFields },
   } = useFormContext();
 
   const TouchFields = touchedFields[parentKey] as any;
+
   const Errors = errors[parentKey] as any;
   const [countryCodeRef, setCountryCode] = useState<any>();
   const [mobNum, setMobile] = useState<any>("");
@@ -115,7 +117,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   ];
 
   const handleInternationAccordian = (state) => {
-    if (state.target.value === "SA") {
+    if (state === "SA") {
       setValue(nationalityIdKey, "SA", formDirtyState);
       clearErrors(nationalityIdKey);
     } else if (state.target.value == "PRSA") {
@@ -260,8 +262,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     options={genderOption}
                     label={"Gender"}
                     value={genderId}
+                    onChange={(e) => {
+                      setValue(genderIdKey, e.code);
+                    }}
                     name={genderIdKey}
                     register={register}
+                    onBlur={() => {
+                      trigger(genderIdKey);
+                    }}
                   />
                   {Errors?.gender && (
                     <div className="invalid-feedback">Please enter Gender</div>
@@ -382,6 +390,12 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     register={register}
                     options={homeLanguage}
                     value={homeLanguageId}
+                    onChange={(e) => {
+                      setValue(homeLanguageIdKey, e.code);
+                    }}
+                    onBlur={() => {
+                      trigger(homeLanguageIdKey);
+                    }}
                   />
                   {Errors?.language && (
                     <div className="invalid-feedback">
@@ -393,11 +407,17 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
+                    onChange={(e) => {
+                      setValue(raceIdKey, e.code);
+                    }}
                     label="Race"
                     value={raceId}
                     name={raceIdKey}
                     register={register}
                     options={race}
+                    onBlur={() => {
+                      trigger(raceIdKey);
+                    }}
                   />
                   {Errors?.race && (
                     <div className="invalid-feedback">Please select Race</div>
@@ -427,9 +447,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   value={nationalityStatus}
                   name={nationalityStatusKey}
                   register={register}
-                  onChange={handleInternationAccordian}
+                  onChange={(e) => {
+                    handleInternationAccordian(e.code);
+                  }}
                   label="Nationality Status"
                   hideLabel
+                  onBlur={() => {
+                    trigger(nationalityStatusKey);
+                  }}
                 />
 
                 <div className="m-2">
@@ -447,6 +472,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
+                            onChange={(e) => {
+                              setValue(permenantResidentKey, e.code);
+                            }}
                             disabled={nationalityStatus == "PRSA"}
                             options={nationalities?.sort((a, b) =>
                               sortAscending(a, b, "name")
@@ -455,6 +483,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                             name={permenantResidentKey}
                             register={register}
                             label="Permanent Resident"
+                            onBlur={() => {
+                              trigger(permenantResidentKey);
+                            }}
                           />
                         </div>
                       </div>
@@ -463,6 +494,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
+                          onChange={(e) => {
+                            setValue(nationalityIdKey, e.code);
+                          }}
                           disabled={nationalityStatus == "SA"}
                           options={nationalities?.sort((a, b) =>
                             sortAscending(a, b, "name")
@@ -471,6 +505,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           name={nationalityIdKey}
                           register={register}
                           label="Nationality"
+                          onBlur={() => {
+                            trigger(nationalityIdKey);
+                          }}
                         />
                         {Errors?.nationalityId && (
                           <div className="invalid-feedback">
@@ -483,18 +520,17 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
-                          onChange={() =>
-                            setValue(
-                              identificationNumberKey,
-                              "",
-                              formDirtyState
-                            )
-                          }
+                          onChange={(e) => {
+                            setValue(identificationDocumentTypeKey, e.code);
+                          }}
                           options={identityDocuments}
                           value={identificationDocumentType}
                           name={identificationDocumentTypeKey}
                           register={register}
                           label="Identification Document Type"
+                          onBlur={() => {
+                            trigger(identificationDocumentTypeKey);
+                          }}
                         />
                         {Errors?.identificationDocumentType && (
                           <div className="invalid-feedback">

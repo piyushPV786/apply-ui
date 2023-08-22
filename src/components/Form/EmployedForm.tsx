@@ -62,6 +62,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     setValue,
     register,
     watch,
+    trigger,
     unregister,
     control,
     formState: { errors, touchedFields },
@@ -104,7 +105,7 @@ export const EmployedForm = (props: IEmployeProps) => {
       setValue(`${officePhoneCode}`, "", formDirtyState);
     }
   };
-  const touchField = touchedFields[EmployementDetails] as any;
+  const TouchFields = touchedFields[EmployementDetails] as any;
   const error = errors[EmployementDetails] as any;
   const isEmployedNeed = isEmployedVal === "yes";
   const isSelfEmployed = employmentStatusVal === "SELFEMPLOYED";
@@ -290,7 +291,22 @@ export const EmployedForm = (props: IEmployeProps) => {
 
                     <div className="col-md-4">
                       <div className="mb-4">
-                        <StyledLabel required>Industry</StyledLabel>
+                        <AdvanceDropDown
+                          onChange={(e) => {
+                            setValue(industry, e.code);
+                          }}
+                          value={industryVal}
+                          options={employmentIndustries && employmentIndustries}
+                          register={register}
+                          mapKey="code"
+                          name={industry}
+                          label="Industry"
+                          onBlur={() => {
+                            trigger(industry);
+                          }}
+                        />
+
+                        {/* <StyledLabel required>Industry</StyledLabel>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -309,7 +325,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                                 {name}
                               </option>
                             ))}
-                        </select>
+                        </select> */}
                         {error && error?.employmentIndustryCode && (
                           <div className="invalid-feedback">
                             Please select industry
@@ -432,24 +448,22 @@ export const EmployedForm = (props: IEmployeProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
+                            mapKey="code"
                             value={employmentCountryVal}
                             options={CountryData.sort((a, b) =>
                               sortAscending(a, b, "name")
                             )}
                             required={true}
                             register={register}
-                            mapKey="code"
                             name={employmentCountry}
                             onChange={(e: any) => {
-                              const value = e.target.value;
-                              getStateData(value, "EMPLOYED");
-                              setValue(
-                                employmentCountry,
-                                value,
-                                formDirtyState
-                              );
+                              getStateData(e.code, "EMPLOYED");
+                              setValue(employmentCountry, e.code);
                             }}
                             label="Country"
+                            onBlur={() => {
+                              trigger(employmentCountry);
+                            }}
                           />
 
                           {error && error?.country && (
@@ -465,25 +479,20 @@ export const EmployedForm = (props: IEmployeProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
+                            onChange={(e) => {
+                              setValue(employmentState, e.isoCode);
+                            }}
                             value={employmentStateVal}
                             options={employedStateData.sort((a, b) =>
                               sortAscending(a, b, "name")
                             )}
                             register={register}
-                            mapKey="ioscode"
+                            mapKey="isoCode"
                             name={employmentState}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              const name = e.target.name;
-                              if (onlyAlphabets(value)) {
-                                setValue(
-                                  name,
-                                  capitalizeFirstLetter(value),
-                                  formDirtyState
-                                );
-                              }
-                            }}
                             label="State/Provinces"
+                            onBlur={() => {
+                              trigger(employmentState);
+                            }}
                           />
 
                           {error && error?.state && (

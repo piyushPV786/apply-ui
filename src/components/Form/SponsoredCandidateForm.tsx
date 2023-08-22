@@ -65,7 +65,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     setValue,
     register,
     watch,
-
+    trigger,
     unregister,
     control,
     formState: { errors, touchedFields },
@@ -92,7 +92,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     }
   };
   const error = errors[SponsorCandidateDetail] as any;
-  const touchedField = touchedFields[SponsorCandidateDetail] as any;
+  const TouchFields = touchedFields[SponsorCandidateDetail] as any;
   const isSelfSponsored = sponsorModeVal === "SELF";
   const isSponserDetailExist = watch(SponsorCandidateDetail);
   const isSponserNeed = isSponsorVal === "yes";
@@ -253,9 +253,22 @@ export const SponsoredForm = (props: ISponsorProps) => {
                     {" "}
                     {isGuardian && (
                       <div className="col-md-4">
-                        <StyledLabel required>Relationship Type</StyledLabel>
                         <div className="mb-4">
-                          <select
+                          <AdvanceDropDown
+                            onChange={(e) => {
+                              setValue(relationShip, e?.code);
+                            }}
+                            value={relationshipVal}
+                            options={relationData && relationData}
+                            register={register}
+                            mapKey="code"
+                            name={relationShip}
+                            label="Relationship Type"
+                            onBlur={() => {
+                              trigger(relationShip);
+                            }}
+                          />
+                          {/* <select
                             value={relationshipVal}
                             className="form-select"
                             aria-label="Default select example"
@@ -275,7 +288,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                   {name}
                                 </option>
                               ))}
-                          </select>
+                          </select> */}
                           {error && error?.relationship && (
                             <div className="invalid-feedback">
                               Please select relationship type
@@ -480,11 +493,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               mapKey="code"
                               name={sponsorCountry}
                               onChange={(e: any) => {
-                                getStateData(e.target.value, "SPONSOR");
-                                const value = e.target.value;
-                                setValue(sponsorCountry, value, formDirtyState);
+                                getStateData(e, "SPONSOR");
                               }}
                               label="Country"
+                              onBlur={() => {
+                                trigger(sponsorCountry);
+                              }}
                             />
 
                             {error && error?.country && (
@@ -505,17 +519,16 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               mapKey="code"
                               name={sponsorState}
                               onChange={(e) => {
-                                const value = e.target.value;
-                                const name = e.target.name;
+                                const value = e.code;
+
                                 if (onlyAlphabets(value)) {
-                                  setValue(
-                                    name,
-                                    capitalizeFirstLetter(value),
-                                    formDirtyState
-                                  );
+                                  setValue(sponsorState, e, formDirtyState);
                                 }
                               }}
                               label="State/Provinces"
+                              onBlur={() => {
+                                trigger(sponsorState);
+                              }}
                             />
                             {error && error?.state && (
                               <div className="invalid-feedback">

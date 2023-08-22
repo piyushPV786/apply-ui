@@ -1,11 +1,19 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import { UseFormRegister } from "react-hook-form";
 import { StyledLabel } from "../common/common";
 
+import TextField, { textFieldClasses } from "@mui/material/TextField";
+import Autocomplete, { autocompleteClasses } from "@mui/material/Autocomplete";
+
+interface stateType {
+  countryCode: string;
+  isoCode: string;
+}
 interface IAdvanceDropDownProps {
   options: any[];
   label?: string;
-  value: string;
+  value: string | stateType[];
   mapKey?: string;
 
   displayItem?: string;
@@ -25,43 +33,85 @@ const AdvanceDropDown = ({
   value,
   required = true,
   mapKey = "code",
-  onChange,
   register,
   hideLabel = false,
   displayItem = "name",
   //@param Its require for to pick specific object key value in array of objects
   ...props
 }: IAdvanceDropDownProps) => {
+  const [defaultValue, setDefaultValue] = useState([]);
+  useEffect(() => {
+    if (mapKey == "isoCode") {
+      setDefaultValue(value as never);
+    } else {
+      const val = options?.find((item) => {
+        if (mapKey == "name") {
+          return item.name == value;
+        } else if (mapKey == "name") {
+          return item.isoCode == value;
+        } else {
+          return item.code == value;
+        }
+      });
+      setDefaultValue(val);
+    }
+  }, [value]);
+
   return (
     <>
       <StyledLabel hideLabel={!label} forceHide={hideLabel} required={required}>
         {!hideLabel && label}
       </StyledLabel>
-      <select
-        disabled={disabled}
-        className="form-select"
-        {...register(props?.name!, {
-          required: required,
-          onChange(event) {
-            onChange && onChange(event);
-          },
-        })}
-        {...props}
-      >
-        <option value={""}>{(label && `Select ${label}`) || ``}</option>
-        {options &&
-          options.map(({ ...rest }) => {
-            return (
-              <option
-                selected={rest[mapKey] == value}
-                key={JSON.stringify(rest)}
-                value={rest[mapKey]}
-              >
-                {rest[displayItem]}
-              </option>
-            );
+      {options && (
+        <Autocomplete
+          clearOnEscape
+          sx={{
+            [`& .${autocompleteClasses.inputRoot}`]: {
+              border: "2px solid #ced4da",
+              borderRadius: 1.5,
+            },
+            "& .MuiIconButton-root": { padding: "3px !important" },
+          }}
+          {...register(props?.name!, {
+            required: required,
           })}
-      </select>
+          onChange={(e, v) => {
+            if (mapKey == "isoCode") {
+              props?.onChange?.(v);
+            } else {
+              props?.onChange?.(v?.code);
+            }
+            props?.onChange?.(v);
+          }}
+          onBlur={(e) => {
+            props?.onBlur?.();
+          }}
+          fullWidth
+          style={{ width: "100%" }}
+          options={options && options}
+          value={defaultValue}
+          getOptionLabel={(option) => option.name}
+          renderInput={(params) => (
+            <TextField
+              {...register(`${props.name}textfeild`, {})}
+              sx={{
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: "none !important",
+                },
+                "& .MuiAutocomplete-input": {
+                  padding: "2px 4px 2px 3px !important",
+                  fontSize: "14px !important",
+                },
+                "& .MuiOutlinedInput-root": {
+                  padding: "0.375rem 0.75rem",
+                },
+              }}
+              {...params}
+              fullWidth
+            />
+          )}
+        />
+      )}
     </>
   );
 };

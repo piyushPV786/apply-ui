@@ -31,18 +31,22 @@ interface IKinForm {
   leadId: string;
   relationData: IOption[];
 }
+
 export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
   const {
     setValue,
     register,
     watch,
     unregister,
+    trigger,
     control,
     formState: { errors, touchedFields },
   } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>("SA");
   const error = errors[KinDetails] as any;
-  const touchedField = touchedFields[KinDetails] as any;
+
+  const TouchFields = touchedFields[KinDetails] as any;
+
   const isNextKinVal = watch(isKin);
   const fullNameVal = watch(fullName);
   const relationShipVal = watch(relationShip);
@@ -50,6 +54,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
   const phoneNumberVal = watch(phoneNumber);
   const isKinDetailExist = watch(KinDetails);
   const isKinNeed = isNextKinVal === "yes";
+
   const uppdateMobNumber = () => {
     if (countryCodeRef) {
       const countryCode = getCountryCallingCode(countryCodeRef);
@@ -183,6 +188,12 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                       name={relationShip}
                       register={register}
                       required={isKinNeed}
+                      onChange={(e) => {
+                        setValue(relationShip, e.code);
+                      }}
+                      onBlur={() => {
+                        trigger(relationShip);
+                      }}
                     />
                     {error && error?.relationship && (
                       <div className="invalid-feedback">
