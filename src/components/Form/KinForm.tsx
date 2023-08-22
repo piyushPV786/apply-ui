@@ -189,7 +189,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                       register={register}
                       required={isKinNeed}
                       onChange={(e) => {
-                        setValue(relationShip, e.code);
+                        setValue(relationShip, e?.code);
                       }}
                       onBlur={() => {
                         trigger(relationShip);

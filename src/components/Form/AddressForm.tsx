@@ -184,7 +184,7 @@ export const AddressForm = ({
                       name={resState}
                       onChange={(e) => {
                         setResStateValue(e);
-                        setValue(resState, e.isoCode);
+                        setValue(resState, e?.isoCode);
                       }}
                       label="State/Provinces"
                       onBlur={() => {
@@ -356,8 +356,8 @@ export const AddressForm = ({
                     mapKey="code"
                     name={postalCountry}
                     onChange={(e: any) => {
-                      getStateData(e.code, "POSTAL");
-                      const value = e.code;
+                      getStateData(e?.code, "POSTAL");
+                      const value = e?.code;
                       setValue(postalCountry, value, formOptions);
                     }}
                     label="Country"
@@ -394,7 +394,7 @@ export const AddressForm = ({
                     name={postalState}
                     onChange={(e: any) => {
                       setPosStateValue(e);
-                      setValue(postalState, e.isoCode);
+                      setValue(postalState, e?.isoCode);
                     }}
                     label="State/Provinces"
                   />

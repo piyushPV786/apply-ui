@@ -350,7 +350,7 @@ export const EducationForm = (props: IEducationProps) => {
                     name={highestQualification}
                     register={register}
                     onChange={(e) => {
-                      setValue(highestQualification, e.code);
+                      setValue(highestQualification, e?.code);
                     }}
                     label="Highest Qualification"
                     onBlur={() => {
@@ -473,7 +473,7 @@ export const EducationForm = (props: IEducationProps) => {
                 <div className="mb-4">
                   <AdvanceDropDown
                     onChange={(e) => {
-                      setValue(studentTypeName, e.code);
+                      setValue(studentTypeName, e?.code);
                     }}
                     options={studyTypeData && studyTypeData}
                     value={studentTypeVal}
@@ -624,7 +624,7 @@ export const EducationForm = (props: IEducationProps) => {
                       label="Agent Name"
                       mapKey="name"
                       onChange={(e) => {
-                        setValue(agentName, e.name);
+                        setValue(agentName, e?.name);
                       }}
                       onBlur={() => {
                         trigger(agentName);
