@@ -484,7 +484,6 @@ const ApplicationForm = () => {
   const uploadFiles = (fileUrl: string, file: File) => {
     return uploadDocuments(fileUrl, file)
       .then((res) => {
-        showToast(true, "Document Upload Successfully");
         return res;
       })
       .catch((err) => {
@@ -582,7 +581,7 @@ const ApplicationForm = () => {
                 }
               }, 2000);
             }
-            showToast(true, "Documents Successfully Uploaded");
+            showToast(true, "Documents Saved Successfully");
           }
         } else {
           showToast(false, res.message);
@@ -605,7 +604,6 @@ const ApplicationForm = () => {
   };
 
   const onSubmit = (data: any, isDrafSave?: boolean) => {
-    console.log(isDrafSave);
     submitFormData(data, isDrafSave);
   };
 
@@ -755,13 +753,13 @@ const ApplicationForm = () => {
 
   const isValidForm = () => {
     if (activeStep === 0) {
-      return !isValid;
+      if (Object.keys(errors).length === 0) {
+        return false;
+      } else {
+        return true;
+      }
     } else {
-      return (
-        activeStep === MagicNumbers.TWO &&
-        !isValid &&
-        !isValidLeadEmail(allFields?.lead?.email)
-      );
+      return activeStep === MagicNumbers.TWO && errors?.lead;
     }
   };
 
@@ -987,6 +985,7 @@ const ApplicationForm = () => {
                                       }
                                     })();
                               }}
+                              disabled={isValidForm() as boolean}
                               title={activeStep < 2 ? "Save & Next" : "Submit"}
                             />
                           </>
