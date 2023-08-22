@@ -71,6 +71,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     register,
     clearErrors,
     setError,
+    trigger,
     watch,
     formState: { errors, touchedFields },
   } = useFormContext();
@@ -266,8 +267,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     }}
                     name={genderIdKey}
                     register={register}
+                    onBlur={() => {
+                      trigger(genderIdKey);
+                    }}
                   />
-                  {TouchFields?.gendertextfeild && !watch(genderIdKey) && (
+                  {Errors?.gender && (
                     <div className="invalid-feedback">Please enter Gender</div>
                   )}
                 </div>
@@ -389,13 +393,15 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     onChange={(e) => {
                       setValue(homeLanguageIdKey, e.code);
                     }}
+                    onBlur={() => {
+                      trigger(homeLanguageIdKey);
+                    }}
                   />
-                  {TouchFields?.languagetextfeild &&
-                    !watch(homeLanguageIdKey) && (
-                      <div className="invalid-feedback">
-                        Please select Home Language
-                      </div>
-                    )}
+                  {Errors?.language && (
+                    <div className="invalid-feedback">
+                      Please select Home Language
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-4">
@@ -409,8 +415,11 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     name={raceIdKey}
                     register={register}
                     options={race}
+                    onBlur={() => {
+                      trigger(raceIdKey);
+                    }}
                   />
-                  {TouchFields?.racetextfeild && !watch(raceIdKey) && (
+                  {Errors?.race && (
                     <div className="invalid-feedback">Please select Race</div>
                   )}
                 </div>
@@ -443,15 +452,17 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   }}
                   label="Nationality Status"
                   hideLabel
+                  onBlur={() => {
+                    trigger(nationalityStatusKey);
+                  }}
                 />
 
                 <div className="m-2">
-                  {TouchFields?.nationalityStatustextfeild &&
-                    !nationalityStatus && (
-                      <div className="invalid-feedback">
-                        Please Select Nationality Status
-                      </div>
-                    )}
+                  {Errors?.nationalityStatus && (
+                    <div className="invalid-feedback">
+                      Please Select Nationality Status
+                    </div>
+                  )}
                 </div>
               </AccordionSummary>
               <AccordionDetails>
@@ -472,6 +483,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                             name={permenantResidentKey}
                             register={register}
                             label="Permanent Resident"
+                            onBlur={() => {
+                              trigger(permenantResidentKey);
+                            }}
                           />
                         </div>
                       </div>
@@ -491,13 +505,15 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           name={nationalityIdKey}
                           register={register}
                           label="Nationality"
+                          onBlur={() => {
+                            trigger(nationalityIdKey);
+                          }}
                         />
-                        {TouchFields?.nationalitytextfeild &&
-                          !watch(nationalityIdKey) && (
-                            <div className="invalid-feedback">
-                              Please Select Nationality
-                            </div>
-                          )}
+                        {Errors?.nationalityId && (
+                          <div className="invalid-feedback">
+                            Please Select Nationality
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -512,13 +528,15 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                           name={identificationDocumentTypeKey}
                           register={register}
                           label="Identification Document Type"
+                          onBlur={() => {
+                            trigger(identificationDocumentTypeKey);
+                          }}
                         />
-                        {TouchFields?.identificationDocumentTypetextfeild &&
-                          !watch(identificationDocumentTypeKey) && (
-                            <div className="invalid-feedback">
-                              Please Select Document Type
-                            </div>
-                          )}
+                        {Errors?.identificationDocumentType && (
+                          <div className="invalid-feedback">
+                            Please Select Document Type
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-4">

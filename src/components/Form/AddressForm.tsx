@@ -40,10 +40,15 @@ export const AddressForm = ({
   posStateData,
   resStateData,
 }: any) => {
+  interface stateType {
+    countryCode: string;
+    isoCode: string;
+  }
   const CountryData = countryData;
   const {
     setValue,
     register,
+    trigger,
     watch,
     formState: { errors, touchedFields },
   } = useFormContext();
@@ -60,8 +65,8 @@ export const AddressForm = ({
   const postalZipCodeVal: string = watch(postalZipCode);
   const postalCityVal: string = watch(postalCity);
   const postalStateVal: string = watch(postalState);
-  const [resStateValue, setResStateValue] = useState([]);
-  const [posStateValue, setPosStateValue] = useState([]);
+  const [resStateValue, setResStateValue] = useState<stateType[]>([]);
+  const [posStateValue, setPosStateValue] = useState<stateType[]>([]);
   useEffect(() => {
     setValue(`${addressType}`, "POSTAL");
     setValue(`${addressTypeResidential}`, "RESIDENTIAL");
@@ -156,6 +161,9 @@ export const AddressForm = ({
                         getStateData(e?.code, "RESIDENTIAL");
                         setValue(resCountry, e?.code);
                       }}
+                      onBlur={() => {
+                        trigger(resCountry);
+                      }}
                     />
                     {error && error[1]?.country && (
                       <div className="invalid-feedback">
@@ -179,6 +187,9 @@ export const AddressForm = ({
                         setValue(resState, e.isoCode);
                       }}
                       label="State/Provinces"
+                      onBlur={() => {
+                        trigger(resState);
+                      }}
                     />
                     {error && error[1]?.state && (
                       <div className="invalid-feedback">
@@ -350,6 +361,9 @@ export const AddressForm = ({
                       setValue(postalCountry, value, formOptions);
                     }}
                     label="Country"
+                    onBlur={() => {
+                      trigger(resState);
+                    }}
                   />
 
                   {error && error[0]?.country && (
@@ -362,11 +376,7 @@ export const AddressForm = ({
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    value={
-                      isSameAsPostalAddressVal == true
-                        ? posStateValue
-                        : resStateVal && resStateVal
-                    }
+                    value={posStateValue}
                     options={
                       isSameAsPostalAddressVal == false
                         ? posStateData?.sort((a, b) =>
@@ -376,6 +386,9 @@ export const AddressForm = ({
                             sortAscending(a, b, "name")
                           )
                     }
+                    onBlur={() => {
+                      trigger(resState);
+                    }}
                     register={register}
                     mapKey="isoCode"
                     name={postalState}

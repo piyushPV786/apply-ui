@@ -80,6 +80,7 @@ export const EducationForm = (props: IEducationProps) => {
   const {
     setValue,
     register,
+    trigger,
     watch,
     formState: { errors, touchedFields },
     unregister,
@@ -219,6 +220,9 @@ export const EducationForm = (props: IEducationProps) => {
                       setValue(program, e?.code);
                     }}
                     label="Interested Program"
+                    onBlur={() => {
+                      trigger(program);
+                    }}
                   />
 
                   {/* <StyledLabel required>Interested Program</StyledLabel>
@@ -245,7 +249,7 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select> */}
-                  {TouchFields?.programCodetextfeild && !watch(program) && (
+                  {educationFormError?.programCode && (
                     <div className="invalid-feedback">
                       select your interested program
                     </div>
@@ -349,6 +353,9 @@ export const EducationForm = (props: IEducationProps) => {
                       setValue(highestQualification, e.code);
                     }}
                     label="Highest Qualification"
+                    onBlur={() => {
+                      trigger(highestQualification);
+                    }}
                   />
 
                   {/* <StyledLabel required>Highest Qualification</StyledLabel>
@@ -370,8 +377,8 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select> */}
-                  {TouchFields?.qualificationCodetextfeild &&
-                    !watch(highestQualification) && (
+                  {educationFormError &&
+                    educationFormError?.qualificationCode && (
                       <div className="invalid-feedback">
                         Please select Highest Qualification
                       </div>
@@ -473,6 +480,9 @@ export const EducationForm = (props: IEducationProps) => {
                     name={studentTypeName}
                     register={register}
                     label="Student Type"
+                    onBlur={() => {
+                      trigger(studentTypeName);
+                    }}
                   />
                   {/* <select
                     defaultValue={studentTypeVal}
@@ -514,8 +524,8 @@ export const EducationForm = (props: IEducationProps) => {
                           </option>
                         ))}
                   </select> */}
-                  {TouchFields?.studentTypeCodetextfeild &&
-                    !watch(studentTypeName) && (
+                  {educationFormError &&
+                    educationFormError?.studentTypeCode && (
                       <div className="invalid-feedback">
                         Please select Student type
                       </div>
@@ -616,6 +626,9 @@ export const EducationForm = (props: IEducationProps) => {
                       onChange={(e) => {
                         setValue(agentName, e.name);
                       }}
+                      onBlur={() => {
+                        trigger(agentName);
+                      }}
                     />
                     {/* <StyledLabel required>Agent Name</StyledLabel>
                     <select
@@ -637,11 +650,12 @@ export const EducationForm = (props: IEducationProps) => {
                           </option>
                         ))}
                     </select> */}
-                    {TouchFields?.agentCodetextfeild && !watch(agentName) && (
-                      <div className="invalid-feedback">
-                        Please select agent
-                      </div>
-                    )}
+                    {educationFormError &&
+                      educationFormError?.studentTypeCode && (
+                        <div className="invalid-feedback">
+                          Please select Student type
+                        </div>
+                      )}
                   </div>
                 )}
                 {referredByeVal === "SOCIALMEDIA" && (

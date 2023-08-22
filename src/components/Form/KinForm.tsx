@@ -38,6 +38,7 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
     register,
     watch,
     unregister,
+    trigger,
     control,
     formState: { errors, touchedFields },
   } = useFormContext();
@@ -190,13 +191,15 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                       onChange={(e) => {
                         setValue(relationShip, e.code);
                       }}
+                      onBlur={() => {
+                        trigger(relationShip);
+                      }}
                     />
-                    {TouchFields?.relationshiptextfeild &&
-                      !watch(relationShip) && (
-                        <div className="invalid-feedback">
-                          Please enter relationship
-                        </div>
-                      )}
+                    {error && error?.relationship && (
+                      <div className="invalid-feedback">
+                        Please enter relationship
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">

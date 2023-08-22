@@ -5,10 +5,15 @@ import { StyledLabel } from "../common/common";
 
 import TextField, { textFieldClasses } from "@mui/material/TextField";
 import Autocomplete, { autocompleteClasses } from "@mui/material/Autocomplete";
+
+interface stateType {
+  countryCode: string;
+  isoCode: string;
+}
 interface IAdvanceDropDownProps {
   options: any[];
   label?: string;
-  value: any;
+  value: string | stateType[];
   mapKey?: string;
 
   displayItem?: string;
@@ -37,7 +42,7 @@ const AdvanceDropDown = ({
   const [defaultValue, setDefaultValue] = useState([]);
   useEffect(() => {
     if (mapKey == "isoCode") {
-      setDefaultValue(value);
+      setDefaultValue(value as never);
     } else {
       const val = options?.find((item) => {
         if (mapKey == "name") {
@@ -77,6 +82,9 @@ const AdvanceDropDown = ({
               props?.onChange?.(v?.code);
             }
             props?.onChange?.(v);
+          }}
+          onBlur={(e) => {
+            props?.onBlur?.();
           }}
           fullWidth
           style={{ width: "100%" }}

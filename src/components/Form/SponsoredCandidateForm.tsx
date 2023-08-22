@@ -65,7 +65,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     setValue,
     register,
     watch,
-
+    trigger,
     unregister,
     control,
     formState: { errors, touchedFields },
@@ -264,6 +264,9 @@ export const SponsoredForm = (props: ISponsorProps) => {
                             mapKey="code"
                             name={relationShip}
                             label="Relationship Type"
+                            onBlur={() => {
+                              trigger(relationShip);
+                            }}
                           />
                           {/* <select
                             value={relationshipVal}
@@ -286,12 +289,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 </option>
                               ))}
                           </select> */}
-                          {TouchFields?.relationshipCodetextfeild &&
-                            !watch(relationShip) && (
-                              <div className="invalid-feedback">
-                                Please select relationship type
-                              </div>
-                            )}
+                          {error && error?.relationship && (
+                            <div className="invalid-feedback">
+                              Please select relationship type
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -494,14 +496,16 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 getStateData(e, "SPONSOR");
                               }}
                               label="Country"
+                              onBlur={() => {
+                                trigger(sponsorCountry);
+                              }}
                             />
 
-                            {TouchFields?.countrytextfeild &&
-                              !watch(sponsorCountry) && (
-                                <div className="invalid-feedback">
-                                  Please enter Country
-                                </div>
-                              )}
+                            {error && error?.country && (
+                              <div className="invalid-feedback">
+                                Please enter Country
+                              </div>
+                            )}
                           </div>
                         </div>{" "}
                         <div className="col-md-4">
@@ -522,13 +526,15 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 }
                               }}
                               label="State/Provinces"
+                              onBlur={() => {
+                                trigger(sponsorState);
+                              }}
                             />
-                            {TouchFields?.statetextfeild &&
-                              !watch(sponsorState) && (
-                                <div className="invalid-feedback">
-                                  Please enter State Name
-                                </div>
-                              )}
+                            {error && error?.state && (
+                              <div className="invalid-feedback">
+                                Please enter State Name
+                              </div>
+                            )}
                           </div>
                         </div>{" "}
                         <div className="col-md-4">

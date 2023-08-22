@@ -62,6 +62,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     setValue,
     register,
     watch,
+    trigger,
     unregister,
     control,
     formState: { errors, touchedFields },
@@ -300,6 +301,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                           mapKey="code"
                           name={industry}
                           label="Industry"
+                          onBlur={() => {
+                            trigger(industry);
+                          }}
                         />
 
                         {/* <StyledLabel required>Industry</StyledLabel>
@@ -322,12 +326,11 @@ export const EmployedForm = (props: IEmployeProps) => {
                               </option>
                             ))}
                         </select> */}
-                        {TouchFields?.employmentIndustryCodetextfeild &&
-                          !watch(industry) && (
-                            <div className="invalid-feedback">
-                              Please select industry
-                            </div>
-                          )}
+                        {error && error?.employmentIndustryCode && (
+                          <div className="invalid-feedback">
+                            Please select industry
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -458,14 +461,16 @@ export const EmployedForm = (props: IEmployeProps) => {
                               setValue(employmentCountry, e.code);
                             }}
                             label="Country"
+                            onBlur={() => {
+                              trigger(employmentCountry);
+                            }}
                           />
 
-                          {TouchFields?.countrytextfeild &&
-                            !watch(employmentCountry) && (
-                              <div className="invalid-feedback">
-                                Please select Country
-                              </div>
-                            )}
+                          {error && error?.country && (
+                            <div className="invalid-feedback">
+                              Please select Country
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -485,14 +490,16 @@ export const EmployedForm = (props: IEmployeProps) => {
                             mapKey="isoCode"
                             name={employmentState}
                             label="State/Provinces"
+                            onBlur={() => {
+                              trigger(employmentState);
+                            }}
                           />
 
-                          {TouchFields?.statetextfeild &&
-                            !watch(employmentState) && (
-                              <div className="invalid-feedback">
-                                Please enter State Name
-                              </div>
-                            )}
+                          {error && error?.state && (
+                            <div className="invalid-feedback">
+                              Please enter State Name
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
