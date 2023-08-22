@@ -1,6 +1,6 @@
 import React, { useRef, useState, SyntheticEvent, useEffect } from "react";
 import styled from "styled-components";
-import { Container, Typography, Button, Modal, Tooltip } from "@mui/material";
+import { Container, Typography, Tooltip } from "@mui/material";
 import StyledButton from "../button/button";
 import { Green, StyledLabel } from "../common/common";
 import { AlertEnums } from "../common/constant";
@@ -8,22 +8,19 @@ import AlertBox from "../alert/Alert";
 
 import {
   downloadDeclarationLetter,
-  downloadDocument,
   isInvalidFileType,
+  showErrorToast,
 } from "../../Util/Util";
 import { GreenText } from "../student/style";
 import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
 import {
   CheckOutlined,
   CloseOutlined,
-  ContactsOutlined,
   VisibilityOutlined,
 } from "@material-ui/icons";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
-import List from "@material-ui/core/List";
 import {
   Dialog,
   DialogActions,
@@ -32,6 +29,8 @@ import {
   DialogTitle,
   makeStyles,
 } from "@material-ui/core";
+import { CommonAPI } from "../../service/Axios";
+import axios from "axios";
 
 interface DocumentUploadContainerProps {
   title: string;
@@ -52,8 +51,44 @@ interface DocumentUploadContainerProps {
   selectedDocuments?: (File & { error: boolean; typeCode: string })[];
 }
 
-const showPdf = (e: SyntheticEvent, item: File) => {
+const getFilePreview = (fileName, fileExt) => {
+  CommonAPI.get(`/document?filename=${fileName}.${fileExt}`).then(
+    ({ data: url }) => {
+      const fileUrl = url?.data?.split("?");
+      const data = fileUrl[0];
+      const ext = data.split(".").pop();
+      axios
+        .get(url?.data, {
+          responseType: "arraybuffer",
+        })
+        .then((response) => {
+          const file = new Blob([response.data], {
+            type: ext === "pdf" ? "application/pdf" : "image/jpeg",
+          });
+          const fileURL = URL.createObjectURL(file);
+          window.open(fileURL);
+        })
+        .catch((error) => {
+          showErrorToast("Error viewing file. Please try again after sometime");
+          console.log("Error viewing file", error.message);
+        });
+    }
+  );
+};
+
+const showPdf = (
+  e: SyntheticEvent,
+  item: File & { isUploadedNow?: boolean; code?: string }
+) => {
   e.preventDefault();
+  if (!item?.isUploadedNow) {
+    let fileExt = item?.name?.split(".").pop();
+    if (fileExt === "jpg") {
+      fileExt = "jpeg";
+    }
+    getFilePreview(item?.code, fileExt);
+    return;
+  }
   const file = new Blob([item], {
     type: item?.type.includes("pdf") ? "application/pdf" : "image/jpeg",
   });
