@@ -448,7 +448,8 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   name={nationalityStatusKey}
                   register={register}
                   onChange={(e) => {
-                    handleInternationAccordian(e?.code);
+                    handleInternationAccordian;
+                    setValue(nationalityStatusKey, e?.code);
                   }}
                   label="Nationality Status"
                   hideLabel
