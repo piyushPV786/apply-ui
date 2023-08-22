@@ -493,7 +493,8 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               mapKey="code"
                               name={sponsorCountry}
                               onChange={(e: any) => {
-                                getStateData(e, "SPONSOR");
+                                getStateData(e?.code, "SPONSOR");
+                                setValue(sponsorCountry, e?.code);
                               }}
                               label="Country"
                               onBlur={() => {
@@ -519,10 +520,12 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               mapKey="code"
                               name={sponsorState}
                               onChange={(e) => {
-                                const value = e.code;
-
                                 if (onlyAlphabets(value)) {
-                                  setValue(sponsorState, e, formDirtyState);
+                                  setValue(
+                                    sponsorState,
+                                    e?.code,
+                                    formDirtyState
+                                  );
                                 }
                               }}
                               label="State/Provinces"

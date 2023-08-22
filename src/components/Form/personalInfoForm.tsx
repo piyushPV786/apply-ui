@@ -263,7 +263,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     label={"Gender"}
                     value={genderId}
                     onChange={(e) => {
-                      setValue(genderIdKey, e.code);
+                      setValue(genderIdKey, e?.code);
                     }}
                     name={genderIdKey}
                     register={register}
@@ -391,7 +391,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     options={homeLanguage}
                     value={homeLanguageId}
                     onChange={(e) => {
-                      setValue(homeLanguageIdKey, e.code);
+                      setValue(homeLanguageIdKey, e?.code);
                     }}
                     onBlur={() => {
                       trigger(homeLanguageIdKey);
@@ -408,7 +408,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                 <div className="mb-4">
                   <AdvanceDropDown
                     onChange={(e) => {
-                      setValue(raceIdKey, e.code);
+                      setValue(raceIdKey, e?.code);
                     }}
                     label="Race"
                     value={raceId}
@@ -448,7 +448,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   name={nationalityStatusKey}
                   register={register}
                   onChange={(e) => {
-                    handleInternationAccordian(e.code);
+                    handleInternationAccordian(e?.code);
                   }}
                   label="Nationality Status"
                   hideLabel
@@ -473,7 +473,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                         <div className="mb-4">
                           <AdvanceDropDown
                             onChange={(e) => {
-                              setValue(permenantResidentKey, e.code);
+                              setValue(permenantResidentKey, e?.code);
                             }}
                             disabled={nationalityStatus == "PRSA"}
                             options={nationalities?.sort((a, b) =>
@@ -495,7 +495,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       <div className="mb-4">
                         <AdvanceDropDown
                           onChange={(e) => {
-                            setValue(nationalityIdKey, e.code);
+                            setValue(nationalityIdKey, e?.code);
                           }}
                           disabled={nationalityStatus == "SA"}
                           options={nationalities?.sort((a, b) =>
@@ -521,7 +521,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       <div className="mb-4">
                         <AdvanceDropDown
                           onChange={(e) => {
-                            setValue(identificationDocumentTypeKey, e.code);
+                            setValue(identificationDocumentTypeKey, e?.code);
                           }}
                           options={identityDocuments}
                           value={identificationDocumentType}

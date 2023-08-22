@@ -293,7 +293,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                       <div className="mb-4">
                         <AdvanceDropDown
                           onChange={(e) => {
-                            setValue(industry, e.code);
+                            setValue(industry, e?.code);
                           }}
                           value={industryVal}
                           options={employmentIndustries && employmentIndustries}
@@ -458,7 +458,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                             name={employmentCountry}
                             onChange={(e: any) => {
                               getStateData(e.code, "EMPLOYED");
-                              setValue(employmentCountry, e.code);
+                              setValue(employmentCountry, e?.code);
                             }}
                             label="Country"
                             onBlur={() => {
@@ -480,7 +480,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                         <div className="mb-4">
                           <AdvanceDropDown
                             onChange={(e) => {
-                              setValue(employmentState, e.isoCode);
+                              setValue(employmentState, e?.isoCode);
                             }}
                             value={employmentStateVal}
                             options={employedStateData.sort((a, b) =>
