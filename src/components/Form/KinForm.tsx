@@ -181,13 +181,15 @@ export const KinDetailsForm = ({ leadId, relationData }: IKinForm) => {
                 <div className="col-md-4">
                   <div className="mb-4">
                     <AdvanceDropDown
-                      setValue={setValue}
                       options={relationData}
                       label={"Relationship"}
                       value={relationShipVal}
                       name={relationShip}
                       register={register}
                       required={isKinNeed}
+                      onChange={(e) => {
+                        setValue(relationShip, e.code);
+                      }}
                     />
                     {TouchFields?.relationshiptextfeild &&
                       !watch(relationShip) && (

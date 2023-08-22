@@ -291,7 +291,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
-                          setValue={setValue}
+                          onChange={(e) => {
+                            setValue(industry, e.code);
+                          }}
                           value={industryVal}
                           options={employmentIndustries && employmentIndustries}
                           register={register}
@@ -443,7 +445,6 @@ export const EmployedForm = (props: IEmployeProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
-                            setValue={setValue}
                             mapKey="code"
                             value={employmentCountryVal}
                             options={CountryData.sort((a, b) =>
@@ -453,7 +454,8 @@ export const EmployedForm = (props: IEmployeProps) => {
                             register={register}
                             name={employmentCountry}
                             onChange={(e: any) => {
-                              getStateData(e, "EMPLOYED");
+                              getStateData(e.code, "EMPLOYED");
+                              setValue(employmentCountry, e.code);
                             }}
                             label="Country"
                           />
@@ -472,7 +474,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
-                            setValue={setValue}
+                            onChange={(e) => {
+                              setValue(employmentState, e.isoCode);
+                            }}
                             value={employmentStateVal}
                             options={employedStateData.sort((a, b) =>
                               sortAscending(a, b, "name")

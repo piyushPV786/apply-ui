@@ -255,7 +255,9 @@ export const SponsoredForm = (props: ISponsorProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
-                            setValue={setValue}
+                            onChange={(e) => {
+                              setValue(relationShip, e?.code);
+                            }}
                             value={relationshipVal}
                             options={relationData && relationData}
                             register={register}
@@ -481,7 +483,6 @@ export const SponsoredForm = (props: ISponsorProps) => {
                         <div className="col-md-4">
                           <div className="mb-4">
                             <AdvanceDropDown
-                              setValue={setValue}
                               value={sponsorCountryVal}
                               options={CountryData.sort((a, b) =>
                                 sortAscending(a, b, "name")
@@ -506,7 +507,6 @@ export const SponsoredForm = (props: ISponsorProps) => {
                         <div className="col-md-4">
                           <div className="mb-4">
                             <AdvanceDropDown
-                              setValue={setValue}
                               value={sponsorStateVal}
                               options={sponsorStateData.sort((a, b) =>
                                 sortAscending(a, b, "name")
@@ -515,7 +515,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               mapKey="code"
                               name={sponsorState}
                               onChange={(e) => {
-                                const value = e;
+                                const value = e.code;
 
                                 if (onlyAlphabets(value)) {
                                   setValue(sponsorState, e, formDirtyState);

@@ -261,7 +261,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     options={genderOption}
                     label={"Gender"}
                     value={genderId}
-                    setValue={setValue}
+                    onChange={(e) => {
+                      setValue(genderIdKey, e.code);
+                    }}
                     name={genderIdKey}
                     register={register}
                   />
@@ -380,11 +382,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                 <div className="mb-4">
                   <AdvanceDropDown
                     name={homeLanguageIdKey}
-                    setValue={setValue}
                     label="Home Language"
                     register={register}
                     options={homeLanguage}
                     value={homeLanguageId}
+                    onChange={(e) => {
+                      setValue(homeLanguageIdKey, e.code);
+                    }}
                   />
                   {TouchFields?.languagetextfeild &&
                     !watch(homeLanguageIdKey) && (
@@ -397,7 +401,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    setValue={setValue}
+                    onChange={(e) => {
+                      setValue(raceIdKey, e.code);
+                    }}
                     label="Race"
                     value={raceId}
                     name={raceIdKey}
@@ -428,12 +434,13 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                 </div>
 
                 <AdvanceDropDown
-                  setValue={setValue}
                   options={nationalityStatusData}
                   value={nationalityStatus}
                   name={nationalityStatusKey}
                   register={register}
-                  onChange={handleInternationAccordian}
+                  onChange={(e) => {
+                    handleInternationAccordian(e.code);
+                  }}
                   label="Nationality Status"
                   hideLabel
                 />
@@ -454,7 +461,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       <div className="col-md-4">
                         <div className="mb-4">
                           <AdvanceDropDown
-                            setValue={setValue}
+                            onChange={(e) => {
+                              setValue(permenantResidentKey, e.code);
+                            }}
                             disabled={nationalityStatus == "PRSA"}
                             options={nationalities?.sort((a, b) =>
                               sortAscending(a, b, "name")
@@ -471,7 +480,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
-                          setValue={setValue}
+                          onChange={(e) => {
+                            setValue(nationalityIdKey, e.code);
+                          }}
                           disabled={nationalityStatus == "SA"}
                           options={nationalities?.sort((a, b) =>
                             sortAscending(a, b, "name")
@@ -493,7 +504,9 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <div className="col-md-4">
                       <div className="mb-4">
                         <AdvanceDropDown
-                          setValue={setValue}
+                          onChange={(e) => {
+                            setValue(identificationDocumentTypeKey, e.code);
+                          }}
                           options={identityDocuments}
                           value={identificationDocumentType}
                           name={identificationDocumentTypeKey}

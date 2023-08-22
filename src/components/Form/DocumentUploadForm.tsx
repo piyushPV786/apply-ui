@@ -277,7 +277,7 @@ const DocumentUploadForm = ({
               onChange={(e) =>
                 setValue(
                   "document.identificationDocumentType",
-                  e,
+                  e.code,
                   formDirtyState
                 )
               }

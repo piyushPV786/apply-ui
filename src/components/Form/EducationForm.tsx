@@ -210,13 +210,13 @@ export const EducationForm = (props: IEducationProps) => {
                 <div className="mb-4">
                   <AdvanceDropDown
                     mapKey="code"
-                    setValue={setValue}
                     options={programs && programs}
                     value={programVal}
                     name={program}
                     register={register}
                     onChange={(e) => {
-                      getQualificationStudyModeData(e);
+                      getQualificationStudyModeData(e?.code);
+                      setValue(program, e?.code);
                     }}
                     label="Interested Program"
                   />
@@ -341,13 +341,12 @@ export const EducationForm = (props: IEducationProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    setValue={setValue}
                     options={highestQualifications && highestQualifications}
                     value={highestQualificationVal}
                     name={highestQualification}
                     register={register}
                     onChange={(e) => {
-                      setValue(highestQualification, e);
+                      setValue(highestQualification, e.code);
                     }}
                     label="Highest Qualification"
                   />
@@ -466,7 +465,9 @@ export const EducationForm = (props: IEducationProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    setValue={setValue}
+                    onChange={(e) => {
+                      setValue(studentTypeName, e.code);
+                    }}
                     options={studyTypeData && studyTypeData}
                     value={studentTypeVal}
                     name={studentTypeName}
@@ -606,13 +607,15 @@ export const EducationForm = (props: IEducationProps) => {
                 {referredByeVal === "AGENT" && (
                   <div className="mb-4 others">
                     <AdvanceDropDown
-                      setValue={setValue}
                       options={agentArr && agentArr}
                       value={agentNameVal}
                       name={agentName}
                       register={register}
                       label="Agent Name"
                       mapKey="name"
+                      onChange={(e) => {
+                        setValue(agentName, e.name);
+                      }}
                     />
                     {/* <StyledLabel required>Agent Name</StyledLabel>
                     <select

@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import { UseFormRegister } from "react-hook-form";
 import { StyledLabel } from "../common/common";
 
@@ -18,7 +19,6 @@ interface IAdvanceDropDownProps {
   onChange?: (...args: any) => void;
   onBlur?: (...args: any) => void;
   register: UseFormRegister<any>;
-  setValue: any;
 }
 
 const AdvanceDropDown = ({
@@ -28,13 +28,30 @@ const AdvanceDropDown = ({
   value,
   required = true,
   mapKey = "code",
-  setValue,
   register,
   hideLabel = false,
   displayItem = "name",
   //@param Its require for to pick specific object key value in array of objects
   ...props
 }: IAdvanceDropDownProps) => {
+  const [defaultValue, setDefaultValue] = useState([]);
+  useEffect(() => {
+    if (mapKey == "isoCode") {
+      setDefaultValue(value);
+    } else {
+      const val = options?.find((item) => {
+        if (mapKey == "name") {
+          return item.name == value;
+        } else if (mapKey == "name") {
+          return item.isoCode == value;
+        } else {
+          return item.code == value;
+        }
+      });
+      setDefaultValue(val);
+    }
+  }, [value]);
+
   return (
     <>
       <StyledLabel hideLabel={!label} forceHide={hideLabel} required={required}>
@@ -59,28 +76,12 @@ const AdvanceDropDown = ({
             } else {
               props?.onChange?.(v?.code);
             }
-            if (mapKey == "name") {
-              setValue(props?.name!, v?.name);
-            } else if (mapKey == "isoCode") {
-              setValue(props?.name!, v?.isoCode);
-            } else {
-              setValue(props?.name!, v?.code);
-            }
+            props?.onChange?.(v);
           }}
           fullWidth
           style={{ width: "100%" }}
           options={options && options}
-          value={
-            mapKey == "isoCode"
-              ? value
-              : options?.find((item) => {
-                  if (mapKey == "name") {
-                    return item.name == value;
-                  } else {
-                    return item.code == value;
-                  }
-                })
-          }
+          value={defaultValue}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
             <TextField

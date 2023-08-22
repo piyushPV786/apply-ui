@@ -144,7 +144,6 @@ export const AddressForm = ({
                 <div className="col-md-4">
                   <div className="mb-4">
                     <AdvanceDropDown
-                      setValue={setValue}
                       value={resCountryVal}
                       label="Country"
                       options={CountryData?.sort((a, b) =>
@@ -154,7 +153,8 @@ export const AddressForm = ({
                       register={register}
                       mapKey="code"
                       onChange={(e: any) => {
-                        getStateData(e, "RESIDENTIAL");
+                        getStateData(e?.code, "RESIDENTIAL");
+                        setValue(resCountry, e?.code);
                       }}
                     />
                     {error && error[1]?.country && (
@@ -167,7 +167,6 @@ export const AddressForm = ({
                 <div className="col-md-4">
                   <div className="mb-4">
                     <AdvanceDropDown
-                      setValue={setValue}
                       register={register}
                       options={resStateData?.sort((a, b) =>
                         sortAscending(a, b, "name")
@@ -177,6 +176,7 @@ export const AddressForm = ({
                       name={resState}
                       onChange={(e) => {
                         setResStateValue(e);
+                        setValue(resState, e.isoCode);
                       }}
                       label="State/Provinces"
                     />
@@ -337,7 +337,6 @@ export const AddressForm = ({
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    setValue={setValue}
                     value={postalCountryVal}
                     options={CountryData.sort((a, b) =>
                       sortAscending(a, b, "name")
@@ -346,13 +345,9 @@ export const AddressForm = ({
                     mapKey="code"
                     name={postalCountry}
                     onChange={(e: any) => {
-                      getStateData(e, "POSTAL");
-                      const value = e;
-                      setValue(
-                        postalCountry,
-                        capitalizeFirstLetter(String(value)),
-                        formOptions
-                      );
+                      getStateData(e.code, "POSTAL");
+                      const value = e.code;
+                      setValue(postalCountry, value, formOptions);
                     }}
                     label="Country"
                   />
@@ -367,8 +362,11 @@ export const AddressForm = ({
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    setValue={setValue}
-                    value={posStateValue && posStateValue}
+                    value={
+                      isSameAsPostalAddressVal == true
+                        ? posStateValue
+                        : resStateVal && resStateVal
+                    }
                     options={
                       isSameAsPostalAddressVal == false
                         ? posStateData?.sort((a, b) =>
@@ -383,6 +381,7 @@ export const AddressForm = ({
                     name={postalState}
                     onChange={(e: any) => {
                       setPosStateValue(e);
+                      setValue(postalState, e.isoCode);
                     }}
                     label="State/Provinces"
                   />
