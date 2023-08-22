@@ -117,7 +117,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   ];
 
   const handleInternationAccordian = (state) => {
-    console.log(state);
     if (state === "SA") {
       setValue(nationalityIdKey, "SA", formDirtyState);
       clearErrors(nationalityIdKey);
