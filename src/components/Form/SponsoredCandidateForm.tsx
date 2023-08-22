@@ -517,16 +517,14 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                 sortAscending(a, b, "name")
                               )}
                               register={register}
-                              mapKey="code"
+                              mapKey="isoCode"
                               name={sponsorState}
                               onChange={(e) => {
-                                if (onlyAlphabets(value)) {
-                                  setValue(
-                                    sponsorState,
-                                    e?.code,
-                                    formDirtyState
-                                  );
-                                }
+                                setValue(
+                                  sponsorState,
+                                  e?.isoCode,
+                                  formDirtyState
+                                );
                               }}
                               label="State/Provinces"
                               onBlur={() => {
