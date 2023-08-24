@@ -469,100 +469,9 @@ export const EducationForm = (props: IEducationProps) => {
                     )}
                 </div>
               </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <AdvanceDropDown
-                    onChange={(e) => {
-                      setValue(studentTypeName, e?.code);
-                    }}
-                    options={studyTypeData && studyTypeData}
-                    value={studentTypeVal}
-                    name={studentTypeName}
-                    register={register}
-                    label="Student Type"
-                    onBlur={() => {
-                      trigger(studentTypeName);
-                    }}
-                  />
-                  {/* <select
-                    defaultValue={studentTypeVal}
-                    value={studentTypeVal}
-                    className="form-select"
-                    {...register(`${studentTypeName}`, { required: true })}
-                    onChange={({ target: { value } }) => {
-                      setValue(studentTypeName, value, formDirtyState);
-                      setValue("sponsor", null, formDirtyState);
-                      if (
-                        value?.toLowerCase().includes(CommonEnums.MANAGEMENT)
-                      ) {
-                        setValue("sponsor.isSponsor", "no", formDirtyState);
-                        return;
-                      }
-                      if (value?.toLowerCase().includes(CommonEnums.REGULAR)) {
-                        setValue("sponsor.isSponsor", "no", formDirtyState);
-                        return;
-                      }
-                      if (value?.toLowerCase().includes(CommonEnums.BURSARY)) {
-                        setValue("sponsor.isSponsor", "yes", formDirtyState);
-                        return;
-                      } else setValue("sponsor.isSponsor", "", formDirtyState);
-                      return;
-                    }}
-                  >
-                    {" "}
-                    <option value={""}>Select Type</option>
-                    {studyTypeData &&
-                      studyTypeData
-                        .filter((item) => item.code !== "MGMTBURSARY")
-                        .map(({ code, name }) => (
-                          <option
-                            selected={code === studentTypeVal}
-                            key={code}
-                            value={code}
-                          >
-                            {name}
-                          </option>
-                        ))}
-                  </select> */}
-                  {educationFormError &&
-                    educationFormError?.studentTypeCode && (
-                      <div className="invalid-feedback">
-                        Please select Student type
-                      </div>
-                    )}
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  {/* <AdvanceDropDown
-                    setValue={setValue}
-                    options={AgentandSocialMedia && AgentandSocialMedia}
-                    value={referredByeVal}
-                    name={referredBy}
-                    register={register}
-                    onChange={(e) => {
-                      const value = e;
 
-                      setValue(referredBy, value, formDirtyState);
-                      setTimeout(() => {
-                        if (value === "AGENT") {
-                          setValue(socialMediaId, "", formDirtyState);
-                          unregister(socialMediaId, {
-                            keepError: false,
-                            keepIsValid: true,
-                          });
-                        }
-                        if (value === "SOCIALMEDIA") {
-                          setValue(agentName, "", formDirtyState);
-                          unregister(agentName, {
-                            keepError: false,
-                            keepIsValid: true,
-                          });
-                        }
-                      }, 0);
-                    }}
-                    label="Agent/Social Media"
-                  /> */}
+              <div className="col-md-4">
+                <div className="mb-4">
                   <StyledLabel required>
                     Referred by <strong>Agent/Social Media</strong>
                   </StyledLabel>
@@ -630,26 +539,7 @@ export const EducationForm = (props: IEducationProps) => {
                         trigger(agentName);
                       }}
                     />
-                    {/* <StyledLabel required>Agent Name</StyledLabel>
-                    <select
-                      className="form-select"
-                      {...register(`${agentName}`, {
-                        required: referredByeVal === "AGENT",
-                      })}
-                      value={agentNameVal}
-                    >
-                      <option value={""}>Select Agent</option>
-                      {agentArr &&
-                        agentArr.map(({ name }) => (
-                          <option
-                            selected={name === agentNameVal}
-                            key={name}
-                            value={name}
-                          >
-                            {name}
-                          </option>
-                        ))}
-                    </select> */}
+
                     {educationFormError &&
                       educationFormError?.studentTypeCode && (
                         <div className="invalid-feedback">

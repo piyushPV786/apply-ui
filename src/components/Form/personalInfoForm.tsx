@@ -323,6 +323,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                             type: "custom",
                             message: "Provided email address already exists",
                           });
+                        } else if (
+                          "you have entered an invalid email address. Please try again"
+                        ) {
+                          setError(emailKey, {
+                            type: "custom",
+                            message:
+                              "you have entered an invalid email address. Please try again",
+                          });
                         } else {
                           clearErrors(emailKey);
                         }
@@ -343,12 +351,6 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     <div className="invalid-feedback">
                       {Errors?.email?.type === "custom" &&
                         Errors?.email?.message}
-                    </div>
-                  )}
-                  {email?.length > 1 && !isValidEmail(email) && (
-                    <div className="invalid-feedback">
-                      you have entered an invalid email address. Please try
-                      again
                     </div>
                   )}
                 </div>
