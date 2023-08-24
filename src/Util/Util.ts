@@ -657,6 +657,17 @@ export const transformFormData = (formData: any) => {
 
 export const emailValidation = async (e) => {
   let returnVal = { type: "", message: "" };
+
+  if (
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      e.target.value
+    ) == false
+  ) {
+    returnVal = {
+      type: "custom",
+      message: " you have entered an invalid email address. Please try  again",
+    };
+  }
   await AuthApi.get(
     `${CommonApi.EMAILCHECK}/${e.target.value}/leadCode/${
       JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
