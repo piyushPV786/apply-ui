@@ -457,7 +457,7 @@ export const EmployedForm = (props: IEmployeProps) => {
                             register={register}
                             name={employmentCountry}
                             onChange={(e: any) => {
-                              getStateData(e.code, "EMPLOYED");
+                              e?.code && getStateData(e.code, "EMPLOYED");
                               setValue(employmentCountry, e?.code);
                             }}
                             label="Country"
