@@ -139,10 +139,9 @@ export const SponsoredForm = (props: ISponsorProps) => {
   const isRequired =
     sponsorModeVal?.toLowerCase() === CommonEnums.EMPLOYEE_BURSARY;
   const isGuardian = sponsorModeVal?.toLowerCase() === CommonEnums.GUARDIAN;
-  const sponsorModeData =
-    studentType?.toLowerCase() === CommonEnums.BURSARY
-      ? sponsorModeArr.filter((item) => item.name !== "Guardian")
-      : sponsorModeArr.filter((item) => item.name === "Guardian");
+  const sponsorModeData = sponsorModeArr.filter(
+    (item) => item.name === "Guardian"
+  );
 
   const getEmailValidation = (value: string) => {
     if (isSponserNeed) {
