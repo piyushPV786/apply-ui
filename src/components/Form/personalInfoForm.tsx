@@ -317,13 +317,14 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       if (e.target.value) {
                         const res = await emailValidation(e);
                         if (
-                          res.message == "Provided email address alredy exists"
+                          res?.message == "Provided email address alredy exists"
                         ) {
                           setError(emailKey, {
                             type: "custom",
                             message: "Provided email address already exists",
                           });
                         } else if (
+                          res?.message ==
                           "you have entered an invalid email address. Please try again"
                         ) {
                           setError(emailKey, {
@@ -331,7 +332,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                             message:
                               "you have entered an invalid email address. Please try again",
                           });
-                        } else {
+                        } else if (res?.message == "clear") {
                           clearErrors(emailKey);
                         }
                       } else if (e.target.value == "") {
