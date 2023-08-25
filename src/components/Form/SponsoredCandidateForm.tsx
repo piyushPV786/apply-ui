@@ -51,6 +51,10 @@ interface ISponsorProps {
   getStateData: any;
   sponsorStateData: any;
 }
+interface stateType {
+  countryCode: string;
+  isoCode: string;
+}
 export const SponsoredForm = (props: ISponsorProps) => {
   const {
     sponsorModeArr = [],
@@ -71,7 +75,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     formState: { errors, touchedFields },
   } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>();
-  const [state, setState] = useState();
+  const [state, setState] = useState<stateType[]>();
   const isSponsorVal = watch(isSponsor);
   const sponsorModeVal = watch(sponsorMode);
   const sponsorNameVal = watch(sponsorName);

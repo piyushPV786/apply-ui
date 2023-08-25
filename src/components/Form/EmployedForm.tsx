@@ -45,6 +45,10 @@ interface IEmployeProps {
   getStateData: any;
   employedStateData: any;
 }
+interface stateType {
+  countryCode: string;
+  isoCode: string;
+}
 export const EmployedForm = (props: IEmployeProps) => {
   const {
     employmentIndustries,
@@ -67,7 +71,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     control,
     formState: { errors, touchedFields },
   } = useFormContext();
-  const [state, setState] = useState();
+  const [state, setState] = useState<stateType[]>();
   const employmentStatusVal = watch(employmentStatus);
   const isEmployedVal = watch(isEmployed);
   const employmentCountryVal = watch(employmentCountry);

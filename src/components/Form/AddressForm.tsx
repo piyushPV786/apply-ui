@@ -66,7 +66,9 @@ export const AddressForm = ({
   const postalCityVal: string = watch(postalCity);
   const postalStateVal: string = watch(postalState);
   const [resStateValue, setResStateValue] = useState<stateType[]>([]);
-  const [posStateValue, setPosStateValue] = useState<stateType[] | string>([]);
+  const [posStateValue, setPosStateValue] = useState<
+    stateType[] | string | null
+  >([]);
   useEffect(() => {
     setValue(`${addressType}`, "POSTAL");
     setValue(`${addressTypeResidential}`, "RESIDENTIAL");
@@ -305,7 +307,7 @@ export const AddressForm = ({
                         setValue(`${postalCity}`, "");
                         setValue(`${postalState}`, "");
                         setValue(`${postalCountry}`, "");
-                        setPosStateValue("");
+                        setPosStateValue(null);
                       }
                     }}
                   />
