@@ -13,7 +13,7 @@ interface stateType {
 interface IAdvanceDropDownProps {
   options: any[];
   label?: string;
-  value: string | stateType[];
+  value: string | stateType[] | undefined | null;
   mapKey?: string;
 
   displayItem?: string;

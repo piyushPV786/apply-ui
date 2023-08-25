@@ -66,7 +66,9 @@ export const AddressForm = ({
   const postalCityVal: string = watch(postalCity);
   const postalStateVal: string = watch(postalState);
   const [resStateValue, setResStateValue] = useState<stateType[]>([]);
-  const [posStateValue, setPosStateValue] = useState<stateType[]>([]);
+  const [posStateValue, setPosStateValue] = useState<
+    stateType[] | string | null
+  >([]);
   useEffect(() => {
     setValue(`${addressType}`, "POSTAL");
     setValue(`${addressTypeResidential}`, "RESIDENTIAL");
@@ -305,6 +307,7 @@ export const AddressForm = ({
                         setValue(`${postalCity}`, "");
                         setValue(`${postalState}`, "");
                         setValue(`${postalCountry}`, "");
+                        setPosStateValue(null);
                       }
                     }}
                   />
@@ -376,7 +379,11 @@ export const AddressForm = ({
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    value={posStateValue}
+                    value={
+                      !Boolean(isSameAsPostalAddressVal)
+                        ? posStateValue
+                        : resStateValue
+                    }
                     options={
                       isSameAsPostalAddressVal == false
                         ? posStateData?.sort((a, b) =>
