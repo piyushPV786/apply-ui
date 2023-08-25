@@ -380,7 +380,7 @@ export const AddressForm = ({
                 <div className="mb-4">
                   <AdvanceDropDown
                     value={
-                      isSameAsPostalAddressVal == false
+                      !Boolean(isSameAsPostalAddressVal)
                         ? posStateValue
                         : resStateValue
                     }
