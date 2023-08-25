@@ -67,7 +67,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     control,
     formState: { errors, touchedFields },
   } = useFormContext();
-  const [state, setState] = useState<any>();
+  const [state, setState] = useState();
   const employmentStatusVal = watch(employmentStatus);
   const isEmployedVal = watch(isEmployed);
   const employmentCountryVal = watch(employmentCountry);

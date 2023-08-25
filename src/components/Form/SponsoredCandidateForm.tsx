@@ -71,7 +71,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     formState: { errors, touchedFields },
   } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>();
-  const [state, setState] = useState<any>();
+  const [state, setState] = useState();
   const isSponsorVal = watch(isSponsor);
   const sponsorModeVal = watch(sponsorMode);
   const sponsorNameVal = watch(sponsorName);
