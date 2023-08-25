@@ -140,7 +140,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     setValue(sponsorState, sponsorStateVal);
     setState(
       sponsorStateData?.find((item) => {
-        return item?.isoCode == sponsorStateVal;
+        return item?.isoCode === sponsorStateVal;
       })
     );
   }, [sponsorStateData, sponsorStateVal]);

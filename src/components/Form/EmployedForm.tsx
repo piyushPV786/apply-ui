@@ -101,7 +101,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     setValue(employmentState, employmentStateVal);
     setState(
       employedStateData.find((item) => {
-        item?.isoCode == employmentStateVal;
+        item?.isoCode === employmentStateVal;
       })
     );
   }, [employedStateData]);
