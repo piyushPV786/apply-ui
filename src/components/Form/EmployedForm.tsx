@@ -67,7 +67,7 @@ export const EmployedForm = (props: IEmployeProps) => {
     control,
     formState: { errors, touchedFields },
   } = useFormContext();
-
+  const [state, setState] = useState<any>();
   const employmentStatusVal = watch(employmentStatus);
   const isEmployedVal = watch(isEmployed);
   const employmentCountryVal = watch(employmentCountry);
@@ -95,7 +95,12 @@ export const EmployedForm = (props: IEmployeProps) => {
 
   useEffect(() => {
     setValue(employmentState, employmentStateVal);
-  }, [employedStateData, employmentStateVal]);
+    setState(
+      employedStateData.find((item) => {
+        item?.isoCode == employmentStateVal;
+      })
+    );
+  }, [employedStateData]);
 
   const uppdateMobNumber = () => {
     if (countryCodeRef) {
@@ -481,8 +486,9 @@ export const EmployedForm = (props: IEmployeProps) => {
                           <AdvanceDropDown
                             onChange={(e) => {
                               setValue(employmentState, e?.isoCode);
+                              setState(e);
                             }}
-                            value={employmentStateVal}
+                            value={state}
                             options={employedStateData.sort((a, b) =>
                               sortAscending(a, b, "name")
                             )}

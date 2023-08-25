@@ -71,7 +71,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
     formState: { errors, touchedFields },
   } = useFormContext();
   const [countryCodeRef, setCountryCode] = useState<any>();
-
+  const [state, setState] = useState<any>();
   const isSponsorVal = watch(isSponsor);
   const sponsorModeVal = watch(sponsorMode);
   const sponsorNameVal = watch(sponsorName);
@@ -134,6 +134,11 @@ export const SponsoredForm = (props: ISponsorProps) => {
 
   useEffect(() => {
     setValue(sponsorState, sponsorStateVal);
+    setState(
+      sponsorStateData?.find((item) => {
+        return item?.isoCode == sponsorStateVal;
+      })
+    );
   }, [sponsorStateData, sponsorStateVal]);
 
   const isRequired =
@@ -492,7 +497,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                               mapKey="code"
                               name={sponsorCountry}
                               onChange={(e: any) => {
-                                getStateData(e?.code, "SPONSOR");
+                                e?.code && getStateData(e?.code, "SPONSOR");
                                 setValue(sponsorCountry, e?.code);
                               }}
                               label="Country"
@@ -511,7 +516,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                         <div className="col-md-4">
                           <div className="mb-4">
                             <AdvanceDropDown
-                              value={sponsorStateVal}
+                              value={state}
                               options={sponsorStateData.sort((a, b) =>
                                 sortAscending(a, b, "name")
                               )}
@@ -524,6 +529,7 @@ export const SponsoredForm = (props: ISponsorProps) => {
                                   e?.isoCode,
                                   formDirtyState
                                 );
+                                setState(e);
                               }}
                               label="State/Provinces"
                               onBlur={() => {

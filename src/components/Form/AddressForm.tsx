@@ -305,6 +305,7 @@ export const AddressForm = ({
                         setValue(`${postalCity}`, "");
                         setValue(`${postalState}`, "");
                         setValue(`${postalCountry}`, "");
+                        setPosStateValue(null as any);
                       }
                     }}
                   />
@@ -376,7 +377,11 @@ export const AddressForm = ({
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    value={posStateValue}
+                    value={
+                      isSameAsPostalAddressVal == false
+                        ? posStateValue
+                        : resStateValue
+                    }
                     options={
                       isSameAsPostalAddressVal == false
                         ? posStateData?.sort((a, b) =>
