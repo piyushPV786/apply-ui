@@ -273,7 +273,7 @@ export const ApplicationDashboard = (props: any) => {
                       </div>
                       <div className="col-md-4 d-flex align-items-start justify-content-end">
                         <div className="d-flex justify-content-end">
-                          <StyledButton 
+                          <StyledButton
                             onClick={onApplyNow}
                             className="button-shadow apply-button"
                             title="Apply a New Application"
@@ -461,9 +461,8 @@ function ApplicationCard({
   const showRMATBtn = status.includes(CommonEnums.RMAT_PENDING);
 
   const showUploadBtn =
-    status.includes(CommonEnums.APP_ENROLLED_STATUS) ||
-    status.includes(CommonEnums.APP_FEE_ACCEPTED) ||
-    status.includes(CommonEnums.RESUB_APP_DOC);
+    status.includes(CommonEnums.RESUB_APP_DOC) ||
+    status.includes(APPLICATION_STATUS.APPLICATION_DOCUMENTS_UPLOADED);
 
   const isProgramAddmittedOrIsIntakeAssigned = status.includes(
     CommonEnums.APP_ENROLLED_STATUS
@@ -473,11 +472,11 @@ function ApplicationCard({
     <>
       <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
         <div className="d-flex flex-row justify-content-between">
-          <div
-            className="refresh-icon"
-            onClick={getStudentApplications}
-          >
-            <CachedOutlined titleAccess="Refresh Application" className="m-2 refresh-button" />
+          <div className="refresh-icon" onClick={getStudentApplications}>
+            <CachedOutlined
+              titleAccess="Refresh Application"
+              className="m-2 refresh-button"
+            />
           </div>
           <div className="status-sec">
             <StyledStatusBedge status={status}>
@@ -554,7 +553,6 @@ function ApplicationCard({
               justifyContent: "flex-end",
               minHeight: "64px",
             }}
-
             container
             spacing={1}
           >
