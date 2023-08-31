@@ -460,9 +460,9 @@ function ApplicationCard({
 
   const showRMATBtn = status.includes(CommonEnums.RMAT_PENDING);
 
-  const showUploadBtn =
-    status.includes(CommonEnums.RESUB_APP_DOC) ||
-    status.includes(APPLICATION_STATUS.APPLICATION_DOCUMENTS_UPLOADED);
+  const showUploadBtn = status.includes(
+    APPLICATION_STATUS.APPLICATION_DOCUMENTS_UPLOADED
+  );
 
   const isProgramAddmittedOrIsIntakeAssigned = status.includes(
     CommonEnums.APP_ENROLLED_STATUS
@@ -612,7 +612,7 @@ function ApplicationCard({
                 />
               </Grid>
             )}
-            {showUploadBtn && (
+            {!showUploadBtn && (
               <Grid item>
                 <StyledButton
                   onClick={() =>
