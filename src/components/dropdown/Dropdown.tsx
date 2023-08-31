@@ -64,6 +64,7 @@ const AdvanceDropDown = ({
       </StyledLabel>
       {options && (
         <Autocomplete
+          disabled={disabled}
           clearOnEscape
           sx={{
             [`& .${autocompleteClasses.inputRoot}`]: {
