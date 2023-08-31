@@ -436,7 +436,6 @@ const Payment = (props: any) => {
                                   <h4 className="subtotal">
                                     Total Amount{" "}
                                     <div className="payment-values">
-                                      {" "}
                                       {!isNaN(totalAmount) && selectedCurrency}
                                       {isNaN(totalAmount)
                                         ? "...Converting"

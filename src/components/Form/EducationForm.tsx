@@ -216,8 +216,8 @@ export const EducationForm = (props: IEducationProps) => {
                     name={program}
                     register={register}
                     onChange={(e) => {
-                      getQualificationStudyModeData(e?.code);
-                      setValue(program, e?.code);
+                      e?.code && getQualificationStudyModeData(e?.code);
+                      e?.code && setValue(program, e?.code);
                     }}
                     label="Interested Program"
                     onBlur={() => {
