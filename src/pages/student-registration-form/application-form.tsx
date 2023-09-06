@@ -109,15 +109,14 @@ const ApplicationForm = () => {
 
       if (applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED) {
         setApllicationEnrolled(true);
-        setNewApplication(true);
       } else {
         setApllicationEnrolled(false);
-        if (
-          applicationStatus === CommonEnums.NEW_STATUS ||
+        if (applicationStatus === CommonEnums.NEW_STATUS) {
+          setNewApplication(true);
+        } else if (
+          applicationStatus === CommonEnums.TRUE ||
           !applicationStatus
         ) {
-          setNewApplication(true);
-        } else if (applicationStatus === CommonEnums.TRUE) {
           setNewApplication(false);
         }
       }
@@ -178,7 +177,7 @@ const ApplicationForm = () => {
       settermsOpen(false);
     }
   };
-
+  console.log(isNewApplication);
   const updateLead = (
     request: any,
     leadCode: string,
@@ -191,11 +190,13 @@ const ApplicationForm = () => {
       uploadStudentDocs(draftSave);
       return;
     }
+
     let methodType;
     if (
       applicationCode &&
       applicationCode?.length > 0 &&
-      (status !== CommonEnums.DRAFT_STATUS || !status)
+      (status !== CommonEnums.DRAFT_STATUS || !status) &&
+      isNewApplication == false
     ) {
       methodType = AuthApi.put(
         `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}?isDraft=false`,
@@ -208,7 +209,8 @@ const ApplicationForm = () => {
         const fetchMethod =
           applicationCode &&
           applicationCode?.length > 0 &&
-          (status !== CommonEnums.DRAFT_STATUS || !status)
+          (status !== CommonEnums.DRAFT_STATUS || !status) &&
+          isNewApplication == false
             ? "put"
             : "post";
         request.applicationCode = applicationCode;
