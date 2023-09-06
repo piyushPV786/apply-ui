@@ -177,7 +177,7 @@ const ApplicationForm = () => {
       settermsOpen(false);
     }
   };
-  console.log(isNewApplication);
+
   const updateLead = (
     request: any,
     leadCode: string,
