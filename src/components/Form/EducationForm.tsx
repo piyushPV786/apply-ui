@@ -184,6 +184,7 @@ export const EducationForm = (props: IEducationProps) => {
     studyModeQualification[0]?.studyModes.findIndex(
       (item) => item?.studyModeCode === studyModeVal
     );
+
   return (
     <>
       <StyledAccordion
@@ -531,7 +532,7 @@ export const EducationForm = (props: IEducationProps) => {
                       name={agentName}
                       register={register}
                       label="Agent Name"
-                      mapKey="name"
+                      mapKey="code"
                       onChange={(e) => {
                         setValue(agentName, e?.code);
                       }}
