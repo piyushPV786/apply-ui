@@ -533,7 +533,7 @@ export const EducationForm = (props: IEducationProps) => {
                       label="Agent Name"
                       mapKey="name"
                       onChange={(e) => {
-                        setValue(agentName, e?.name);
+                        setValue(agentName, e?.code);
                       }}
                       onBlur={() => {
                         trigger(agentName);
