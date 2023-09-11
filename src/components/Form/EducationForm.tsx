@@ -114,7 +114,6 @@ export const EducationForm = (props: IEducationProps) => {
 
   useEffect(() => {
     if (
-      leadId &&
       programVal &&
       programVal.length > 0 &&
       studyModeQualification.length === 0
