@@ -111,10 +111,9 @@ export const EducationForm = (props: IEducationProps) => {
   const internationDegreeVal = watch(internationDegree);
   const educationFormError = errors[parentKey] as any;
   const TouchFields = touchedFields[parentKey];
-
+  console.log(programVal);
   useEffect(() => {
     if (
-      leadId &&
       programVal &&
       programVal.length > 0 &&
       studyModeQualification.length === 0
@@ -185,6 +184,7 @@ export const EducationForm = (props: IEducationProps) => {
       (item) => item?.studyModeCode === studyModeVal
     );
 
+  console.log(studyModeQualification[0]);
   return (
     <>
       <StyledAccordion
