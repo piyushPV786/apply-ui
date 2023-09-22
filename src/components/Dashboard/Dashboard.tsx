@@ -559,43 +559,51 @@ function ApplicationCard({
             sm={12}
           >
             <Grid sm={3} item>
-              <Dropdown style={{ width: "100%" }}>
-                <ContentCard variant="success" id="dropdown-basic">
-                  Downloads
-                </ContentCard>
+              {!!document?.filter((item) => {
+                return (
+                  item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER ||
+                  item?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER ||
+                  item?.documentTypeCode === CommonEnums.WELCOME_LETTER
+                );
+              })?.length && (
+                <Dropdown style={{ width: "100%" }}>
+                  <ContentCard variant="success" id="dropdown-basic">
+                    Downloads
+                  </ContentCard>
 
-                <Dropdown.Menu>
-                  {document
-                    ?.filter((item) => {
-                      return (
-                        item?.documentTypeCode ===
-                          CommonEnums.CONFIRMATION_LETTER ||
-                        item?.documentTypeCode ===
-                          CommonEnums.ACCEPTANCE_LETTER ||
-                        item?.documentTypeCode === CommonEnums.WELCOME_LETTER
-                      );
-                    })
-                    ?.map((item) => {
-                      return (
-                        <Dropdown.Item
-                          onClick={() => {
-                            onDownloadAcceptence(
-                              document,
-                              item?.documentTypeCode
-                            );
-                          }}
-                          style={{ width: "100%" }}
-                        >
-                          {`${capitalizeFirstLetter(
-                            item?.documentTypeCode.split("-")[0].toLowerCase()
-                          )} ${item?.documentTypeCode
-                            .split("-")[1]
-                            .toLowerCase()}`}
-                        </Dropdown.Item>
-                      );
-                    })}
-                </Dropdown.Menu>
-              </Dropdown>
+                  <Dropdown.Menu>
+                    {document
+                      ?.filter((item) => {
+                        return (
+                          item?.documentTypeCode ===
+                            CommonEnums.CONFIRMATION_LETTER ||
+                          item?.documentTypeCode ===
+                            CommonEnums.ACCEPTANCE_LETTER ||
+                          item?.documentTypeCode === CommonEnums.WELCOME_LETTER
+                        );
+                      })
+                      ?.map((item) => {
+                        return (
+                          <Dropdown.Item
+                            onClick={() => {
+                              onDownloadAcceptence(
+                                document,
+                                item?.documentTypeCode
+                              );
+                            }}
+                            style={{ width: "100%" }}
+                          >
+                            {`${capitalizeFirstLetter(
+                              item?.documentTypeCode.split("-")[0].toLowerCase()
+                            )} ${item?.documentTypeCode
+                              .split("-")[1]
+                              .toLowerCase()}`}
+                          </Dropdown.Item>
+                        );
+                      })}
+                  </Dropdown.Menu>
+                </Dropdown>
+              )}
             </Grid>
             <Grid
               container
