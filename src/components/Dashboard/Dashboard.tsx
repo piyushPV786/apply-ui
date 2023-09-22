@@ -15,6 +15,7 @@ import StyledButton from "../button/button";
 import styled from "styled-components";
 import Image from "next/image";
 import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
+import Dropdown from "react-bootstrap/Dropdown";
 import {
   APPLICATION_STATUS,
   CommonApi,
@@ -28,6 +29,7 @@ import {
   clearRoute,
   downloadDocument,
   getCommonUploadDocumentUrl,
+  capitalizeFirstLetter,
   getStatusColor,
   showErrorToast,
   transformDate,
@@ -436,6 +438,7 @@ function ApplicationCard({
   const isAcceptedApplication = status.includes(
     CommonEnums.APP_ENROLLED_ACCEPTED
   );
+
   const sponsorModeType = sponsor?.sponsorModeCode;
   const router = useRouter();
   const showEditBtn =
@@ -546,266 +549,63 @@ function ApplicationCard({
         </div>
         <div className="w-100 mt-4 ">
           <Grid
+            container
             style={{
               padding: "10px 16px 10px",
               borderTop: `1px solid ${Green}`,
               backgroundColor: "#f4f2f1",
-              justifyContent: "flex-end",
               minHeight: "64px",
             }}
-            container
-            spacing={1}
+            sm={12}
           >
-            {showEditBtn && (
-              <Grid item>
-                <StyledButton
-                  isEditBtn
-                  className="card-button"
-                  isGreenWhiteCombination={true}
-                  title="Edit"
-                  onClick={() =>
-                    onEdit(
-                      applicationNumber,
-                      leadCode,
-                      status,
-                      educationDetail,
-                      id
-                    )
-                  }
-                />
-              </Grid>
-            )}
-            {showRMATBtn && (
-              <Grid item>
-                <StyledButton
-                  onClick={() => {
-                    router.push(RoutePaths.RMATView, {
-                      query: { enrolmentCode },
-                    });
-                  }}
-                  isRMATBtn
-                  title="Take RMAT Test"
-                />
-              </Grid>
-            )}
-            {showPayBtn && (
-              <Grid item>
-                <StyledButton
-                  onClick={() =>
-                    isAcceptedApplication
-                      ? onPay(
-                          applicationNumber,
-                          leadCode,
-                          status,
-                          educationDetail
-                        )
-                      : onPay(
-                          applicationNumber,
-                          leadCode,
-                          status,
-                          educationDetail
-                        )
-                  }
-                  isPayBtn
-                  className="card-button"
-                  title={payBtnTitle}
-                />
-              </Grid>
-            )}
-            {!showUploadBtn && (
-              <Grid item>
-                <StyledButton
-                  onClick={() =>
-                    onUploadDocuments(applicationNumber, leadCode, true, status)
-                  }
-                  isUploadBtn
-                  className="card-button"
-                  title="Upload Documents"
-                />
-              </Grid>
-            )}
-            {isAcceptedApplication &&
-              educationDetail?.studentTypeCode === "BURSARY" &&
-              sponsorModeType === "EMPBURSARY" && (
-                <Grid item>
-                  <StyledButton
-                    onClick={() =>
-                      onUploadBursaryDocuments(
-                        applicationNumber,
-                        leadCode,
-                        status
-                      )
-                    }
-                    isUploadBtn
-                    className="card-button"
-                    title="Upload Employee Bursary Letter"
-                  />
-                </Grid>
-              )}
-            {document?.find(
-              (doc) => doc?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER
-            ) && (
-              <Grid item>
-                <StyledButton
-                  isDownloadBtn
-                  isGreenWhiteCombination
-                  onClick={() =>
-                    onDownloadAcceptence(
-                      document,
-                      CommonEnums.CONFIRMATION_LETTER
-                    )
-                  }
-                  className="card-button"
-                  title="Confirmation Letter"
-                />
-              </Grid>
-            )}
+            <Grid sm={3} item>
+              <Dropdown style={{ width: "100%" }}>
+                <ContentCard variant="success" id="dropdown-basic">
+                  Downloads
+                </ContentCard>
 
-            {document?.find(
-              (doc) => doc?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER
-            ) && (
-              <Grid item>
-                <StyledButton
-                  onClick={() =>
-                    onDownloadAcceptence(
-                      document,
-                      CommonEnums.ACCEPTANCE_LETTER
-                    )
-                  }
-                  isGreenWhiteCombination
-                  isDownloadBtn
-                  className="card-button"
-                  title="Acceptence Letter"
-                />
-              </Grid>
-            )}
-            {document?.find(
-              (doc) => doc?.documentTypeCode === CommonEnums.WELCOME_LETTER
-            ) && (
-              <Grid item>
-                <StyledButton
-                  onClick={() =>
-                    onDownloadAcceptence(document, CommonEnums.WELCOME_LETTER)
-                  }
-                  isGreenWhiteCombination
-                  isDownloadBtn
-                  className="card-button"
-                  title="Welcome Letter"
-                />
-              </Grid>
-            )}
-            {isProgramAddmitted && (
-              <Grid item>
-                <StyledButton
-                  onClick={() => {
-                    onLoginCredentialsClick(
-                      applicationNumber,
-                      leadCode,
-                      status,
-                      educationDetail,
-                      id,
-                      username,
-                      password
-                    );
-                  }}
-                  className="card-button"
-                  title="view login credentials"
-                />
-              </Grid>
-            )}
-
-            {isAcceptedApplication &&
-              educationDetail?.studentTypeCode === "BURSARY" &&
-              sponsorModeType === "EMPBURSARY" && (
-                <Grid item>
-                  <StyledButton
-                    onClick={() =>
-                      onUploadBursaryDocuments(
-                        applicationNumber,
-                        leadCode,
-                        status
-                      )
-                    }
-                    isUploadBtn
-                    className="card-button"
-                    title="Upload Employee Bursary Letter"
-                  />
-                </Grid>
-              )}
-          </Grid>
-        </div>
-        {/* <div className="d-flex justify-content-between">
-          <Tooltip title="Refresh Application">
-            <IconButton color="inherit">
-              {" "}
-              <CachedOutlined onClick={getStudentApplications} />
-            </IconButton>
-          </Tooltip>
-
-          <StyledStatusBedge status={status}>{status}</StyledStatusBedge>
-        </div>
-        <ContentCard>
-          {!showCredentialBtn ? (
-            <div className="w-100">
-              {applicationNumber && (
-                <GreenFormHeading className="application-number">
-                  Application Number - {applicationNumber}
-                </GreenFormHeading>
-              )}
-              {enrolmentCode ? (
-                <GreenFormHeading className="application-number">
-                  Enrollment Number - {enrolmentCode}
-                </GreenFormHeading>
-              ) : null}
-            </div>
-          ) : (
-            <div className="w-100">
-              <GreenFormHeading className="application-number">
-                Student Id - {studentCode}
-              </GreenFormHeading>
-              {enrolmentCode ? (
-                <GreenFormHeading className="application-number">
-                  Enrollment Number - {enrolmentCode}
-                </GreenFormHeading>
-              ) : null}
-            </div>
-          )}
-          {enrollmentNumber && (
-            <div className="mt-2 w-100 app-card-block">
-              <p className="mb-0" style={{ color: `#5a636a` }}>
-                Application Number
-              </p>
-              <strong>{applicationNumber}</strong>
-            </div>
-          )}
-          <div className="mt-2 w-100 app-card-block">
-            <p className="mb-0" style={{ color: `#5a636a` }}>
-              Name
-            </p>
-            <strong>{name}</strong>
-          </div>
-          <div className="mt-2 w-100 app-card-block">
-            <p className="mb-0" style={{ color: `#5a636a` }}>
-              Interested Program
-            </p>
-            <strong>{programName}</strong>
-          </div>
-          <div className="mt-2 d-flex justify-content-between w-100 app-card-block">
-            <div>
-              <p className="mb-0" style={{ color: `#5a636a` }}>
-                Study Mode
-              </p>
-              <strong>{studyModeCode}</strong>
-            </div>
-            <div>
-              <p className="mb-0" style={{ color: `#5a636a` }}>
-                Last updated
-              </p>
-              <strong>{transformDate(new Date(updatedAt))}</strong>
-            </div>
-          </div>
-          <div className="w-100 mt-4 ">
-            <Grid container spacing={1}>
+                <Dropdown.Menu>
+                  {document
+                    ?.filter((item) => {
+                      return (
+                        item?.documentTypeCode ===
+                          CommonEnums.CONFIRMATION_LETTER ||
+                        item?.documentTypeCode ===
+                          CommonEnums.ACCEPTANCE_LETTER ||
+                        item?.documentTypeCode === CommonEnums.WELCOME_LETTER
+                      );
+                    })
+                    ?.map((item) => {
+                      return (
+                        <Dropdown.Item
+                          onClick={() => {
+                            onDownloadAcceptence(
+                              document,
+                              item?.documentTypeCode
+                            );
+                          }}
+                          style={{ width: "100%" }}
+                        >
+                          {`${capitalizeFirstLetter(
+                            item?.documentTypeCode.split("-")[0].toLowerCase()
+                          )} ${item?.documentTypeCode
+                            .split("-")[1]
+                            .toLowerCase()}`}
+                        </Dropdown.Item>
+                      );
+                    })}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Grid>
+            <Grid
+              container
+              style={{
+                justifyContent: "flex-end",
+              }}
+              className="d-flex flex-row"
+              sm={9}
+              spacing={1}
+            >
               {showEditBtn && (
                 <Grid item>
                   <StyledButton
@@ -862,36 +662,7 @@ function ApplicationCard({
                   />
                 </Grid>
               )}
-              {showCredentialBtn && (
-                <Grid item>
-                  <StyledButton
-                    isDownloadBtn
-                    onClick={() =>
-                      onDownloadAcceptence(
-                        document,
-                        CommonEnums.CONFIRMATION_LETTER
-                      )
-                    }
-                    className="card-button"
-                    title="Confirmation Letter"
-                  />
-                </Grid>
-              )}
-
-              {showCredentialBtn && (
-                <Grid item>
-                  <StyledButton
-                    onClick={() =>
-                      router.push("/student-registration-form/credentials", {
-                        query: `state=${status}`,
-                      })
-                    }
-                    className="card-button"
-                    title="view login credentials"
-                  />
-                </Grid>
-              )}
-              {showUploadBtn && (
+              {!showUploadBtn && (
                 <Grid item>
                   <StyledButton
                     onClick={() =>
@@ -905,22 +676,6 @@ function ApplicationCard({
                     isUploadBtn
                     className="card-button"
                     title="Upload Documents"
-                  />
-                </Grid>
-              )}
-              {isAcceptedApplication && (
-                <Grid item>
-                  <StyledButton
-                    onClick={() =>
-                      onDownloadAcceptence(
-                        document,
-                        CommonEnums.ACCEPTANCE_LETTER
-                      )
-                    }
-                    isGreenWhiteCombination
-                    isDownloadBtn
-                    className="card-button"
-                    title="Acceptence Letter"
                   />
                 </Grid>
               )}
@@ -942,9 +697,48 @@ function ApplicationCard({
                     />
                   </Grid>
                 )}
+
+              {isProgramAddmitted && (
+                <Grid item>
+                  <StyledButton
+                    onClick={() => {
+                      onLoginCredentialsClick(
+                        applicationNumber,
+                        leadCode,
+                        status,
+                        educationDetail,
+                        id,
+                        username,
+                        password
+                      );
+                    }}
+                    className="card-button"
+                    title="view login credentials"
+                  />
+                </Grid>
+              )}
+
+              {isAcceptedApplication &&
+                educationDetail?.studentTypeCode === "BURSARY" &&
+                sponsorModeType === "EMPBURSARY" && (
+                  <Grid item>
+                    <StyledButton
+                      onClick={() =>
+                        onUploadBursaryDocuments(
+                          applicationNumber,
+                          leadCode,
+                          status
+                        )
+                      }
+                      isUploadBtn
+                      className="card-button"
+                      title="Upload Employee Bursary Letter"
+                    />
+                  </Grid>
+                )}
             </Grid>
-          </div>
-        </ContentCard> */}
+          </Grid>
+        </div>
       </ApplicationContainer>
     </>
   );
@@ -993,8 +787,9 @@ const StyledStatusBedge = styled.div<any>`
 const ApplicationContainer = styled.div`
   position: relative;
 `;
-const ContentCard = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
+const ContentCard = styled(Dropdown.Toggle)`
+  height: 34px;
+  background-color: #008554;
+  font-size: 0.86rem;
+  border-radius: 4px;
 `;
