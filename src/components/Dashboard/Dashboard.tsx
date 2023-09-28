@@ -33,6 +33,7 @@ import {
   getStatusColor,
   showErrorToast,
   transformDate,
+  formateInPascalCase,
 } from "../../Util/Util";
 import { Grid } from "@material-ui/core";
 import { CachedOutlined, Height } from "@material-ui/icons";
@@ -235,9 +236,10 @@ export const ApplicationDashboard = (props: any) => {
         if (res?.statusCode === 200) {
           downloadDocument(res?.data, name);
           setTimeout(() => {
+            
             setToast({
               show: true,
-              message: `${documentTypeCode.toLowerCase()}  Downloaded Successfully`,
+              message: `${formateInPascalCase(documentTypeCode)}  Downloaded Successfully`,
               success: true,
             });
           }, 1000);
