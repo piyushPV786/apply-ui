@@ -235,9 +235,13 @@ export const ApplicationDashboard = (props: any) => {
         if (res?.statusCode === 200) {
           downloadDocument(res?.data, name);
           setTimeout(() => {
+            const words = documentTypeCode.split("-");
+            const formattedString = words
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+              .join(" ");
             setToast({
               show: true,
-              message: `${documentTypeCode.toLowerCase()}  Downloaded Successfully`,
+              message: `${formattedString}  Downloaded Successfully`,
               success: true,
             });
           }, 1000);
