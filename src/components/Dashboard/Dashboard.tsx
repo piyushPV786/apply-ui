@@ -184,7 +184,8 @@ export const ApplicationDashboard = (props: any) => {
   const onUploadDocuments = (
     applicationCode: string | number,
     leadCode: string,
-    status
+    status,
+    studentCode
   ) => {
     clearRoute();
     const isdraftSave = false;
@@ -196,6 +197,7 @@ export const ApplicationDashboard = (props: any) => {
       isPaymentPending,
       isdraftSave,
       isDocumentPending,
+      studentCode: studentCode,
     };
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     router.push(RoutePaths.Application_Form, { query: `status=${status}` });
@@ -236,10 +238,11 @@ export const ApplicationDashboard = (props: any) => {
         if (res?.statusCode === 200) {
           downloadDocument(res?.data, name);
           setTimeout(() => {
-            
             setToast({
               show: true,
-              message: `${formateInPascalCase(documentTypeCode)}  Downloaded Successfully`,
+              message: `${formateInPascalCase(
+                documentTypeCode
+              )}  Downloaded Successfully`,
               success: true,
             });
           }, 1000);
@@ -440,7 +443,7 @@ function ApplicationCard({
   const isAcceptedApplication = status.includes(
     CommonEnums.APP_ENROLLED_ACCEPTED
   );
-
+  console.log(studentCode);
   const sponsorModeType = sponsor?.sponsorModeCode;
   const router = useRouter();
   const showEditBtn =
@@ -679,8 +682,8 @@ function ApplicationCard({
                       onUploadDocuments(
                         applicationNumber,
                         leadCode,
-                        true,
-                        status
+                        status,
+                        studentCode
                       )
                     }
                     isUploadBtn

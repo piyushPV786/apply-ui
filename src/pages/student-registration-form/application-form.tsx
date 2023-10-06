@@ -554,7 +554,9 @@ const ApplicationForm = () => {
       discountAmount: allFields?.payment?.discountAmount,
       currencyCode: allFields?.payment?.selectedCurrency,
       isDraft,
-      // studentTypeCode: allFields?.education?.studentTypeCode,
+      studentCode: JSON.parse(
+        sessionStorage?.getItem("activeLeadDetail") as any
+      ).studentCode,
     };
     getUploadDocumentUrl(payload)
       .then((res) => {
