@@ -80,6 +80,7 @@ const ApplicationForm = () => {
   const [sponsorStateData, setSponsorStateData] = useState([]);
   const [studyModeData, setStudyModeData] = useState([]);
   const [employedStateData, setEmployedStateData] = useState([]);
+  const [documentData, setDocumentData] = useState([]);
   const methods = useForm<ILeadFormValues>({
     mode: "all",
     reValidateMode: "onBlur",
@@ -100,6 +101,7 @@ const ApplicationForm = () => {
     getNationalData();
     identificationDocumentType();
     getStudyModeData();
+    getDocumentData();
   }, []);
 
   useEffect(() => {
@@ -608,6 +610,21 @@ const ApplicationForm = () => {
   const onSubmit = (data: any, isDrafSave?: boolean) => {
     submitFormData(data, isDrafSave);
   };
+  const getDocumentData = async () => {
+    const res = await CommonAPI.get(`/document-type?projectDocument=false`);
+    let filterdoc = res?.data?.data?.filter((item) => {
+      return item.code !== "PAYMENTPROOF";
+    });
+    filterdoc = filterdoc?.map((item) => {
+      return {
+        name: item?.name,
+        id: item?.code,
+        disabled: false,
+        status: "Upload Pending",
+      };
+    });
+    setDocumentData(filterdoc);
+  };
 
   const getMasterData = () => {
     AuthApi.get(CommonApi.GETMASTERDATA)
@@ -864,6 +881,7 @@ const ApplicationForm = () => {
                 {activeStep === MagicNumbers.TWO && (
                   <>
                     <DocumentUploadForm
+                      documentData={documentData}
                       allFields={allFields}
                       isValidDocument={isValidDocument}
                       documentType={identificationDocumentTypeData}
