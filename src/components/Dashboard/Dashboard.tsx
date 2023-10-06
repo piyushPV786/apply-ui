@@ -443,7 +443,7 @@ function ApplicationCard({
   const isAcceptedApplication = status.includes(
     CommonEnums.APP_ENROLLED_ACCEPTED
   );
-  console.log(studentCode);
+
   const sponsorModeType = sponsor?.sponsorModeCode;
   const router = useRouter();
   const showEditBtn =
