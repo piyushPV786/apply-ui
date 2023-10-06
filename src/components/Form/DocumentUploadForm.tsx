@@ -21,54 +21,6 @@ import { identificationDocumentTypeKey } from "./personalInfoForm";
 import { CloseOutlined } from "@material-ui/icons";
 import { GraduationType } from "../common/constant";
 
-const documentUploadFormData = [
-  {
-    name: "Declaration form",
-    id: "declarationForm",
-    disabled: false,
-    status: "Upload Pending",
-    isDeclaration: true,
-  },
-  {
-    name: "National ID/Passport",
-    id: "nationalIdPassport",
-    disabled: false,
-    status: "Upload Pending",
-  },
-  {
-    name: "Highest Qualification",
-    id: "highestQualification",
-    disabled: false,
-    status: "Upload Pending",
-  },
-  {
-    name: "Matric Certificate or Equivalent",
-    id: "matricCertificate",
-    disabled: false,
-    status: "Upload Pending",
-  },
-  {
-    name: "Detailed CV",
-    id: "detailCV",
-    disabled: false,
-    status: "Upload Pending",
-  },
-];
-const mbaProgramDocuments: any = [
-  {
-    name: "Motivation Letter",
-    id: "motivationLetter",
-    disabled: false,
-    status: "upload pending",
-  },
-  {
-    name: "Interview Notes",
-    id: "interviewNotes",
-    disabled: false,
-    status: "upload pending",
-  },
-];
-
 const documentCriteria = [
   {
     text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</stroong>`,
@@ -93,6 +45,12 @@ interface IDocumentUploadProps {
   onRemove?: (index: number) => void;
   onSubmit: () => void;
   onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
+  documentData: {
+    id: string;
+    name: string;
+    disabled: boolean;
+    status: string;
+  }[];
 }
 
 const mapStatusToFormData = (response, formData) => {
@@ -100,7 +58,7 @@ const mapStatusToFormData = (response, formData) => {
     for (const item of response) {
       const matchingFormData = formData?.find((formDataItem) => {
         if (
-          formDataItem.id === "nationalIdPassport" &&
+          formDataItem.id === "IDPASSPORT" &&
           item.documentTypeCode === "IDPASSPORT"
         ) {
           return formDataItem;
@@ -162,14 +120,15 @@ const mapStatusDocument = (documentData) => {
     return documentData;
   } else return documentData;
 };
+
 const requiredDocs = [
-  "declarationForm",
-  "nationalIdPassport",
-  "highestQualification",
-  "matricCertificate",
-  "detailCV",
+  "DECLARATIONFORM",
+  "IDPASSPORT",
+  "HIGHESTQUALIFICATION",
+  "MATRIC",
+  "RESUMECV",
 ];
-const mbaDocs = ["motivationLetter", "interviewNotes"];
+const mbaDocs = ["MOTIVATIONLETTER", "INTERVIEWNOTES"];
 const DocumentUploadForm = ({
   allFields,
   documentType,
@@ -178,15 +137,15 @@ const DocumentUploadForm = ({
   onSaveDraft,
   onSubmit,
   selectedPrograms,
+  documentData,
 }: IDocumentUploadProps) => {
   const {
     register,
     setValue,
     formState: { errors },
   } = useFormContext();
-  const [documentFormDataDetail, setDocumentFormDataDetail] = useState<
-    typeof documentUploadFormData
-  >(documentUploadFormData);
+  const [documentFormDataDetail, setDocumentFormDataDetail] =
+    useState<typeof documentData>(documentData);
   const [uploadDocs, setUploadDocs] = useState<
     (File & { error: boolean; typeCode: string; id: string })[]
   >([]);
@@ -198,10 +157,7 @@ const DocumentUploadForm = ({
   const isPostGraduation = selectedPrograms?.category === GraduationType.PG; /// upload CV in the upload document section mandatory for Post Graduate Programs and Non mandatory for Under Graduate Programs.
   useEffect(() => {
     if (documentDetails?.length > 0) {
-      const mappedDocs = mapStatusToFormData(
-        documentDetails,
-        documentUploadFormData
-      );
+      const mappedDocs = mapStatusToFormData(documentDetails, documentData);
       if (mappedDocs?.length > 0) {
         const existedDocuments = mappedDocs
           ?.filter((docs) => Boolean(docs?.draftSaveDoc))
@@ -221,7 +177,7 @@ const DocumentUploadForm = ({
         setValue("document.uploadedDocs", existedDocuments);
       }
       setDocumentFormDataDetail(
-        mapStatusToFormData(documentDetails, documentUploadFormData)
+        mapStatusToFormData(documentDetails, documentData)
       );
     }
   }, [isMBAProgram]);
@@ -321,8 +277,10 @@ const DocumentUploadForm = ({
     );
   };
   const documentFormData = isMBAProgram
-    ? [...(documentFormDataDetail || []), ...mbaProgramDocuments]
-    : documentFormDataDetail;
+    ? documentFormDataDetail
+    : documentFormDataDetail.filter((item) => {
+        return !mbaDocs.includes(item.id);
+      });
 
   const uploadedDocuments = mergeDraftSaveDoc(
     mapStatusToFormData(documentDetails, documentFormData),
@@ -335,12 +293,11 @@ const DocumentUploadForm = ({
             doc?.name?.toLowerCase()?.includes(remainDoc?.toLowerCase())
           )
       )
-    : [...remainingDocs]?.filter(
-        (remainDoc) =>
-          !uploadDocs?.find((doc) =>
-            doc?.name?.toLowerCase()?.includes(remainDoc?.toLowerCase())
-          )
-      );
+    : [...remainingDocs]?.filter((remainDoc) => {
+        !uploadDocs?.find((doc) =>
+          doc?.name?.toLowerCase()?.includes(remainDoc?.toLowerCase())
+        );
+      });
   const documentsNeedTOBeUpload = allRequiredDocuments
     ?.filter(Boolean)
     ?.filter((doc) => uploadDocs?.find((item) => item?.name?.includes(doc)));
@@ -369,11 +326,12 @@ const DocumentUploadForm = ({
                 else return null;
               }
             );
+
             const newDocStatus =
               newDocumentAdded?.isUploadedNow || draftSaveDoc
                 ? "Uploaded"
                 : false;
-            const customFileds = id?.includes("nationalIdPassport") ? (
+            const customFileds = id?.includes("IDPASSPORT") ? (
               <NationalityPassportFields />
             ) : null;
             return (
