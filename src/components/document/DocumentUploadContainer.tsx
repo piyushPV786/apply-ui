@@ -1,10 +1,13 @@
 import React, { useRef, useState, SyntheticEvent, useEffect } from "react";
+import { UseFormSetValue, UseFormReturn } from "react-hook-form";
 import styled from "styled-components";
 import { Container, Typography, Tooltip } from "@mui/material";
 import StyledButton from "../button/button";
 import { Green, StyledLabel } from "../common/common";
 import { AlertEnums } from "../common/constant";
 import AlertBox from "../alert/Alert";
+import TextField, { textFieldClasses } from "@mui/material/TextField";
+import Autocomplete, { autocompleteClasses } from "@mui/material/Autocomplete";
 
 import {
   downloadDeclarationLetter,
@@ -32,6 +35,8 @@ import {
 import { CommonAPI } from "../../service/Axios";
 import axios from "axios";
 
+import { IOption } from "../common/types";
+
 interface DocumentUploadContainerProps {
   title: string;
   status: string;
@@ -49,6 +54,13 @@ interface DocumentUploadContainerProps {
   onUpload?: (file: File | File[]) => void;
   onRemove?: (index: number, file: File) => void;
   selectedDocuments?: (File & { error: boolean; typeCode: string })[];
+  documentFormFields: any;
+  register: UseFormReturn["register"];
+  setValue: UseFormSetValue<any>;
+  documentTypeList: IOption[];
+  id: string;
+  watch: UseFormReturn["watch"];
+  documentFieldErrors: any;
 }
 
 const getFilePreview = (fileName, fileExt) => {
@@ -110,6 +122,13 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   draftSaveDoc,
   disabled = false,
   selectedDocuments = [],
+  documentFormFields,
+  register,
+  documentFieldErrors,
+  setValue,
+  documentTypeList,
+  id,
+  watch,
 }) => {
   const [uploadDocs, setUploadDocs] = useState<
     (File & { error: boolean; typeCode: string })[]
@@ -225,7 +244,6 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           {status}
         </Status>
       </Typography>
-
       {isDeclaration && (
         <InnerContainer className="mobile-block">
           <div>
@@ -258,8 +276,91 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           </AlertBox>
         </>
       )}
+      {id == "IDPASSPORT" ? (
+        <div className="row mt-4">
+          <div className="col-md-6 mt-4">
+            <div className="mb-4">
+              <Autocomplete
+                sx={{
+                  [`& .${autocompleteClasses.inputRoot}`]: {
+                    border: "2px solid #ced4da",
+                    borderRadius: 1.5,
+                  },
+                  "& .MuiIconButton-root": { padding: "3px !important" },
+                }}
+                {...register(`document.identificationDocumentType${id}`, {
+                  required: true,
+                })}
+                onChange={(e, v) =>
+                  setValue(`document.identificationDocumentType${id}`, v?.code)
+                }
+                fullWidth
+                style={{ width: "100%" }}
+                options={documentTypeList}
+                value={
+                  watch(`document.identificationDocumentType${id}`)
+                    ? documentTypeList.find((item) => {
+                        return (
+                          item.code ==
+                          documentFormFields.identificationDocumentTypeIDPASSPORT
+                        );
+                      })
+                    : null
+                }
+                getOptionLabel={(option: { name: string }) => option.name}
+                renderInput={(params) => (
+                  <TextField
+                    sx={{
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none !important",
+                      },
+                      "& .MuiAutocomplete-input": {
+                        padding: "2px 4px 2px 3px !important",
+                        fontSize: "14px !important",
+                      },
+                      "& .MuiOutlinedInput-root": {
+                        padding: "0.375rem 0.75rem",
+                      },
+                    }}
+                    {...params}
+                    fullWidth
+                  />
+                )}
+              />
 
-      {customComponent || null}
+              {documentFieldErrors?.identificationDocumentTypeIDPASSPORT && (
+                <div className="invalid-feedback">
+                  Please select Identification Document Type
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="mb-4">
+              <StyledLabel required>Others ( Please Specify )</StyledLabel>
+              <input
+                value={documentFormFields?.other}
+                defaultValue={documentFormFields?.other}
+                {...register(`document.other${id}`, {
+                  required: true,
+                })}
+                onChange={(e) => {
+                  setValue(`document.other${id}`, e.target.value);
+                }}
+                type="text"
+                className="form-control"
+                id="otherText"
+              />
+
+              {documentFieldErrors?.identificationDocumentTypeIDPASSPORT && (
+                <div className="invalid-feedback">
+                  Please select Identification Document Type
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <FileUploadContainer className="upload-box">
         <div className="d-flex align-items-center">
@@ -305,7 +406,6 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           </Typography>
         </div>
       </FileUploadContainer>
-
       {uploadDocs &&
         uploadDocs?.length > 0 &&
         uploadDocs?.map((file, index) => (
