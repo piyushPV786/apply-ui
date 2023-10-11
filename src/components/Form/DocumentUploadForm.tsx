@@ -16,14 +16,12 @@ import DocumentUploadContainer, {
   TickWithText,
 } from "../document/DocumentUploadContainer";
 import { Typography } from "@mui/material";
-import AdvanceDropDown from "../dropdown/Dropdown";
-import { identificationDocumentTypeKey } from "./personalInfoForm";
-import { CloseOutlined } from "@material-ui/icons";
+
 import { GraduationType } from "../common/constant";
 
 const documentCriteria = [
   {
-    text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</stroong>`,
+    text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</strong>`,
     isInnerText: true,
   },
   {
@@ -142,6 +140,8 @@ const DocumentUploadForm = ({
   const {
     register,
     setValue,
+    trigger,
+    watch,
     formState: { errors },
   } = useFormContext();
   const [documentFormDataDetail, setDocumentFormDataDetail] =
@@ -224,58 +224,7 @@ const DocumentUploadForm = ({
     setRemainingDocs(remainDocs?.filter(Boolean));
     setValue("document.uploadedDocs", allFiles);
   };
-  const NationalityPassportFields = () => {
-    return (
-      <div className="row mt-4">
-        <div className="col-md-6">
-          <div className="mb-4">
-            <AdvanceDropDown
-              onChange={(e) =>
-                setValue(
-                  "document.identificationDocumentType",
-                  e.code,
-                  formDirtyState
-                )
-              }
-              value={documentFormFields?.identificationDocumentType}
-              required
-              options={documentTypeList}
-              name={identificationDocumentTypeKey}
-              register={register}
-              label="Identification Document Type"
-              mapKey="code"
-            />
-            {documentFieldErrors?.identificationDocumentType && (
-              <div className="invalid-feedback">
-                Please select Identification Document Type
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="mb-4">
-            <StyledLabel required>Others ( Please Specify )</StyledLabel>
-            <input
-              value={documentFormFields?.other}
-              defaultValue={documentFormFields?.other}
-              {...register("document.other", {
-                required: true,
-              })}
-              type="text"
-              className="form-control"
-              id="otherText"
-            />
 
-            {documentFieldErrors?.identificationDocumentType && (
-              <div className="invalid-feedback">
-                Please select Identification Document Type
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
   const documentFormData = isMBAProgram
     ? documentFormDataDetail
     : documentFormDataDetail.filter((item) => {
@@ -331,9 +280,7 @@ const DocumentUploadForm = ({
               newDocumentAdded?.isUploadedNow || draftSaveDoc
                 ? "Uploaded"
                 : false;
-            const customFileds = id?.includes("IDPASSPORT") ? (
-              <NationalityPassportFields />
-            ) : null;
+
             return (
               <DocumentUploadContainer
                 key={`${name}_${id}`}
@@ -347,8 +294,14 @@ const DocumentUploadForm = ({
                 onUpload={uploadDocuments}
                 onRemove={deleteDocs as any}
                 documentType={id}
-                customComponent={customFileds}
                 isOptional={!isPostGraduation}
+                documentFormFields={documentFormFields}
+                register={register}
+                setValue={setValue}
+                documentTypeList={documentTypeList}
+                id={id}
+                watch={watch}
+                documentFieldErrors={documentFieldErrors}
               />
             );
           }
@@ -366,10 +319,14 @@ const DocumentUploadForm = ({
               />
               <StyledButton
                 disabled={requireDocs?.length > 0}
-                onClick={() => {
-                  setUploadDocs([]);
-                  setDocumentFormDataDetail([]);
-                  onSubmit();
+                onClick={async () => {
+                  trigger();
+
+                  if (await trigger()) {
+                    setUploadDocs([]);
+                    setDocumentFormDataDetail([]);
+                    onSubmit();
+                  }
                 }}
                 title="Submit Documents"
               />
