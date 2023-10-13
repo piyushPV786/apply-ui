@@ -74,8 +74,8 @@ const AdvanceDropDown = ({
           {...register(props?.name!, {
             required: required,
           })}
-          onChange={(e, v) => {
-            v && props?.onChange?.(v);
+          onChange={(event, value) => {
+            value && props?.onChange?.(value);
           }}
           onBlur={(e) => {
             props?.onBlur?.();
