@@ -256,26 +256,31 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <AdvanceDropDown
-                    options={genderOption}
-                    label={"Gender"}
-                    value={genderId}
-                    onChange={(e) => {
-                      setValue(genderIdKey, e?.code);
-                    }}
-                    name={genderIdKey}
-                    register={register}
-                    onBlur={() => {
-                      trigger(genderIdKey);
-                    }}
-                  />
-                  {Errors?.gender && (
-                    <div className="invalid-feedback">Please enter Gender</div>
-                  )}
+              {genderOption && (
+                <div className="col-md-4">
+                  <div className="mb-4">
+                    <AdvanceDropDown
+                      options={genderOption}
+                      label={"Gender"}
+                      value={genderId}
+                      onChange={(e) => {
+                        setValue(genderIdKey, e?.code);
+                      }}
+                      name={genderIdKey}
+                      register={register}
+                      onBlur={() => {
+                        trigger(genderIdKey);
+                      }}
+                      mapKey="code"
+                    />
+                    {Errors?.gender && (
+                      <div className="invalid-feedback">
+                        Please enter Gender
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel required>Date of Birth</StyledLabel>
@@ -399,6 +404,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     onBlur={() => {
                       trigger(homeLanguageIdKey);
                     }}
+                    mapKey="code"
                   />
                   {Errors?.language && (
                     <div className="invalid-feedback">
@@ -421,6 +427,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     onBlur={() => {
                       trigger(raceIdKey);
                     }}
+                    mapKey="code"
                   />
                   {Errors?.race && (
                     <div className="invalid-feedback">Please select Race</div>
@@ -445,21 +452,24 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                   <StyledLabel required>Nationality Status</StyledLabel>
                 </div>
 
-                <AdvanceDropDown
-                  options={nationalityStatusData}
-                  value={nationalityStatus}
-                  name={nationalityStatusKey}
-                  register={register}
-                  onChange={(e) => {
-                    handleInternationAccordian(e?.code);
-                    setValue(nationalityStatusKey, e?.code);
-                  }}
-                  label="Nationality Status"
-                  hideLabel
-                  onBlur={() => {
-                    trigger(nationalityStatusKey);
-                  }}
-                />
+                {nationalityStatusData && (
+                  <AdvanceDropDown
+                    options={nationalityStatusData}
+                    value={nationalityStatus}
+                    name={nationalityStatusKey}
+                    register={register}
+                    onChange={(e) => {
+                      handleInternationAccordian(e?.code);
+                      setValue(nationalityStatusKey, e?.code);
+                    }}
+                    label="Nationality Status"
+                    hideLabel
+                    onBlur={() => {
+                      trigger(nationalityStatusKey);
+                    }}
+                    mapKey="code"
+                  />
+                )}
 
                 <div className="m-2">
                   {Errors?.nationalityStatus && (
@@ -490,59 +500,64 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                             onBlur={() => {
                               trigger(permenantResidentKey);
                             }}
+                            mapKey="code"
                           />
                         </div>
                       </div>
                     ) : null}
-
-                    <div className="col-md-4">
-                      <div className="mb-4">
-                        <AdvanceDropDown
-                          onChange={(e) => {
-                            setValue(nationalityIdKey, e?.code);
-                          }}
-                          disabled={nationalityStatus == "SA"}
-                          options={nationalities?.sort((a, b) =>
-                            sortAscending(a, b, "name")
+                    {nationalities && (
+                      <div className="col-md-4">
+                        <div className="mb-4">
+                          <AdvanceDropDown
+                            onChange={(e) => {
+                              setValue(nationalityIdKey, e?.code);
+                            }}
+                            disabled={nationalityStatus == "SA"}
+                            options={nationalities?.sort((a, b) =>
+                              sortAscending(a, b, "name")
+                            )}
+                            value={nationalityId}
+                            name={nationalityIdKey}
+                            register={register}
+                            label="Nationality"
+                            onBlur={() => {
+                              trigger(nationalityIdKey);
+                            }}
+                            mapKey="code"
+                          />
+                          {Errors?.nationalityId && (
+                            <div className="invalid-feedback">
+                              Please Select Nationality
+                            </div>
                           )}
-                          value={nationalityId}
-                          name={nationalityIdKey}
-                          register={register}
-                          label="Nationality"
-                          onBlur={() => {
-                            trigger(nationalityIdKey);
-                          }}
-                        />
-                        {Errors?.nationalityId && (
-                          <div className="invalid-feedback">
-                            Please Select Nationality
-                          </div>
-                        )}
+                        </div>
                       </div>
-                    </div>
-
-                    <div className="col-md-4">
-                      <div className="mb-4">
-                        <AdvanceDropDown
-                          onChange={(e) => {
-                            setValue(identificationDocumentTypeKey, e?.code);
-                          }}
-                          options={identityDocuments}
-                          value={identificationDocumentType}
-                          name={identificationDocumentTypeKey}
-                          register={register}
-                          label="Identification Document Type"
-                          onBlur={() => {
-                            trigger(identificationDocumentTypeKey);
-                          }}
-                        />
-                        {Errors?.identificationDocumentType && (
-                          <div className="invalid-feedback">
-                            Please Select Document Type
-                          </div>
-                        )}
+                    )}
+                    {identityDocuments && (
+                      <div className="col-md-4">
+                        <div className="mb-4">
+                          <AdvanceDropDown
+                            onChange={(e) => {
+                              setValue(identificationDocumentTypeKey, e?.code);
+                            }}
+                            options={identityDocuments}
+                            value={identificationDocumentType}
+                            name={identificationDocumentTypeKey}
+                            register={register}
+                            label="Identification Document Type"
+                            onBlur={() => {
+                              trigger(identificationDocumentTypeKey);
+                            }}
+                            mapKey="code"
+                          />
+                          {Errors?.identificationDocumentType && (
+                            <div className="invalid-feedback">
+                              Please Select Document Type
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
                     <div className="col-md-4">
                       <div className="mb-4">
                         <StyledLabel required>

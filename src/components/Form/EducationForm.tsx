@@ -207,55 +207,33 @@ export const EducationForm = (props: IEducationProps) => {
         <AccordionDetails>
           <div className="container-fluid form-padding">
             <div className="row">
-              <div className="col">
-                <div className="mb-4">
-                  <AdvanceDropDown
-                    mapKey="code"
-                    options={programs && programs}
-                    value={programVal}
-                    name={program}
-                    register={register}
-                    onChange={(e) => {
-                      e?.code && getQualificationStudyModeData(e?.code);
-                      e?.code && setValue(program, e?.code);
-                    }}
-                    label="Interested Program"
-                    onBlur={() => {
-                      trigger(program);
-                    }}
-                  />
+              {programs && (
+                <div className="col">
+                  <div className="mb-4">
+                    <AdvanceDropDown
+                      mapKey="code"
+                      options={programs}
+                      value={programVal}
+                      name={program}
+                      register={register}
+                      onChange={(e) => {
+                        e?.code && getQualificationStudyModeData(e?.code);
+                        e?.code && setValue(program, e?.code);
+                      }}
+                      label="Interested Program"
+                      onBlur={() => {
+                        trigger(program);
+                      }}
+                    />
 
-                  {/* <StyledLabel required>Interested Program</StyledLabel>
-                  <select
-                    className="form-select"
-                    {...register(`${program}`, { required: true })}
-                    onChange={(e) => {
-                      setValue(e.target.name, e.target.value, formDirtyState);
-                      getQualificationStudyModeData(e.target.value);
-                    }}
-                    disabled={isApplicationEnrolled}
-                    value={programVal}
-                    defaultValue={programVal}
-                  >
-                    <option value={""}>Select Interested Qualification</option>
-                    {programs &&
-                      programs?.map(({ code, name }) => (
-                        <option
-                          selected={code === programVal}
-                          key={code}
-                          value={code}
-                        >
-                          {name}
-                        </option>
-                      ))}
-                  </select> */}
-                  {educationFormError?.programCode && (
-                    <div className="invalid-feedback">
-                      select your interested program
-                    </div>
-                  )}
+                    {educationFormError?.programCode && (
+                      <div className="invalid-feedback">
+                        select your interested program
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
               {loading && (
                 <div className="col-md-4">
                   <div
@@ -345,7 +323,7 @@ export const EducationForm = (props: IEducationProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
-                    options={highestQualifications && highestQualifications}
+                    options={highestQualifications}
                     value={highestQualificationVal}
                     name={highestQualification}
                     register={register}
@@ -356,27 +334,9 @@ export const EducationForm = (props: IEducationProps) => {
                     onBlur={() => {
                       trigger(highestQualification);
                     }}
+                    mapKey="code"
                   />
 
-                  {/* <StyledLabel required>Highest Qualification</StyledLabel>
-                  <select
-                    className="form-select"
-                    value={highestQualificationVal}
-                    defaultValue={highestQualificationVal}
-                    {...register(`${highestQualification}`, { required: true })}
-                  >
-                    <option value={""}>Select Highest Qualification</option>
-                    {highestQualifications &&
-                      highestQualifications.map(({ code, name }) => (
-                        <option
-                          selected={code === highestQualificationVal}
-                          key={code}
-                          value={code}
-                        >
-                          {name}
-                        </option>
-                      ))}
-                  </select> */}
                   {educationFormError &&
                     educationFormError?.qualificationCode && (
                       <div className="invalid-feedback">
