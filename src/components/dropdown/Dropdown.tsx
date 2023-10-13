@@ -29,31 +29,29 @@ interface IAdvanceDropDownProps {
 const AdvanceDropDown = ({
   disabled,
   options,
-  label = "",
+  label,
   value,
-  required = true,
-  mapKey = "code",
+  required,
+  mapKey,
   register,
-  hideLabel = false,
-  displayItem = "name",
-  //@param Its require for to pick specific object key value in array of objects
+  hideLabel,
+  displayItem,
   ...props
 }: IAdvanceDropDownProps) => {
   const [defaultValue, setDefaultValue] = useState([]);
+
   useEffect(() => {
     if (mapKey == "isoCode") {
       setDefaultValue(value as never);
     } else {
       const val = options?.find((item) => {
-        if (mapKey == "name") {
-          return item.name == value;
-        } else if (mapKey == "name") {
-          return item.isoCode == value;
+        if (mapKey) {
+          return item[mapKey] == value;
         } else {
-          return item.code == value;
+          return item == value;
         }
       });
-      setDefaultValue(val);
+      val ? setDefaultValue(val) : setDefaultValue(null);
     }
   }, [value]);
 
@@ -77,24 +75,18 @@ const AdvanceDropDown = ({
             required: required,
           })}
           onChange={(e, v) => {
-            if (mapKey == "isoCode") {
-              props?.onChange?.(v);
-            } else {
-              props?.onChange?.(v?.code);
-            }
-            props?.onChange?.(v);
+            v && props?.onChange?.(v);
           }}
           onBlur={(e) => {
             props?.onBlur?.();
           }}
           fullWidth
           style={{ width: "100%" }}
-          options={options && options}
+          options={options}
           value={defaultValue}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
             <TextField
-              {...register(`${props.name}textfeild`, {})}
               sx={{
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: "none !important",
