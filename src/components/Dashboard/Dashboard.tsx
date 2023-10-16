@@ -742,12 +742,12 @@ function ApplicationCard({
                         onUploadBursaryDocuments(
                           applicationNumber,
                           leadCode,
-                          status
+                          "UPLOAD-BURSARY-LETTER"
                         )
                       }
                       isUploadBtn
                       className="card-button"
-                      title="Upload Employee Bursary Letter"
+                      title="Upload  Bursary Letter"
                     />
                   </Grid>
                 )}

@@ -8,6 +8,7 @@ import { AlertEnums } from "../common/constant";
 import AlertBox from "../alert/Alert";
 import TextField, { textFieldClasses } from "@mui/material/TextField";
 import Autocomplete, { autocompleteClasses } from "@mui/material/Autocomplete";
+import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 
 import {
   downloadDeclarationLetter,
@@ -61,6 +62,7 @@ interface DocumentUploadContainerProps {
   id: string;
   watch: UseFormReturn["watch"];
   documentFieldErrors: any;
+  isBursarry: boolean;
 }
 
 const getFilePreview = (fileName, fileExt) => {
@@ -129,6 +131,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
   documentTypeList,
   id,
   watch,
+  isBursarry,
 }) => {
   const [uploadDocs, setUploadDocs] = useState<
     (File & { error: boolean; typeCode: string })[]
@@ -364,6 +367,67 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           )}
         </div>
       ) : null}
+
+      {isBursarry && id == "BURSARYLETTER" && (
+        <div className="row">
+          <div className="col-md-4">
+            <div className="mb-4">
+              <StyledLabel required>Bursary Name</StyledLabel>
+              <input
+                className="form-control"
+                // value={fullNameVal}
+                // defaultValue={fullNameVal}
+                // {...register(`${fullName}`, { required: isKinNeed })}
+                // onChange={(e) => {
+                //   const value = e.target.value;
+                //   const name = e.target.name;
+                //   if (onlyAlphabets(value)) {
+                //     setValue(name, capitalizeFirstLetter(value), formOptions);
+                //   }
+                // }}
+              />
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="mb-4">
+              <StyledLabel required>Bursary Email Address</StyledLabel>
+              <input
+                className="form-control"
+                // value={fullNameVal}
+                // defaultValue={fullNameVal}
+                // {...register(`${fullName}`, { required: isKinNeed })}
+                // onChange={(e) => {
+                //   const value = e.target.value;
+                //   const name = e.target.name;
+                //   if (onlyAlphabets(value)) {
+                //     setValue(name, capitalizeFirstLetter(value), formOptions);
+                //   }
+                // }}
+              />
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="mb-4">
+              <StyledLabel required>Bursary Phone Number</StyledLabel>
+              <PhoneInput
+                id="2"
+                international
+                countryCallingCodeEditable={false}
+                // defaultCountry={countryCodeRef}
+                placeholder="Select Country Code*"
+                onCountryChange={(value: any) => {
+                  // setCountryCode(value);
+                }}
+                onBlur={() => {
+                  // uppdateMobNumber();
+                }}
+                onChange={(value) => {}}
+                // value={value}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <FileUploadContainer className="upload-box">
         <div className="d-flex align-items-center">
