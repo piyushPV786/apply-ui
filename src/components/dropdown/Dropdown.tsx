@@ -29,29 +29,31 @@ interface IAdvanceDropDownProps {
 const AdvanceDropDown = ({
   disabled,
   options,
-  label,
+  label = "",
   value,
-  required,
-  mapKey,
+  required = true,
+  mapKey = "code",
   register,
-  hideLabel,
-  displayItem,
+  hideLabel = false,
+  displayItem = "name",
+  //@param Its require for to pick specific object key value in array of objects
   ...props
 }: IAdvanceDropDownProps) => {
-  const [defaultValue, setDefaultValue] = useState<string | null>();
-
+  const [defaultValue, setDefaultValue] = useState([]);
   useEffect(() => {
     if (mapKey == "isoCode") {
       setDefaultValue(value as never);
     } else {
       const val = options?.find((item) => {
-        if (mapKey) {
-          return item[mapKey] == value;
+        if (mapKey == "name") {
+          return item.name == value;
+        } else if (mapKey == "name") {
+          return item.isoCode == value;
         } else {
-          return item == value;
+          return item.code == value;
         }
       });
-      val ? setDefaultValue(val) : setDefaultValue(null);
+      setDefaultValue(val);
     }
   }, [value]);
 
@@ -74,19 +76,25 @@ const AdvanceDropDown = ({
           {...register(props?.name!, {
             required: required,
           })}
-          onChange={(event, value) => {
-            value && props?.onChange?.(value);
+          onChange={(e, v) => {
+            if (mapKey == "isoCode") {
+              props?.onChange?.(v);
+            } else {
+              props?.onChange?.(v?.code);
+            }
+            props?.onChange?.(v);
           }}
           onBlur={(e) => {
             props?.onBlur?.();
           }}
           fullWidth
           style={{ width: "100%" }}
-          options={options}
+          options={options && options}
           value={defaultValue}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
             <TextField
+              {...register(`${props.name}textfeild`, {})}
               sx={{
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: "none !important",
