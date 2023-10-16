@@ -244,7 +244,7 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
           {status}
         </Status>
       </Typography>
-      {isDeclaration && (
+      {id == "DECLARATIONFORM" && (
         <InnerContainer className="mobile-block">
           <div>
             <Typography
