@@ -38,7 +38,7 @@ const AdvanceDropDown = ({
   displayItem,
   ...props
 }: IAdvanceDropDownProps) => {
-  const [defaultValue, setDefaultValue] = useState([]);
+  const [defaultValue, setDefaultValue] = useState<string | null>();
 
   useEffect(() => {
     if (mapKey == "isoCode") {
