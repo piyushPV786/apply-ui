@@ -225,7 +225,8 @@ export const ApplicationDashboard = (props: any) => {
 
   const onDownloadAcceptence = async (
     documentDetail: IDocument[],
-    documentTypeCode
+    documentTypeCode,
+    studentCode
   ) => {
     const documentDetails = documentDetail?.find(
       (doc) => doc?.documentTypeCode === documentTypeCode
@@ -234,7 +235,7 @@ export const ApplicationDashboard = (props: any) => {
     if (documentDetails) {
       const { name = "" } = { ...documentDetails };
       if (!name) return showErrorToast(ErrorMessage);
-      getCommonUploadDocumentUrl(name).then((res) => {
+      getCommonUploadDocumentUrl(name, studentCode).then((res) => {
         if (res?.statusCode === 200) {
           downloadDocument(res?.data, name);
           setTimeout(() => {
@@ -593,7 +594,8 @@ function ApplicationCard({
                             onClick={() => {
                               onDownloadAcceptence(
                                 document,
-                                item?.documentTypeCode
+                                item?.documentTypeCode,
+                                studentCode
                               );
                             }}
                             style={{ width: "100%" }}
