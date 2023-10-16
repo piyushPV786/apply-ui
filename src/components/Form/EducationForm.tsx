@@ -212,7 +212,9 @@ export const EducationForm = (props: IEducationProps) => {
                   <div className="mb-4">
                     <AdvanceDropDown
                       mapKey="code"
-                      options={programs}
+                      options={programs.filter((item) => {
+                        return item?.code !== "RMAT-FEE-301";
+                      })}
                       value={programVal}
                       name={program}
                       register={register}
