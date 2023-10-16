@@ -335,30 +335,33 @@ const DocumentUploadContainer: React.FC<DocumentUploadContainerProps> = ({
               )}
             </div>
           </div>
-          <div className="col-md-4">
-            <div className="mb-4">
-              <StyledLabel required>Others ( Please Specify )</StyledLabel>
-              <input
-                value={documentFormFields?.other}
-                defaultValue={documentFormFields?.other}
-                {...register(`document.other${id}`, {
-                  required: true,
-                })}
-                onChange={(e) => {
-                  setValue(`document.other${id}`, e.target.value);
-                }}
-                type="text"
-                className="form-control"
-                id="otherText"
-              />
 
-              {documentFieldErrors?.identificationDocumentTypeIDPASSPORT && (
-                <div className="invalid-feedback">
-                  Please select Identification Document Type
-                </div>
-              )}
+          {watch(`document.identificationDocumentType${id}`) == "OTHERS" && (
+            <div className="col-md-4">
+              <div className="mb-4">
+                <StyledLabel required>Others ( Please Specify )</StyledLabel>
+                <input
+                  value={documentFormFields?.other}
+                  defaultValue={documentFormFields?.other}
+                  {...register(`document.other${id}`, {
+                    required: true,
+                  })}
+                  onChange={(e) => {
+                    setValue(`document.other${id}`, e.target.value);
+                  }}
+                  type="text"
+                  className="form-control"
+                  id="otherText"
+                />
+
+                {documentFieldErrors?.identificationDocumentTypeIDPASSPORT && (
+                  <div className="invalid-feedback">
+                    Please select Identification Document Type
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       ) : null}
 
