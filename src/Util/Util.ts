@@ -423,10 +423,12 @@ export const downloadDeclarationLetter = async (code?) => {
  * @param {string} fileName - The file name.
  * @returns {Promise<any>} - The common upload document URL.
  */
-export const getCommonUploadDocumentUrl = async (fileName) => {
+export const getCommonUploadDocumentUrl = async (fileName, studentCode) => {
+  const filetype = fileName.split(".")[1];
+
   try {
     const response = await CommonAPI.get(
-      `${CommonApi.GETCOMMONDOCUMENTURL}?filename=${fileName}`
+      `${CommonApi.GETCOMMONDOCUMENTURL}?filename=${fileName}&filetype=${filetype}&studentCode=${studentCode}`
     );
 
     if (response.status === 200) {
@@ -733,8 +735,10 @@ export const showWarningToast = (message: string) => {
   });
 };
 
-export const formateInPascalCase=(value: string)=>{
+export const formateInPascalCase = (value: string) => {
   const words = value.split("-");
-  const formattedString = words.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(" ");
+  const formattedString = words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
   return formattedString;
-}
+};
