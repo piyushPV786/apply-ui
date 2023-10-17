@@ -1,72 +1,161 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import {
   DefaultGrey,
   Green,
   GreenFormHeading,
-  GreenText,
+  LoaderComponent,
   StyledLabel,
 } from "../common/common";
-import CloseIcon from "@material-ui/icons/CloseOutlined";
 import { useFormContext } from "react-hook-form";
-import { IOption } from "../common/types";
+import { IFee, IOption } from "../common/types";
 import PaymentOption from "./payment-options";
 import StyledButton from "../button/button";
 import {
   applyDiscountCode,
   getApplicationCode,
-  getUploadDocumentUrl,
+  getQualificationStudyModeData,
   isInvalidFileType,
+  sortAscending,
   uploadDocuments,
 } from "../../Util/Util";
 import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
 import Image from "next/image";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
-const Currency = [
-  {
-    countryId: 1,
-    label: "South Africa",
-    value: "sa",
-    currency: "sa",
-    symbol: "R",
-  },
-  {
-    countryId: 2,
-    label: "India",
-    value: "ind",
-    currency: "inr",
-    symbol: "₹",
-  },
-  {
-    countryId: 3,
-    label: "Nigeria",
-    value: "ng",
-    currency: "ng",
-    symbol: "₦",
-  },
-];
+import { GreenText } from "../student/style";
+import { CommonApi, CommonEnums, FeemodeCode } from "../common/constant";
+import CircleTick from "../../../public/assets/images/circle-tick.svg";
+import { FinanceApi } from "../../service/Axios";
+import { Button } from "@material-ui/core";
+
+const getConvertedProgramFees = (conversionRate: number | null, programFee) => {
+  return conversionRate ? programFee * conversionRate : programFee;
+};
+
 const Payment = (props: any) => {
   const fileUploadRef = useRef<any>(null);
   const { watch, register, setValue } = useFormContext();
   const [paymentDocs, setPaymentDocs] = useState<(File & { error: boolean })[]>(
     []
   );
+  const [loadng, setLoading] = useState(false);
+  const [feeOptions, setFeeOptions] = useState<IFee[]>([]);
+  const [rmatFees, setRmatFees] = useState<number>(0);
   const [promoCode, setPromoCode] = useState<string>("");
+  const [isManagementPromoCode, setManagementPromoCode] =
+    useState<boolean>(false);
   const [showPromoCode, setShowPromoCOde] = useState<boolean>(false);
+  const [isCouponApplied, setCouponApplied] = useState<boolean>(false);
   const [isPaymentDocSubmit, setPaymentDocSubmit] = useState<boolean>(false);
   const allFields = watch();
-  const selectedProgram: string =
-    props?.programs &&
+
+  const selectedProgram =
+    props?.programs?.length &&
     props.programs?.find(
       (item: IOption) => item?.code == allFields?.education?.programCode
-    )?.name;
+    );
+  const isApplicationEnrolled = props?.isApplicationEnrolled;
   const selectedStudyMode: string = allFields?.education?.studyModeCode;
-  const programFee: string = allFields?.education?.applicationFees;
+  const programFee: string = isApplicationEnrolled
+    ? allFields?.payment?.selectedFeeModeFee || 0
+    : allFields?.education?.applicationFees || "0";
+  const isInvalidFiles = paymentDocs.some(
+    (file: any) => file.size < 2000000
+  ) as boolean;
 
-  const isInvalidFiles = paymentDocs.some((file: any) => file.error) as any;
+  const isInvalidFilesType = paymentDocs.some(
+    (file: any) => file.error
+  ) as Boolean;
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current?.childNodes[1] as any;
     fileElement.click() as any;
+  };
+
+  const normalDiscountAmount = allFields?.payment?.discountAmount || 0;
+  const discountAmount = allFields?.payment?.conversionRate
+    ? Number(normalDiscountAmount) * (+allFields?.payment?.conversionRate || 0)
+    : normalDiscountAmount;
+  const selectedNationality = allFields?.address[0]?.country;
+  const selectedCurrency = selectedNationality?.includes("SA")
+    ? CommonEnums?.SOUTH_AFRICA_CURRENCY
+    : allFields?.payment?.selectedCurrency;
+
+  const conversionRate = allFields?.payment?.conversionRate;
+  const discountPercentage = allFields?.payment?.percent || null;
+  const convertedProgramFee =
+    selectedNationality == "US" ||
+    selectedNationality == "KY" ||
+    selectedNationality == "IND" ||
+    selectedNationality == "SA" ||
+    selectedNationality == "NIG"
+      ? String(
+          +programFee * (+allFields?.payment?.conversionRate || 1) || programFee
+        )
+      : +programFee * (+allFields?.payment?.conversionRate || 1);
+  const rmatFeeAmount =
+    selectedNationality?.includes("SA") || selectedCurrency?.includes("RAND")
+      ? rmatFees
+      : rmatFees * Number(allFields?.payment?.conversionRate);
+
+  const rmatFee = !isApplicationEnrolled ? rmatFeeAmount : 0;
+  const totalAmount = +convertedProgramFee - +discountAmount + rmatFee;
+
+  useEffect(() => {
+    (async () => {
+      const selectedProgramCode = await getQualificationStudyModeData(
+        allFields?.education?.programCode
+      );
+      setRmatFees(Number(selectedProgramCode[0]?.rmatFee));
+
+      setFeeOptions(
+        selectedProgramCode[0]?.studyModes
+          .find(
+            (item) => item.studyModeCode === allFields?.education?.studyModeCode
+          )
+          ?.fees.filter((item) => {
+            return item.feeMode != "APPLICATION";
+          })
+      );
+
+      let applicationDetail = selectedProgramCode[0]?.studyModes?.find(
+        (item) => item.studyModeCode === allFields?.education?.studyModeCode
+      );
+      applicationDetail = applicationDetail?.fees.find(
+        (item) => item.feeMode == FeemodeCode.APPLICATION
+      );
+
+      setValue("education.applicationFees", applicationDetail?.fee);
+    })();
+
+    selectedNationality && getCurrencyConversion();
+  }, [selectedProgram]);
+
+  const getCurrencyConversion = () => {
+    FinanceApi.get(`${CommonApi.GETCURRENCYCONVERSION}${selectedNationality}`)
+      .then(({ data: res }) => {
+        if (res.data) {
+          setValue("payment.conversionRate", res?.data?.rate, {
+            shouldDirty: true,
+          });
+          setValue("payment.selectedCurrency", res?.data?.currencySymbol, {
+            shouldDirty: true,
+          });
+        } else {
+          setValue(
+            "payment.selectedCurrency",
+            CommonEnums?.SOUTH_AFRICA_CURRENCY,
+            { shouldDirty: true }
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    const existingPromoCode = sessionStorage.getItem("lastPromoCode");
+    if (existingPromoCode) {
+      setPromoCode(existingPromoCode);
+      applyDiscount();
+    }
   };
 
   const uploadPaymentDocument = (fileUrl: string, file: File) => {
@@ -82,36 +171,21 @@ const Payment = (props: any) => {
       });
   };
   const submitPaymentDocs = async () => {
-    let count = 0;
-    setPaymentDocSubmit(true);
-    await Promise.all(
-      paymentDocs.map((file) => {
-        const payload = {
-          documentTypeCode: "PAYMENTPROOF",
-          fileName: file.name,
-          fileType: file.type,
-          amount: +allFields?.education?.programFees,
-          paymentModeCode: "OFFLINE",
-          discountCode:"",
-          studentTypeCode:allFields?.education?.studentTypeCode,
-
-        };
-        return getUploadDocumentUrl(payload).then((res) => {
-          if (res?.statusCode === 201) {
-            count = count + 1;
-            uploadPaymentDocument(res?.data, file);
-          } else {
-            props.showToast(false, res?.response?.data?.message);
-            setPaymentDocSubmit(false);
-          }
-        });
-      })
-    );
-    if (count === paymentDocs.length) {
+    if (paymentDocs?.length) {
       setPaymentDocSubmit(false);
-      props?.navigateNext();
+      const finalAmount =
+        parseInt(programFee) -
+        parseInt(allFields?.payment?.discountAmount || 0) +
+        rmatFee;
+      setValue("payment.finalFee", finalAmount);
+      props?.onSubmit();
     }
+
+    setPaymentDocSubmit(false);
+
+    sessionStorage.removeItem("lastPromoCode");
   };
+
   const onPaymentDocumentUpload = (files: any) => {
     const uploadedFiles = files;
     uploadedFiles.forEach((item: any) => {
@@ -120,21 +194,39 @@ const Payment = (props: any) => {
     setPaymentDocs(uploadedFiles);
     setValue("payment.paymentProof", uploadedFiles);
   };
-  console.log(allFields)
   const applyDiscount = async () => {
-    setValue(".education.applicationFees", 3000);
-    const appCode = getApplicationCode()
-    const result: any = await applyDiscountCode(appCode, promoCode, allFields?.education?.studentTypeCode);
-    if (result?.statusCode === 200 && result?.data?.percent) {
+    const appCode = getApplicationCode();
+    const result: any = await applyDiscountCode(
+      appCode,
+      promoCode,
+      allFields?.education?.studentTypeCode,
+      props?.isManagementStudentType
+    );
+    if (
+      result?.statusCode === 200 &&
+      (result?.data?.status === "APP-ENROLED" ||
+        result?.data?.status === CommonEnums.APP_ENROLLED_STATUS) &&
+      allFields?.education?.studentTypeCode?.toLowerCase() ===
+        CommonEnums.MANAGEMENT
+    ) {
+      setCouponApplied(true);
+      setManagementPromoCode(true);
+      setValue("payment.discountCode", promoCode);
+      setValue("payment.discountAmount", (+programFee * 100) / 100);
+      setValue("payment.discountedFee", "0.00");
+      props.showToast(true, "Management Code Applied");
+    } else if (result?.statusCode === 200 && result?.data?.percent) {
+      setManagementPromoCode(false);
+      setCouponApplied(true);
       const { agentCode, percent, discountCode } = result?.data;
       setValue("payment.agentCode", agentCode);
       setValue("payment.discountCode", discountCode);
       setValue("payment.percent", percent);
-      setValue(
-        "payment.discountAmount",
-        (+programFee * percent) / 100
-      );
+      setValue("payment.discountAmount", (+programFee * percent) / 100);
       props.showToast(true, result?.message);
+    } else if (result == null) {
+      setValue("payment.discountAmount", "0.00");
+      setValue("payment.percent", "");
     } else {
       props.showToast(false, "Invalid Code");
     }
@@ -144,250 +236,443 @@ const Payment = (props: any) => {
     setPaymentDocs([...paymentDocs.filter((_, idx) => idx !== index)]);
   };
 
+  const totalPayuAmount = isApplicationEnrolled
+    ? totalAmount
+    : isNaN(totalAmount)
+    ? +rmatFee + +convertedProgramFee
+    : totalAmount;
+
   return (
     <>
-      <div className="row w-100">
-        <div className="col-12 col-md-12 mb-3">
-          <MainContainer>
-            {" "}
-            <PaymentHeading>
-              <div className="col-md-12">
-                <StyleHeading>
-                  <GreenFormHeading style={{ fontSize: "20px" }}>
-                    Order Summary
-                  </GreenFormHeading>
-                </StyleHeading>
-              </div>
-            </PaymentHeading>
-            <PaymentContainer>
-              <div className="row">
-                <div className="col-md-7">
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-4">
-                        <StyledLabel style={{ fontSize: "16px" }}>
-                          Proposal Qualification
-                        </StyledLabel>
-                        <div>
-                          <strong>{selectedProgram}</strong>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-4">
-                        <StyledLabel style={{ fontSize: "16px" }}>
-                          Study Mode
-                        </StyledLabel>
-                        <div>
-                          <strong>{selectedStudyMode}</strong>
-                        </div>
-                      </div>
-                    </div>
+      {loadng ? (
+        <LoaderComponent />
+      ) : (
+        <div className="payment-conatiner">
+          <div className="row">
+            <div className="col-md-12 mb-4">
+              <MainContainer className="card-shadow">
+                {" "}
+                <PaymentHeading>
+                  <div className="col-md-12">
+                    <StyleHeading>
+                      <GreenFormHeading className="payment-card-title">
+                        Order Summary
+                      </GreenFormHeading>
+                    </StyleHeading>
                   </div>
+                </PaymentHeading>
+                <PaymentContainer>
                   <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-4 w-75">
-                        <StyledLabel required style={{ fontSize: "16px" }}>
-                          Currency Selection
-                        </StyledLabel>
-                        <select
-                          className="form-select"
-                          {...register(`payment.currency`, { required: true })}
-                        >
-                          {Currency &&
-                            Currency.map(
-                              ({ currency, label, symbol, value }) => (
-                                <option
-                                  selected={
-                                    symbol === allFields?.payment?.currency
-                                  }
-                                  key={symbol}
-                                  value={symbol}
-                                >
-                                  {symbol}
-                                </option>
-                              )
-                            )}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-4">
-                        <StyledLabel style={{ fontSize: "16px" }}>
-                          Application Fee
-                        </StyledLabel>
-                        <div>
-                          <strong>INR {programFee}</strong>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-5">
-                  <div className="">
-                    <div
-                      style={{ background: "#f5f5f5", minHeight: "110px" }}
-                      className="w-100 p-2"
-                    >
-                      <div className="mb-4 d-flex justify-content-between">
-                        <div>
-                          <h6>Subtotal (INR)</h6>
-                        </div>
-                        <div>
-                          {" "}
-                          <h6>
-                            Total Application INR -{" "}
-                            {programFee}
-                          </h6>
-                          <h6>
-                            Discount INR - {allFields?.payment?.discountAmount}
-                          </h6>
-                          <h6>
-                            Total Amount -{" "}
-                            {parseInt(programFee) -
-                              parseInt(allFields?.payment?.discountAmount)}
-                          </h6>
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <a
-                          onClick={() => setShowPromoCOde(!showPromoCode)}
-                          href="#"
-                          className="w-100 text-dark"
-                        >
-                          Have a promo code?
-                        </a>
-                      </div>
-                      {showPromoCode && (
-                        <div className="w-100 text-center ps-4 pe-4">
-                          <div className="input-group mb-2 mt-4">
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Enter promo code"
-                              onChange={(e) => setPromoCode(e?.target?.value)}
-                            />
-                            <div className="input-group-append cursor-pointer">
-                              <span
-                                onClick={applyDiscount}
-                                style={{
-                                  background:
-                                    !promoCode || promoCode?.length === 0
-                                      ? `${DefaultGrey}`
-                                      : `${Green}`,
-                                  padding: "0.47rem 0.75rem",
-                                }}
-                                className="input-group-text"
-                                id="basic-addon2"
-                              >
-                                Apply
-                              </span>
+                    <div className="col-md-8">
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="mb-4">
+                            <StyledLabel>Proposal Qualification</StyledLabel>
+                            <div className="fields">
+                              {selectedProgram?.name}
                             </div>
-                            {/* <GreenText
-                              onClick={() => setShowPromoCOde(!showPromoCode)}
-                              className="ms-2 fs-6 d-flex align-items-center justify-content-center"
-                            >
-                              <CloseIcon />
-                            </GreenText> */}
                           </div>
                         </div>
-                      )}
+                        <div className="col-md-6">
+                          <div className="mb-4">
+                            <StyledLabel>Study Mode</StyledLabel>
+                            <div className="fields">{selectedStudyMode}</div>
+                            <div className=" col-md-8">
+                              -{" "}
+                              {
+                                props.studyModeData.find((item) => {
+                                  return item.code == selectedStudyMode;
+                                })?.description
+                              }
+                            </div>
+                          </div>
+                        </div>
+
+                        {isApplicationEnrolled && (
+                          <div className="col-md-6">
+                            <div className="mb-4 ">
+                              {feeOptions?.length > 0 &&
+                                feeOptions
+                                  .sort((a, b) =>
+                                    sortAscending(a, b, "feeMode")
+                                  )
+                                  .map(({ fee, feeMode }, index) => (
+                                    <div className="form-check form-check-inline">
+                                      <>
+                                        <input
+                                          key={index}
+                                          className="form-check-input me-2"
+                                          type="radio"
+                                          {...(register(
+                                            `payment.selectedFeeMode`,
+                                            {
+                                              required: true,
+                                            }
+                                          ) as any)}
+                                          onChange={() => {
+                                            setPromoCode("");
+                                            applyDiscount();
+                                            getCurrencyConversion();
+                                            setValue(
+                                              "payment.selectedFeeMode",
+                                              feeMode
+                                            );
+                                            setValue(
+                                              "payment.selectedFeeModeFee",
+                                              fee
+                                            );
+                                          }}
+                                          value={feeMode}
+                                          checked={
+                                            feeMode ==
+                                            allFields?.payment?.selectedFeeMode
+                                          }
+                                        />
+                                        <label className="form-check-label">
+                                          {feeMode}
+                                          <br />
+                                          <GreenText>
+                                            {selectedCurrency}&nbsp;
+                                            {getConvertedProgramFees(
+                                              conversionRate,
+                                              Number(fee)
+                                            )}
+                                          </GreenText>
+                                        </label>
+                                      </>
+                                    </div>
+                                  ))}
+                            </div>
+                          </div>
+                        )}
+                        <div className="col-md-6">
+                          <div className="mb-4">
+                            <StyledLabel>
+                              {isApplicationEnrolled
+                                ? "Program Fee"
+                                : "Application Fee"}{" "}
+                              <strong>
+                                ({`R ${Math.trunc(+programFee)}`})
+                              </strong>
+                            </StyledLabel>
+                            <div className="fields">
+                              {selectedCurrency}{" "}
+                              {isApplicationEnrolled
+                                ? getConvertedProgramFees(
+                                    conversionRate,
+                                    programFee
+                                  )
+                                : convertedProgramFee}
+                              &nbsp;
+                              <span className="fw-normal fs-6">
+                                ( Non-refundable )
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="w-100 p-4 promo-card">
+                        <div className="mb-4 d-flex justify-content-between flex-column">
+                          <div>
+                            {" "}
+                            {isApplicationEnrolled ? (
+                              <h6>
+                                Total Program Fees
+                                <div className="payment-values">
+                                  {selectedCurrency} &nbsp;{""}
+                                  {isManagementPromoCode
+                                    ? getConvertedProgramFees(
+                                        conversionRate,
+                                        allFields?.payment?.discountedFee
+                                      )
+                                    : getConvertedProgramFees(
+                                        conversionRate,
+                                        programFee
+                                      )}
+                                </div>
+                              </h6>
+                            ) : (
+                              <h6>
+                                Total Application
+                                <div className="payment-values">
+                                  {selectedCurrency} &nbsp;
+                                  {isManagementPromoCode
+                                    ? getConvertedProgramFees(
+                                        conversionRate,
+                                        allFields?.payment?.discountedFee
+                                      )
+                                    : convertedProgramFee}
+                                </div>
+                              </h6>
+                            )}
+                            {!isApplicationEnrolled && (
+                              <h6>
+                                RMAT Fee{" "}
+                                <div className="payment-values">
+                                  {selectedCurrency} &nbsp;
+                                  {isNaN(rmatFee) ? 0 : rmatFee}
+                                </div>
+                              </h6>
+                            )}
+                            {!isManagementPromoCode && (
+                              <>
+                                <h6>
+                                  Discount{" "}
+                                  <div className="payment-values">
+                                    {" "}
+                                    {selectedCurrency} &nbsp;
+                                    {isNaN(discountAmount) ? 0 : discountAmount}
+                                    {discountPercentage && (
+                                      <span className="ms-2">
+                                        ({discountPercentage}%)
+                                      </span>
+                                    )}
+                                  </div>
+                                </h6>
+
+                                {props?.isApplicationEnrolled ? (
+                                  <h4 className="subtotal">
+                                    Total Amount{" "}
+                                    <div className="payment-values">
+                                      {!isNaN(totalAmount) && selectedCurrency}
+                                      {isNaN(totalAmount)
+                                        ? "...Converting"
+                                        : totalAmount}
+                                      (
+                                      {`R ${Math.trunc(
+                                        +programFee + rmatFees
+                                      )}`}
+                                      )
+                                    </div>
+                                  </h4>
+                                ) : (
+                                  <h4 className="subtotal">
+                                    Total Amount{" "}
+                                    <div className="payment-values">
+                                      {" "}
+                                      {!isNaN(totalAmount) &&
+                                        selectedCurrency}{" "}
+                                      {isNaN(totalAmount)
+                                        ? "...Converting"
+                                        : totalAmount}
+                                      (
+                                      {`R ${Math.trunc(
+                                        +programFee + rmatFees
+                                      )}`}
+                                      )
+                                    </div>
+                                  </h4>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        {!isManagementPromoCode && (
+                          <>
+                            <div className="text-center show-promo-code">
+                              <a
+                                onClick={() => setShowPromoCOde(true)}
+                                href="#"
+                                className="w-100 text-dark"
+                              >
+                                Have a promo code?
+                              </a>
+                            </div>
+                            {showPromoCode && (
+                              <div className="w-100 text-center ps-4 pe-4">
+                                <div className="input-group mb-2 mt-2">
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    value={promoCode}
+                                    placeholder="Enter promo code"
+                                    onChange={(e) => {
+                                      setPromoCode(e?.target?.value);
+                                      setValue(
+                                        "payment.managementDiscountCode",
+                                        e.target.value
+                                      );
+                                    }}
+                                  />
+                                  <div className="input-group-append cursor-pointer">
+                                    <Button
+                                      onClick={applyDiscount}
+                                      style={{
+                                        background:
+                                          !promoCode || promoCode?.length === 0
+                                            ? `${DefaultGrey}`
+                                            : `${Green}`,
+                                        padding: "0.50rem 0.75rem",
+                                      }}
+                                      id="basic-addon2"
+                                      disabled={!promoCode}
+                                    >
+                                      Apply
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </>
+                        )}
+                        {isManagementPromoCode && (
+                          <div className="w-100 text-center ps-4 pe-4">
+                            <div>
+                              <p className="fw-bold">
+                                Promo Code: <strong>{promoCode} </strong>
+                                <GreenText className="cursor-pointer">
+                                  {" "}
+                                  <DeleteIcon
+                                    onClick={() => {
+                                      setManagementPromoCode(false);
+                                      setPromoCode("");
+                                      setCouponApplied(false);
+                                      setValue("payment.discountedFee", "0.00");
+                                    }}
+                                  />
+                                </GreenText>
+                              </p>
+                            </div>
+                            <GreenText>
+                              <Image
+                                className="me-2"
+                                src={CircleTick}
+                                alt="circle"
+                              />
+                              You have saved {selectedCurrency}
+                              {discountAmount} on this application
+                            </GreenText>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </PaymentContainer>
-          </MainContainer>
-        </div>
-        <div className="col-md-6">
-          <PaymentOption navigateNext={props?.navigateNext} />
-        </div>
-        <div className="col-md-1">
-          <StyledDiv>Or</StyledDiv>
-        </div>
-        <div className="col-md-5">
-          <MainContainer>
-            <PaymentHeading>
-              <div className="col-md-12">
-                <StyleHeading>
-                  <GreenFormHeading style={{ fontSize: "20px" }}>
-                    Upload Document
-                  </GreenFormHeading>
-                </StyleHeading>
-              </div>
-            </PaymentHeading>
-            <PaymentContainer>
-              <div className="d-flex justify-content-center">
-                <div className="">
-                  <UploadPaymentDocsContainer onClick={onDocUploadClick}>
-                    <div ref={fileUploadRef} className="text-center">
-                      <Image
-                        src={FIleUploadImg}
-                        width="35"
-                        alt="file-upload-svgrepo"
-                      />
-                      <input
-                        className="d-none"
-                        accept="image/jpeg, application/pdf"
-                        type="file"
-                        {...(register("payment.paymentProof", {
-                          required: true,
-                        }) as any)}
-                        onChange={(e) => {
-                          if (e?.target) {
-                            const files = [...paymentDocs, e.target?.files![0]];
-                            onPaymentDocumentUpload(files);
-                          }
-                        }}
-                      />
-                      <GreenFormHeading>Upload Payment Proof</GreenFormHeading>
-                      <div
-                        onClick={(e) => e.stopPropagation()}
-                        className="d-flex flex-wrap"
-                      >
-                        {paymentDocs &&
-                          paymentDocs.map((file, idx) => (
-                            <span
-                              style={{
-                                color: file?.error ? "red" : "#000",
-                                wordBreak: "break-all",
-                              }}
-                              className="w-100"
-                              key={file.lastModified}
-                            >
-                              {file?.name}{" "}
-                              <DeleteIcon onClick={() => deleteFile(idx)} />
-                            </span>
-                          ))}
-                      </div>
-                      {paymentDocs.length > 0 && isInvalidFiles && (
-                        <div className="invalid-feedback">
-                          Only "PDF" or "JPEG" file can be upload.
-                        </div>
-                      )}
-                    </div>
-                  </UploadPaymentDocsContainer>
-                </div>
-              </div>
-            </PaymentContainer>
-            <div className="container">
-              <div className="row">
-                <div className="col align-self-center text-center ">
-                  <StyledButton
-                    disabled={
-                      isInvalidFiles ||
-                      paymentDocs.length === 0 ||
-                      isPaymentDocSubmit
-                    }
-                    onClick={() => submitPaymentDocs()}
-                    title="Submit"
+                </PaymentContainer>
+              </MainContainer>
+            </div>
+            {!props?.isManagementStudentType && (
+              <>
+                <div className="col-md-6">
+                  <PaymentOption
+                    totalAmount={totalPayuAmount}
+                    navigateNext={props?.navigateNext}
+                    setLoading={(loading) => setLoading(loading)}
+                    isApplicationEnrolled={isApplicationEnrolled}
                   />
                 </div>
-              </div>
-            </div>
-          </MainContainer>
+                <div className="col-md-1">
+                  <StyledDiv className="or-div">Or</StyledDiv>
+                </div>
+                <div className="col-md-5 ">
+                  <MainContainer className="card-shadow">
+                    <PaymentHeading>
+                      <div className="col-md-12 ">
+                        <StyleHeading>
+                          <GreenFormHeading className="payment-card-title">
+                            Upload Payment Proof
+                          </GreenFormHeading>
+                        </StyleHeading>
+                      </div>
+                    </PaymentHeading>
+                    <PaymentContainer>
+                      <div className="d-flex justify-content-center w-100">
+                        <div className="w-100">
+                          <UploadPaymentDocsContainer
+                            onClick={onDocUploadClick}
+                            className="w-100"
+                          >
+                            <div ref={fileUploadRef} className="text-center">
+                              <Image
+                                className="upload-icon"
+                                src={FIleUploadImg}
+                                width="35"
+                                alt="file-upload-svgrepo"
+                              />
+                              <input
+                                className="d-none"
+                                accept="image/jpeg, application/pdf"
+                                type="file"
+                                {...(register("payment.paymentProof", {
+                                  required: true,
+                                }) as any)}
+                                onChange={(e) => {
+                                  if (e?.target) {
+                                    const files = [
+                                      ...paymentDocs,
+                                      e.target?.files![0],
+                                    ];
+                                    onPaymentDocumentUpload(files);
+                                  }
+                                }}
+                              />
+                              <GreenFormHeading>
+                                Drag and drop, or browse your files
+                              </GreenFormHeading>
+                              <p className="offline-text">
+                                Only PNG, JPEG and PDF files with max size of
+                                2MB
+                              </p>
+                              <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="d-flex flex-wrap"
+                              >
+                                {paymentDocs &&
+                                  paymentDocs.map((file, idx) => (
+                                    <span
+                                      style={{
+                                        color: file?.error ? "red" : "#000",
+                                        wordBreak: "break-all",
+                                      }}
+                                      className="w-100 offline-filename"
+                                      key={file.lastModified}
+                                    >
+                                      {file?.name}{" "}
+                                      <DeleteIcon
+                                        onClick={() => deleteFile(idx)}
+                                      />
+                                    </span>
+                                  ))}
+                              </div>
+                              {paymentDocs?.length > 0 && !isInvalidFiles && (
+                                <div className="invalid-feedback">
+                                  Max file size is 2 MB
+                                </div>
+                              )}
+                              {isInvalidFilesType && (
+                                <div className="invalid-feedback">
+                                  Only PDF and JPGE File Allowed
+                                </div>
+                              )}
+                            </div>
+                          </UploadPaymentDocsContainer>
+                        </div>
+                      </div>
+                    </PaymentContainer>
+                    <div className="container">
+                      <div className="row">
+                        <div className="col align-self-center text-center pb-4 ">
+                          <StyledButton
+                            disabled={
+                              !isInvalidFiles ||
+                              paymentDocs?.length === 0 ||
+                              isPaymentDocSubmit ||
+                              !totalPayuAmount
+                            }
+                            onClick={() => submitPaymentDocs()}
+                            title="Submit"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </MainContainer>
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
@@ -396,19 +681,16 @@ export default Payment;
 
 export const MainContainer = styled.div`
   background: #fff;
-  width: 100%;
-  margin: 1rem 0;
-  height: 100%;
 `;
 
 export const PaymentContainer = styled.div`
   width: 100%;
-  padding: 1rem 10px;
+  padding: 1.5rem;
 `;
 
 const PaymentHeading = styled(PaymentContainer)`
   border-bottom: 2px solid ${Green};
-  padding: 1rem 10px;
+  padding: 10px;
 `;
 const StyleHeading = styled.div``;
 const StyledDiv = styled.div`
@@ -422,20 +704,21 @@ const StyledDiv = styled.div`
   top: 50%;
   color: ${Green};
   font-size: 18px;
-  font-weight: bolder;
+  font-family: roboto-bold;
 `;
 
 const UploadPaymentDocsContainer = styled.div`
-  background: ${DefaultGrey};
+  background: #f5f5f5;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  min-width: 400px;
-  min-height: 150px;
+  min-height: 100px;
   padding: 1rem;
-  max-width: 400px;
+  width: 100%;
   overflow: hidden;
+  border: 1px dashed #008554;
+  border-radius: 5px;
   @media (max-width: 900px) {
     padding: 1rem 4.7rem;
   }

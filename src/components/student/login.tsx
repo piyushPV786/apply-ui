@@ -1,37 +1,46 @@
-import { Grid, Snackbar } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import OtpInput from "../Input/otpInput";
-import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import axios from "../../service/Axios";
-import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.svg";
+import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
 import Image from "next/image";
+
+import axios from "axios";
+import authConfig from "./auth";
+import {
+  AuthValuesType,
+  RegisterParams,
+  LoginParams,
+  ErrCallbackType,
+  UserDataType,
+} from "./types";
 import {
   ImageContainer,
   ApplicationFormContainer,
   Heading,
   Item,
   StyleFooter,
-  SuccessMsgContainer,
   Title,
-  ToasterContainer,
 } from "./style";
 import styled from "styled-components";
-import { CommonApi, RoutePaths } from "../common/constant";
+import { CommonApi, RoutePaths, tokenName } from "../common/constant";
+import { MsgComponent, LoaderComponent } from "../common/common";
+import useAxiosInterceptor from "../../service/Axios";
 
 const StudentLogin = () => {
   const [mobileNumber, setMobileNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState<any>("ZA");
   const [otp, setOtp] = useState<string>("");
   const [isProceed, setProceed] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<any>(null);
   const [showToast, setToast] = useState<boolean>(false);
-  const [toastMsg, setToastMsg] = useState<any>({
-    message: "",
-    success: true,
-  });
+  const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
+  const [isResendOtp, setResend] = useState<boolean>(false);
+  const { baseAuth, loading } = useAxiosInterceptor();
+
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
@@ -44,40 +53,34 @@ const StudentLogin = () => {
       router.push(RoutePaths.Dashboard);
     }
   }, []);
+
   const isNumberValid =
     mobileNumber &&
-    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 8 &&
-    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! <= 14;
+    parsePhoneNumber(mobileNumber, countryCode)?.nationalNumber?.length! >= 6 &&
+    mobileNumber.length! <= 16;
 
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = () => {
     setProceed(true);
     const number = parsePhoneNumber(mobileNumber, countryCode);
-    axios
+    baseAuth
       .post(CommonApi.REGISTERUSER, {
         mobileNumber: number?.nationalNumber,
         mobileCountryCode: number?.countryCallingCode,
       })
-      .then(({ data }) => {
+      .then(({}) => {
         const studentDetail = {
           mobileNumber: number?.nationalNumber,
           countryCodeNumber: number?.countryCallingCode,
           countryCode: countryCode,
         };
         sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
+
         setProceed(true);
-        setToastMsg((prevState: any) => ({
-          ...prevState,
-          message: "OTP number sent successfully",
-        }));
         setToast(true);
       })
       .catch(({ response }) => {
-        setToastMsg(() => ({
-          success: false,
-          message: response?.data?.message,
-        }));
-        setToast(true);
+        console.error(response);
       });
   };
   const onCountryChange = (value: string | any) => {
@@ -94,14 +97,14 @@ const StudentLogin = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Item>
-              <Title className="login-title">Login With Mobile Number</Title>
+              <Title className="login-title">Login with mobile number</Title>
             </Item>
           </Grid>
           <Grid item xs={12}>
             <Item>
               {" "}
               <span className="login-text">
-                Enter your mobile number we will send you OTP to Verify
+                Enter your mobile number and we will send you an OTP to verify
               </span>
             </Item>
           </Grid>
@@ -141,19 +144,20 @@ const StudentLogin = () => {
       </div>
     );
   };
+
   const EnterOtp = () => {
     return (
       <div>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Item>
-              <Title>OPT verification</Title>
+              <Title className="login-title">OTP verification</Title>
             </Item>
           </Grid>
           <Grid item xs={12}>
             <Item>
-              <span>
-                Enter 4 digit OTP code sent to your number {mobileNumber}
+              <span className="login-text">
+                Enter the 4 digit OTP sent to your mobile number{mobileNumber}
               </span>
             </Item>
           </Grid>
@@ -166,9 +170,26 @@ const StudentLogin = () => {
                 onChange={(e) => {
                   onchangeOtp(e);
                 }}
+                onKeypress={(e: any) => {
+                  if (e.key === "Enter" && otp.length === 4) {
+                    verifyNumber();
+                  }
+                }}
               />
             </Item>
           </Grid>
+          {errorMsg && (
+            <Grid item xs={12}>
+              <Item>
+                <div className="mb-2">
+                  <MsgComponent
+                    message={errorMsg?.message}
+                    success={errorMsg?.success}
+                  />
+                </div>
+              </Item>
+            </Grid>
+          )}
           <Grid item xs={12}>
             <Item>
               <StyledButton
@@ -178,9 +199,20 @@ const StudentLogin = () => {
                 }}
                 title="Verify"
               />
-              <StyledLink onClick={resendOtp}>Resend OTP</StyledLink>
+              {showResendBtn && (
+                <StyledLink className="link-text" onClick={resendOtp}>
+                  Resend OTP
+                </StyledLink>
+              )}
               <br />
-              <StyledLink onClick={() => setProceed(!isProceed)}>
+              <StyledLink
+                className="link-text"
+                onClick={() => {
+                  setProceed(!isProceed);
+
+                  setOtp("");
+                }}
+              >
                 Change Mobile Number
               </StyledLink>
             </Item>
@@ -190,108 +222,82 @@ const StudentLogin = () => {
     );
   };
 
-  const verifyNumber = () => {
-    setToast(true);
+  const verifyNumber = async () => {
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
-    axios
+    baseAuth
       .post(CommonApi.VERIFYOTP, {
         mobileNumber: mobileNumberDetail?.mobileNumber,
         otp: +otp,
         mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
       })
       .then(({ data }) => {
-        setToastMsg(() => ({
-          success: true,
-          message: data?.message,
-        }));
+        window.sessionStorage.setItem(
+          tokenName?.accessToken,
+          data?.data?.tokenDetails?.access_token
+        );
+        window.sessionStorage.setItem(
+          tokenName.refreshToken,
+          data?.data?.tokenDetails?.refresh_token
+        );
+
+        setErrorMsg(null);
         sessionStorage.setItem(
           "studentId",
           JSON.stringify({ leadCode: data?.data?.leadCode })
         );
         sessionStorage.setItem("authenticate", JSON.stringify("true"));
-        setTimeout(() => {
-          router.push(RoutePaths.Dashboard);
-        }, 2500);
+
+        router.push(RoutePaths.Dashboard);
       })
-      .catch(({ response }) => {
-        setToastMsg(() => ({
+      .catch(({}) => {
+        setErrorMsg({
           success: false,
-          message: response?.data?.message,
-        }));
-        setToast(true);
+          message: "Sorry! The entered OTP is invalid. Please try again",
+        });
+        setShowResendBtn(true);
       });
   };
 
   const resendOtp = () => {
-    setToastMsg(() => ({
-      success: true,
-      message: "OTP re-sent successfully",
-    }));
-    setToast(true);
+    setErrorMsg({ success: true, message: "OTP re-sent successfully" });
     setOtp("");
   };
 
   const today = new Date();
   const year = today.getFullYear();
 
-  const { message, success } = toastMsg;
   return (
     <>
-      <ImageContainer>
-        <>
-          <Heading>
-            <div>
-              <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <ImageContainer>
+          <>
+            <div className="login-spacing">
+              <Heading>
+                <div>
+                  <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
+                </div>
+                Regenesys Application Form
+              </Heading>
+              <ApplicationFormContainer isProceed={isProceed}>
+                {!isProceed && <EnterMobNumber />}
+                {isProceed && <EnterOtp />}
+              </ApplicationFormContainer>
             </div>
-            Regenesys Application Form
-          </Heading>
-          <ApplicationFormContainer isProceed={isProceed}>
-            {!isProceed && <EnterMobNumber />}
-            {isProceed && <EnterOtp />}
-          </ApplicationFormContainer>
-          <StyleFooter>
-            <span className="footer-text">
-              Copyright @ 2015 - {year}{" "}
-              <a href="https://www.regenesys.net/">Regenesys Business School</a>
-            </span>
-          </StyleFooter>
-          <Snackbar
-            autoHideDuration={2000}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            open={showToast}
-            onClose={() => {
-              setToast(!showToast);
-            }}
-            key={"bottom"}
-          >
-            <ToasterContainer success={success}>
-              <CheckCircleRoundedIcon
-                style={{ color: "#0eb276", fontSize: "30px" }}
-              />
-              <SuccessMsgContainer>
-                <StyledLink>
-                  {success ? "Success" : "Error"}
-                  <br />
-                  <span
-                    style={{
-                      color: "black",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {message}
-                  </span>
-                </StyledLink>
-              </SuccessMsgContainer>
-            </ToasterContainer>
-          </Snackbar>
-        </>
-      </ImageContainer>
+            <StyleFooter>
+              <span className="footer-text">
+                Copyright @ 2015 - {year}{" "}
+                <a href="https://www.regenesys.net/">
+                  Regenesys Business School
+                </a>
+              </span>
+            </StyleFooter>
+          </>
+        </ImageContainer>
+      )}
     </>
   );
 };

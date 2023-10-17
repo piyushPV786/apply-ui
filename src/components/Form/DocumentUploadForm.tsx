@@ -1,324 +1,393 @@
-import React, { useState, useRef, useEffect } from "react";
-import { MainContainer, PaymentContainer } from "../payment/payment";
+import { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
-import DoneIcon from "@material-ui/icons/Done";
-import styled from "styled-components";
-import { DefaultGrey, Green, GreenFormHeading } from "../common/common";
+import { StyledLabel } from "../common/common";
 import StyledButton from "../button/button";
-import { isInvalidFileType, uniqueArrayOfObject } from "../../Util/Util";
-import Link from "next/link";
-import Image from "next/image";
-import UploadImg from "../../../public/assets/images/upload-svgrepo-com.svg";
-import ViewIcon from "../../../public/assets/images/view-svgrepo-com.svg";
-import TrashIcon from "../../../public/assets/images/trash-svgrepo-com.svg";
-import FileUpload from "../../../public/assets/images/file-upload-svgrepo-com.svg";
-import { IOption } from "../common/types";
+import {
+  deepClone,
+  formDirtyState,
+  formOptions,
+  isInvalidFileType,
+} from "../../Util/Util";
+import { List } from "@material-ui/core";
+
+import { ILeadFormValues, IOption } from "../common/types";
+import DocumentUploadContainer, {
+  MainContainer,
+  TickWithText,
+} from "../document/DocumentUploadContainer";
+import { Typography } from "@mui/material";
+
+import { GraduationType } from "../common/constant";
+
+const documentCriteria = [
+  {
+    text: `File accepted: <strong>JPEG/JPG/PNG, PDF (Max size: 2MB)</strong>`,
+    isInnerText: true,
+  },
+  {
+    text: `ID should be at least valid for <strong>6 months.</strong>`,
+    isInnerText: true,
+  },
+  { text: "Upload a color scan of the original document." },
+];
 
 interface IDocumentUploadProps {
   allFields: any;
   isValidDocument: boolean;
-  documentType: any;
+  isApplicationEnrolled: boolean;
+  selectedPrograms: IOption;
+  isLoading?: boolean;
+  documentType: IOption[];
+  leadId: string;
+  onUpload?: (file: File | File[]) => void;
+  onRemove?: (index: number) => void;
+  onSubmit: () => void;
+  onSaveDraft: (formValue: ILeadFormValues, isDraft?: boolean) => void;
+  documentData: {
+    id: string;
+    name: string;
+    disabled: boolean;
+    status: string;
+  }[];
 }
-const imgUrl = "/assets/images";
 
+const mapStatusToFormData = (response, formData) => {
+  if (response && response?.length > 0) {
+    for (const item of response) {
+      const matchingFormData = formData?.find((formDataItem) => {
+        if (
+          formDataItem.id === "IDPASSPORT" &&
+          item.documentTypeCode === "IDPASSPORT"
+        ) {
+          return formDataItem;
+        } else return formDataItem.id === item.documentTypeCode;
+      });
+
+      if (matchingFormData) {
+        const status = item?.status?.replace("SALES_", "");
+
+        if (status === "PENDING") {
+          matchingFormData.draftSaveDoc = item;
+          continue;
+        }
+        if (status === "REJECT") {
+          matchingFormData.status = "Rejected";
+        }
+        if (status === "APPROVED") {
+          matchingFormData.status = "Approved";
+        }
+      }
+    }
+    return formData;
+  } else return formData;
+};
+
+const mergeDraftSaveDoc = (newDocs, existedDocs) => {
+  const mergedDocs = newDocs.map((newDoc) => {
+    const matchedDoc = existedDocs.find(
+      (existedDoc) => existedDoc.id === newDoc.id
+    );
+
+    if (matchedDoc) {
+      return {
+        ...newDoc,
+        draftSaveDoc: matchedDoc.draftSaveDoc,
+      };
+    }
+    return newDoc;
+  });
+
+  return mergedDocs;
+};
+
+const mapStatusDocument = (documentData) => {
+  if (documentData?.length > 0) {
+    for (const item of documentData) {
+      const { status = "" } = { ...item };
+      const documentStatus = status?.toLowerCase();
+      if (documentStatus?.includes("pending")) {
+        item.status = "Pending";
+      }
+      if (documentStatus?.includes("sales_rejected")) {
+        item.status = "Rejected";
+      }
+      if (documentStatus?.includes("approved")) {
+        item.status = "Approved";
+      }
+    }
+    return documentData;
+  } else return documentData;
+};
+
+const requiredDocs = [
+  "DECLARATIONFORM",
+  "IDPASSPORT",
+  "HIGHESTQUALIFICATION",
+  "MATRIC",
+  "RESUMECV",
+];
+const mbaDocs = ["MOTIVATIONLETTER", "INTERVIEWNOTES"];
 const DocumentUploadForm = ({
   allFields,
-  isValidDocument,
   documentType,
+  leadId,
+  isApplicationEnrolled,
+  onSaveDraft,
+  onSubmit,
+  selectedPrograms,
+  documentData,
 }: IDocumentUploadProps) => {
-  const fileUploadRef = useRef<any>(null);
-  const { register, setValue } = useFormContext();
+  const {
+    register,
+    setValue,
+    trigger,
+    watch,
+    formState: { errors },
+  } = useFormContext();
+  const [documentFormDataDetail, setDocumentFormDataDetail] =
+    useState<typeof documentData>(documentData);
   const [uploadDocs, setUploadDocs] = useState<
-    (File & { error: boolean; typeCode: "other" })[]
+    (File & { error: boolean; typeCode: string; id: string })[]
   >([]);
- 
+  const [remainingDocs, setRemainingDocs] = useState<string[]>(requiredDocs);
+  const documentDetails = allFields?.document?.documentDetails || [];
+  const isMBAProgram =
+    allFields?.education?.programCode === "MBA-Prog" ||
+    allFields?.education?.programCode === "MBA";
+  const isPostGraduation = selectedPrograms?.category === GraduationType.PG; /// upload CV in the upload document section mandatory for Post Graduate Programs and Non mandatory for Under Graduate Programs.
   useEffect(() => {
-    const existingPaymentProof = allFields?.payment?.paymentProof;
-    const allUploadedFiles = uniqueArrayOfObject(
-      [...uploadDocs, existingPaymentProof],
-      "size"
-    );
-    setValue("document.uploadedDocs", allUploadedFiles);
-    setUploadDocs(allUploadedFiles);
-  }, []);
+    if (documentDetails?.length > 0) {
+      const mappedDocs = mapStatusToFormData(documentDetails, documentData);
+      if (mappedDocs?.length > 0) {
+        const existedDocuments = mappedDocs
+          ?.filter((docs) => Boolean(docs?.draftSaveDoc))
+          .map(({ documentTypeCode, fileExtension, ...rest }) => ({
+            ...rest,
+            type: rest?.draftSaveDoc?.fileExtension,
+            typeCode: rest?.draftSaveDoc?.documentTypeCode,
+            name: rest?.draftSaveDoc?.name,
+            status: "Uploaded",
+          }));
+        const remainDocs = remainingDocs?.filter(
+          (doc) =>
+            !existedDocuments?.find((document) => document?.typeCode === doc)
+        );
+        setRemainingDocs(remainDocs?.filter(Boolean));
+        setUploadDocs([...existedDocuments]);
+        setValue("document.uploadedDocs", existedDocuments);
+      }
+      setDocumentFormDataDetail(
+        mapStatusToFormData(documentDetails, documentData)
+      );
+    }
+  }, [isMBAProgram]);
 
-  const onDocUploadClick = () => {
-    const fileElement = fileUploadRef.current?.childNodes[1] as any;
-    fileElement?.click() as any;
-  };
-  const deleteDocs = (index: number) => {
-    const remainingDocs = [...uploadDocs.filter((item, idx) => idx !== index)];
-    setValue("document.uploadedDocs", remainingDocs);
+  const documentFormFields = allFields?.document;
+  const documentFieldErrors = errors?.document as any;
+
+  const documentTypeList = documentType?.filter(
+    (item) => item?.code !== "PAYMENTPROOF"
+  );
+
+  const documentStatusDetail = deepClone(documentFormDataDetail);
+
+  const deleteDocs = (index: number, file: File & { typeCode: string }) => {
+    const remainingDocs = [
+      ...uploadDocs.filter((item, idx) => item?.typeCode !== file?.typeCode),
+    ];
+    setRemainingDocs((prevState) => [...prevState, file?.typeCode]);
+    setValue("document.uploadedDocs", remainingDocs, formOptions);
     setUploadDocs(remainingDocs);
   };
 
   const uploadDocuments = (files: any) => {
     const uploadedFiles = files;
+
     uploadedFiles.forEach((item: any) => {
+      item.isUploadedNow = true;
       item.error = isInvalidFileType(item.type);
-      item.typeCode = "other";
+      if (!item?.typeCode && isApplicationEnrolled) {
+        item.typeCode = "BURSARYLETTER";
+      }
+      if (!item?.typeCode && !isApplicationEnrolled) {
+        item.typeCode = "other";
+      }
     });
-    setUploadDocs(uploadedFiles as any);
-    setValue("document.uploadedDocs", uploadedFiles);
-  };
-
-  const showPdf = (item: File) => {
-    const file = new Blob([item], {
-      type: item?.type.includes("pdf") ? "application/pdf" : "image/jpeg",
-    });
-    const fileURL = URL.createObjectURL(file);
-    window.open(fileURL);
-  };
-
-  const imageType = (type: string) => {
-    let data = "png-svgrepo-com.svg";
-    if (type?.toLowerCase().includes("pdf")) {
-      data = "pdf-svgrepo-com.svg";
-    }
-    return data;
-  };
-  const onFileTypeSelect = (value: string, index: number) => {
-    const allFiles: any = [...uploadDocs];
-    allFiles[index].typeCode = value;
+    setUploadDocs((prevState) => [...prevState, ...(uploadedFiles as any)]);
+    const allFiles = [...uploadDocs, ...uploadedFiles];
+    const remainingDocuments = !isPostGraduation
+      ? remainingDocs?.filter((doc) => !doc?.includes("detailCV"))
+      : remainingDocs;
+    const remainDocs = remainingDocuments?.filter(
+      (doc) => !allFiles?.find((document) => document?.typeCode === doc)
+    );
+    setRemainingDocs(remainDocs?.filter(Boolean));
     setValue("document.uploadedDocs", allFiles);
   };
+
+  const documentFormData = isMBAProgram
+    ? documentFormDataDetail
+    : documentFormDataDetail.filter((item) => {
+        return !mbaDocs.includes(item.id);
+      });
+
+  const uploadedDocuments = mergeDraftSaveDoc(
+    mapStatusToFormData(documentDetails, documentFormData),
+    deepClone(uploadDocs)
+  );
+  const allRequiredDocuments = isMBAProgram
+    ? [...remainingDocs, ...mbaDocs]?.filter(
+        (remainDoc) =>
+          !uploadDocs?.find((doc) =>
+            doc?.name?.toLowerCase()?.includes(remainDoc?.toLowerCase())
+          )
+      )
+    : [...remainingDocs]?.filter((remainDoc) => {
+        !uploadDocs?.find((doc) =>
+          doc?.name?.toLowerCase()?.includes(remainDoc?.toLowerCase())
+        );
+      });
+  const documentsNeedTOBeUpload = allRequiredDocuments
+    ?.filter(Boolean)
+    ?.filter((doc) => uploadDocs?.find((item) => item?.name?.includes(doc)));
+
+  const requireDocs = !isPostGraduation
+    ? [...documentsNeedTOBeUpload, ...remainingDocs]?.filter(
+        (doc) => !doc?.includes("detailCV")
+      )
+    : [...documentsNeedTOBeUpload, ...remainingDocs];
+
   return (
-    <>
-      <div className="row w-100">
-        <div className="col-12 col-md-12 mb-3">
-          <MainContainer>
-            {" "}
-            <PaymentHeading>
-              <div className="col-md-12">
-                <StyleHeading>
-                  <GreenFormHeading style={{ fontSize: "20px" }}>
-                    Required Documents
-                  </GreenFormHeading>
-                </StyleHeading>
-              </div>
-            </PaymentHeading>
-            <PaymentContainer>
-              <div className="row">
-                <div className="col-md-5">
-                  <CustomContainer>
-                    <StyledUploadDocumentContainer ref={fileUploadRef}>
-                      <div className="mt-1">
-                        <Image width="100" src={UploadImg} alt="uplopad-svg" />
-                      </div>
-                      <input
-                        className="d-none"
-                        accept="image/jpeg, application/pdf"
-                        type="file"
-                        {...(register("document.uploadedDocs", {
-                          required: true,
-                        }) as any)}
-                        onChange={(e) => {
-                          if (e?.target) {
-                            const files = [...uploadDocs, e.target?.files![0]];
-                            uploadDocuments(files);
-                          }
-                        }}
+    <div className="row document-container">
+      <div className="col-md-9">
+        {uploadedDocuments?.map(
+          ({
+            name,
+            disabled,
+            status,
+            id,
+            isDeclaration = false,
+            draftSaveDoc = null,
+          }) => {
+            const newDocumentAdded: any = [...(uploadDocs as any)]?.find(
+              (doc) => {
+                if (doc?.isUploadedNow && doc?.typeCode === id) return doc;
+                else return null;
+              }
+            );
+
+            const newDocStatus =
+              newDocumentAdded?.isUploadedNow || draftSaveDoc
+                ? "Uploaded"
+                : false;
+
+            return (
+              <DocumentUploadContainer
+                key={`${name}_${id}`}
+                title={name}
+                selectedDocuments={
+                  draftSaveDoc ? [draftSaveDoc] : (null as any)
+                }
+                status={newDocStatus || status}
+                isDeclaration={isDeclaration}
+                disabled={disabled}
+                onUpload={uploadDocuments}
+                onRemove={deleteDocs as any}
+                documentType={id}
+                isOptional={!isPostGraduation}
+                documentFormFields={documentFormFields}
+                register={register}
+                setValue={setValue}
+                documentTypeList={documentTypeList}
+                id={id}
+                watch={watch}
+                documentFieldErrors={documentFieldErrors}
+              />
+            );
+          }
+        )}
+      </div>
+      <div className="col-md-3">
+        <div className="sticky-wrapper">
+          <MainContainer className="mt-0 card-shadow">
+            <div className="d-flex justify-content-center flex-column">
+              <StyledButton
+                isGreenWhiteCombination
+                className="mb-2"
+                title="Save as Draft"
+                onClick={onSaveDraft}
+              />
+              <StyledButton
+                disabled={requireDocs?.length > 0}
+                onClick={async () => {
+                  trigger();
+
+                  if (await trigger()) {
+                    setUploadDocs([]);
+                    setDocumentFormDataDetail([]);
+                    onSubmit();
+                  }
+                }}
+                title="Submit Documents"
+              />
+            </div>
+          </MainContainer>
+
+          <MainContainer className="sidebar-widget card-shadow">
+            <div className="d-flex flex-column">
+              <Typography textAlign="left" component="header">
+                Document Status
+              </Typography>
+              <List>
+                {mapStatusDocument(documentStatusDetail).map(
+                  ({ name, status, id, draftSaveDoc }) => {
+                    const newDocumentAdded: any = [
+                      ...(uploadDocs as any),
+                    ]?.find((doc) => {
+                      if (doc?.isUploadedNow && doc?.typeCode === id)
+                        return doc;
+                      else return null;
+                    });
+                    const newDocStatus =
+                      newDocumentAdded?.isUploadedNow || draftSaveDoc
+                        ? "Uploaded"
+                        : false;
+                    const docListStatus = newDocStatus || status;
+                    return (
+                      <TickWithText
+                        key={name}
+                        status={docListStatus?.toLowerCase()}
+                        text={name}
                       />
-                      <GreenFormHeading className=" mt-1 fs-3 text">
-                        Drag and Drop files to upload
-                      </GreenFormHeading>
-                      <strong className="mt-1 fs-4">or</strong>
-                      <div>
-                        <StyledButton
-                          className="mt-2"
-                          title="Browse"
-                          roundBtn
-                          onClick={onDocUploadClick}
-                        />
-                        <p className="fs-5" style={{ color: `#838383` }}>
-                          Supported files, PDF, PNG, JPEG, JPG{" "}
-                        </p>
-                      </div>
-                    </StyledUploadDocumentContainer>
-                  </CustomContainer>
-                </div>
-                <div className="col-md-7">
-                  <UploadedFilesContainer>
-                    <h4 className="fw-bold">Uploaded Files</h4>
+                    );
+                  }
+                )}
+              </List>
+            </div>
+          </MainContainer>
+          <MainContainer className="sidebar-widget doc-criteria card-shadow">
+            <div className="d-flex flex-column py-1">
+              <Typography textAlign="left" component="header" fontWeight="bold">
+                Document Acceptance Criteria
+              </Typography>
 
-                    <table className="table table-striped table-bordered">
-                      <thead>
-                        <tr>
-                          <th scope="col">File Name</th>
-                          <th scope="col">File Type</th>
-                          <th scope="col">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {uploadDocs?.map((item, index) => (
-                          <tr>
-                            <td>
-                              <div className="w-75">
-                                <img
-                                  className="me-2"
-                                  src={`${imgUrl}/${imageType(item?.type)}`}
-                                />
-                                {item?.name}{" "}
-                                {item?.error && (
-                                  <span style={{ color: "red" }}>
-                                    ( Invalid file format )
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td>
-                              {" "}
-                              <select
-                                className="form-select"
-                                onChange={(e) =>
-                                  onFileTypeSelect(e?.target?.value, index)
-                                }
-                              >
-                                 <option value="other">Other</option>
-                                {documentType?.map((item) => (
-                                  <option key={item.id} value={item?.code}>
-                                    {item?.name}
-                                  </option>
-                                ))}
-                              </select>
-                            </td>
-                            <td>
-                              <div>
-                                {!item.error && (
-                                  <Link
-                                    passHref
-                                    onClick={() => showPdf(item)}
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                    href={""}
-                                  >
-                                    <Image
-                                      className="me-2 ms-2 "
-                                      src={ViewIcon}
-                                      alt={"ViewIcon"}
-                                      width="25"
-                                    />
-                                  </Link>
-                                )}
-                                <span
-                                  onClick={() => deleteDocs(index)}
-                                  className="cursor-pointer"
-                                >
-                                  <Image
-                                    className="me-2 ms-2 "
-                                    src={TrashIcon}
-                                    alt={"TrashIcon"}
-                                    width="25"
-                                  />
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </UploadedFilesContainer>
-                  {!isValidDocument && (
-                    <h3 style={{ color: "red" }} className="fs-4  mt-5">
-                      Please remove invalid files
-                    </h3>
-                  )}
-                </div>
-              </div>
-            </PaymentContainer>
-            <div style={{ margin: "1rem" }}>
-              <DocumentCriteriaContainer>
-                <div className="row">
-                  <GreenFormHeading className="fs-5 m-2">
-                    Document Criteria
-                  </GreenFormHeading>
-                  <div className="col-md-5 col-lg-5">
-                    <p>
-                      <span className="me-2">
-                        <DoneIcon />
-                      </span>
-                      File accepted JPEG/JPG/PNG,PDF <br />
-                      <span style={{ marginLeft: "30px" }}>
-                        (Max size :2MB)
-                      </span>
-                    </p>
-                    <p>
-                      <span className="me-2">
-                        <DoneIcon />
-                      </span>
-                      ID should valid atleast for months
-                    </p>
-                  </div>
-
-                  <div className="col-md-7 col-lg-7">
-                    <div className="d-flex justify-content-around">
-                      <div>
-                        <p>Document should be in good condition</p>
-                        <br />
-                        <p>Face must clear visible</p>
-                      </div>
-                      <ImageContainer>
-                        <div className="w-100">
-                          <Image
-                            className="mb-2"
-                            width={"40"}
-                            src={FileUpload}
-                            alt={"file-upload"}
-                          />
-                          <p className="">Sample Document</p>
-                          <GreenFormHeading>
-                            <a style={{ color: `${Green}` }} href="#">
-                              View
-                            </a>
-                          </GreenFormHeading>
-                        </div>
-                      </ImageContainer>
-                    </div>
-                  </div>
-                </div>
-              </DocumentCriteriaContainer>
+              <List>
+                {documentCriteria.map(({ text, icon, isInnerText }: any) => (
+                  <TickWithText
+                    key={text}
+                    text={text}
+                    icon={icon}
+                    isInnerText={isInnerText}
+                    required={false}
+                  />
+                ))}
+              </List>
             </div>
           </MainContainer>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
 export default DocumentUploadForm;
-const DocumentCriteriaContainer = styled.div`
-  background: #dde1e3;
-  padding: 1rem;
-`;
-const StyleHeading = styled.div``;
-const PaymentHeading = styled(PaymentContainer)`
-  border-bottom: 2px solid ${Green};
-  padding: 1rem 10px;
-`;
-
-const StyledUploadDocumentContainer = styled.div`
-  text-align: center;
-`;
-const CustomContainer = styled.div`
-  padding: 1.5rem;
-  max-width: 400px;
-  cursor: pointer;
-  background-color: ${DefaultGrey};
-  width: 100%;
-  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='green' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
-`;
-
-const UploadedFilesContainer = styled.div``;
-
-const ImageContainer = styled.div`
-  background: white;
-  display: flex;
-  padding: 0.5rem;
-  max-width: 160px;
-  width: 100%;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  max-width: 160px;
-  border: 2px solid ${Green};
-`;

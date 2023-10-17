@@ -1,22 +1,31 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import PersonalInfoForm from "../../components/Form/personalInfoForm";
 import { useForm, FormProvider } from "react-hook-form";
 import styled from "styled-components";
 import { Container, Snackbar } from "@material-ui/core";
 import StepperComponent from "../../components/stepper/stepper";
-import { Green } from "../../components/common/common";
+import { Green, LoaderComponent } from "../../components/common/common";
 import StyledButton from "../../components/button/button";
 import { AddressForm } from "../../components/Form/AddressForm";
 import { EducationForm } from "../../components/Form/EducationForm";
 import { KinDetailsForm } from "../../components/Form/KinForm";
 import { EmployedForm } from "../../components/Form/EmployedForm";
 import { SponsoredForm } from "../../components/Form/SponsoredCandidateForm";
-import { AcadmicApi, AuthApi } from "../../service/Axios";
-import { IMasterData, IOption } from "../../components/common/types";
+import Termsconditiondialog from "../../components/dialog/Terms&ConditionDialog";
+import useAxiosInterceptor, { UserManagementAPI } from "../../service/Axios";
 import {
+  ILeadFormValues,
+  IMasterData,
+  IOption,
+} from "../../components/common/types";
+import {
+  getAllDocumentsDetails,
   getUploadDocumentUrl,
+  isValidEmail,
+  isValidFileType,
   mapFormData,
-  transformFormValue,
+  mapFormDefaultValue,
+  transformFormData,
   uploadDocuments,
 } from "../../Util/Util";
 import { useRouter } from "next/router";
@@ -31,202 +40,228 @@ import {
 } from "../../components/student/style";
 import {
   CommonApi,
+  CommonEnums,
   MagicNumbers,
   RoutePaths,
 } from "../../components/common/constant";
-const mockFormData = {
-  isAgreedTermsAndConditions: true,
-  lead: {
-    firstName: "Shashank",
-    middleName: "",
-    lastName: "Gupta",
-    dateOfBirth: "2023-01-02",
-    email: "dfgdf@rt.vom",
-    mobileNumber: "7566410079",
-    identificationPassportNumber: 234324324324,
-    genderId: "M",
-    nationalityId: "BLZ",
-    language: "ISX",
-    raceId: "INDIAN/ASIAN",
-    mobileCountryCode: "ZA",
-  },
-  address: [
-    {
-      street: "Test adress",
-      zipcode: "234234",
-      city: "test city",
-      state: "test state",
-      country: "Albania",
-      addressType: "POSTAL",
-    },
-    {
-      street: "Test adress",
-      zipcode: "234234",
-      city: "test city",
-      state: "test state",
-      country: "Albania",
-      addressType: "RESIDENTIAL",
-    },
-  ],
-  education: {
-    programCode: "BBA-PROG-501",
-    qualificationCode: "PQ",
-    highSchoolName: "testschool",
-    referredById: "2",
-    studentTypeId: "1",
-    studyModeCode: "DISTANCE-ONLINE",
-    socialMediaCode: "TWITTER",
-    agentCode: null,
-    studyModeDetail: {
-      fee: "21000.00",
-      feeMode: "SEMESTER",
-    },
-    applicationFees: "13000.00",
-  },
-  kin: {
-    // isKin: "yes",
-    fullName: "sdfsdf",
-    relationship: "single",
-    email: "sdfdsf@tfgfg.vom",
-    mobileNumber: "+9665635435435345",
-    mobileCountryCode: "+966",
-  },
-  employment: {
-    // isEmployed: "yes",
-    employmentStatusCode: "EMPLOYED",
-    employer: "123",
-    jobTitle: "tesrt",
-    employmentIndustryCode: "MEDIA",
-    managerName: "sefsdf",
-    officeAddress: "Test Address",
-    officeMobileNumber: "+96654654654656",
-    officeMobileCountryCode: "+966",
-  },
-  sponser: {
-    // isSponsored: "yes",
-    name: "sfdsffd",
-    address: "dsfdsfsdf",
-    mobileNumber: "+966546354454",
-    mobileCountryCode: "+966",
-    sponsorModeCode: "SPONSER",
-    email: "test@TEST.COM",
-  },
-};
+import {
+  getIntrestedQualificationPrograms,
+  getUserDetailHelper,
+} from "../../Util/applicationFormHelper";
 
-const isValidFileType = (files: any[]) => {
-  return (files || []).filter((file) => file?.error === true);
-};
-const ApplicationForm = (props: any) => {
+const isValidLeadEmail = (value: string) => isValidEmail(value);
+
+const ApplicationForm = () => {
   const router = useRouter();
-
-  const [studentData, setStudentData] = useState<any>(null);
+  const { AuthApi, loading, AcadmicApi, CommonAPI, setLoading } =
+    useAxiosInterceptor();
   const [isFormSubmitted, setSubmitted] = useState<boolean>(false);
   const [isPaymentDone, setPaymentDone] = useState<boolean>(false);
+
+  const [agentData, setAgentData] = useState([]);
+
   const [showDraftSavedToast, setShowDraftSaveToast] = useState<any>({
     message: "",
     success: false,
     show: false,
   });
   const [leadId, setLeadId] = useState<string>("");
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [isDocumentUploadDone, setDocumentUploadDone] =
-    useState<boolean>(false);
+  const [activeStep, setActiveStep] = useState<any>(0);
   const [masterData, setMasterData] = useState<IMasterData | null>(null);
-  const methods = useForm({
-    mode: "onChange",
+  const [isApplicationEnrolled, setApllicationEnrolled] =
+    useState<boolean>(false);
+  const [isNewApplication, setNewApplication] = useState<boolean>(false);
+  const [identificationDocumentTypeData, setIdentificationDocumentTypeData] =
+    useState<any>([]);
+  const [nationalityStatus, setNationalityStatus] = useState([]);
+  const [termsOpen, settermsOpen] = useState<any>(false);
+  const [posStateData, setPosStateData] = useState([]);
+  const [resStateData, setResStateData] = useState([]);
+  const [sponsorStateData, setSponsorStateData] = useState([]);
+  const [studyModeData, setStudyModeData] = useState([]);
+  const [employedStateData, setEmployedStateData] = useState([]);
+  const [documentData, setDocumentData] = useState([]);
+  const methods = useForm<ILeadFormValues>({
+    mode: "all",
     reValidateMode: "onBlur",
-    defaultValues: useMemo(() => {
-      return studentData;
-      // return mockFormData as any;
-    }, [studentData]),
   });
   const {
     register,
-    formState: { isValid, isDirty, errors, touchedFields },
+    formState: { isValid, isDirty, errors },
     watch,
     setValue,
+    clearErrors,
     getValues,
     trigger,
   } = methods;
   useEffect(() => {
     getUserDetail();
     getMasterData();
+    getAgentDetails();
+    getNationalData();
+    identificationDocumentType();
+    getStudyModeData();
+    getDocumentData();
   }, []);
-  useEffect(() => {
-    if (studentData) {
-      mapFormDefaultValue();
-    }
-  }, [studentData]);
-  const allFields = watch();
 
-  const isValidDocument =
-    isValidFileType(allFields?.document?.uploadedDocs).length === 0;
   useEffect(() => {
-    if (window && router.query?.isFormSubmittedAlready) {
-      const isFormSubmittedAlready = JSON.parse(
-        router?.query?.isFormSubmittedAlready as any
-      );
-      const isPaymentFail = JSON.parse(router?.query?.isPaymentFail as any);
-      if (isFormSubmittedAlready && isPaymentFail) {
-        setActiveStep(1);
-        setSubmitted(true);
+    if (window) {
+      const queryParams = new URLSearchParams(location?.search);
+      const applicationStatus = queryParams.get("status");
+
+      if (applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED) {
+        setApllicationEnrolled(true);
+      } else {
+        setApllicationEnrolled(false);
+        if (applicationStatus === CommonEnums.NEW_STATUS) {
+          setNewApplication(true);
+        } else if (
+          applicationStatus === CommonEnums.TRUE ||
+          !applicationStatus
+        ) {
+          setNewApplication(false);
+        }
       }
     }
-  }, [router.query]);
+  }, []);
+  const allFields = watch();
+  const isValidDocument =
+    allFields?.document?.uploadedDocs?.length > 0 &&
+    isValidFileType(allFields?.document?.uploadedDocs).length === 0;
 
   const navigateBack = () => {
     setSubmitted(false);
     setActiveStep((prevState: number) => prevState - 1);
   };
   const navigateNext = () => {
-    setSubmitted(true);
-    setPaymentDone(true);
     setActiveStep((prevState: number) => prevState + 1);
   };
-  const mapFormDefaultValue = () => {
-    const acceptedKeys = [
-      "kin",
-      "address",
-      "lead",
-      "education",
-      "employment",
-      "sponsor",
-    ];
-    for (let [key, value] of Object.entries(studentData)) {
-      if (acceptedKeys.includes(key)) {
-        setValue(key, value, {
-          shouldDirty: true,
-          shouldTouch: true,
-          shouldValidate: true,
-        });
+
+  const termsHandelClose = () => {
+    settermsOpen(false);
+  };
+  const termsHandelOpen = () => {
+    settermsOpen(true);
+  };
+
+  const identificationDocumentType = async () => {
+    const response = await CommonAPI.get(CommonApi.IDENTIFICATIONDOCUMENT);
+
+    setIdentificationDocumentTypeData(response?.data.data);
+  };
+
+  const routeIfStepDone = (routeTo: string) => {
+    if (routeTo) {
+      switch (routeTo) {
+        case "Document":
+          setSubmitted(false);
+          setActiveStep(2);
+          setPaymentDone(true);
+          break;
+        default:
+          break;
       }
     }
   };
-  const updateLead = (request: any) => {
-    AuthApi.post(CommonApi.SAVEUSER, {
-      ...request,
-    })
-      .then(({ data: response }) => {
-        sessionStorage.setItem(
-          "studentId",
-          JSON.stringify({
-            id: response?.data?.leadData?.id,
-            leadCode: response?.data?.leadData?.leadCode,
-          })
+
+  const updateTermsConditions = (status) => {
+    if (status == true) {
+      allFields.lead.isAgreedTermsAndConditions = true;
+      setValue("isAgreedTermsAndConditions", true);
+      clearErrors("isAgreedTermsAndConditions");
+      settermsOpen(false);
+    }
+
+    if (status == false) {
+      allFields.lead.isAgreedTermsAndConditions = false;
+      setValue("isAgreedTermsAndConditions", false);
+      clearErrors("isAgreedTermsAndConditions");
+      settermsOpen(false);
+    }
+  };
+
+  const updateLead = (
+    request: any,
+    leadCode: string,
+    applicationCode: string,
+    activeLeadDetail: any,
+    status: string,
+    draftSave: boolean | undefined
+  ) => {
+    if (activeStep === MagicNumbers.TWO) {
+      uploadStudentDocs(draftSave);
+      return;
+    }
+
+    let methodType;
+    if (
+      applicationCode &&
+      applicationCode?.length > 0 &&
+      (status !== CommonEnums.DRAFT_STATUS || !status) &&
+      isNewApplication == false
+    ) {
+      methodType = AuthApi.put(
+        `${CommonApi.SAVEUSER}/${leadCode}/application/${applicationCode}?isDraft=false`,
+        {
+          ...request,
+        }
+      );
+    } else {
+      if (draftSave) {
+        const fetchMethod =
+          applicationCode &&
+          applicationCode?.length > 0 &&
+          (status !== CommonEnums.DRAFT_STATUS || !status) &&
+          isNewApplication == false
+            ? "put"
+            : "post";
+        request.applicationCode = applicationCode;
+        methodType = AuthApi[fetchMethod](
+          `${CommonApi.SAVEUSER}?isDraft=true`,
+          {
+            ...request,
+          }
         );
-        sessionStorage.setItem("leadData", JSON.stringify(response?.data));
+      } else {
+        methodType = AuthApi.post(`${CommonApi.SAVEUSER}?isDraft=false  `, {
+          ...request,
+        });
+      }
+    }
+
+    methodType
+      .then(({ data: response }) => {
+        if (!applicationCode || status === CommonEnums.DRAFT_STATUS) {
+          sessionStorage.setItem(
+            "studentId",
+            JSON.stringify({
+              id: response?.data?.leadData?.id,
+              leadCode: response?.data?.leadData?.leadCode,
+            })
+          );
+          localStorage.setItem("leadData", JSON.stringify(response?.data));
+          if (activeLeadDetail) {
+            sessionStorage.setItem(
+              "activeLeadDetail",
+              JSON.stringify({
+                ...activeLeadDetail,
+                applicationCode:
+                  response?.data?.applicationData?.applicationCode,
+              })
+            );
+          }
+        }
+
         setShowDraftSaveToast({
           success: true,
           message: response?.message,
           show: true,
         });
-        if (activeStep === MagicNumbers.TWO) {
-          setActiveStep(2);
-          setDocumentUploadDone(true);
-          setPaymentDone(true);
-          uploadStudentDocs();
-        } else {
-          setSubmitted(true);
+        if (activeStep === MagicNumbers.TWO && draftSave) {
+          router.push(RoutePaths.Dashboard);
+        }
+        setSubmitted(false);
+        if (activeStep < MagicNumbers.TWO) {
           setActiveStep(activeStep + 1);
         }
       })
@@ -237,19 +272,25 @@ const ApplicationForm = (props: any) => {
           message: err?.message,
           show: true,
         });
+        setSubmitted(false);
       });
   };
-  const updateUserAsDraft = (request, appCode: string) => {
+  const updateUserAsDraft = (request) => {
+    const activeLeadDetail = JSON.parse(
+      sessionStorage?.getItem("activeLeadDetail") as any
+    );
+    const appCode = activeLeadDetail.applicationCode;
+
     AuthApi.put(`${CommonApi.SAVEDRAFT}/${appCode}`, {
       ...request,
     })
       .then(({ data }) => {
-        console.log({ data }, "draft update");
         setShowDraftSaveToast({
           success: true,
-          message: data?.message,
+          message: "Saved as draft",
           show: true,
         });
+        router.push(RoutePaths.Dashboard);
       })
       .catch((err) => {
         console.log({ err });
@@ -260,18 +301,57 @@ const ApplicationForm = (props: any) => {
         });
       });
   };
-  const creatDraft = (request, leadCode) => {
+
+  const getStudyModeData = () => {
+    CommonAPI.get(`/study-mode`).then((data) => {
+      setStudyModeData(data?.data?.data);
+    });
+  };
+
+  const createDraft = (data) => {
+    if (data?.education?.isInternationDegree === "yes") {
+      data.education.isInternationDegree = true;
+    } else if (data?.education?.isInternationDegree === "no") {
+      data.education.isInternationDegree = false;
+    }
+
+    if (data?.employment?.zipCode === "") {
+      data.employment.zipCode = null;
+    }
+
+    const formData = { ...data };
+
+    const {
+      isSameAsPostalAddress = "",
+      payment = null,
+      ...rest
+    } = { ...(formData as any) };
+
+    let request = mapFormData({
+      ...rest,
+    });
+
+    const activeLeadDetail = JSON.parse(
+      sessionStorage?.getItem("activeLeadDetail") as any
+    );
+    const leadCode =
+      sessionStorage?.getItem("studentId") &&
+      sessionStorage?.getItem("studentId") !== "undefined" &&
+      sessionStorage?.getItem("studentId") !== "{}"
+        ? JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
+        : activeLeadDetail?.leadCode;
+
     request.lead.leadCode = leadCode;
     AuthApi.post(`${CommonApi.SAVEDRAFT}`, {
       ...request,
     })
       .then(({ data }) => {
-        console.log({ data }, "draft create");
         setShowDraftSaveToast({
           success: true,
-          message: data?.message,
+          message: "Saved as draft",
           show: true,
         });
+        router.push(RoutePaths.Dashboard);
       })
       .catch((err) => {
         console.log(err.message);
@@ -282,61 +362,108 @@ const ApplicationForm = (props: any) => {
         });
       });
   };
-  const submitFormData = (data: object, isDraftSave?: boolean) => {
+
+  const submitFormData = (data: any, isDraftSave?: boolean) => {
+    if (data?.education?.isInternationDegree === "yes") {
+      data.education.isInternationDegree = true;
+    } else if (data?.education?.isInternationDegree === "no") {
+      data.education.isInternationDegree = false;
+    }
+
+    if (data?.employment?.zipCode === "") {
+      data.employment.zipCode = null;
+    }
+
     const formData = { ...data };
 
-    const { isSameAsPostalAddress = "", ...rest } = { ...(formData as any) };
+    const {
+      isSameAsPostalAddress = "",
+      payment = null,
+      ...rest
+    } = { ...(formData as any) };
 
-    let request = mapFormData({
-      ...rest,
-    });
-    const leadCode = JSON.parse(
-      sessionStorage?.getItem("studentId") as any
-    )?.leadCode;
-    const appCode = JSON.parse(sessionStorage?.getItem("leadData") as any)
-      ?.applicationData?.applicationCode;
+    let request = mapFormData(
+      {
+        ...rest,
+      },
+      isDraftSave,
+      activeStep
+    );
+    const appCode = localStorage?.getItem("leadData")
+      ? JSON.parse(localStorage?.getItem("leadData") as any)?.applicationData
+          ?.applicationCode
+      : null;
     const activeLeadDetail = JSON.parse(
       sessionStorage?.getItem("activeLeadDetail") as any
-    )?.applicationCode;
-    const draftUpdateCode = activeLeadDetail || appCode;
+    );
+    const leadCode =
+      sessionStorage?.getItem("studentId") &&
+      sessionStorage?.getItem("studentId") !== "undefined" &&
+      sessionStorage?.getItem("studentId") !== "{}"
+        ? JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
+        : activeLeadDetail?.leadCode;
+    const draftUpdateCode = activeLeadDetail?.applicationCode
+      ? activeLeadDetail?.applicationCode
+      : appCode;
+    const AppStatus = activeLeadDetail?.status;
     if (leadCode && !isDraftSave) {
-      updateLead(request);
+      setSubmitted(true);
+      request.lead.leadCode = leadCode;
+
+      updateLead(
+        request,
+        leadCode,
+        draftUpdateCode,
+        activeLeadDetail,
+        AppStatus,
+        isDraftSave
+      );
       return;
     }
-    if (draftUpdateCode && isDraftSave) {
-      updateUserAsDraft(request, draftUpdateCode);
+
+    if (leadCode && isDraftSave && activeStep === MagicNumbers.TWO) {
+      setSubmitted(true);
+      request.lead.leadCode = leadCode;
+      updateLead(
+        request,
+        leadCode,
+        draftUpdateCode,
+        activeLeadDetail,
+        AppStatus,
+        isDraftSave
+      );
       return;
     }
-    if (isDraftSave && checkValidationForDraftSave()) {
-      checkValidationForDraftSave() && creatDraft(request, leadCode);
+
+    if (
+      isDraftSave &&
+      checkValidationForDraftSave() &&
+      activeStep !== MagicNumbers.TWO
+    ) {
+      checkValidationForDraftSave();
+
+      updateLead(
+        request,
+        leadCode,
+        draftUpdateCode,
+        activeLeadDetail,
+        AppStatus,
+        isDraftSave
+      );
       return;
     }
   };
 
-  // console.log({ allFields, errors });
   const checkValidationForDraftSave = () => {
     let isValid = true;
     const {
-      lead: {
-        firstName,
-        lastName,
-        email,
-        mobileNumber,
-        genderId,
-        dateOfBirth,
-        identificationPassportNumber,
-        nationalityId,
-      },
+      lead: { firstName, lastName, email, mobileNumber },
     } = { ...allFields } as any;
     const feildObject: any = {
       firstName,
       lastName,
       email,
       mobileNumber,
-      // genderId,
-      // dateOfBirth,
-      // identificationPassportNumber,
-      // nationalityId,
     };
 
     for (let [key, value] of Object.entries(feildObject)) {
@@ -361,7 +488,6 @@ const ApplicationForm = (props: any) => {
   const uploadFiles = (fileUrl: string, file: File) => {
     return uploadDocuments(fileUrl, file)
       .then((res) => {
-        showToast(true, "Document Upload Successfully");
         return res;
       })
       .catch((err) => {
@@ -370,30 +496,110 @@ const ApplicationForm = (props: any) => {
         console.log(err.message);
       });
   };
-  const uploadStudentDocs = () => {
-    const { uploadedDocs = [] as File[] } = allFields;
+  const Dates = new Date();
+  const timestamp =
+    Dates.toLocaleDateString("en-GB").split("/").join("") +
+    Dates.getHours() +
+    Dates.getMinutes();
+
+  const uploadStudentDocs = async (isDraft: boolean = false) => {
+    const {
+      document: { uploadedDocs = [] as File[] },
+      payment,
+    } = { ...allFields };
+    const { paymentProof = [] } = { ...payment };
     let count = 0;
-    uploadedDocs.forEach((file: File & { typeCode: string }) => {
-      const payload = {
-        documentTypeCode: file?.typeCode || "other",
-        fileName: file.name,
-        fileType: file.type,
-        amount: +allFields?.education?.studyModeDetail?.fee || 0,
-        paymentModeCode: "OFFLINE",
-      };
-      getUploadDocumentUrl(payload).then((res) => {
-        if (res.status === 200) {
-          count = count + 1;
-          uploadFiles(res, file);
-        } else {
-          showToast(false, res.response.data.message);
-          console.log(res.response.data.message);
+    const successLength: any[] = [];
+    let payload;
+
+    const files = [] as any[];
+    if (activeStep === MagicNumbers.TWO) {
+      uploadedDocs.map(
+        (file: File & { typeCode: string; documentTypeCode: string }) => {
+          if (file?.typeCode === "nationalIdPassport") {
+            files.push({
+              documentTypeCode:
+                allFields?.document?.identificationDocumentType?.includes(
+                  "others"
+                )
+                  ? allFields?.document?.other
+                  : allFields?.document?.identificationDocumentType ||
+                    "nationalIdPassport",
+              fileName: file.name,
+              fileType: file.type,
+            });
+          } else
+            files.push({
+              documentTypeCode: file?.documentTypeCode || file?.typeCode,
+              fileName: file.name,
+              fileType: file.type,
+            });
         }
+      );
+    } else if (activeStep === MagicNumbers.ONE) {
+      paymentProof.map((file) => {
+        files.push({
+          documentTypeCode: "PAYMENTPROOF",
+          fileName: file.name,
+          fileType: file.type,
+        });
       });
-    });
-    if (count === uploadedDocs.length) {
-      router.push(RoutePaths.Payment_Success);
     }
+
+    payload = {
+      files,
+      amount: allFields.payment?.finalFee,
+      paymentModeCode: "OFFLINE",
+      discountCode: allFields?.payment?.discountCode,
+      discountAmount: allFields?.payment?.discountAmount,
+      currencyCode: allFields?.payment?.selectedCurrency,
+      isDraft,
+      studentCode: JSON.parse(
+        sessionStorage?.getItem("activeLeadDetail") as any
+      ).studentCode,
+    };
+    getUploadDocumentUrl(payload)
+      .then((res) => {
+        setLoading(true);
+        if (res.statusCode === 201) {
+          res?.data.forEach((url, index) => {
+            const filesTakenForm =
+              activeStep === MagicNumbers.ONE ? paymentProof : uploadedDocs;
+            uploadFiles(url, filesTakenForm[index]);
+            count = count + 1;
+          });
+
+          if (res?.data.length == count) {
+            setLoading(false);
+            setSubmitted(false);
+            if (activeStep === MagicNumbers.ONE) {
+              setPaymentDone(true);
+              setTimeout(() => {
+                router.push(RoutePaths.Payment_Success);
+              }, 2000);
+            } else {
+              setActiveStep(0);
+              setTimeout(() => {
+                if (isDraft) {
+                  router.push(RoutePaths.Document_Save_Success);
+                } else {
+                  router.push(RoutePaths.Document_Success);
+                }
+              }, 2000);
+            }
+            showToast(true, "Documents Saved Successfully");
+          }
+        } else {
+          showToast(false, res.message);
+          setLoading(false);
+        }
+      })
+
+      .catch((err) => {
+        console.log(err);
+        showToast(false, err);
+        setLoading(false);
+      });
   };
   const showToast = (success: boolean, message: string) => {
     setShowDraftSaveToast({
@@ -406,16 +612,58 @@ const ApplicationForm = (props: any) => {
   const onSubmit = (data: any, isDrafSave?: boolean) => {
     submitFormData(data, isDrafSave);
   };
+  const getDocumentData = async () => {
+    const res = await CommonAPI.get(`/document-type?projectDocument=false`);
+    let filterdoc = res?.data?.data?.filter((item) => {
+      return item.code !== "PAYMENTPROOF";
+    });
+    filterdoc = filterdoc?.map((item) => {
+      return {
+        name: item?.name,
+        id: item?.code,
+        disabled: false,
+        status: "Upload Pending",
+      };
+    });
+    setDocumentData(filterdoc);
+  };
 
   const getMasterData = () => {
     AuthApi.get(CommonApi.GETMASTERDATA)
       .then(({ data }: any) => {
         setMasterData({ ...masterData, ...data?.data });
-        getIntrestedQualificationPrograms();
+        getIntrestedQualificationPrograms(AcadmicApi, setMasterData);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
+  };
+  const getDocumentDetails = async () => {
+    const response = await getAllDocumentsDetails();
+    setValue("document.documentDetails", response?.data);
+  };
+
+  const getNationalData = () => {
+    CommonAPI.get(CommonApi.NATIONALITYSTATUS)
+      .then(({ data }) => {
+        setNationalityStatus(data?.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const getStateData = async (countryCode, varient) => {
+    const data = await CommonAPI.get(`${CommonApi.STATE}/${countryCode}`);
+    if (varient == "POSTAL") {
+      setPosStateData(data?.data?.data);
+    } else if (varient == "RESIDENTIAL") {
+      setResStateData(data?.data?.data);
+    } else if (varient == "SPONSOR") {
+      setSponsorStateData(data?.data?.data);
+    } else if (varient == "EMPLOYED") {
+      setEmployedStateData(data?.data?.data);
+    }
   };
 
   const getUserDetail = () => {
@@ -429,254 +677,444 @@ const ApplicationForm = (props: any) => {
     const leadDetail = JSON.parse(
       sessionStorage?.getItem("activeLeadDetail") as any
     );
+    const routeTo: string = sessionStorage.getItem("routeTo")! || "";
     setLeadId(leadDetail?.applicationCode);
-    if (leadDetail) {
-      AuthApi.get(
-        `lead/${leadDetail?.leadCode}/application/${leadDetail?.applicationCode}?isDraft=${leadDetail?.isdraftSave}`
-      )
-        .then(({ data: response }) => {
-          setStudentData(response?.data);
-          if (leadDetail?.isPaymentPending) {
-            setActiveStep(1);
-            setSubmitted(true);
-            setPaymentDone(true);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    if (leadDetail && leadDetail.applicationCode) {
+      getUserDetailHelper(
+        leadDetail,
+        transformFormData,
+        mapFormDefaultValue,
+        routeTo,
+        setActiveStep,
+        setSubmitted,
+        setPaymentDone,
+        routeIfStepDone,
+        setValue,
+        AuthApi
+      );
+      getDocumentDetails(); /// this will give detals of document which are already upload or if its give empty array it mean nothing uploaded yet
+    } else {
+      setValue("document.documentDetails", []);
     }
   };
 
-  const getIntrestedQualificationPrograms = () => {
-    AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
-      .then(({ data }: any) => {
-        setMasterData((prevState: any) => ({
-          ...prevState,
-          programs: data.data as IOption[],
-        }));
+  const onManagementStudentSubmit = () => {
+    const applicationCode = JSON.parse(
+      sessionStorage.getItem("activeLeadDetail")!
+    )?.applicationCode;
+    const programFee = isApplicationEnrolled
+      ? allFields?.payment?.selectedFeeModeFee!
+      : allFields?.education?.applicationFees || "0";
+    const normalDiscountAmount = allFields?.payment?.discountAmount;
+    const discountAmount = allFields?.payment?.conversionRate
+      ? Number(normalDiscountAmount) * (allFields?.payment?.conversionRate || 0)
+      : normalDiscountAmount;
+    const payload = {
+      discountCode: allFields?.payment?.managementDiscountCode,
+      amount: +programFee,
+      phone: allFields?.lead?.mobileNumber,
+      email: allFields?.lead?.email,
+      discountAmount: String(discountAmount),
+    };
+    AuthApi.post(`application/${applicationCode}/payment/management`, {
+      ...payload,
+    })
+      .then(({ data }) => {
+        router.push(RoutePaths.APPLICATION_ENROLLED_SUCCESS);
+        setActiveStep(0);
+        setPaymentDone(true);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getAgentDetails = async () => {
+    UserManagementAPI.get(CommonApi.AGENT_LIST)
+      .then(({ data }) => {
+        setAgentData(data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const language = masterData?.languageData as IOption[];
+
   const nationalities = masterData?.nationalityData as IOption[];
+  const relationData = masterData?.relationData as IOption[];
   const highestQualifications =
     masterData?.highestQualificationData as IOption[];
   const programs = masterData?.programs as IOption[];
+
   const race = masterData?.raceData as IOption[];
   const socialMedias = masterData?.socialMediaData as IOption[];
   const sponsorModes = masterData?.sponsorModeData as IOption[];
   const studyModes = masterData?.studyModeData as IOption[];
   const genders = masterData?.genderData as IOption[];
-  const employmentStatus = masterData?.employmentStatusData as IOption[];
+  const employmentStatus = masterData?.employmentStatusData?.filter(
+    (item) => item?.name?.toLowerCase() !== "unemployed"
+  ) as IOption[];
   const employmentIndustries = masterData?.employmentIndustryData as IOption[];
   const countryData = masterData?.countryData as IOption[];
-  const agentData = masterData?.agentData as IOption[];
+
   const documentType = masterData?.documentTypeData as IOption[];
   const studyTypeData = masterData?.studentTypeData as IOption[];
+  const isManagementStudentType =
+    allFields?.education?.studentTypeCode?.toLowerCase() ===
+    CommonEnums.MANAGEMENT;
 
   const onSkipForNowOnPayment = () => {};
   const onSkipForNowOnDocument = () => {
     setActiveStep(0);
   };
   const { message, success, show } = showDraftSavedToast;
-
   const today = new Date();
   const year = today.getFullYear();
 
-  return (
-    <MainContainer>
-      <Header />
-      <StepperContainer>
-        <StepperComponent
-          isFormSubmitted={isFormSubmitted}
-          isPaymentDone={isPaymentDone}
-          active={activeStep}
-        />
-      </StepperContainer>
-      <>
-        <FormProvider {...methods}>
-          <FormContainer>
-            {" "}
-            {activeStep === MagicNumbers.ZERO && (
-              <>
-                <div className="row w-100">
-                  <form className="application-form" onSubmit={(data) => onSubmit(data, false)}>
-                    <PersonalInfoForm
-                      key="personalForm"
-                      genders={genders}
-                      nationalities={nationalities}
-                      homeLanguage={language}
-                      race={race}
-                    />
-                    <AddressForm key="AddressForm" countryData={countryData} />
-                    <EducationForm
-                      key="EducationForm"
-                      highestQualifications={highestQualifications}
-                      programs={programs}
-                      socialMedias={socialMedias}
-                      agentArr={agentData}
-                      studyTypeData={studyTypeData}
-                    />
-                    <KinDetailsForm leadId={leadId} key="KinDetailsForm" />
-                    <EmployedForm
-                      leadId={leadId}
-                      key="EmployedForm"
-                      employmentStatusArr={employmentStatus}
-                      employerArr={[]}
-                      employmentIndustries={employmentIndustries}
-                    />
-                    <SponsoredForm
-                      leadId={leadId}
-                      key="SponsoredForm"
-                      sponsorModeArr={sponsorModes}
-                    />
-                  </form>
-                </div>
-              </>
-            )}
-          </FormContainer>
-          <FormContainer>
-            {activeStep === MagicNumbers.ONE && (
-              <>
-                <Payment
-                  programs={programs}
-                  studyMode={studyModes}
-                  navigateNext={navigateNext}
-                  onSkipForNowOnPayment={onSkipForNowOnPayment}
-                  showToast={showToast}
-                />
-              </>
-            )}
-            {activeStep === MagicNumbers.TWO && (
-              <>
-                <DocumentUploadForm
-                  allFields={allFields}
-                  isValidDocument={isValidDocument}
-                  documentType={documentType}
-                />
-              </>
-            )}
-          </FormContainer>
-        </FormProvider>
-        <FooterConatiner className="container-fluid d-flex justify-content-center mt-1">
-          <div className="row">
-            <div className="col-md-12">
-              <>
-                {activeStep === MagicNumbers.ZERO && (
-                  <div className="form-check text-center">
-                    <input
-                      className="form-check-input me-2"
-                      type="checkbox"
-                      checked={allFields?.isAgreedTermsAndConditions}
-                      id="flexCheckDefault"
-                      {...register("isAgreedTermsAndConditions", {
-                        required: true,
-                      })}
-                    />
-                    <label className="form-check-label">
-                      <strong className="me-1">I have read and agreed</strong>
-                      <a style={{ color: Green }} href="#">
-                        terms and condition?
-                      </a>
-                    </label>
-                  </div>
-                )}
+  const isValidForm = () => {
+    if (activeStep === 0) {
+      if (Object.keys(errors).length === 0) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return activeStep === MagicNumbers.TWO && errors?.lead;
+    }
+  };
 
-                {(activeStep === MagicNumbers.ZERO ||
-                  activeStep === MagicNumbers.TWO) && (
-                  <div className="mt-4 text-center">
-                    <>
-                      {activeStep == 2 && (
+  return (
+    <>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <MainContainer>
+          <Header />
+          <StepperContainer>
+            <StepperComponent
+              isFormSubmitted={isFormSubmitted}
+              isPaymentDone={isPaymentDone}
+              active={activeStep}
+            />
+          </StepperContainer>
+          <>
+            <FormProvider {...methods}>
+              <FormContainer>
+                {" "}
+                {activeStep === MagicNumbers.ZERO && (
+                  <>
+                    <div className="application-form">
+                      <div className="row">
+                        <form onSubmit={(data) => onSubmit(data, false)}>
+                          <PersonalInfoForm
+                            identityDocuments={identificationDocumentTypeData}
+                            key="personalForm"
+                            genders={genders}
+                            nationalities={nationalities}
+                            homeLanguage={language}
+                            race={race}
+                            nationalityStatusData={nationalityStatus}
+                          />
+                          <AddressForm
+                            key="AddressForm"
+                            leadId={leadId}
+                            countryData={countryData}
+                            getStateData={getStateData}
+                            posStateData={posStateData}
+                            resStateData={resStateData}
+                          />
+                          <EducationForm
+                            key="EducationForm"
+                            highestQualifications={highestQualifications}
+                            programs={programs}
+                            socialMedias={socialMedias}
+                            agentArr={agentData}
+                            studyTypeData={studyTypeData}
+                            isApplicationEnrolled={isApplicationEnrolled}
+                            leadId={leadId}
+                            studyModeData={studyModeData}
+                          />
+                          <SponsoredForm
+                            leadId={leadId}
+                            key="SponsoredForm"
+                            sponsorModeArr={sponsorModes}
+                            relationData={relationData}
+                            countryData={countryData}
+                            getStateData={getStateData}
+                            sponsorStateData={sponsorStateData}
+                          />
+                          <EmployedForm
+                            leadId={leadId}
+                            key="EmployedForm"
+                            employmentStatusArr={employmentStatus}
+                            employmentIndustries={employmentIndustries}
+                            countryData={countryData}
+                            getStateData={getStateData}
+                            employedStateData={employedStateData}
+                          />
+                          <KinDetailsForm
+                            relationData={relationData}
+                            leadId={leadId}
+                            key="KinDetailsForm"
+                          />
+                        </form>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </FormContainer>
+              <FormContainer>
+                {activeStep === MagicNumbers.ONE && (
+                  <>
+                    <Payment
+                      programs={programs}
+                      studyMode={studyModes}
+                      navigateNext={navigateNext}
+                      onSkipForNowOnPayment={onSkipForNowOnPayment}
+                      showToast={showToast}
+                      isManagementStudentType={isManagementStudentType}
+                      isApplicationEnrolled={isApplicationEnrolled}
+                      onSubmit={uploadStudentDocs}
+                      studyModeData={studyModeData}
+                    />
+                  </>
+                )}
+                {activeStep === MagicNumbers.TWO && (
+                  <>
+                    <DocumentUploadForm
+                      documentData={documentData}
+                      allFields={allFields}
+                      isValidDocument={isValidDocument}
+                      documentType={identificationDocumentTypeData}
+                      leadId={leadId}
+                      isApplicationEnrolled={isNewApplication}
+                      onSubmit={() => submitFormData(allFields, false) as any}
+                      onSaveDraft={() => onSubmit(getValues(), true) as any}
+                      selectedPrograms={
+                        programs?.find(
+                          (prog) =>
+                            prog?.name === allFields?.education?.programName
+                        )!
+                      }
+                    />
+                  </>
+                )}
+              </FormContainer>
+            </FormProvider>
+            <FooterConatiner className="container-fluid d-flex justify-content-center mt-1">
+              <div className="row">
+                <div className="col-md-12">
+                  <>
+                    {activeStep === MagicNumbers.ZERO && (
+                      <div className="form-check text-center d-flex flex-row">
+                        <input
+                          className="form-check-input me-2"
+                          type="checkbox"
+                          checked={allFields?.lead?.isAgreedTermsAndConditions}
+                          onClick={() => {
+                            if (
+                              allFields?.lead.isAgreedTermsAndConditions ==
+                                false ||
+                              allFields?.lead.isAgreedTermsAndConditions == null
+                            ) {
+                              settermsOpen(true);
+                            } else if (
+                              allFields?.lead.isAgreedTermsAndConditions == true
+                            ) {
+                              updateTermsConditions(false);
+                            }
+                          }}
+                          id="flexCheckDefault"
+                          {...register("isAgreedTermsAndConditions", {
+                            required: true,
+                          })}
+                        />
+
+                        <Termsconditiondialog
+                          termsHandelOpen={termsHandelOpen}
+                          termsHandelClose={termsHandelClose}
+                          termsOpen={termsOpen}
+                          updateTermsConditions={updateTermsConditions}
+                        />
+                      </div>
+                    )}
+                    {errors?.isAgreedTermsAndConditions && (
+                      <div className="invalid-feedback">
+                        Please check terms and conditions
+                      </div>
+                    )}
+
+                    {activeStep === MagicNumbers.ZERO && (
+                      <div className="mt-4 text-center">
+                        {!isApplicationEnrolled && (
+                          <>
+                            <>
+                              {/* {activeStep != 2 && (
+                                <StyledButton
+                                  onClick={onSkipForNowOnDocument}
+                                  type="button"
+                                  className="me-2 mb-1"
+                                  isGreenWhiteCombination={true}
+                                  title={"Skip for Now"}
+                                />
+                              )} */}
+                            </>
+                            {typeof window !== "undefined" &&
+                              activeStep !== 2 &&
+                              JSON.parse(
+                                sessionStorage?.getItem(
+                                  "activeLeadDetail"
+                                ) as any
+                              )?.applicationCode?.length != 12 && (
+                                <StyledButton
+                                  onClick={() => {
+                                    if (
+                                      JSON.parse(
+                                        sessionStorage?.getItem(
+                                          "activeLeadDetail"
+                                        ) as any
+                                      )?.isdraftSave == true
+                                    ) {
+                                      updateUserAsDraft(allFields);
+                                    } else {
+                                      createDraft(allFields);
+                                    }
+                                  }}
+                                  type="button"
+                                  disabled={!isDirty}
+                                  isGreenWhiteCombination={true}
+                                  title={"Save as Draft"}
+                                />
+                              )}
+                            &nbsp;&nbsp;&nbsp;
+                            <StyledButton
+                              className="form-button"
+                              onClick={() => {
+                                activeStep === 2
+                                  ? (submitFormData(allFields, false) as any)
+                                  : methods.handleSubmit((data) => {
+                                      if (
+                                        JSON.parse(
+                                          sessionStorage?.getItem(
+                                            "activeLeadDetail"
+                                          ) as any
+                                        )?.isdraftSave == true
+                                      ) {
+                                        onSubmit(data, true) as any;
+                                      } else {
+                                        onSubmit(data, false) as any;
+                                      }
+                                    })();
+                              }}
+                              disabled={isValidForm() as boolean}
+                              title={activeStep < 2 ? "Save & Next" : "Submit"}
+                            />
+                          </>
+                        )}
+                        {isApplicationEnrolled && (
+                          <>
+                            <StyledButton
+                              onClick={() => {
+                                router.push(RoutePaths.Dashboard);
+                              }}
+                              isGreenWhiteCombination
+                              title={"Back to Dashboard"}
+                              className="me-3 form-button"
+                            />
+                            <StyledButton
+                              onClick={() => {
+                                methods.handleSubmit(
+                                  (data) => onSubmit(data, false) as any
+                                )();
+                              }}
+                              disabled={!isValid}
+                              title={"Save"}
+                            />
+                          </>
+                        )}
+                        <StyleFooter>
+                          <span
+                            className="footer-text"
+                            style={{ color: "#131718" }}
+                          >
+                            Copyright @ 2015 - {year}{" "}
+                            <a href="https://www.regenesys.net/">
+                              Regenesys Business School
+                            </a>
+                          </span>
+                        </StyleFooter>
+                      </div>
+                    )}
+                  </>
+                  {activeStep === MagicNumbers.ONE && (
+                    <div className="mt-5 text-center">
+                      <StyledButton
+                        className="me-2"
+                        onClick={navigateBack}
+                        type="button"
+                        isGreenWhiteCombination={true}
+                        title={"Back"}
+                      />
+                      {isManagementStudentType && (
                         <StyledButton
-                          onClick={onSkipForNowOnDocument}
-                          type="button"
-                          className="me-2 mb-1"
-                          isGreenWhiteCombination={true}
-                          title={"Skip for Now"}
+                          onClick={() => {
+                            onManagementStudentSubmit();
+                          }}
+                          disabled={
+                            !allFields?.payment?.discountAmount ||
+                            Number(allFields?.payment?.discountAmount) === 0
+                          }
+                          title={"Submit"}
                         />
                       )}
-                    </>
-                    <StyledButton
-                      onClick={() => onSubmit(getValues(), true)}
-                      type="button"
-                      disabled={
-                        (!isDirty && !isValidDocument) || !isValidDocument
-                      }
-                      isGreenWhiteCombination={true}
-                      title={"Save as Draft"}
-                    />
-                    &nbsp;&nbsp;&nbsp;
-                    <StyledButton
-                      onClick={methods.handleSubmit(
-                        (data) => onSubmit(data, false) as any
-                      )}
-                      disabled={!isValid && !isValidDocument}
-                      title={activeStep < 2 ? "Save & Next" : "Submit"}
-                    />
-                    <StyleFooter>
-                      <span className="footer-text" style={{ color: "#131718" }}>
-                      Copyright @ 2015 - {year}{" "}
-                        <a href="https://www.regenesys.net/">
-                          Regenesys Business School
-                        </a>
-                      </span>
-                    </StyleFooter>
-                  </div>
-                )}
-              </>
-              {activeStep === MagicNumbers.ONE && (
-                <div className="mt-5 text-center">
-                  <StyledButton
-                    onClick={navigateBack}
-                    type="button"
-                    disabled={!isDirty}
-                    isGreenWhiteCombination={true}
-                    title={"Back"}
-                  />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-        </FooterConatiner>
-      </>
-      {show && (
-        <Snackbar
-          autoHideDuration={1000}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          open={show}
-          onClose={() => {
-            setShowDraftSaveToast(!showDraftSavedToast);
-          }}
-          key={"bottom"}
-        >
-          <ToasterContainer success={success}>
-            <CheckCircleRoundedIcon
-              style={{ color: "#0eb276", fontSize: "30px" }}
-            />
-            <SuccessMsgContainer>
-              <StyledLink>
-                {success ? "Success" : "Error"}
-                <br />
-                <span
-                  style={{
-                    color: "black",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                  }}
-                >
-                  {message}
-                </span>
-              </StyledLink>
-            </SuccessMsgContainer>
-          </ToasterContainer>
-        </Snackbar>
+              </div>
+            </FooterConatiner>
+          </>
+          {show && (
+            <Snackbar
+              autoHideDuration={1000}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              open={show}
+              onClose={() => {
+                setShowDraftSaveToast((prevState) => ({
+                  ...prevState,
+                  show: !show,
+                }));
+              }}
+              key={"bottom"}
+            >
+              <ToasterContainer success={success}>
+                <CheckCircleRoundedIcon
+                  style={{ color: "#0eb276", fontSize: "30px" }}
+                />
+                <SuccessMsgContainer>
+                  <StyledLink>
+                    {success ? "Success" : "Error"}
+                    <br />
+                    <span
+                      style={{
+                        color: "black",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {message}
+                    </span>
+                  </StyledLink>
+                </SuccessMsgContainer>
+              </ToasterContainer>
+            </Snackbar>
+          )}
+        </MainContainer>
       )}
-    </MainContainer>
+    </>
   );
 };
 
@@ -693,13 +1131,9 @@ export const MainContainer = styled.div`
 `;
 const FooterConatiner = styled.div`
   width: 100%;
-  min-height: 200px;
-  margin-bottom: 4rem;
   .form-check-input:checked {
     background-color: ${Green};
     border-color: #0d6efd;
-  }
-  .form-check-input:checked[type="checkbox"] {
   }
   @media screen and (min-width: 600px) and (max-width: 950px) {
     width: 100%;

@@ -8,6 +8,11 @@ export enum QualificationEnum {
   PostGraduation = "Post Graduation",
 }
 
+export enum NationalityEnum {
+  southAfrica = "SA",
+  India = "IND",
+}
+
 interface ICountry {
   name: string;
   isoCode: string;
@@ -18,6 +23,8 @@ interface ICountry {
   longitude: string;
   timezones: ITimezone[];
 }
+
+interface ICountry {}
 
 interface ITimezone {
   zoneName: string;
@@ -50,6 +57,7 @@ export interface IStudyModeQualification {
 export interface IStudyMode {
   studyModeCode: string;
   fees: IFee[];
+  description: string;
 }
 
 export interface IFee {
@@ -57,10 +65,74 @@ export interface IFee {
   feeMode: string;
 }
 
+export interface ILeadFormValues {
+  isAgreedTermsAndConditions: boolean;
+  lead: Lead;
+  address: Address[];
+  education: Education;
+  payment?: Payment;
+  sponsor?: any;
+  employment?: any;
+  document?: any;
+  kin?: any;
+  [key: string]: any;
+}
+
+interface Education {
+  programCode: string;
+  qualificationCode: string;
+  highSchoolName: string;
+  referredById: string;
+  studentTypeCode: string;
+  applicationFees: string;
+  studyModeCode: string;
+  socialMediaCode: string;
+  agentCode: string;
+  studyModeDetail?: any;
+  programName?: string;
+  internationDegreeVal: string;
+}
+export interface Payment {
+  paymentProof: File & { typeCode: string }[];
+  paymentType: null;
+  selectedCurrency: string;
+  managementDiscountCode: string;
+  selectedFeeModeFee?: string;
+  discountAmount?: string | number;
+  [key: string]: any;
+}
+interface Address {
+  street: string;
+  zipcode: string;
+  city: string;
+  state: string;
+  country: string;
+  addressType: string;
+}
+
+interface Lead {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  dateOfBirth: string;
+  email: string;
+  mobileNumber: string;
+  identificationNumber: string;
+  gender: string;
+  language: string;
+  race: string;
+  identificationDocumentType: string;
+  nationality: string;
+  mobileCountryCode: string;
+  leadCode: string;
+  isAgreedTermsAndConditions: boolean;
+}
+
 export interface IMasterData {
   name: string;
   code: string | number | readonly string[] | undefined;
   languageData: IOption[];
+  relationData: IOption[];
   nationalityData: IOption[];
   programs: IOption[];
   raceData: IOption[];
@@ -78,6 +150,7 @@ export interface IMasterData {
   disablityData: IOption[];
   agentData: IOption[];
   studentTypeData: IOption[];
+  nationalityStatus: IOption[];
 }
 
 export interface IOption {
@@ -91,6 +164,7 @@ export interface IOption {
   deletedAt?: any;
   name: string;
   code: string;
+  category?: string;
 }
 
 export interface Mode {
@@ -105,8 +179,21 @@ export interface IApplication {
   programName?: string;
   updatedAt?: string;
   status: string;
+  enrolmentCode?: string;
   education: IEducation;
   lead: ILead;
+  document: IDocument;
+  studentCode: string;
+  username: string;
+  password: string;
+}
+
+export interface IDocument {
+  id: number;
+  documentTypeCode: string;
+  name: string;
+  status: string;
+  comments: null;
 }
 
 export interface IEducation {
@@ -129,4 +216,9 @@ export interface ILead {
   nationality: null;
   language: string;
   race: null;
+  enrollmentCode?: string;
+}
+
+export interface IDynamicObject {
+  [key: string]: any;
 }

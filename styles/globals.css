@@ -1,3 +1,22 @@
+@font-face {
+  font-family: "roboto";
+  src: url("/assets/fonts/Roboto-Regular.ttf") format("truetype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "roboto-medium";
+  src: url("/assets/fonts/Roboto-Medium.ttf") format("truetype");
+  font-weight: normal;
+} 
+
+@font-face {
+  font-family: "roboto-bold";
+  src: url("/assets/fonts/Roboto-Bold.ttf") format("truetype");
+  font-weight: normal;
+} 
+
+
 body {
   margin: 0 auto;
   font-family: roboto;
@@ -22,12 +41,18 @@ input[type="number"]::-webkit-inner-spin-button {
   width: 100%;
   margin-top: 0.25rem;
   font-size: 0.875em;
-  color: #dc3545;
+  color: red;
+  font-family: roboto;
+  font-size: 13px !important;
 }
 .PhoneInputCountry {
   padding: 5px;
   background: #dde1e3;
 }
+.PhoneInputCountry select:disabled {
+  opacity: 0 !important;
+}
+
 .form-check .form-check-input {
   float: none !important;
 }
@@ -38,7 +63,7 @@ input[type="number"]::-webkit-inner-spin-button {
 .otp-group {
   display: inline-flex;
   width: 100%;
-  max-width: 260px;
+  max-width: 220px;
   column-gap: 10px;
 }
 .MuiAccordion-rounded {
@@ -52,64 +77,89 @@ input[type="number"]::-webkit-inner-spin-button {
   padding: 0;
   text-align: center;
   font-size: 20px;
-  font-weight: bold;
+  font-family: 'roboto-bold';
   line-height: 1;
 }
 .PhoneInputCountry {
   margin-right: 0 !important;
 }
 
-.header
-{
+.header {
   box-shadow: 0 3px 5px -1px #0003, 0 6px 10px #00000024, 0 1px 18px #0000001f;
   padding: 10px 15px !important;
 }
 
-.form-control, .PhoneInput, .form-select
-{
+.form-control,
+.PhoneInput,
+.form-select {
   max-width: 400px;
+  font-family: roboto;
 }
 
-.application-form
-{
-  max-width: 1600px !important;
+.application-form,
+.application-page,
+.payment-conatiner {
+  max-width: 1280px !important;
   margin: 0 auto;
+  width: 100%;
+  padding: 0 15px;
 }
 
-.form-label
+.document-container {
+  max-width: 1280px !important;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 15px;
+}
+
+.card-shadow
 {
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+}
+
+.application-form .card-shadow
+{
+  border-radius: 5px !important;
+}
+
+.form-label {
   font-weight: 500;
   position: relative;
+  font-size: 13px;
+  margin-bottom: 3px !important;
 }
 
-.form-control, .form-select
-{
+
+.form-control,
+.form-select {
   border: 2px solid #ced4da !important;
+  font-family: roboto;
+  font-size: 14px !important;
 }
 
-.PhoneInputInput
-{
-  height: 40px;
+.PhoneInputInput {
+  height: 38px;
   border-radius: 0.375rem;
   border: 2px solid #ced4da;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+  font-family: 'roboto-medium';
+  font-size: 14px;
+  padding-left: 10px;
 }
 
-.PhoneInputCountry
-{
+.PhoneInputCountry {
   border-top-left-radius: 0.375rem !important;
   border-bottom-left-radius: 0.375rem !important;
 }
 
-.form-padding
-{
+.form-padding {
   padding: 20px 15px 0;
 }
 
 .form-label .text-danger {
   color: red;
-  font-family: roboto;
+  font-family: sans-serif;
   font-weight: bold;
   font-size: 20px;
   position: absolute;
@@ -117,25 +167,22 @@ input[type="number"]::-webkit-inner-spin-button {
   right: -13px;
 }
 
-.form-control:focus, .form-select:focus
-{
+.form-control:focus,
+.form-select:focus {
   box-shadow: 0 0 0 !important;
   border-color: #008554 !important;
 }
 
-div.PhoneInput--focus input
-{
-  border:2px solid #008554 !important;
+div.PhoneInput--focus input {
+  border: 2px solid #008554 !important;
 }
 
-.logout-text
-{
+.logout-text {
   font-size: 14px !important;
 }
 
-.logout-text:hover
-{
- text-decoration: underline;
+.logout-text:hover {
+  text-decoration: underline;
 }
 
 .mobNum {
@@ -144,16 +191,14 @@ div.PhoneInput--focus input
   font-weight: 500;
 }
 
-.login-logo
-{
+.login-logo {
   max-width: 200px;
   height: auto;
 }
 
-.login-title
-{
-    font-size: 16px !important;
-    font-weight: 500 !important;
+.login-title {
+  font-size: 16px !important;
+  font-weight: 500 !important;
 }
 
 .login-text {
@@ -163,9 +208,629 @@ div.PhoneInput--focus input
   display: inline-block;
 }
 
-.footer-text
-{
+.footer-text {
   font-family: roboto;
   font-size: 14px;
   font-weight: 500;
 }
+
+.login-spacing {
+  margin-top: 100px;
+}
+
+@media screen and (max-width: 1367px) {
+  .login-spacing {
+    margin-top: 40px;
+  }
+}
+
+.app-card {
+  box-shadow: 0 0px 70px 0px rgb(0 0 0 / 10%), 0 30px 0px -20px rgb(0 0 0 / 10%),
+    0 50px 0px -30px rgb(0 0 0 / 10%);
+  margin-bottom: 2rem;
+  font-family: roboto;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.app-card p {
+  font-size: 13px;
+}
+.app-card:hover {
+  background-color: #e5f5ee !important;
+}
+.app-card-block {
+  min-height: 50px;
+}
+
+.app-card-block strong{
+font-size: 14px;
+}
+
+.button-shadow{
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px
+}
+
+.mobNum span{
+  font-size: 14px;
+  font-family: roboto-bold !important;
+}
+
+.grey-text {
+  color: #6a767c !important;
+  font-size: 14px!important;
+    max-width: 600px;
+    font-family: roboto-medium;
+}
+
+.app-header {
+  font-size: 22px !important;
+  font-family: roboto-bold !important;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+button {
+  text-transform: capitalize !important;
+  font-family: roboto-medium !important;
+}
+
+.card-button {
+  min-width: 60px;
+  padding: 6px 8px !important;
+  margin-right: 10px !important;
+}
+
+.card-button .MuiButton-label
+{
+  font-family: roboto-medium !important;
+}
+
+.card-button:last-child {
+  margin-right: 0 !important;
+}
+
+.card-button .me-3 {
+  margin-right: 5px !important;
+}
+
+.mr-2 {
+  margin-right: 1rem !important;
+}
+
+.application-number {
+  font-size: 20px !important;
+}
+
+.link-text {
+  color: #008554;
+  font-family: roboto;
+  font-size: 14px;
+  -moz-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+
+.promo-card a {
+  color: #008554 !important;
+  font-size: 13px;
+  font-family: roboto-medium;
+}
+
+.link-text:hover,
+.promo-card a:hover {
+  text-decoration: underline;
+  color: #000;
+}
+
+.terms-text {
+  font-family: roboto;
+  font-size: 16px !important;
+}
+
+.terms-text a {
+  font-weight: 500 !important;
+}
+
+.promo-card {
+  background: #f5f5f5;
+  box-shadow: rgba(0, 0, 0, 0.133) 0px 3.2px 7.2px 0px, rgba(0, 0, 0, 0.11) 0px 0.6px 1.8px 0px;
+  border-radius: 10px;
+}
+
+.promo-card h6
+{
+  color: #5a636a;
+  font-family: 'roboto';
+  font-size: 15px;
+}
+
+.upload-icon img {
+  width: 60px !important;
+}
+
+.font-roboto,
+.doc-table thead,
+.doc-table tbody,
+.doc-table tfoot,
+.doc-table tr,
+.doc-table td,
+.doc-table th {
+  font-family: roboto;
+}
+
+.doc-table th {
+  color: #008554;
+}
+.doc-table td,
+.doc-table th {
+  vertical-align: middle;
+}
+
+.doc-table td img {
+  width: 30px;
+}
+.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+
+.upload-box
+{
+  border: 1px dashed #888 !important;
+  border-radius: 5px;
+}
+
+
+.upload-box .MuiButton-label
+{
+  text-transform: capitalize;
+}
+
+.sticky-wrapper{
+  position: sticky;
+  top: 10px;
+  justify-content: flex-start;
+}
+
+.sidebar-text
+{
+  font-size: 13px !important;
+  margin-top: 10px !important;
+}
+
+.sidebar-text .form-label
+{
+  margin: 0 !important;
+}
+
+.MuiButton-root.Mui-disabled
+{
+  border: 1px solid #CCC !important;
+}
+
+.document-infotext, .doc-upload-text{
+  font-size: 13px !important;
+}
+
+.MuiButton-label {
+  font-size: 13px !important;
+  height: 20px;
+  line-height: 20px;
+}
+
+.card-button .MuiButton-label
+{
+  font-size: 12px !important;
+}
+
+.upload-file-name
+{
+  width: 100%;
+}
+
+.upload-button-section, .upload-button-section div, .pr-0
+{
+padding-right: 0 !important;
+}
+.upload-button-section .MuiSvgIcon-root
+{
+  width: 20px;
+  height: 20px;
+}
+
+.document-container header .form-label, .sticky-wrapper header
+{
+  font-size: 15px;
+  font-family: roboto-bold;
+}
+
+
+.sidebar-widget .MuiSvgIcon-root
+{
+width: 20px;
+height: 20px;
+padding: 2px;
+}
+
+.sidebar-widget
+{
+padding: 15px 15px 10px !important;
+}
+
+.refresh-icon
+{
+  background-color: #d5d5d5;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  margin-top: 10px;
+  margin-left: 22px;
+  transition: background-color 0.5s ease;
+  
+}
+.refresh-icon:hover .refresh-button
+{
+  fill: #FFF !important;
+  rotate: 90deg;
+    transition: 0.5s linear;
+}
+
+.refresh-button
+{
+  fill: #008554 !important;
+    font-size: 18px !important;
+}
+.refresh-icon:hover
+{
+  background-color: #008554;
+}
+
+.status-sec div{
+  font-size: 13px;
+}
+
+.subtotal
+{
+  border-top: 1px solid #CCC;
+  margin-top: 1rem;
+  padding-top: 12px;
+  font-size: 16px;
+  font-family: roboto-bold;
+}
+
+
+.payment-values{
+  display: inline-block;
+  float: right;
+  color: #000;
+  font-family: 'roboto-medium';
+}
+
+h4 .payment-values
+{
+  font-family: roboto-bold !important
+}
+
+.payment-conatiner label{
+  font-size: 14px;
+  color: #5a636a;
+}
+
+.payment-conatiner .fields{
+  font-size: 16px;
+  color: #212529;
+  font-weight: 600;
+}
+
+.others
+{
+  padding-left: 40px;
+  background-image: url(../public/assets/images/others-arrow.svg);
+  background-repeat: no-repeat;
+  background-size: 35px;
+  margin-top: -15px;
+}
+
+.upload-buttons
+{
+  display: flex;
+  justify-content: center;
+}
+
+.fixed-upload-button
+{
+  position: absolute;
+  bottom: 15px;
+  width: auto !important;
+  background: rgba(34,34,34, 0.7) !important;
+  padding: 15px !important;
+}
+
+.fixed-upload-button .MuiButton-label
+{
+  color: #008554;
+  font-size: 14px !important;
+  font-family: 'roboto-medium';
+  padding: 10px 15px;
+}
+
+.sticky-wrapper ul
+{
+padding: 10px 0 !important;
+}
+
+
+.MuiAccordionSummary-expandIcon svg
+{
+  fill: #008554;
+}
+
+.MuiAccordion-root::before
+{
+ height: 0 !important;
+}
+
+.MuiCollapse-entered .MuiCollapse-wrapper
+{
+ border-top: 2px solid #008554;
+}
+
+.MuiAccordionSummary-root
+{
+  align-items: center;
+}
+
+.application-form  .MuiAccordionSummary-root p img, img.user-icon-circle
+{
+ width: 24px !important;
+ height: auto !important;
+}
+
+.application-form  .MuiAccordionSummary-root p
+{
+  font-size: 16px;
+  font-family: roboto-medium;
+}
+
+.text-label, .terms-conditions, .same-address
+{
+  font-family: roboto-medium;
+  font-size: 14px;
+}
+
+.payment-card-title
+{
+  font-family: roboto-bold;
+  font-size: 16px !important;
+    margin: 0;
+}
+
+.footer-text, .sidebar-status, .doc-upload .MuiButton-label, .offline-text
+{
+  font-family: roboto-medium;
+  font-size: 12px !important;
+}
+.offline-text
+{
+color: #5a636a;
+margin: 0;
+}
+
+.form-button .MuiButton-label
+{ 
+ font-size: 14px !important;
+ padding: 10px 20px;
+}
+
+.layoutArea .column
+{
+  font-size: 15px !important;
+  font-family: roboto;
+}
+
+p.popup-title
+{
+  font-family: roboto-bold;
+  font-size: 22px;
+}
+.apply-text
+{
+  font-family: roboto-medium;
+  font-size: 22px !important;
+  color: #000 !important;
+}
+.layoutArea .column h3 b, .layoutArea .column h3 strong{
+  font-family: roboto-bold;
+  font-size: 18px;
+}
+
+.MuiStepLabel-label
+{
+  font-family: roboto-medium !important;
+  font-size: 13px !important;
+  margin-top: 10px !important;
+}
+
+.offline-filename
+{
+  color: #008554 !important;
+  font-family: roboto-medium !important;
+  font-size: 13px !important;
+  margin: 15px !important;
+  min-height: 24px;
+}
+
+.offline-filename svg{
+  fill: red;
+}
+
+.form-button
+{
+  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px;
+}
+
+.sidebar-label
+{
+font-family: roboto-medium;
+font-size: 12px;
+width: calc( 100% - 80px );
+}
+
+
+.doc-criteria .sidebar-label
+{
+  width: 100%;
+}
+
+.card-button svg, .card-button img{
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+}
+
+.fee-cards
+{
+  display: flex;
+  flex-flow: row wrap;
+  align-content: space-between;
+  margin-bottom: 5px;
+  border-radius: 10px !important;
+}
+
+.fee-card-list div:first-child
+{
+  border-radius: 5px !important;
+  padding: 3px;
+}
+
+.fee-cards .fee-mode
+{
+  font-size: 11px !important;
+  padding: 0 !important;
+}
+
+.fee-card-list
+{
+  margin-bottom: 10px;
+}
+
+.button-shadow{
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+}
+
+.payment-conatiner .card-shadow
+{
+  border-radius: 5px;
+}
+
+.upload-icon
+{
+  width: 30px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.sticky-wrapper ul li{
+  margin:3px 0;
+}
+
+.pay-cards div:first-child
+{
+  border-radius: 10px !important;
+}
+
+.nationality-card .MuiAccordionSummary-content
+{
+align-items: center;
+}
+
+@media only screen and (max-width : 480px) {
+  .apply-button{
+       margin:0 0 20px !important;
+  }
+
+  .hoARiL
+  {
+    padding: 10px !important;
+  }
+
+  .or-div{
+    min-height: 80px !important;
+    align-items: baseline !important;
+  }
+  .document-container
+  {
+    padding: 0 !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  .mobile-block{
+    flex-wrap: wrap;
+}
+
+.mobile-block p {
+  margin-bottom: 1rem;
+}
+.upload-file-name
+{
+  justify-content: flex-start !important;
+  padding-left: 0 !important;
+}
+
+.document-container header .form-label
+{
+  font-size: 14px !important;
+}
+
+.MuiButton-root.Mui-disabled
+{
+  background-color: #d2d2d2!important;
+}
+
+.doc-status
+{
+  margin-left: 15px !important;
+  font-size: 12px;
+  padding: 5px !important;
+}
+
+.nationality-card
+{
+  height: auto !important;
+}
+
+.nationality-card .form-select
+{
+margin-top: 15px;
+}
+
+.nationality-card .MuiAccordionSummary-content
+{
+  height: auto !important;
+  flex-direction: column;
+  align-items: baseline;
+}
+
+#panel1a-header 
+{
+  height: auto !important;
+}
+
+#panel1a-header .MuiAccordionSummary-content
+{
+  flex-wrap: wrap;
+}
+
+#panel1a-header .MuiAccordionSummary-content p
+{
+ min-width: 240px;
+}
+#panel1a-header .MuiAccordionSummary-content .form-check
+{
+  margin-top: 15px;
+}
+}
+

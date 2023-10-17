@@ -11,96 +11,66 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useFormContext } from "react-hook-form";
 import { IFee, IOption, IStudyModeQualification } from "../common/types";
 import styled from "styled-components";
-import { onlyAlphaNumericSpace } from "../../Util/Util";
+import { capitalizeFirstLetter } from "../../Util/Util";
+
+import AdvanceDropDown from "../dropdown/Dropdown";
+import Tooltip from "@mui/material/Tooltip";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import {
+  formDirtyState,
+  onlyAlphaNumericSpace,
+  sortAscending,
+} from "../../Util/Util";
 import EducationImg from "../../../public/assets/images/education-svgrepo-com.svg";
 import Image from "next/image";
-import { FinanceApi } from "../../service/Axios";
-import { AgentandSocialMedia, CommonApi } from "../common/constant";
-const mockStudyModeData = [
-  {
-    programCode: "BBA-PROG-501",
-    programName: "Bachelor of Business Administration",
-    studyModes: [
-      {
-        studyModeCode: "DISTANCE-ONLINE",
-        fees: [
-          {
-            fee: "21000.00",
-            feeMode: "SEMESTER",
-          },
-          {
-            fee: "3670.00",
-            feeMode: "MONTHLY",
-          },
-          {
-            fee: "40000.00",
-            feeMode: "ANNUALLY",
-          },
-        ],
-      },
-      {
-        studyModeCode: "FULL-TIME",
-        fees: [
-          {
-            fee: "52500.00",
-            feeMode: "SEMESTER",
-          },
-          {
-            fee: "9170.00",
-            feeMode: "MONTHLY",
-          },
-          {
-            fee: "100000.00",
-            feeMode: "ANNUALLY",
-          },
-        ],
-      },
-      {
-        studyModeCode: "undefined",
-        fees: [
-          {
-            fee: "13000.00",
-            feeMode: "APPLICATION",
-          },
-        ],
-      },
-    ],
-  },
-];
+import { FinanceApi, CommonAPI } from "../../service/Axios";
+import {
+  AgentandSocialMedia,
+  CommonApi,
+  CommonEnums,
+} from "../common/constant";
+import { GreenText } from "../student/style";
+import Spinner from "../../../public/assets/images/spinner.svg";
+
 const parentKey = "education";
 const program = `${parentKey}.programCode`;
+const programName = `${parentKey}.programName`;
 const studyMode = `${parentKey}.studyModeCode`;
 const highestQualification = `${parentKey}.qualificationCode`;
 const highSchoolName = `${parentKey}.highSchoolName`;
 const referredBy = `${parentKey}.referredById`;
 const agentName = `${parentKey}.agentCode`;
 const socialMediaId = `${parentKey}.socialMediaCode`;
-const programMode = `${parentKey}.programMode`;
-const programFees = `${parentKey}.programFees`;
 const studentTypeName = `${parentKey}.studentTypeCode`;
 const applicationFeesKey = `${parentKey}.applicationFees`;
+const internationDegree = `${parentKey}.isInternationDegree`;
 interface IEducationProps {
   highestQualifications: IOption[];
   programs: IOption[];
   socialMedias: IOption[];
   agentArr: IOption[];
   studyTypeData: IOption[];
+  isApplicationEnrolled: boolean;
+  leadId: string;
+  studyModeData: any;
 }
 
 const FeeCard = (props: any) => {
   const { setSelectedMode = () => {}, ...rest } = { ...props };
-  const selectedData = { ...rest };
   return (
     <>
       <StyleFeeCards
         style={{
-          border: props?.selected === props?.fee ? "1.5px solid green" : "0",
+          border:
+            props?.selected === props?.fee
+              ? "2px solid green"
+              : "2px solid #dde1e3",
         }}
-        onClick={() => props.setSelectedMode(selectedData)}
       >
-        <span>{props?.fee}</span>
-        <br />
-        <span style={{ color: `${Green}` }}>{props?.feeMode}</span>
+        <div className="fee-details">R {props?.fee}</div>
+        <div className="fee-mode" style={{ color: `${Green}` }}>
+          {props?.feeMode}
+        </div>
       </StyleFeeCards>
     </>
   );
@@ -110,25 +80,25 @@ export const EducationForm = (props: IEducationProps) => {
   const {
     setValue,
     register,
+    trigger,
     watch,
     formState: { errors, touchedFields },
+    unregister,
   } = useFormContext();
-  const [selectedStudyMode, setSelectedStudyMode] = useState<
-    number | null | any
-  >({
-    studyIdx: null,
-    studyId: null,
-    parentIdx: null,
-  });
+  const [open, setOpen] = useState(false);
   const [studyModeQualification, setStudyModeQualification] = useState<
     IStudyModeQualification[]
   >([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     agentArr,
     highestQualifications,
     programs,
     socialMedias,
     studyTypeData,
+    isApplicationEnrolled,
+    leadId,
+    studyModeData,
   } = props;
   const programVal = watch(program);
   const studyModeVal = watch(studyMode);
@@ -138,17 +108,11 @@ export const EducationForm = (props: IEducationProps) => {
   const agentNameVal = watch(agentName);
   const socialMediaVal = watch(socialMediaId);
   const studentTypeVal = watch(studentTypeName);
-  const programFeeVal = watch(programFees);
+  const internationDegreeVal = watch(internationDegree);
   const educationFormError = errors[parentKey] as any;
-  const touchFields = touchedFields[parentKey];
-  const { studyIdx, parentIdx } = selectedStudyMode;
+  const TouchFields = touchedFields[parentKey];
+
   useEffect(() => {
-    register(`${programMode}`, {
-      required: true,
-    });
-    register(`${programFees}`, {
-      required: true,
-    });
     if (
       programVal &&
       programVal.length > 0 &&
@@ -157,11 +121,38 @@ export const EducationForm = (props: IEducationProps) => {
       getQualificationStudyModeData(programVal);
     }
   }, [programVal]);
+  useEffect(() => {
+    if (internationDegreeVal === true) {
+      setValue(internationDegree, "yes", formDirtyState);
+    } else if (internationDegreeVal === false) {
+      setValue(internationDegree, "no", formDirtyState);
+    }
+  }, [internationDegreeVal]);
 
-  const getQualificationStudyModeData = (programCode: string) => {
+  useEffect(() => {
+    setValue(studentTypeName, "REGULAR");
+  }, []);
+
+  const getQualificationStudyModeData = async (programCode: string) => {
+    setLoading(true);
+
     FinanceApi.get(`${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`)
       .then((res) => {
-        const courseFeesDetail = res?.data?.data;
+        let courseFeesDetail = res?.data?.data;
+
+        const updatedStudymode = courseFeesDetail[0]?.studyModes?.map(
+          (element) => {
+            const filter = studyModeData.find((item) => {
+              if (String(item.code) == String(element.studyModeCode)) {
+                return item;
+              }
+            });
+            element.description = filter?.description;
+            return element;
+          }
+        );
+        courseFeesDetail[0].studyModes = updatedStudymode;
+
         let applicationFees;
         courseFeesDetail.forEach((item) =>
           item.studyModes.forEach((application) => {
@@ -170,30 +161,37 @@ export const EducationForm = (props: IEducationProps) => {
             }
           })
         );
-        setValue(applicationFeesKey, applicationFees?.fees[0]?.fee);
+
+        setValue(programName, String(res.data.data[0].programName));
+
+        setValue(
+          applicationFeesKey,
+          applicationFees?.fees[0]?.fee,
+          formDirtyState
+        );
+
         setStudyModeQualification(courseFeesDetail);
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
+  const selectedStudyModeIndex =
+    studyModeQualification[0]?.studyModes.findIndex(
+      (item) => item?.studyModeCode === studyModeVal
+    );
 
-  const setSelectedMode = (props: IFee) => {
-    const selectedStudyModeData = studyModeQualification![parentIdx].studyModes[
-      studyIdx
-    ].fees.find(({ feeMode }) => feeMode === props.feeMode);
-    setValue(programMode, selectedStudyModeData?.feeMode, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    setValue(programFees, selectedStudyModeData?.fee, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-  };
   return (
     <>
-      <StyledAccordion key="education" id="education">
+      <StyledAccordion
+        className="card-shadow"
+        defaultExpanded={true}
+        key="education"
+        id="education"
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -209,135 +207,139 @@ export const EducationForm = (props: IEducationProps) => {
         <AccordionDetails>
           <div className="container-fluid form-padding">
             <div className="row">
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>Interested Program</StyledLabel>
-                  <select
-                    className="form-select"
-                    {...register(`${program}`, { required: true })}
-                    onChange={(e) => {
-                      setValue(e.target.name, e.target.value);
-                      getQualificationStudyModeData(e.target.value);
-                    }}
-                  >
-                    <option value={""}>Select Interested Qualification</option>
-                    {programs &&
-                      programs.map(({ code, name }) => (
-                        <option
-                          selected={code === programVal}
-                          key={code}
-                          value={code}
-                        >
-                          {name}
-                        </option>
-                      ))}
-                  </select>
-                  {educationFormError?.programCode && (
-                    <div className="invalid-feedback">
-                      Please enter Interested Program
-                    </div>
-                  )}
-                </div>
-              </div>
-              {studyModeQualification.length > 0 && (
-                <div className="col-md-4">
-                  <StyledLabel required>Courses & Fee</StyledLabel>
-
+              {programs && (
+                <div className="col">
                   <div className="mb-4">
-                    {studyModeQualification &&
-                      studyModeQualification.map(
-                        ({ studyModes }, parentIndex) => {
-                          {
-                            return (
-                              studyModes &&
-                              studyModes.map(({ studyModeCode }, studyIdx) => {
-                                return (
-                                  <>
-                                    {studyModeCode === "APPLICATION" ? null : (
-                                      <div className="form-check form-check-inline">
-                                        <input
-                                          key={studyMode}
-                                          className="form-check-input me-2"
-                                          type="radio"
-                                          {...register(`${studyMode}`, {
-                                            required: true,
-                                          })}
-                                          onClick={(e: any) => {
-                                            setValue(studyMode, e.target.value);
-                                            setSelectedStudyMode({
-                                              studyIdx: studyIdx,
-                                              studyId: studyModeCode,
-                                              parentIdx: parentIndex,
-                                            });
-                                          }}
-                                          value={studyModeCode}
-                                          checked={
-                                            studyModeVal == studyModeCode
-                                          }
-                                        />
-                                        <label className="form-check-label">
-                                          {studyModeCode}
-                                        </label>
-                                      </div>
-                                    )}
-                                  </>
-                                );
-                              })
-                            );
-                          }
-                        }
-                      )}
-                    <StyleContainer>
-                      {studyModeQualification &&
-                        studyModeQualification[parentIdx]?.studyModes[
-                          studyIdx
-                        ]?.fees?.map(({ fee, feeMode }: IFee) => (
-                          <FeeCard
-                            setSelectedMode={setSelectedMode}
-                            key={fee}
-                            fee={fee}
-                            feeMode={feeMode}
-                            uniqueId={fee}
-                            selected={programFeeVal}
-                          />
-                        ))}
-                    </StyleContainer>
-                    {touchFields?.studyModeCode &&
-                      educationFormError?.studyModeCode && (
-                        <div className="invalid-feedback">
-                          Please select Study Mode
-                        </div>
-                      )}
-                    {educationFormError?.studyModeDetail && (
+                    <AdvanceDropDown
+                      mapKey="code"
+                      options={programs.filter((item) => {
+                        return item?.code !== "RMAT-FEE-301";
+                      })}
+                      value={programVal}
+                      name={program}
+                      register={register}
+                      onChange={(e) => {
+                        e?.code && getQualificationStudyModeData(e?.code);
+                        e?.code && setValue(program, e?.code);
+                      }}
+                      label="Interested Program"
+                      onBlur={() => {
+                        trigger(program);
+                      }}
+                    />
+
+                    {educationFormError?.programCode && (
                       <div className="invalid-feedback">
-                        Please select Fees and Semester
+                        select your interested program
                       </div>
                     )}
                   </div>
                 </div>
               )}
+              {loading && (
+                <div className="col-md-4">
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: "100px" }}
+                  >
+                    <Image src={Spinner} alt="spinner" />
+                  </div>
+                </div>
+              )}
+              {studyModeQualification.length > 0 && (
+                <div className="col-md-4">
+                  <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
+
+                  <div className="mb-4 mr-4">
+                    {studyModeQualification[0]?.studyModes &&
+                      studyModeQualification[0].studyModes.map(
+                        ({ studyModeCode, description }) => {
+                          return (
+                            <>
+                              {studyModeCode === "APPLICATION" ? null : (
+                                <ClickAwayListener
+                                  onClickAway={() => {
+                                    setTimeout(() => {
+                                      setOpen(false);
+                                    }, 6000);
+                                  }}
+                                >
+                                  <Tooltip
+                                    title={description}
+                                    placement="top"
+                                    arrow
+                                    open={open && studyModeVal == studyModeCode}
+                                  >
+                                    <span className="form-check form-check-inline">
+                                      <input
+                                        disabled={isApplicationEnrolled}
+                                        key={studyMode}
+                                        className="form-check-input me-2"
+                                        type="radio"
+                                        {...register(`${studyMode}`, {
+                                          required: true,
+                                        })}
+                                        onClick={(e: any) => {
+                                          setOpen(true);
+                                          setValue(
+                                            studyMode,
+                                            e.target.value,
+                                            formDirtyState
+                                          );
+                                        }}
+                                        value={studyModeCode}
+                                        checked={studyModeVal == studyModeCode}
+                                      />
+                                      <label className="form-check-label">
+                                        {studyModeCode}
+                                      </label>
+                                    </span>
+                                  </Tooltip>
+                                </ClickAwayListener>
+                              )}
+                            </>
+                          );
+                        }
+                      )}
+
+                    <StyleContainer className="fee-cards">
+                      {studyModeQualification &&
+                        studyModeQualification[0]?.studyModes[
+                          selectedStudyModeIndex
+                        ]?.fees
+                          ?.sort((a, b) => sortAscending(a, b, "feeMode"))
+                          .map(({ fee, feeMode }: IFee, index) => (
+                            <div key={index} className="fee-card-list">
+                              <FeeCard
+                                key={fee}
+                                fee={fee}
+                                feeMode={feeMode}
+                                uniqueId={fee}
+                              />
+                            </div>
+                          ))}
+                    </StyleContainer>
+                  </div>
+                </div>
+              )}
               <div className="col-md-4">
                 <div className="mb-4">
-                  <StyledLabel required>Highest Qualification</StyledLabel>
-                  <select
-                    className="form-select"
+                  <AdvanceDropDown
+                    options={highestQualifications}
                     value={highestQualificationVal}
-                    defaultValue={highestQualificationVal}
-                    {...register(`${highestQualification}`, { required: true })}
-                  >
-                    <option value={""}>Select Highest Qualification</option>
-                    {highestQualifications &&
-                      highestQualifications.map(({ code, name }) => (
-                        <option
-                          selected={code === highestQualificationVal}
-                          key={code}
-                          value={code}
-                        >
-                          {name}
-                        </option>
-                      ))}
-                  </select>
-                  {touchFields?.qualificationCode &&
+                    name={highestQualification}
+                    register={register}
+                    onChange={(e) => {
+                      setValue(highestQualification, e?.code);
+                    }}
+                    label="Highest Qualification"
+                    onBlur={() => {
+                      trigger(highestQualification);
+                    }}
+                    mapKey="code"
+                  />
+
+                  {educationFormError &&
                     educationFormError?.qualificationCode && (
                       <div className="invalid-feedback">
                         Please select Highest Qualification
@@ -345,8 +347,6 @@ export const EducationForm = (props: IEducationProps) => {
                     )}
                 </div>
               </div>
-            </div>
-            <div className="row">
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel required>High School Name</StyledLabel>
@@ -363,22 +363,75 @@ export const EducationForm = (props: IEducationProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphaNumericSpace(value) || !value) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                   />
-                  {touchFields?.highSchoolName &&
-                    educationFormError?.highSchoolName && (
+                  {educationFormError && educationFormError?.highSchoolName && (
+                    <div className="invalid-feedback">
+                      Please enter high school name
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="mb-4">
+                  <StyledLabel required>
+                    Are you an international degree holder?
+                  </StyledLabel>
+                  <br />
+                  <div className="form-check form-check-inline">
+                    <input
+                      key={`${internationDegreeVal}yes`}
+                      onClick={() => {
+                        setValue(internationDegree, "yes", formDirtyState);
+                      }}
+                      className="form-check-input me-2"
+                      type="radio"
+                      {...(register(internationDegree, {
+                        required: true,
+                      }) as any)}
+                      value="yes"
+                      checked={internationDegreeVal === "yes"}
+                    />
+                    <label className="form-check-label">
+                      Yes
+                      <br />
+                    </label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <input
+                      key={`${internationDegreeVal}no`}
+                      onClick={() => {
+                        setValue(internationDegree, "no", formDirtyState);
+                      }}
+                      className="form-check-input me-2"
+                      type="radio"
+                      {...(register(internationDegree, {
+                        required: true,
+                      }) as any)}
+                      value="no"
+                      checked={internationDegreeVal === "no"}
+                    />
+                    <label className="form-check-label">
+                      No
+                      <br />
+                    </label>
+                  </div>
+
+                  {educationFormError &&
+                    educationFormError?.isInternationDegree && (
                       <div className="invalid-feedback">
-                        Please enter High School Name
+                        international degree is required
                       </div>
                     )}
                 </div>
               </div>
+
               <div className="col-md-4">
                 <div className="mb-4">
                   <StyledLabel required>
@@ -393,40 +446,26 @@ export const EducationForm = (props: IEducationProps) => {
                     onChange={(e) => {
                       const value = e.target.value;
                       const name = e.target.name;
-                      setValue(name, value, {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                        shouldValidate: true,
-                      });
-                    }}
-                    onBlur={() => {
+                      setValue(name, value, formDirtyState);
                       setTimeout(() => {
-                        if (
-                          AgentandSocialMedia?.find(
-                            (item) => item?.code == +referredByeVal
-                          )?.name === "Agent"
-                        ) {
-                          setValue(`${socialMediaId}`, "", {
-                            shouldDirty: true,
-                            shouldTouch: true,
-                            shouldValidate: true,
+                        if (value === "AGENT") {
+                          setValue(socialMediaId, "", formDirtyState);
+                          unregister(socialMediaId, {
+                            keepError: false,
+                            keepIsValid: true,
                           });
                         }
-                        if (
-                          AgentandSocialMedia?.find(
-                            (item) => item?.code == +referredByeVal
-                          )?.name === "Social Media"
-                        ) {
-                          setValue(`${agentName}`, "", {
-                            shouldDirty: true,
-                            shouldTouch: true,
-                            shouldValidate: true,
+                        if (value === "SOCIALMEDIA") {
+                          setValue(agentName, "", formDirtyState);
+                          unregister(agentName, {
+                            keepError: false,
+                            keepIsValid: true,
                           });
                         }
-                      }, 2000);
+                      }, 0);
                     }}
                   >
-                    <option value={""}>Select</option>
+                    <option value={""}>Select Referred Media</option>
 
                     {AgentandSocialMedia &&
                       AgentandSocialMedia.map(({ code, name }) => (
@@ -439,56 +478,48 @@ export const EducationForm = (props: IEducationProps) => {
                         </option>
                       ))}
                   </select>
-                  {touchFields?.referredById &&
-                    educationFormError?.referredById && (
-                      <div className="invalid-feedback">
-                        Please select Referred by
-                      </div>
-                    )}
+                  {educationFormError && educationFormError?.referredById && (
+                    <div className="invalid-feedback">
+                      Please select Referred by
+                    </div>
+                  )}
                 </div>
 
-                {AgentandSocialMedia?.find(
-                  (item) => item?.code == +referredByeVal
-                )?.name === "Agent" && (
-                  <div className="">
-                    <div className="mb-4">
-                      <StyledLabel required>Agent Name</StyledLabel>
-                      <select
-                        className="form-select"
-                        {...register(`${agentName}`, { required: true })}
-                        value={agentNameVal}
-                      >
-                        <option value={""}>Select Agent</option>
-                        {agentArr &&
-                          agentArr.map(({ code, name }) => (
-                            <option
-                              selected={code === agentNameVal}
-                              key={code}
-                              value={code}
-                            >
-                              {name}
-                            </option>
-                          ))}
-                      </select>
-                      {touchFields?.agentCode &&
-                        educationFormError?.agentCode && (
-                          <div className="invalid-feedback">
-                            Please select agent
-                          </div>
-                        )}
-                    </div>
+                {referredByeVal === "AGENT" && (
+                  <div className="mb-4 others">
+                    <AdvanceDropDown
+                      options={agentArr && agentArr}
+                      value={agentNameVal}
+                      name={agentName}
+                      register={register}
+                      label="Agent Name"
+                      mapKey="code"
+                      onChange={(e) => {
+                        setValue(agentName, e?.code);
+                      }}
+                      onBlur={() => {
+                        trigger(agentName);
+                      }}
+                    />
+
+                    {educationFormError &&
+                      educationFormError?.studentTypeCode && (
+                        <div className="invalid-feedback">
+                          Please select Student type
+                        </div>
+                      )}
                   </div>
                 )}
-                {AgentandSocialMedia?.find(
-                  (item) => item?.code == +referredByeVal
-                )?.name === "Social Media" && (
+                {referredByeVal === "SOCIALMEDIA" && (
                   <div className="">
-                    <div className="mb-4">
+                    <div className="mb-4 others">
                       <StyledLabel required>Social Media</StyledLabel>
                       <select
                         className="form-select"
                         value={socialMediaVal}
-                        {...register(`${socialMediaId}`, { required: true })}
+                        {...register(`${socialMediaId}`, {
+                          required: referredByeVal === "SOCIALMEDIA",
+                        })}
                       >
                         <option value={""}>Select Social Media</option>
 
@@ -503,7 +534,7 @@ export const EducationForm = (props: IEducationProps) => {
                             </option>
                           ))}
                       </select>
-                      {touchFields?.socialMediaCode &&
+                      {educationFormError &&
                         educationFormError?.socialMediaCode && (
                           <div className="invalid-feedback">
                             Please select social media
@@ -512,37 +543,6 @@ export const EducationForm = (props: IEducationProps) => {
                     </div>
                   </div>
                 )}
-              </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>Student Type</StyledLabel>
-
-                  <select
-                    defaultValue={studentTypeVal}
-                    value={studentTypeVal}
-                    className="form-select"
-                    {...register(`${studentTypeName}`, { required: true })}
-                  >
-                    {" "}
-                    <option value={""}>Select Type</option>
-                    {studyTypeData &&
-                      studyTypeData.map(({ code, name }) => (
-                        <option
-                          selected={code === studentTypeVal}
-                          key={code}
-                          value={code}
-                        >
-                          {name}
-                        </option>
-                      ))}
-                  </select>
-                  {touchFields?.studentTypeId &&
-                    educationFormError?.studentTypeId && (
-                      <div className="invalid-feedback">
-                        Please select studyType
-                      </div>
-                    )}
-                </div>
               </div>
             </div>
           </div>
@@ -554,12 +554,23 @@ export const EducationForm = (props: IEducationProps) => {
 
 const StyleFeeCards = styled.div`
   background: ${DefaultGrey};
-  padding: 6px 10px;
-  cursor: pointer;
+  padding: 6px;
+  font-size: 14px;
+  font-family: roboto;
+  font-weight: 600;
+  border-radius: 2px;
+  box-shadow: 0px 0px 30px 0px rgb(82 63 105 / 15%);
+  border: 2px solid #fff;
+  transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -o-transition: all 0.5s;
 `;
 
 const StyleContainer = styled.div`
   display: flex;
   column-gap: 10px;
   padding: 1rem 0.2rem;
+  width: 500;
 `;

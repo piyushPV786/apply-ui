@@ -6,7 +6,7 @@ import StyledButton from "../button/button";
 import { CommonApi, PaymentTypes } from "../common/constant";
 import { getApplicationCode, GetPaymentImage } from "../../Util/Util";
 import { AuthApi } from "../../service/Axios";
-import axios from "axios";
+import { NationalityEnum } from "../common/types";
 const IPaymentType = PaymentTypes.map((item) => item.name);
 const PaymentCard = (props: any) => {
   return (
@@ -19,11 +19,12 @@ const PaymentCard = (props: any) => {
     </StyledImgCard>
   );
 };
+
 const PaymentOption = (props: any) => {
   const { watch, register } = useFormContext();
   const [paymentPayload, setPaymentTypePayload] = useState<any>(null);
   const allFields = watch();
-  console.log("All field ======>", allFields);
+
   const onSelectedPaymentOption = (type: "payu" | "razorpay" | "stripe") => {
     if (type === "payu") onPayuPayment();
   };
@@ -34,15 +35,25 @@ const PaymentOption = (props: any) => {
     }
   };
 
+  const filteredPaymentTypes = Object.values(NationalityEnum).includes(
+    allFields?.lead?.nationality
+  )
+    ? PaymentTypes
+    : PaymentTypes.filter((item) => item.name === "Payu");
   const onPayuPayment = () => {
     const payload = {
-      amount:
-        +allFields?.education?.applicationFees -
-        +(allFields?.payment?.discountAmount || 0),
-      email: allFields?.lead?.email || "test@test.com",
-      firstname: allFields?.lead?.firstName || "Vivek Kumar Gupta",
-      phone: allFields?.lead?.mobileNumber || "7566410079",
+      amount: Number(props?.totalAmount) || 0,
+      email: allFields?.lead?.email,
+      firstname: allFields?.lead?.firstName,
+      phone: allFields?.lead?.mobileNumber,
       productinfo: "test",
+      discountCode: allFields?.payment?.discountCode,
+      discountAmount: allFields?.payment?.discountAmount,
+      studentTypeCode: allFields?.education?.studentTypeCode,
+      feeModeCode: props?.isApplicationEnrolled
+        ? allFields?.payment?.selectedFeeMode
+        : "APPLICATION",
+      currencyCode: allFields?.payment?.selectedCurrency,
     };
     const appCode = getApplicationCode();
     AuthApi.post(`application/${appCode}/payment/payu`, payload)
@@ -51,26 +62,23 @@ const PaymentOption = (props: any) => {
         setPaymentTypePayload({ ...rest, hash });
       })
       .catch((err) => {
-        console.error(err, "errreererer");
+        console.error(err);
       });
   };
-  console.log({ paymentPayload }, getSelectedFormId());
   return (
     <>
-      <MainContainer>
+      <MainContainer className="card-shadow mt-0">
         {" "}
         <PaymentHeading>
           <div className="col-md-12">
             <StyleHeading>
-              <GreenFormHeading style={{ fontSize: "20px" }}>
-                Payment Options
-              </GreenFormHeading>
+              <GreenFormHeading>Payment Options</GreenFormHeading>
             </StyleHeading>
           </div>
         </PaymentHeading>
         <PaymentContainer>
           <div className="row">
-            {PaymentTypes.map(({ name, value }) => (
+            {filteredPaymentTypes?.map(({ name, value }) => (
               <div className="col-md-4 mb-2">
                 <PaymentCardContainer>
                   <PaymentCard
@@ -122,7 +130,10 @@ const PaymentOption = (props: any) => {
               <StyledButton
                 form={getSelectedFormId() as any}
                 type="submit"
-                disabled={!allFields?.payment?.paymentType}
+                disabled={
+                  (!allFields?.payment?.paymentType && !paymentPayload) ||
+                  !props?.totalAmount
+                }
                 onClick={() => {}}
                 title="Pay Now"
               />
@@ -145,7 +156,7 @@ const MainContainer = styled.div`
 
 const PaymentContainer = styled.div<any>`
   width: 100%;
-  padding: 1rem 10px;
+  padding: 1.5rem;
   
   .form-check .form-check-input {
     margin-left: -0.8em!important;
@@ -158,7 +169,7 @@ const PaymentCardContainer = styled.div<any>``;
 
 const PaymentHeading = styled(PaymentContainer)`
   border-bottom: 2px solid ${Green};
-  padding: 1rem 10px;
+  padding: 10px;
 `;
 const StyleHeading = styled.div``;
 
@@ -176,21 +187,21 @@ const StyledImgCard = styled.div<any>`
   ${({ paymentType }) => {
     if (paymentType === "RazorPay") {
       return `
-        background-position: 35px 50px;
+        background-position: center 50px;
     background-repeat: no-repeat;
     background-size: 115px;
         `;
     }
     if (paymentType === "Payu") {
       return `
-      background-position: 41px 31px;
+      background-position: center 31px;
       background-repeat: no-repeat;
       background-size: 104px;
         `;
     }
     if (paymentType === "Stripe") {
       return `
-      background-position: 42px 40px;
+      background-position: center 40px;
       background-repeat: no-repeat;
       background-size: 90px;
         `;

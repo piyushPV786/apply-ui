@@ -4,22 +4,42 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {
   GreenFormHeading,
   StyledAccordion,
+  GreyStyledAccordion,
   StyledLabel,
 } from "../common/common";
 import Image from "next/image";
 import UserCircleIcon from "../../../public/assets/images/user-circle-svgrepo-com.svg";
+import AddressImg from "../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
+
 import { useFormContext } from "react-hook-form";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 import { IOption } from "../common/types";
-import { isValidDate, isValidEmail, onlyAlphabets } from "../../Util/Util";
+import {
+  formDirtyState,
+  isValidDate,
+  emailValidation,
+  isValidEmail,
+  onlyAlphabets,
+  capitalizeFirstLetter,
+  sortAscending,
+  onlyAlphabetsOrNumbers,
+  transformDate,
+} from "../../Util/Util";
 import AdvanceDropDown from "../dropdown/Dropdown";
+import { AuthApi } from "../../service/Axios";
+import { CommonApi } from "../../components/common/constant";
+
 interface IPersonalInfoProps {
   genders: IOption[];
   nationalities: IOption[];
   homeLanguage: IOption[];
   race: IOption[];
+  nationalityStatusData: any[];
+  identityDocuments: any[];
 }
+
 const parentKey = "lead";
+
 const firstNameKey = `${parentKey}.firstName`;
 const middleNameKey = `${parentKey}.middleName`;
 const lastNameKey = `${parentKey}.lastName`;
@@ -27,23 +47,44 @@ const genderIdKey = `${parentKey}.gender`;
 const dateOfBirthKey = `${parentKey}.dateOfBirth`;
 const emailKey = `${parentKey}.email`;
 const nationalityIdKey = `${parentKey}.nationality`;
-const identificationPassportNumberKey = `${parentKey}.identificationNumber`;
+const identificationNumberKey = `${parentKey}.identificationNumber`;
 const raceIdKey = `${parentKey}.race`;
+export const identificationDocumentTypeKey = `${parentKey}.identificationDocumentType`;
 const homeLanguageIdKey = `${parentKey}.language`;
 const studentNumberKey = `${parentKey}.mobileNumber`;
 const mobileCountryCodeKey = `${parentKey}.mobileCountryCode`;
+const nationalityStatusKey = `${parentKey}.nationalityStatus`;
+const permenantResidentKey = `${parentKey}.permenantResident`;
 const PersonalInfoForm = (props: IPersonalInfoProps) => {
-  const { genders, nationalities, homeLanguage, race } = { ...props };
+  const {
+    genders,
+    nationalities,
+    homeLanguage,
+    race,
+    nationalityStatusData,
+    identityDocuments,
+  } = {
+    ...props,
+  };
   const {
     setValue,
     register,
+    clearErrors,
+    setError,
+    trigger,
     watch,
     formState: { errors, touchedFields },
   } = useFormContext();
+
   const TouchFields = touchedFields[parentKey] as any;
+
   const Errors = errors[parentKey] as any;
   const [countryCodeRef, setCountryCode] = useState<any>();
   const [mobNum, setMobile] = useState<any>("");
+  const [isNationality, setNationality] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isYes, setIsYes] = useState<boolean>(false);
+
   useEffect(() => {
     const userNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
@@ -53,6 +94,7 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
     );
     setCountryCode(userNumberDetail?.countryCode);
     setValue(studentNumberKey, userNumberDetail?.mobileNumber);
+
     setValue(mobileCountryCodeKey, userNumberDetail?.countryCodeNumber);
   }, []);
   const firstName = watch(firstNameKey);
@@ -62,20 +104,37 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
   const dateOfBirth = watch(dateOfBirthKey);
   const email = watch(emailKey);
   const nationalityId = watch(nationalityIdKey);
-  const identificationPassportNumber = watch(identificationPassportNumberKey);
+  const nationalityStatus = watch(nationalityStatusKey);
+  const identificationNumber = watch(identificationNumberKey);
   const raceId = watch(raceIdKey);
+  const identificationDocumentType = watch(identificationDocumentTypeKey);
   const homeLanguageId = watch(homeLanguageIdKey);
-  const uppdateMobNumber = () => {
-    const countryCode = getCountryCallingCode(countryCodeRef);
-    setValue(`${countryCode}`, `+${countryCode}`);
-  };
+  const permenantResident = watch(permenantResidentKey);
+
   const genderOption = [
     ...(genders || []),
     ...[{ name: "Other", code: "other", id: 21 }],
   ];
+
+  const handleInternationAccordian = (state) => {
+    if (state === "SA") {
+      setValue(nationalityIdKey, "SA", formDirtyState);
+      clearErrors(nationalityIdKey);
+    } else if (state == "PRSA") {
+      setValue(permenantResidentKey, "SA", formDirtyState);
+      setValue(nationalityIdKey, "", formDirtyState);
+    } else {
+      setValue(permenantResidentKey, "", formDirtyState);
+      setValue(nationalityIdKey, "", formDirtyState);
+    }
+
+    setValue(identificationDocumentTypeKey, "", formDirtyState);
+    setValue(identificationNumberKey, "", formDirtyState);
+  };
+
   return (
     <>
-      <StyledAccordion defaultExpanded={true}>
+      <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -105,21 +164,26 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                     className="form-control"
                     id="firstName"
                     placeholder="e.g Robert"
                   />
-                  {TouchFields?.firstName && Errors?.firstName && (
+                  {Errors?.firstName && (
                     <>
                       <div className="invalid-feedback">
-                        Please enter First Name
+                        Please enter your First Name
                       </div>
                     </>
                   )}
@@ -138,11 +202,16 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                     id="middleName"
@@ -163,17 +232,22 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       const value = e.target.value;
                       const name = e.target.name;
                       if (onlyAlphabets(value)) {
-                        setValue(name, value, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        });
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
+                        setValue(
+                          name,
+                          capitalizeFirstLetter(value),
+                          formDirtyState
+                        );
                       }
                     }}
                     id="lastName"
                     placeholder=""
                   />
-                  {TouchFields?.lastName && Errors?.lastName && (
+                  {Errors?.lastName && (
                     <div className="invalid-feedback">
                       Please enter Last Name
                     </div>
@@ -188,10 +262,16 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     options={genderOption}
                     label={"Gender"}
                     value={genderId}
+                    onChange={(e) => {
+                      setValue(genderIdKey, e?.code);
+                    }}
                     name={genderIdKey}
                     register={register}
+                    onBlur={() => {
+                      trigger(genderIdKey);
+                    }}
                   />
-                  {TouchFields?.genderId && Errors?.genderId && (
+                  {Errors?.gender && (
                     <div className="invalid-feedback">Please enter Gender</div>
                   )}
                 </div>
@@ -206,16 +286,17 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                       required: true,
                       validate: isValidDate,
                     })}
+                    max={transformDate(new Date(), true)}
                     type="date"
                     className="form-control"
                     id="exampleFormControlInput1"
                     placeholder=""
                   />
-                  {TouchFields?.dateOfBirth && Errors?.dateOfBirth && (
+                  {Errors?.dateOfBirth && (
                     <div className="invalid-feedback">
                       {Errors?.dateOfBirth?.type === "validate"
                         ? "Please enter valid date"
-                        : "Please enter Date of Birth"}
+                        : "Please enter valid  Date of Birth"}
                     </div>
                   )}
                 </div>
@@ -228,94 +309,82 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     defaultValue={email}
                     {...register(emailKey, {
                       required: true,
-                      validate: isValidEmail,
-                    })}
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    placeholder=""
-                  />
-                  {TouchFields?.email && Errors?.email && (
-                    <div className="invalid-feedback">
-                      {Errors?.email?.type == "validate"
-                        ? "you have entered an invalid email address. Please try again"
-                        : "Please enter Email"}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-4">
-                <div className="mb-4 pe-none">
-                  <StyledLabel required>Mobile Number</StyledLabel>
-                  <PhoneInput
-                    id="1"
-                    international
-                    countryCallingCodeEditable={false}
-                    defaultCountry={countryCodeRef}
-                    placeholder="Select Country Code*"
-                    {...register(studentNumberKey, { required: false })}
-                    onCountryChange={(value: any) => {
-                      return;
-                      setCountryCode(value);
-                    }}
-                    onBlur={(e) => {
-                      return;
-                      e.stopPropagation();
-                      e.preventDefault();
-                      uppdateMobNumber();
-                    }}
-                    onChange={(value) => {
-                      return;
-                      setValue("mobileNumber", value);
-                    }}
-                    value={mobNum as any}
-                  />
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <StyledLabel required>
-                    Identification / Passport Number
-                  </StyledLabel>
-                  <input
-                    value={identificationPassportNumber}
-                    defaultValue={identificationPassportNumber}
-                    {...register(identificationPassportNumberKey, {
-                      required: true,
                     })}
                     type="text"
                     className="form-control"
-                    id="identificationPassportNumber"
-                    placeholder=""
+                    id="email"
+                    onBlur={async (e) => {
+                      if (e.target.value) {
+                        const res = await emailValidation(e);
+                        if (
+                          res?.message == "Provided email address alredy exists"
+                        ) {
+                          setError(emailKey, {
+                            type: "custom",
+                            message: "Provided email address already exists",
+                          });
+                        } else if (
+                          res?.message ==
+                          "you have entered an invalid email address. Please try again"
+                        ) {
+                          setError(emailKey, {
+                            type: "custom",
+                            message:
+                              "you have entered an invalid email address. Please try again",
+                          });
+                        } else if (res?.message == "clear") {
+                          clearErrors(emailKey);
+                        }
+                      } else if (e.target.value == "") {
+                        setError(emailKey, {
+                          type: "custom",
+                          message: "Please enter Email",
+                        });
+                      }
+                    }}
+                    onChange={(e) => {
+                      const name = e.target.name;
+                      const value = e.target.value;
+                      setValue(name, value, formDirtyState);
+                    }}
                   />
-                  {TouchFields?.identificationPassportNumber &&
-                    Errors?.identificationPassportNumber && (
-                      <div className="invalid-feedback">
-                        Please enter Identification / Passport Number
-                      </div>
-                    )}
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="mb-4">
-                  <AdvanceDropDown
-                    options={nationalities}
-                    value={nationalityId}
-                    name={nationalityIdKey}
-                    register={register}
-                    label="Nationality"
-                  />
-                  {TouchFields?.nationalityId && Errors?.nationalityId && (
+                  {Errors?.email && (
                     <div className="invalid-feedback">
-                      Please enter Nationality
+                      {Errors?.email?.type === "custom" &&
+                        Errors?.email?.message}
                     </div>
                   )}
                 </div>
               </div>
             </div>
             <div className="row">
+              <div className="col-md-4">
+                <div className="mb-4 pe-none ">
+                  <StyledLabel required>Mobile Number</StyledLabel>
+                  <div className="disabled">
+                    <PhoneInput
+                      id="1"
+                      international
+                      disabled
+                      countryCallingCodeEditable={false}
+                      defaultCountry={countryCodeRef}
+                      placeholder="Select Country Code*"
+                      {...register(studentNumberKey, { required: false })}
+                      onCountryChange={(value: any) => {
+                        return;
+                      }}
+                      onBlur={() => {
+                        return;
+                      }}
+                      onChange={() => {
+                        return;
+                      }}
+                      value={mobNum as any}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
@@ -324,10 +393,16 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
                     register={register}
                     options={homeLanguage}
                     value={homeLanguageId}
+                    onChange={(e) => {
+                      setValue(homeLanguageIdKey, e?.code);
+                    }}
+                    onBlur={() => {
+                      trigger(homeLanguageIdKey);
+                    }}
                   />
-                  {TouchFields?.homeLanguageId && Errors?.homeLanguageId && (
+                  {Errors?.language && (
                     <div className="invalid-feedback">
-                      Please enter Home Language
+                      Please select Home Language
                     </div>
                   )}
                 </div>
@@ -335,18 +410,173 @@ const PersonalInfoForm = (props: IPersonalInfoProps) => {
               <div className="col-md-4">
                 <div className="mb-4">
                   <AdvanceDropDown
+                    onChange={(e) => {
+                      setValue(raceIdKey, e?.code);
+                    }}
                     label="Race"
                     value={raceId}
                     name={raceIdKey}
                     register={register}
                     options={race}
+                    onBlur={() => {
+                      trigger(raceIdKey);
+                    }}
                   />
-                  {TouchFields?.raceId && Errors?.raceId && (
-                    <div className="invalid-feedback">Please enter Race</div>
+                  {Errors?.race && (
+                    <div className="invalid-feedback">Please select Race</div>
                   )}
                 </div>
               </div>
             </div>
+
+            <GreyStyledAccordion
+              expanded={nationalityStatus}
+              defaultExpanded={true}
+            >
+              <AccordionSummary className="nationality-card">
+                <div className="me-4">
+                  <span className="me-2">
+                    <Image
+                      className="user-icon-circle"
+                      src={AddressImg}
+                      alt="user"
+                    />
+                  </span>
+                  <StyledLabel required>Nationality Status</StyledLabel>
+                </div>
+
+                <AdvanceDropDown
+                  options={nationalityStatusData}
+                  value={nationalityStatus}
+                  name={nationalityStatusKey}
+                  register={register}
+                  onChange={(e) => {
+                    handleInternationAccordian(e?.code);
+                    setValue(nationalityStatusKey, e?.code);
+                  }}
+                  label="Nationality Status"
+                  hideLabel
+                  onBlur={() => {
+                    trigger(nationalityStatusKey);
+                  }}
+                />
+
+                <div className="m-2">
+                  {Errors?.nationalityStatus && (
+                    <div className="invalid-feedback">
+                      Please Select Nationality Status
+                    </div>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div className="container-fluid form-padding">
+                  <div className="row">
+                    {nationalityStatus == "PRSA" ? (
+                      <div className="col-md-4">
+                        <div className="mb-4">
+                          <AdvanceDropDown
+                            onChange={(e) => {
+                              setValue(permenantResidentKey, e?.code);
+                            }}
+                            disabled={nationalityStatus == "PRSA"}
+                            options={nationalities?.sort((a, b) =>
+                              sortAscending(a, b, "name")
+                            )}
+                            value={permenantResident}
+                            name={permenantResidentKey}
+                            register={register}
+                            label="Permanent Resident"
+                            onBlur={() => {
+                              trigger(permenantResidentKey);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+
+                    <div className="col-md-4">
+                      <div className="mb-4">
+                        <AdvanceDropDown
+                          onChange={(e) => {
+                            setValue(nationalityIdKey, e?.code);
+                          }}
+                          disabled={nationalityStatus == "SA"}
+                          options={nationalities?.sort((a, b) =>
+                            sortAscending(a, b, "name")
+                          )}
+                          value={nationalityId}
+                          name={nationalityIdKey}
+                          register={register}
+                          label="Nationality"
+                          onBlur={() => {
+                            trigger(nationalityIdKey);
+                          }}
+                        />
+                        {Errors?.nationalityId && (
+                          <div className="invalid-feedback">
+                            Please Select Nationality
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-4">
+                      <div className="mb-4">
+                        <AdvanceDropDown
+                          onChange={(e) => {
+                            setValue(identificationDocumentTypeKey, e?.code);
+                          }}
+                          options={identityDocuments}
+                          value={identificationDocumentType}
+                          name={identificationDocumentTypeKey}
+                          register={register}
+                          label="Identification Document Type"
+                          onBlur={() => {
+                            trigger(identificationDocumentTypeKey);
+                          }}
+                        />
+                        {Errors?.identificationDocumentType && (
+                          <div className="invalid-feedback">
+                            Please Select Document Type
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-4">
+                        <StyledLabel required>
+                          Identification Number
+                        </StyledLabel>
+                        <input
+                          value={identificationNumber}
+                          defaultValue={identificationNumber}
+                          {...register(identificationNumberKey, {
+                            required: true,
+                          })}
+                          type="text"
+                          className="form-control"
+                          id="identificationPassportNumber"
+                          placeholder=""
+                          onChange={(e) => {
+                            const name = e.target.name;
+                            const value = e.target.value;
+                            if (onlyAlphabetsOrNumbers(value)) {
+                              setValue(name, value, formDirtyState);
+                            }
+                          }}
+                        />
+                        {Errors?.identificationNumber && (
+                          <div className="invalid-feedback">
+                            Please enter Identification Number
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </GreyStyledAccordion>
           </div>
         </AccordionDetails>
       </StyledAccordion>
