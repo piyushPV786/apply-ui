@@ -49,6 +49,7 @@ interface IDocumentUploadProps {
     disabled: boolean;
     status: string;
   }[];
+  isBursarry: boolean;
 }
 
 const mapStatusToFormData = (response, formData) => {
@@ -126,7 +127,7 @@ const requiredDocs = [
   "MATRIC",
   "RESUMECV",
 ];
-const mbaDocs = ["MOTIVATIONLETTER", "INTERVIEWNOTES"];
+
 const DocumentUploadForm = ({
   allFields,
   documentType,
@@ -136,6 +137,7 @@ const DocumentUploadForm = ({
   onSubmit,
   selectedPrograms,
   documentData,
+  isBursarry,
 }: IDocumentUploadProps) => {
   const {
     register,
@@ -181,6 +183,9 @@ const DocumentUploadForm = ({
       );
     }
   }, [isMBAProgram]);
+  const mbaDocs = isBursarry
+    ? ["MOTIVATIONLETTER", "INTERVIEWNOTES"]
+    : ["MOTIVATIONLETTER", "INTERVIEWNOTES", "BURSARYLETTER"];
 
   const documentFormFields = allFields?.document;
   const documentFieldErrors = errors?.document as any;
@@ -302,6 +307,7 @@ const DocumentUploadForm = ({
                 id={id}
                 watch={watch}
                 documentFieldErrors={documentFieldErrors}
+                isBursarry={isBursarry}
               />
             );
           }

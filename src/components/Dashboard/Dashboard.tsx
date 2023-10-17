@@ -199,6 +199,8 @@ export const ApplicationDashboard = (props: any) => {
       isDocumentPending,
       studentCode: studentCode,
     };
+
+    sessionStorage.setItem("activeApplictonData", JSON.stringify(leadDetail));
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
@@ -742,12 +744,12 @@ function ApplicationCard({
                         onUploadBursaryDocuments(
                           applicationNumber,
                           leadCode,
-                          status
+                          "UPLOAD-BURSARY-LETTER"
                         )
                       }
                       isUploadBtn
                       className="card-button"
-                      title="Upload Employee Bursary Letter"
+                      title="Upload  Bursary Letter"
                     />
                   </Grid>
                 )}

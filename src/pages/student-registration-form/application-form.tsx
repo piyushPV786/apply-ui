@@ -81,6 +81,8 @@ const ApplicationForm = () => {
   const [studyModeData, setStudyModeData] = useState([]);
   const [employedStateData, setEmployedStateData] = useState([]);
   const [documentData, setDocumentData] = useState([]);
+  const [isBursarry, setIsBursary] = useState(false);
+
   const methods = useForm<ILeadFormValues>({
     mode: "all",
     reValidateMode: "onBlur",
@@ -108,7 +110,9 @@ const ApplicationForm = () => {
     if (window) {
       const queryParams = new URLSearchParams(location?.search);
       const applicationStatus = queryParams.get("status");
-
+      if (applicationStatus == "UPLOAD-BURSARY-LETTER") {
+        setIsBursary(true);
+      }
       if (applicationStatus === CommonEnums.APP_ENROLLED_ACCEPTED) {
         setApllicationEnrolled(true);
       } else {
@@ -231,6 +235,11 @@ const ApplicationForm = () => {
 
     methodType
       .then(({ data: response }) => {
+        sessionStorage.setItem(
+          "activeApplictonData",
+          JSON.stringify(response?.data?.applicationData)
+        );
+
         if (!applicationCode || status === CommonEnums.DRAFT_STATUS) {
           sessionStorage.setItem(
             "studentId",
@@ -555,7 +564,7 @@ const ApplicationForm = () => {
       currencyCode: allFields?.payment?.selectedCurrency,
       isDraft,
       studentCode: JSON.parse(
-        sessionStorage?.getItem("activeLeadDetail") as any
+        sessionStorage?.getItem("activeApplictonData") as any
       ).studentCode,
     };
     getUploadDocumentUrl(payload)
@@ -883,6 +892,7 @@ const ApplicationForm = () => {
                 {activeStep === MagicNumbers.TWO && (
                   <>
                     <DocumentUploadForm
+                      isBursarry={isBursarry}
                       documentData={documentData}
                       allFields={allFields}
                       isValidDocument={isValidDocument}
