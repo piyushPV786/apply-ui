@@ -7,7 +7,6 @@ import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
 import Image from "next/image";
-import LoginApplicationServices from "../../services/loginApplication";
 
 import {
   ImageContainer,
@@ -18,26 +17,23 @@ import {
   Title,
   StyledLink,
 } from "./style";
-import { CommonApi, RoutePaths, tokenName } from "../common/constant";
+import { RoutePaths } from "../common/constant";
 import { MsgComponent, LoaderComponent } from "../common/common";
-import useAxiosInterceptor from "../../service/Axios";
-import LoginCustomHook from "./customHook/LoginCustomHook";
 
-const StudentLogin = () => {
-  const {
-    mobileNumber,
-    setMobileNumber,
-    countryCode,
-    setCountryCode,
-    otp,
-    setOtp,
-    sendOtpToMobile,
-    isProceed,
-  } = LoginCustomHook();
-
+const StudentLogin = ({
+  mobileNumber,
+  setMobileNumber,
+  countryCode,
+  setCountryCode,
+  otp,
+  setOtp,
+  sendOtpToMobile,
+  isProceed,
+  verifyOTP,
+  setProceed,
+}) => {
   const [errorMsg, setErrorMsg] = useState<any>(null);
   const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
-  const { baseAuth, loading } = useAxiosInterceptor();
 
   const router = useRouter();
   useEffect(() => {
@@ -64,7 +60,10 @@ const StudentLogin = () => {
       mobileNumber: number?.nationalNumber,
       mobileCountryCode: number?.countryCallingCode,
     };
-    sendOtpToMobile(payload);
+    const response = await sendOtpToMobile(payload);
+    if (response?.data) {
+      setProceed(true);
+    }
   };
 
   const onCountryChange = (value: string | any) => {
@@ -80,38 +79,19 @@ const StudentLogin = () => {
     const mobileNumberDetail = JSON.parse(
       sessionStorage.getItem("studentMobile") as any
     );
-    baseAuth
-      .post(CommonApi.VERIFYOTP, {
-        mobileNumber: mobileNumberDetail?.mobileNumber,
-        otp: +otp,
-        mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
-      })
-      .then(({ data }) => {
-        window.sessionStorage.setItem(
-          tokenName?.accessToken,
-          data?.data?.tokenDetails?.access_token
-        );
-        window.sessionStorage.setItem(
-          tokenName.refreshToken,
-          data?.data?.tokenDetails?.refresh_token
-        );
-
-        setErrorMsg(null);
-        sessionStorage.setItem(
-          "studentId",
-          JSON.stringify({ leadCode: data?.data?.leadCode })
-        );
-        sessionStorage.setItem("authenticate", JSON.stringify("true"));
-
-        router.push(RoutePaths.Dashboard);
-      })
-      .catch(({}) => {
-        setErrorMsg({
-          success: false,
-          message: "Sorry! The entered OTP is invalid. Please try again",
-        });
-        setShowResendBtn(true);
+    const payload = {
+      mobileNumber: mobileNumberDetail?.mobileNumber,
+      otp: +otp,
+      mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
+    };
+    const response = await verifyOTP(payload);
+    if (!response?.data) {
+      setErrorMsg({
+        success: false,
+        message: "Sorry! The entered OTP is invalid. Please try again",
       });
+      setShowResendBtn(true);
+    }
   };
 
   const resendOtp = () => {
@@ -239,8 +219,6 @@ const StudentLogin = () => {
               <StyledLink
                 className="link-text"
                 onClick={() => {
-                  setProceed(!isProceed);
-
                   setOtp("");
                 }}
               >
@@ -253,36 +231,32 @@ const StudentLogin = () => {
     );
   };
 
+  console.log("isProceed ==========>", isProceed);
+
   return (
     <>
-      {loading ? (
-        <LoaderComponent />
-      ) : (
-        <ImageContainer>
-          <>
-            <div className="login-spacing">
-              <Heading>
-                <div>
-                  <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
-                </div>
-                Regenesys Application Form
-              </Heading>
-              <ApplicationFormContainer isProceed={isProceed}>
-                {!isProceed && <EnterMobNumber />}
-                {isProceed && <EnterOtp />}
-              </ApplicationFormContainer>
-            </div>
-            <StyleFooter>
-              <span className="footer-text">
-                Copyright @ 2015 - {year}{" "}
-                <a href="https://www.regenesys.net/">
-                  Regenesys Business School
-                </a>
-              </span>
-            </StyleFooter>
-          </>
-        </ImageContainer>
-      )}
+      <ImageContainer>
+        <>
+          <div className="login-spacing">
+            <Heading>
+              <div>
+                <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />
+              </div>
+              Regenesys Application Form
+            </Heading>
+            <ApplicationFormContainer isProceed={isProceed}>
+              {!isProceed && <EnterMobNumber />}
+              {isProceed && <EnterOtp />}
+            </ApplicationFormContainer>
+          </div>
+          <StyleFooter>
+            <span className="footer-text">
+              Copyright @ 2015 - {year}{" "}
+              <a href="https://www.regenesys.net/">Regenesys Business School</a>
+            </span>
+          </StyleFooter>
+        </>
+      </ImageContainer>
     </>
   );
 };

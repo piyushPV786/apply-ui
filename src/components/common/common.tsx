@@ -4,7 +4,7 @@ import {
   StyledLink,
   SuccessMsgContainer,
   ToasterContainer,
-} from "../student/style";
+} from "../login/style";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import { Snackbar } from "@material-ui/core";
 import { CommonEnums } from "./constant";

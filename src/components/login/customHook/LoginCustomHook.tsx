@@ -9,20 +9,18 @@ const LoginCustomHook = () => {
   const [isProceed, setProceed] = useState<boolean>(false);
 
   const sendOtpToMobile = async (payload) => {
+    setProceed(!isProceed);
     const response = await LoginApplicationServices?.register(payload);
-    console.log("response =========>", response);
+    console.log("isProceed =========>", isProceed);
     if (response?.data) {
-      setProceed(true);
+      setProceed(!isProceed);
     }
   };
 
-  const verifyOTP = async () => {
-    const payload = {
-      mobileNumber: mobileNumberDetail?.mobileNumber,
-      otp: +otp,
-      mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
-    };
-    const response = await LoginApplicationServices?.verifyOTP();
+  const verifyOTP = async (payload) => {
+    const response = await LoginApplicationServices?.verifyOTP(payload);
+    console.log("otp verify response =========>", response);
+    return response;
   };
 
   return {
@@ -34,6 +32,8 @@ const LoginCustomHook = () => {
     setOtp,
     sendOtpToMobile,
     isProceed,
+    verifyOTP,
+    setProceed,
   };
 };
 
