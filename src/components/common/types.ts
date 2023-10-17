@@ -58,6 +58,8 @@ export interface IFee {
 }
 
 export interface IMasterData {
+  name: string;
+  code: string | number | readonly string[] | undefined;
   languageData: IOption[];
   nationalityData: IOption[];
   programs: IOption[];
