@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { getMasterData } from "../../../service/service";
 import { useForm } from "react-hook-form";
+import ApplicationFormServices from "../../../services/applicationForm";
 
 const LoadFormCustomHook = () => {
   const [masterData, setMasterData] = useState({});
   const methods = useForm();
 
   const getCommonMasterData = async () => {
-    const response = await getMasterData();
+    const response = await ApplicationFormServices?.getMasterData();
     setMasterData(response);
   };
 

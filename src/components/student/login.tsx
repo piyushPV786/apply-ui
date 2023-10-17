@@ -7,6 +7,7 @@ import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
 import Image from "next/image";
+import LoginApplicationServices from "../../services/loginApplication";
 
 import axios from "axios";
 import authConfig from "./auth";
@@ -60,28 +61,37 @@ const StudentLogin = () => {
     mobileNumber.length! <= 16;
 
   const onchangeOtp = (value: string) => setOtp(value);
-  const onProceed = () => {
+  const onProceed = async () => {
     setProceed(true);
     const number = parsePhoneNumber(mobileNumber, countryCode);
-    baseAuth
-      .post(CommonApi.REGISTERUSER, {
-        mobileNumber: number?.nationalNumber,
-        mobileCountryCode: number?.countryCallingCode,
-      })
-      .then(({}) => {
-        const studentDetail = {
-          mobileNumber: number?.nationalNumber,
-          countryCodeNumber: number?.countryCallingCode,
-          countryCode: countryCode,
-        };
-        sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
+    const payload = {
+      mobileNumber: number?.nationalNumber,
+      mobileCountryCode: number?.countryCallingCode,
+    };
+    if (payload?.mobileNumber && payload?.mobileCountryCode) {
+      const response = await LoginApplicationServices?.register(payload);
+      console.log("response ========>", response);
+    }
 
-        setProceed(true);
-        setToast(true);
-      })
-      .catch(({ response }) => {
-        console.error(response);
-      });
+    // baseAuth
+    //   .post(CommonApi.REGISTERUSER, {
+    //     mobileNumber: number?.nationalNumber,
+    //     mobileCountryCode: number?.countryCallingCode,
+    //   })
+    //   .then(({}) => {
+    //     const studentDetail = {
+    //       mobileNumber: number?.nationalNumber,
+    //       countryCodeNumber: number?.countryCallingCode,
+    //       countryCode: countryCode,
+    //     };
+    //     sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
+
+    //     setProceed(true);
+    //     setToast(true);
+    //   })
+    //   .catch(({ response }) => {
+    //     console.error(response);
+    //   });
   };
   const onCountryChange = (value: string | any) => {
     if (value) {

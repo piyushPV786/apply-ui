@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { LoaderContextProvider } from "../components/LoaderContext";
 
 interface RouterContextProps {
   isRouting: boolean;
@@ -48,7 +49,9 @@ export function useIsRouting() {
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <RouterProvider>
-      <Component {...pageProps} />
+      <LoaderContextProvider>
+        <Component {...pageProps} />
+      </LoaderContextProvider>
       <ToastContainer
         position="bottom-right"
         autoClose={3500}
