@@ -936,6 +936,8 @@ const ApplicationForm = () => {
                           termsHandelClose={termsHandelClose}
                           termsOpen={termsOpen}
                           updateTermsConditions={updateTermsConditions}
+                          watch={watch}
+                          trigger={trigger}
                         />
                       </div>
                     )}
