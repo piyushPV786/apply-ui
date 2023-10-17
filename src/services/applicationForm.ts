@@ -1,11 +1,11 @@
 import { apiEndPoint, apiUrls } from "./config";
-import apiServer from "./index";
+import { apiServer } from "./index";
 
 class ApplicationFormServices {
   async getMasterData() {
     const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.loadMasterData}`;
     const response = await apiServer.get(url);
-    return response;
+    return response?.data;
   }
 }
 

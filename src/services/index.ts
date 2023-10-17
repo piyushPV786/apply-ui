@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const apiServer = axios.create();
+export const apiServer = axios.create();
 
-export const updateIntercepters = (callback) => {
+export const updateInterceptors = (callback) => {
   // Add a request interceptor
   apiServer.interceptors.request.use(
     (config) => {
@@ -12,8 +12,8 @@ export const updateIntercepters = (callback) => {
       return config;
     },
     (error) => {
-      return Promise.reject(error);
       callback(false);
+      return Promise.reject(error);
     }
   );
 
@@ -22,13 +22,11 @@ export const updateIntercepters = (callback) => {
     (response) => {
       // You can update the response data or handle errors globally here.
       callback(false);
-      return response.data;
+      return response;
     },
     (error) => {
-      return Promise.reject(error);
       callback(false);
+      return Promise.reject(error);
     }
   );
 };
-
-export default apiServer;

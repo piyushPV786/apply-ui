@@ -9,15 +9,6 @@ import RBSLogo from "../../../public/assets/images/RBS_logo_1_white.png";
 import Image from "next/image";
 import LoginApplicationServices from "../../services/loginApplication";
 
-import axios from "axios";
-import authConfig from "./auth";
-import {
-  AuthValuesType,
-  RegisterParams,
-  LoginParams,
-  ErrCallbackType,
-  UserDataType,
-} from "./types";
 import {
   ImageContainer,
   ApplicationFormContainer,
@@ -25,21 +16,27 @@ import {
   Item,
   StyleFooter,
   Title,
+  StyledLink,
 } from "./style";
-import styled from "styled-components";
 import { CommonApi, RoutePaths, tokenName } from "../common/constant";
 import { MsgComponent, LoaderComponent } from "../common/common";
 import useAxiosInterceptor from "../../service/Axios";
+import LoginCustomHook from "./customHook/LoginCustomHook";
 
 const StudentLogin = () => {
-  const [mobileNumber, setMobileNumber] = useState<string>("");
-  const [countryCode, setCountryCode] = useState<any>("ZA");
-  const [otp, setOtp] = useState<string>("");
-  const [isProceed, setProceed] = useState<boolean>(false);
+  const {
+    mobileNumber,
+    setMobileNumber,
+    countryCode,
+    setCountryCode,
+    otp,
+    setOtp,
+    sendOtpToMobile,
+    isProceed,
+  } = LoginCustomHook();
+
   const [errorMsg, setErrorMsg] = useState<any>(null);
-  const [showToast, setToast] = useState<boolean>(false);
   const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
-  const [isResendOtp, setResend] = useState<boolean>(false);
   const { baseAuth, loading } = useAxiosInterceptor();
 
   const router = useRouter();
@@ -62,37 +59,14 @@ const StudentLogin = () => {
 
   const onchangeOtp = (value: string) => setOtp(value);
   const onProceed = async () => {
-    //setProceed(true);
     const number = parsePhoneNumber(mobileNumber, countryCode);
     const payload = {
       mobileNumber: number?.nationalNumber,
       mobileCountryCode: number?.countryCallingCode,
     };
-    if (payload?.mobileNumber && payload?.mobileCountryCode) {
-      const response = await LoginApplicationServices?.register(payload);
-      console.log("response ========>", response?.data);
-    }
-
-    // baseAuth
-    //   .post(CommonApi.REGISTERUSER, {
-    //     mobileNumber: number?.nationalNumber,
-    //     mobileCountryCode: number?.countryCallingCode,
-    //   })
-    //   .then(({}) => {
-    //     const studentDetail = {
-    //       mobileNumber: number?.nationalNumber,
-    //       countryCodeNumber: number?.countryCallingCode,
-    //       countryCode: countryCode,
-    //     };
-    //     sessionStorage.setItem("studentMobile", JSON.stringify(studentDetail));
-
-    //     setProceed(true);
-    //     setToast(true);
-    //   })
-    //   .catch(({ response }) => {
-    //     console.error(response);
-    //   });
+    sendOtpToMobile(payload);
   };
+
   const onCountryChange = (value: string | any) => {
     if (value) {
       setCountryCode(value);
@@ -101,6 +75,53 @@ const StudentLogin = () => {
   const setMobileNumberValue = (value: string) => {
     setMobileNumber(value);
   };
+
+  const verifyNumber = async () => {
+    const mobileNumberDetail = JSON.parse(
+      sessionStorage.getItem("studentMobile") as any
+    );
+    baseAuth
+      .post(CommonApi.VERIFYOTP, {
+        mobileNumber: mobileNumberDetail?.mobileNumber,
+        otp: +otp,
+        mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
+      })
+      .then(({ data }) => {
+        window.sessionStorage.setItem(
+          tokenName?.accessToken,
+          data?.data?.tokenDetails?.access_token
+        );
+        window.sessionStorage.setItem(
+          tokenName.refreshToken,
+          data?.data?.tokenDetails?.refresh_token
+        );
+
+        setErrorMsg(null);
+        sessionStorage.setItem(
+          "studentId",
+          JSON.stringify({ leadCode: data?.data?.leadCode })
+        );
+        sessionStorage.setItem("authenticate", JSON.stringify("true"));
+
+        router.push(RoutePaths.Dashboard);
+      })
+      .catch(({}) => {
+        setErrorMsg({
+          success: false,
+          message: "Sorry! The entered OTP is invalid. Please try again",
+        });
+        setShowResendBtn(true);
+      });
+  };
+
+  const resendOtp = () => {
+    setErrorMsg({ success: true, message: "OTP re-sent successfully" });
+    setOtp("");
+  };
+
+  const today = new Date();
+  const year = today.getFullYear();
+
   const EnterMobNumber = () => {
     return (
       <div>
@@ -232,52 +253,6 @@ const StudentLogin = () => {
     );
   };
 
-  const verifyNumber = async () => {
-    const mobileNumberDetail = JSON.parse(
-      sessionStorage.getItem("studentMobile") as any
-    );
-    baseAuth
-      .post(CommonApi.VERIFYOTP, {
-        mobileNumber: mobileNumberDetail?.mobileNumber,
-        otp: +otp,
-        mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
-      })
-      .then(({ data }) => {
-        window.sessionStorage.setItem(
-          tokenName?.accessToken,
-          data?.data?.tokenDetails?.access_token
-        );
-        window.sessionStorage.setItem(
-          tokenName.refreshToken,
-          data?.data?.tokenDetails?.refresh_token
-        );
-
-        setErrorMsg(null);
-        sessionStorage.setItem(
-          "studentId",
-          JSON.stringify({ leadCode: data?.data?.leadCode })
-        );
-        sessionStorage.setItem("authenticate", JSON.stringify("true"));
-
-        router.push(RoutePaths.Dashboard);
-      })
-      .catch(({}) => {
-        setErrorMsg({
-          success: false,
-          message: "Sorry! The entered OTP is invalid. Please try again",
-        });
-        setShowResendBtn(true);
-      });
-  };
-
-  const resendOtp = () => {
-    setErrorMsg({ success: true, message: "OTP re-sent successfully" });
-    setOtp("");
-  };
-
-  const today = new Date();
-  const year = today.getFullYear();
-
   return (
     <>
       {loading ? (
@@ -313,7 +288,3 @@ const StudentLogin = () => {
 };
 
 export default StudentLogin;
-export const StyledLink = styled.span`
-  color: #008554;
-  cursor: pointer;
-`;
