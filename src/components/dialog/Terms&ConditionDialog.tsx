@@ -20,19 +20,31 @@ import {
 import StyledButton from "../../components/button/button";
 // ** Third Party Library
 
+import { useFormContext } from "react-hook-form";
+import useAxiosInterceptor from "../../service/Axios";
+
 export const EditGroup = ({
   updateTermsConditions,
   termsOpen,
   termsHandelClose,
   termsHandelOpen,
+  watch,
+  trigger,
 }) => {
   // ** States
   const [dialogShow, setDialogShow] = useState(false);
+  const { AuthApi } = useAxiosInterceptor();
+  const parentKey = "lead";
+
+  const firstNameKey = `${parentKey}.firstName`;
+
+  const lastNameKey = `${parentKey}.lastName`;
+  const emailKey = `${parentKey}.email`;
 
   return (
     <Grid>
       <label className="form-check-label terms-conditions">
-        I have read and agreed to 
+        I have read and agreed to
         <a
           style={{ color: "Green", fontFamily: "roboto-medium" }}
           href="#"
@@ -46,12 +58,15 @@ export const EditGroup = ({
       </label>
 
       <Dialog
-        open={dialogShow || termsOpen}   
+        open={dialogShow || termsOpen}
         scroll="body"
         onClose={() => termsHandelClose}
       >
         <Box sx={{ mt: 5, textAlign: "center" }}>
-          <Typography className="popup-title" sx={{ mb: 3, lineHeight: "2rem" }}>
+          <Typography
+            className="popup-title"
+            sx={{ mb: 3, lineHeight: "2rem" }}
+          >
             Terms and Conditions
           </Typography>
         </Box>
@@ -1912,11 +1927,16 @@ export const EditGroup = ({
               </div>
             </div>
           </Box>
+
+          <div className="mt-5">
+            <Typography>
+              Note (Please Enter Firstname Lastname and Emailaddress to accept
+              terms and conditions)
+            </Typography>
+          </div>
         </Grid>
 
-        <DialogActions
-          sx={{ pb: { xs: 2, sm: 2 }, justifyContent: "center" }}
-        >
+        <DialogActions sx={{ pb: { xs: 2, sm: 2 }, justifyContent: "center" }}>
           <StyledButton
             type="button"
             isGreenWhiteCombination={true}
@@ -1926,9 +1946,38 @@ export const EditGroup = ({
             title={"Decline"}
           />
           <StyledButton
+            disabled={
+              !watch(firstNameKey) || !watch(lastNameKey) || !watch(emailKey)
+            }
             title={"Accept"}
-            onClick={() => {
-              updateTermsConditions(true);
+            onClick={async () => {
+              if (
+                (await trigger(firstNameKey)) &&
+                (await trigger(lastNameKey)) &&
+                (await trigger(emailKey))
+              ) {
+                AuthApi.get(
+                  `application/terms-condition/${watch(firstNameKey)}${watch(
+                    lastNameKey
+                  )}/${watch(emailKey)}`,
+                  {
+                    responseType: "blob",
+                  }
+                ).then((data) => {
+                  console.log(data);
+                  const blobFile = new Blob([data?.data], {
+                    type: "application/pdf",
+                  });
+
+                  const fileURL = URL.createObjectURL(blobFile);
+                  window.open(fileURL);
+                });
+                updateTermsConditions(true);
+              } else {
+                trigger(firstNameKey);
+                trigger(lastNameKey);
+                trigger(emailKey);
+              }
             }}
           />
         </DialogActions>
