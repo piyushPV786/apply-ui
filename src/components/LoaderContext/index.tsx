@@ -35,4 +35,4 @@ const useLoader = (): LoaderContextProps => {
   return context;
 };
 
-export { LoaderContextProvider, useLoader };
+export { LoaderContextProvider, LoaderContext, useLoader };

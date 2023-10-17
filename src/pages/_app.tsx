@@ -5,7 +5,14 @@ import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { LoaderContextProvider } from "../components/LoaderContext";
+import CircularProgress from "@mui/material/CircularProgress";
+
+import {
+  LoaderContext,
+  LoaderContextProvider,
+  useLoader,
+} from "../components/LoaderContext";
+import { updateIntercepters } from "../services";
 
 interface RouterContextProps {
   isRouting: boolean;
@@ -46,17 +53,27 @@ export function useIsRouting() {
   return isRouting;
 }
 
+const Loader = (props) => {
+  const data = useLoader();
+  useEffect(() => {
+    updateIntercepters(data?.setLoading);
+  }, []);
+  return data?.loading ? <CircularProgress color="success" /> : <></>;
+};
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <RouterProvider>
       <LoaderContextProvider>
-        <Component {...pageProps} />
+        <Loader>
+          <Component {...pageProps} />
+        </Loader>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3500}
+          hideProgressBar
+        />
       </LoaderContextProvider>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3500}
-        hideProgressBar
-      />
     </RouterProvider>
   );
 }
