@@ -235,6 +235,11 @@ const ApplicationForm = () => {
 
     methodType
       .then(({ data: response }) => {
+        sessionStorage.setItem(
+          "activeApplictonData",
+          JSON.stringify(response?.data?.applicationData)
+        );
+
         if (!applicationCode || status === CommonEnums.DRAFT_STATUS) {
           sessionStorage.setItem(
             "studentId",
@@ -559,7 +564,7 @@ const ApplicationForm = () => {
       currencyCode: allFields?.payment?.selectedCurrency,
       isDraft,
       studentCode: JSON.parse(
-        sessionStorage?.getItem("activeLeadDetail") as any
+        sessionStorage?.getItem("activeApplictonData") as any
       ).studentCode,
     };
     getUploadDocumentUrl(payload)

@@ -199,6 +199,8 @@ export const ApplicationDashboard = (props: any) => {
       isDocumentPending,
       studentCode: studentCode,
     };
+
+    sessionStorage.setItem("activeApplictonData", JSON.stringify(leadDetail));
     sessionStorage.setItem("activeLeadDetail", JSON.stringify(leadDetail));
     router.push(RoutePaths.Application_Form, { query: `status=${status}` });
   };
