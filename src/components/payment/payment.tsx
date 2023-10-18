@@ -22,7 +22,7 @@ import {
 import FIleUploadImg from "../../../public/assets/images/file-upload-svgrepo-com.svg";
 import Image from "next/image";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
-import { GreenText } from "../student/style";
+import { GreenText } from "../login/style";
 import { CommonApi, CommonEnums, FeemodeCode } from "../common/constant";
 import CircleTick from "../../../public/assets/images/circle-tick.svg";
 import { FinanceApi } from "../../service/Axios";

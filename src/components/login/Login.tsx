@@ -95,7 +95,7 @@ const StudentLogin = () => {
           StorageName?.REFRESH_TOKEN,
           tokenDetails.refresh_token
         );
-        router.push("/dashboard");
+        router.push("/lead/form");
       }
     } catch (err) {
       setErrorMsg({

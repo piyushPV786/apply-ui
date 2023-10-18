@@ -7,20 +7,26 @@ export const apiServer = axios.create();
 export const refreshApiServer = axios.create();
 
 const refreshTokenFunction = async () => {
-  const response = await LoginApplicationServices.refreshToken();
-  const { data } = response?.data;
-  if (data?.access_token && data?.refresh_token) {
-    await window.localStorage.setItem(
-      StorageName?.ACCESS_TOKEN,
-      data.access_token
-    );
-    await window.localStorage.setItem(
-      StorageName?.REFRESH_TOKEN,
-      data.refresh_token
-    );
-  }
+  try {
+    const response = await LoginApplicationServices.refreshToken();
+    const { data } = response?.data;
+    if (data?.access_token && data?.refresh_token) {
+      await window.localStorage.setItem(
+        StorageName?.ACCESS_TOKEN,
+        data.access_token
+      );
+      await window.localStorage.setItem(
+        StorageName?.REFRESH_TOKEN,
+        data.refresh_token
+      );
+    }
 
-  return data;
+    return data;
+  } catch (err) {
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+    window.location.href = `/`;
+  }
 };
 
 const maxAge = 10000;
@@ -29,7 +35,7 @@ const memoizedRefreshToken = mem(refreshTokenFunction, {
 });
 
 export const updateInterceptors = (callback) => {
-  apiServer.interceptors.request.use(
+  refreshApiServer.interceptors.request.use(
     (config) => {
       // You can update the request configuration here, such as adding headers or modifying the request data.
       //   config.headers["Authorization"] = "Bearer your_token_here";
@@ -54,7 +60,10 @@ export const updateInterceptors = (callback) => {
       // You can update the request configuration here, such as adding headers or modifying the request data.
       //   config.headers["Authorization"] = "Bearer your_token_here";
 
-      if (config.headers) {
+      if (
+        config.headers &&
+        window.localStorage.getItem(StorageName?.ACCESS_TOKEN)
+      ) {
         config.headers["Authorization"] = `Bearer ${window.localStorage.getItem(
           StorageName?.ACCESS_TOKEN
         )}`;
