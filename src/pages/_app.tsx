@@ -10,9 +10,8 @@ import Loader from "../components/Loader";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <LoaderContextProvider>
-      <Loader>
-        <Component {...pageProps} />
-      </Loader>
+      <Loader />
+      <Component {...pageProps} />
       <ToastContainer
         position="bottom-right"
         autoClose={3500}

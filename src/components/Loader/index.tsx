@@ -18,10 +18,9 @@ const Loader = (props) => {
   return data?.loading ? (
     <>
       <Spinner />
-      {props?.children}
     </>
   ) : (
-    <>{props?.children}</>
+    <></>
   );
 };
 

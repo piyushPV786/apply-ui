@@ -1,7 +1,7 @@
 import Head from "next/head";
-import StudentLogin from "../components/login/Login";
+import StudentLogin from "../../components/login/Login";
 
-export default function Home() {
+export default function Login() {
   return (
     <div>
       <Head>

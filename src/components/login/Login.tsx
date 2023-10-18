@@ -18,22 +18,18 @@ import {
   StyledLink,
 } from "./style";
 import { RoutePaths } from "../common/constant";
-import { MsgComponent, LoaderComponent } from "../common/common";
+import { MsgComponent } from "../common/common";
+import LoginCustomHook from "./customHook/LoginCustomHook";
 
-const StudentLogin = ({
-  mobileNumber,
-  setMobileNumber,
-  countryCode,
-  setCountryCode,
-  otp,
-  setOtp,
-  sendOtpToMobile,
-  isProceed,
-  verifyOTP,
-  setProceed,
-}) => {
+const StudentLogin = () => {
   const [errorMsg, setErrorMsg] = useState<any>(null);
   const [showResendBtn, setShowResendBtn] = useState<boolean>(false);
+  const [mobileNumber, setMobileNumber] = useState<string>("");
+  const [countryCode, setCountryCode] = useState<any>("ZA");
+  const [otp, setOtp] = useState<string>("");
+  const [isOtp, setIsOtp] = useState<boolean>(false);
+
+  const { sendOtpToMobile, verifyOTP } = LoginCustomHook();
 
   const router = useRouter();
   useEffect(() => {
@@ -60,9 +56,10 @@ const StudentLogin = ({
       mobileNumber: number?.nationalNumber,
       mobileCountryCode: number?.countryCallingCode,
     };
-    const response = await sendOtpToMobile(payload);
+    const response: any = await sendOtpToMobile(payload);
+    setIsOtp(true);
     if (response?.data) {
-      setProceed(true);
+      setIsOtp(true);
     }
   };
 
@@ -76,13 +73,14 @@ const StudentLogin = ({
   };
 
   const verifyNumber = async () => {
-    const mobileNumberDetail = JSON.parse(
-      sessionStorage.getItem("studentMobile") as any
-    );
+    if (!mobileNumber || !countryCode) {
+      setIsOtp(false);
+    }
+
     const payload = {
-      mobileNumber: mobileNumberDetail?.mobileNumber,
+      mobileNumber: mobileNumber,
       otp: +otp,
-      mobileCountryCode: mobileNumberDetail?.countryCodeNumber,
+      mobileCountryCode: countryCode,
     };
     const response = await verifyOTP(payload);
     if (!response?.data) {
@@ -144,7 +142,8 @@ const StudentLogin = ({
               {" "}
               <StyledButton
                 disabled={!isNumberValid}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   onProceed();
                 }}
                 title="Proceed"
@@ -231,8 +230,6 @@ const StudentLogin = ({
     );
   };
 
-  console.log("isProceed ==========>", isProceed);
-
   return (
     <>
       <ImageContainer>
@@ -244,9 +241,9 @@ const StudentLogin = ({
               </div>
               Regenesys Application Form
             </Heading>
-            <ApplicationFormContainer isProceed={isProceed}>
-              {!isProceed && <EnterMobNumber />}
-              {isProceed && <EnterOtp />}
+            <ApplicationFormContainer isProceed={isOtp}>
+              {!isOtp && <EnterMobNumber />}
+              {isOtp && <EnterOtp />}
             </ApplicationFormContainer>
           </div>
           <StyleFooter>
