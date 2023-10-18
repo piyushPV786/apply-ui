@@ -10,7 +10,6 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddressImg from "../../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 
 const Address = (props: any) => {
-  console.log("address Props =========>", props);
   const { register } = useFormContext();
   return (
     <StyledAccordion>

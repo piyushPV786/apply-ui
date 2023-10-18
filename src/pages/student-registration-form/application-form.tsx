@@ -37,7 +37,7 @@ import {
   StyledLink,
   SuccessMsgContainer,
   ToasterContainer,
-} from "../../components/student/style";
+} from "../../components/login/style";
 import {
   CommonApi,
   CommonEnums,

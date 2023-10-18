@@ -11,4 +11,5 @@ export const apiEndPoint = {
   register: "auth/register",
   verifyOtp: "auth/verify-otp",
   refreshToken: "auth/refresh-token",
+  salesAgent: "user/role/Sales",
 };
