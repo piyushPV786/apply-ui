@@ -1,3 +1,9 @@
+export enum StorageName {
+  STUDENT_DETAIL = "studentDetails",
+  ACCESS_TOKEN = "access_token",
+  REFRESH_TOKEN = "refresh_token",
+}
+
 export enum CommonEnums {
   TRUE = "true",
   NEW_STATUS = "New-Application",

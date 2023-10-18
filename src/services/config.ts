@@ -10,4 +10,5 @@ export const apiEndPoint = {
   loadMasterData: "master/loadMasterData ",
   register: "auth/register",
   verifyOtp: "auth/verify-otp",
+  refreshToken: "auth/refresh-token",
 };
