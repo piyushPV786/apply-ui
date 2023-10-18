@@ -17,7 +17,7 @@ import {
   Title,
   StyledLink,
 } from "./style";
-import { RoutePaths } from "../common/constant";
+import { RoutePaths, StorageName } from "../common/constant";
 import { MsgComponent } from "../common/common";
 import LoginCustomHook from "./customHook/LoginCustomHook";
 
@@ -73,17 +73,31 @@ const StudentLogin = () => {
   };
 
   const verifyNumber = async () => {
-    if (!mobileNumber || !countryCode) {
-      setIsOtp(false);
-    }
-
+    const number = parsePhoneNumber(mobileNumber, countryCode);
     const payload = {
-      mobileNumber: mobileNumber,
+      mobileNumber: number?.nationalNumber,
       otp: +otp,
-      mobileCountryCode: countryCode,
+      mobileCountryCode: number?.countryCallingCode,
     };
-    const response = await verifyOTP(payload);
-    if (!response?.data) {
+    try {
+      const response = await verifyOTP(payload);
+      if (response?.data?.data) {
+        const tokenDetails = response?.data?.data?.tokenDetails;
+        await window.localStorage.setItem(
+          StorageName?.STUDENT_DETAIL,
+          JSON.stringify(response?.data?.data)
+        );
+        await window.localStorage.setItem(
+          StorageName?.ACCESS_TOKEN,
+          tokenDetails.access_token
+        );
+        await window.localStorage.setItem(
+          StorageName?.REFRESH_TOKEN,
+          tokenDetails.refresh_token
+        );
+        router.push("/lead/form");
+      }
+    } catch (err) {
       setErrorMsg({
         success: false,
         message: "Sorry! The entered OTP is invalid. Please try again",

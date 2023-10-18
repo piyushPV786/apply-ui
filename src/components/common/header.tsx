@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Grid } from "@material-ui/core";
-import { StyledLink } from "../student/login";
+import { StyledLink } from "../login/style";
 import { useRouter } from "next/router";
 import RbsLogo from "../../../public/assets/images/RBS_logo_2_white.png";
 import Image from "next/image";

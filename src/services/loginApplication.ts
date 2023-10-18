@@ -1,5 +1,5 @@
 import { apiEndPoint, apiUrls } from "./config";
-import { apiServer } from "./index";
+import { apiServer, refreshApiServer } from "./index";
 
 interface IRegister {
   mobileNumber: number | string;
@@ -17,6 +17,11 @@ class LoginApplicationServices {
   async verifyOTP(payload) {
     const url = `${this.applyBaseUrl}${apiEndPoint?.verifyOtp}`;
     const response = await apiServer.post(url, payload);
+    return response;
+  }
+  async refreshToken() {
+    const url = `${this.applyBaseUrl}${apiEndPoint?.refreshToken}`;
+    const response = await refreshApiServer.get(url);
     return response;
   }
 }

@@ -8,6 +8,9 @@ import Sponsor from "../../components/lead/form/Sponser";
 import Employment from "../../components/lead/form/Employment";
 import Kin from "../../components/lead/form/Kin";
 import LeadFormCustomHook from "../../components/lead/customHooks/LeadFormCustomHook";
+import StepperComponent from "../../components/stepper/stepper";
+import styled from "styled-components";
+import { Container } from "@material-ui/core";
 
 const LeadForm = () => {
   const { masterData, methods, saveApplication, saveApplicationAsDraft } =
@@ -16,6 +19,9 @@ const LeadForm = () => {
   return (
     <MainContainer>
       <Header />
+      <StepperContainer>
+        <StepperComponent active={0} />
+      </StepperContainer>
       <FormProvider {...methods}>
         <form>
           <PersonalInformation masterData={masterData} />
@@ -32,3 +38,10 @@ const LeadForm = () => {
   );
 };
 export default LeadForm;
+
+export const StepperContainer = styled(Container)`
+  width: 50%;
+  @media (max-width: 510px) {
+    width: 100%;
+  }
+`;

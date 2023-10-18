@@ -2,7 +2,7 @@
 
 // ** React Imports
 
-import { Ref, useState, forwardRef, ReactElement, useEffect } from "react";
+import { useState } from "react";
 
 //**  API Services
 
@@ -27,12 +27,11 @@ export const EditGroup = ({
   termsHandelOpen,
 }) => {
   // ** States
-  const [dialogShow, setDialogShow] = useState(false);
 
   return (
     <Grid>
       <label className="form-check-label terms-conditions">
-        I have read and agreed to 
+        I have read and agreed to
         <a
           style={{ color: "Green", fontFamily: "roboto-medium" }}
           href="#"
@@ -45,13 +44,12 @@ export const EditGroup = ({
         </a>
       </label>
 
-      <Dialog
-        open={dialogShow || termsOpen}   
-        scroll="body"
-        onClose={() => termsHandelClose}
-      >
+      <Dialog open={termsOpen} scroll="body" onClose={() => termsHandelClose}>
         <Box sx={{ mt: 5, textAlign: "center" }}>
-          <Typography className="popup-title" sx={{ mb: 3, lineHeight: "2rem" }}>
+          <Typography
+            className="popup-title"
+            sx={{ mb: 3, lineHeight: "2rem" }}
+          >
             Terms and Conditions
           </Typography>
         </Box>
@@ -1914,9 +1912,7 @@ export const EditGroup = ({
           </Box>
         </Grid>
 
-        <DialogActions
-          sx={{ pb: { xs: 2, sm: 2 }, justifyContent: "center" }}
-        >
+        <DialogActions sx={{ pb: { xs: 2, sm: 2 }, justifyContent: "center" }}>
           <StyledButton
             type="button"
             isGreenWhiteCombination={true}

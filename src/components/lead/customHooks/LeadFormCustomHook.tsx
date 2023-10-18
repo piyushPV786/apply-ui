@@ -8,7 +8,9 @@ const LoadFormCustomHook = () => {
 
   const getCommonMasterData = async () => {
     const response = await ApplicationFormServices?.getMasterData();
-    setMasterData(response);
+    if (response?.data) {
+      setMasterData(response?.data);
+    }
   };
 
   useEffect(() => {

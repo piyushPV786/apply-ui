@@ -7,6 +7,11 @@ class ApplicationFormServices {
     const response = await apiServer.get(url);
     return response?.data;
   }
+  async getSalesAgentData() {
+    const url = `${apiUrls?.userManagementBaseUrl}${apiEndPoint?.loadMasterData}`;
+    const response = await apiServer.get(url);
+    return response?.data;
+  }
 }
 
 export default new ApplicationFormServices();
