@@ -130,7 +130,7 @@ export const EducationForm = (props: IEducationProps) => {
   }, [internationDegreeVal]);
 
   useEffect(() => {
-    setValue(studentTypeName, "REGULAR");
+    setValue(studentTypeName, "RETAIL");
   }, []);
 
   const getQualificationStudyModeData = async (programCode: string) => {
