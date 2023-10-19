@@ -13,27 +13,22 @@ import React, { useState } from "react";
 import { IPaymentPayload } from "./commonDataType";
 
 interface IPaymentPageProps {
-  applicationCode: string;
-  studentType: string;
   paymentDiscount: (arg0: IPaymentPayload) => void;
 }
-const OrderSummary = ({
-  applicationCode,
-  studentType,
-  paymentDiscount,
-}: IPaymentPageProps) => {
+const OrderSummary = ({ paymentDiscount }: IPaymentPageProps) => {
   const [showPromoCode, setShowPromoCode] = useState<boolean>(false);
   const [promoCode, setPromoCode] = useState<string>("");
 
   const OnSubmit = async () => {
-    const payload = {
-      applicationCode: applicationCode,
-      studentType: studentType,
-      discountCode: promoCode,
-    };
-    await paymentDiscount(payload);
-    setShowPromoCode(false);
-    setPromoCode("");
+    // To Be used after StudentCode api
+    // const payload = {
+    //   applicationCode: applicationCode,
+    //   studentType: studentType,
+    //   discountCode: promoCode,
+    // };
+    // await paymentDiscount(payload);
+    // setShowPromoCode(false);
+    // setPromoCode("");
   };
 
   return (
