@@ -1,19 +1,16 @@
-import {
-  Typography,
-  Card,
-  Grid,
-  Button,
-  Tooltip,
-  Container,
-  Box,
-} from "@mui/material";
-import DocumentUploadContainer from "../../components/document/DocumentUploadContainer";
-import React, { useRef, useState, useEffect } from "react";
+import { Typography, Card, Grid, Button, Box } from "@mui/material";
+import DocumentUploadContainer from "../../components/documents/DocumentUploadContainer";
+import { MainContainer } from "../../components/login/style";
+import React from "react";
 import StepperComponent from "../../components/stepper/stepper";
+import DocumentsHook from "../../components/documents/customHook/documentsHook";
+import { docValidation } from "../../components/documents/context/common";
 
 const DocumentUploadPage = () => {
+  const { documentTypeData } = DocumentsHook();
+
   return (
-    <Box sx={{ backgroundColor: "#dde1e3" }}>
+    <MainContainer>
       <Grid
         container
         sm={12}
@@ -22,30 +19,23 @@ const DocumentUploadPage = () => {
         className="d-flex justify-content-center align-items-center"
       >
         <Grid sm={9}>
-          <StepperComponent
-            isFormSubmitted={true}
-            isPaymentDone={true}
-            active={3}
-          />
+          <StepperComponent active={3} />
         </Grid>
         <Grid container sm={9}>
           <Grid item sm={9} sx={{ padding: 2 }}>
-            <DocumentUploadContainer
-              isDeclaretionForm={true}
-              isRejectStatus={false}
-            />
-            <DocumentUploadContainer
-              isDeclaretionForm={false}
-              isRejectStatus={true}
-            />
-            <DocumentUploadContainer
-              isDeclaretionForm={false}
-              isRejectStatus={false}
-            />
-            <DocumentUploadContainer
-              isDeclaretionForm={false}
-              isRejectStatus={false}
-            />
+            {documentTypeData
+              ? documentTypeData?.map((item) => {
+                  if (docValidation[item?.code]) {
+                    return (
+                      <DocumentUploadContainer
+                        documentName={item?.name}
+                        documentCode={item?.code}
+                        isRequired={docValidation[item?.code]?.isRequired}
+                      />
+                    );
+                  }
+                })
+              : null}
           </Grid>
           <Grid
             item
@@ -76,7 +66,7 @@ const DocumentUploadPage = () => {
           </Grid>
         </Grid>
       </Grid>
-    </Box>
+    </MainContainer>
   );
 };
 

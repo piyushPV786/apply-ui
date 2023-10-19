@@ -13,4 +13,5 @@ export const apiEndPoint = {
   refreshToken: "auth/refresh-token",
   salesAgent: "user/role/Sales",
   programAll: "programs/all",
+  commonDocuments: "document-type",
 };

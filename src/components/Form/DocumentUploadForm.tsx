@@ -14,7 +14,7 @@ import { ILeadFormValues, IOption } from "../common/types";
 import DocumentUploadContainer, {
   MainContainer,
   TickWithText,
-} from "../document/DocumentUploadContainer";
+} from "../documents/DocumentUploadContainer";
 import { Typography } from "@mui/material";
 
 import { GraduationType } from "../common/constant";
