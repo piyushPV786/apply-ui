@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { getStatusColor } from "../../Util/Util";
+import Dropdown from "react-bootstrap/Dropdown";
 
 export const ApplicationFormContainerStyle = {
   display: "flex",
@@ -101,4 +103,57 @@ export const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
   overflow-y: scroll;
+`;
+export const MainContainer = styled.div`
+  background: #dde1e3;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  padding-bottom: 1rem;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch !important;
+`;
+
+export const PaymentContainer = styled.div`
+  width: 100%;
+  padding: 1.5rem;
+`;
+
+export const ApplicationContainer = styled.div`
+  position: relative;
+`;
+
+export const StyledStatusBedge = styled.div<any>`
+  background: ${({ status }) => `${getStatusColor(status)}`};
+  color: white;
+  padding: 2px 5px;
+  border: 1px solid;
+  position: relative;
+  margin-right: 0 !important;
+  border-top: 0;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 5px;
+  padding: 5px 20px;
+  letter-spacing: 0.5px;
+  font-size: 14px;
+`;
+
+export const StudentIdCard = styled.div<{ bgColor?: string }>`
+  background: ${({ bgColor }) => bgColor || "#235290"};
+  color: white;
+  max-width: 250px;
+  border-radius: 3px;
+  padding: 2px 8px;
+  margin: 15px 5px 0 0;
+  font-size: 13px;
+  span {
+    font-weight: bold;
+  }
+`;
+
+export const ContentCard = styled(Dropdown.Toggle)`
+  height: 34px;
+  background-color: #008554;
+  font-size: 0.86rem;
+  border-radius: 4px;
 `;
