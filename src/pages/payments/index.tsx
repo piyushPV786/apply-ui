@@ -4,15 +4,10 @@ import OrderSummary from "../../components/Payments/orderSummary";
 import PaymentOption from "../../components/Payments/payment";
 import StepperComponent from "../../components/stepper/stepper";
 import { Box, Button, Grid } from "@mui/material";
-interface IPaymentPageProps {
-  applicationCode: string;
-  studentType: string;
-}
 
-const PaymentPage = ({ applicationCode, studentType }: IPaymentPageProps) => {
+const PaymentPage = () => {
   const { paymentDiscount } = CustomHookPayment();
 
-  console.log("url", studentType, applicationCode);
   return (
     <>
       <Box
@@ -28,11 +23,7 @@ const PaymentPage = ({ applicationCode, studentType }: IPaymentPageProps) => {
             <StepperComponent active={1} />
           </Grid>
           <Grid item xs={12}>
-            <OrderSummary
-              applicationCode={applicationCode}
-              studentType={studentType}
-              paymentDiscount={paymentDiscount}
-            />
+            <OrderSummary paymentDiscount={paymentDiscount} />
           </Grid>
           <Grid item xs={12}>
             <PaymentOption />
