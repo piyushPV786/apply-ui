@@ -291,18 +291,19 @@ export const onlyAlphabetsOrNumbersDash = (value) =>
  * @param {string} type - The payment type.
  * @returns {string} - The image URL for the payment type.
  */
+
 export const GetPaymentImage = (type) => {
   const imgUrl = "/assets/images";
 
-  if (type === "Payu") {
+  if (type === "payu") {
     return `${imgUrl}/payu.png`;
   }
 
-  if (type === "RazorPay") {
+  if (type === "razorpay") {
     return `${imgUrl}/razorpay.png`;
   }
 
-  if (type === "Stripe") {
+  if (type === "stripe") {
     return `${imgUrl}/stripe.png`;
   }
 };
@@ -741,4 +742,10 @@ export const formateInPascalCase = (value: string) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
   return formattedString;
+};
+
+export const calculateFileSize = (size: number) => {
+  return size / 1024 > 1024
+    ? `${(size / 1024 / 1024).toFixed(2)} MB`
+    : `${Math.round(size / 1024)} KB`;
 };
