@@ -1,12 +1,13 @@
+import { useRouter } from "next/router";
 import StyledButton from "../button/button";
 import Header from "../common/header";
 import { MainContainer, PaymentContainer } from "../login/style";
 import ApplicationCard from "./ApplicationCard";
 import NoApplication from "./NoApplication";
 import UseDashboardHook from "./customHook/UseDashboardHook";
-import { useEffect } from "react";
 
 const ApplicationDashboard = () => {
+  const router = useRouter();
   const { applicationData, allPrograms, getApplicationData } =
     UseDashboardHook();
   return (
@@ -29,7 +30,9 @@ const ApplicationDashboard = () => {
                   <div className="col-md-4 d-flex align-items-start justify-content-end">
                     <div className="d-flex justify-content-end">
                       <StyledButton
-                        onClick={() => {}}
+                        onClick={() => {
+                          router.push("/application/new");
+                        }}
                         className="button-shadow apply-button"
                         title="Apply a New Application"
                       />

@@ -2,8 +2,10 @@ import Image from "next/image";
 import { Green, GreenFormHeading } from "../common/common";
 import StyledButton from "../button/button";
 import ApplicationIcon from "../../../public/assets/images/new-application-icon.svg";
+import { useRouter } from "next/router";
 
 const NoApplication = () => {
+  const router = useRouter();
   return (
     <div className="row">
       <div className="col-sm-12 col-lg-12 col-md-12">
@@ -33,7 +35,9 @@ const NoApplication = () => {
           </p>
           <StyledButton
             className="button-shadow"
-            onClick={() => {}}
+            onClick={() => {
+              router.push("/application/new");
+            }}
             title="Apply Now"
           />
         </div>

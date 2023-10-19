@@ -5,6 +5,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { transformDate } from "../../Util/Util";
 import StyledButton from "../button/button";
 import UseCardActionHook from "./customHook/UseCardActionHook";
+import { useRouter } from "next/router";
 
 export const EducationDetails = ({ educationInfo }) => {
   console.log("educationInfo ===========>", educationInfo);
@@ -118,8 +119,16 @@ export const DocumentInformation = () => {
 };
 
 export const ActionButtons = ({ applicationDetail }) => {
-  const { isEditBTN, isRmatBTN, isPayBTN, payBtnTitle, isUploadBTN } =
-    UseCardActionHook(applicationDetail);
+  const router = useRouter();
+  const {
+    isEditBTN,
+    isRmatBTN,
+    isPayBTN,
+    payBtnTitle,
+    isUploadBTN,
+    isBursaryBTN,
+    isAdamiteBTN,
+  } = UseCardActionHook(applicationDetail);
 
   return (
     <Grid
@@ -138,20 +147,31 @@ export const ActionButtons = ({ applicationDetail }) => {
               className="card-button"
               isGreenWhiteCombination={true}
               title="Edit"
-              onClick={() => {}}
+              onClick={() => {
+                router.push(
+                  `/application/${applicationDetail?.applicationCode}`
+                );
+              }}
             />
           </Grid>
         </Grid>
       )}
       {isRmatBTN && (
         <Grid item>
-          <StyledButton onClick={() => {}} title="Take RMAT Test" />
+          <StyledButton
+            onClick={() => {
+              router.push(`/rmat`);
+            }}
+            title="Take RMAT Test"
+          />
         </Grid>
       )}
       {isPayBTN && (
         <Grid item>
           <StyledButton
-            onClick={() => {}}
+            onClick={() => {
+              router.push(`/payment/${applicationDetail?.studentCode}`);
+            }}
             className="card-button"
             title={payBtnTitle}
           />
@@ -160,26 +180,34 @@ export const ActionButtons = ({ applicationDetail }) => {
       {isUploadBTN && (
         <Grid item>
           <StyledButton
-            onClick={() => {}}
+            onClick={() => {
+              router.push(`/uploads/${applicationDetail?.studentCode}`);
+            }}
             className="card-button"
             title="Upload Documents"
           />
         </Grid>
       )}
-      <Grid item>
-        <StyledButton
-          onClick={() => {}}
-          className="card-button"
-          title="Upload Employee Bursary Letter"
-        />
-      </Grid>
-      <Grid item>
-        <StyledButton
-          onClick={() => {}}
-          className="card-button"
-          title="view login credentials"
-        />
-      </Grid>
+      {isBursaryBTN && (
+        <Grid item>
+          <StyledButton
+            onClick={() => {
+              router.push(`/uploads/${applicationDetail?.studentCode}`);
+            }}
+            className="card-button"
+            title="Upload Employee Bursary Letter"
+          />
+        </Grid>
+      )}
+      {isAdamiteBTN && (
+        <Grid item>
+          <StyledButton
+            onClick={() => {}}
+            className="card-button"
+            title="view login credentials"
+          />
+        </Grid>
+      )}
     </Grid>
   );
 };
