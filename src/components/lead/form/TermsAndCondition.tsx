@@ -7,7 +7,7 @@ const TermsAndCondition = (props: any) => {
   return (
     <div className="container-fluid form-padding">
       <div className="col-lg-4 mb-4"></div>
-      <div className="col-lg-4 mb-4">Vivek</div>
+      <div className="col-lg-4 mb-4"></div>
       <div className="col-lg-4 mb-4"></div>
     </div>
   );
