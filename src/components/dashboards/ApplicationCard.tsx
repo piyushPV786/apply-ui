@@ -10,11 +10,7 @@ import {
   UserNumberInformation,
 } from "./Components";
 
-const ApplicationCard = ({
-  applicationDetail,
-  allPrograms,
-  getApplicationData,
-}) => {
+const ApplicationCard = ({ applicationDetail, getApplicationData }) => {
   return (
     <>
       <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">

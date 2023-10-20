@@ -11,11 +11,13 @@ import {
   NAVY_BLUE,
   ORANGE,
   removedKeysToMap,
+  StorageName,
 } from "../components/common/constant";
 import { ILeadFormValues } from "../components/common/types";
 import { AuthApi, CommonAPI, FinanceApi, baseAuth } from "../service/Axios";
 import { parsePhoneNumber } from "react-phone-number-input";
 import { toast } from "react-toastify";
+import { refferedById } from "../constants";
 const ignorKeys = {
   createdAt: "",
   deletedAt: "",
@@ -697,24 +699,18 @@ export const downloadDocument = (url, fileName: string) => {
   alink.click();
 };
 
-export const mapFormDefaultValue = (
-  studentData: object,
-  setValue: UseFormSetValue<ILeadFormValues>
-) => {
-  let valueCode;
+export const mapFormDefaultValue = (studentData: object, setValue: any) => {
   for (let [key, value] of Object.entries(studentData)) {
     if (acceptedKeysToMap.includes(key)) {
       if (key === "education" && studentData[key]) {
-        valueCode = studentData[key]?.socialMediaCode
-          ? "SOCIALMEDIA"
-          : studentData[key]?.agentCode
-          ? "AGENT"
-          : "";
-        setValue(key, value);
+        if (studentData[key]?.socialMediaCode) {
+          setValue("education.refferedById", `${refferedById.social}`);
+        } else if (studentData[key]?.agentCode) {
+          setValue("education.refferedById", `${refferedById.agent}`);
+        }
       }
       setValue(key, value);
     }
-    setValue("education.referredById", valueCode, formOptions);
   }
 };
 
@@ -748,4 +744,12 @@ export const calculateFileSize = (size: number) => {
   return size / 1024 > 1024
     ? `${(size / 1024 / 1024).toFixed(2)} MB`
     : `${Math.round(size / 1024)} KB`;
+};
+
+export const getLocalStorageData = (key: StorageName) => {
+  const localData = window.localStorage.getItem(key);
+  if (localData) {
+    return JSON.parse(localData);
+  }
+  return null;
 };

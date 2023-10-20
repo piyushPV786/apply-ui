@@ -13,7 +13,8 @@ export const apiEndPoint = {
   refreshToken: "auth/refresh-token",
   salesAgent: "user/role/Sales",
   application: "application",
-  programAll: "programs/all",
+  programs: "programs/all",
   commonDocuments: "document-type",
   document: "document",
+  applicationDetails: "lead/:leadCode/application/:applicationCode",
 };

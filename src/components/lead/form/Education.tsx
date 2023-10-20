@@ -15,29 +15,12 @@ import { refferedById } from "../../../constants";
 
 const Education = (props: any) => {
   const { register, watch, setValue } = useFormContext();
-  const [programData, setProgramData] = useState([]);
+  const { masterData, programData } = props?.masterData;
   const [studyMode, setStudyMode] = useState([]);
   const programCode = watch("education.programCode");
   const studyModeCode = watch("education.studyModeCode");
   const refferedBy = watch("education.refferedById");
   const fees = feeHelper(studyMode, programCode, studyModeCode);
-  useEffect(() => {
-    (async function () {
-      const response = await getProgramsData();
-      setProgramData(response);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async function () {
-      if (programCode) {
-        const response = await getStudyModeData(programCode);
-        setStudyMode(response);
-      }
-    })();
-  }, [programCode]);
-
-  const { masterData } = props;
   return (
     <StyledAccordion>
       <AccordionSummary

@@ -8,9 +8,11 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddressImg from "../../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
+import AddressType from "./AddressType";
 
 const Address = (props: any) => {
-  const { register } = useFormContext();
+  const { masterData } = props?.masterData;
+
   return (
     <StyledAccordion>
       <AccordionSummary
@@ -27,49 +29,10 @@ const Address = (props: any) => {
       </AccordionSummary>
       <AccordionDetails>
         <div className="row">
-          {props?.masterData?.addressTypeData?.length &&
-            props?.masterData?.addressTypeData?.map((item, index) => {
-              const addressFields = [
-                {
-                  name: "street",
-                  label: item?.name,
-                  placeholder: "e.g 10 church street",
-                },
-                { name: "country", label: "Country", placeholder: "" },
-                {
-                  name: "zipcode",
-                  label: "Pin Code",
-                  placeholder: "Enter Zip/Postal Code",
-                },
-                { name: "city", label: "City", placeholder: "" },
-                { name: "state", label: "State", placeholder: "" },
-              ];
-
-              return (
-                <>
-                  {addressFields.map((addressItem) => {
-                    return (
-                      <div className="col-lg-4 mb-4">
-                        <StyledLabel required>{addressItem?.label}</StyledLabel>
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder={addressItem.placeholder}
-                          {...register(`address[${index}].${addressItem.name}`)}
-                        />
-                      </div>
-                    );
-                  })}
-                  <div className="col-lg-4 mb-4">
-                    <input
-                      value={item.code}
-                      type="hidden"
-                      {...register(`address[${index}].addressType`)}
-                    />
-                  </div>
-                </>
-              );
-            })}
+          {masterData?.addressTypeData?.length &&
+            masterData?.addressTypeData?.map((item: any, index: any) => (
+              <AddressType data={item} index={index} />
+            ))}
         </div>
       </AccordionDetails>
     </StyledAccordion>

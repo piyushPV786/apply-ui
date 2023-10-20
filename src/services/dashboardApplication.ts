@@ -8,7 +8,7 @@ class DashboardApplicationServices {
     return response?.data;
   }
   async getAllProgram() {
-    const url = `${apiUrls?.academicBaseUrl}${apiEndPoint?.programAll}`;
+    const url = `${apiUrls?.academicBaseUrl}${apiEndPoint?.programs}`;
     const response = await apiServer.get(url);
     return response?.data;
   }
