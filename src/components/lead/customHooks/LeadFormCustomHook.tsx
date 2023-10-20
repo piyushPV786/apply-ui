@@ -1,35 +1,34 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import ApplicationFormServices from "../../../services/applicationForm";
 
-const LoadFormCustomHook = () => {
-  const [masterData, setMasterData] = useState({});
-  const methods = useForm();
+export const useFormHook = (applicationCode: string) => {
+  const [masterData, setMasterData] = useState({
+    masterData: null,
+    salesAgentData: null,
+    applicationData: null,
+    programData: null,
+  });
 
-  const getCommonMasterData = async () => {
-    const response = await ApplicationFormServices?.getMasterData();
-    if (response?.data) {
-      setMasterData(response?.data);
-    }
+  const getAllData = async () => {
+    const data = await Promise.all([
+      ApplicationFormServices?.getMasterData(),
+      ApplicationFormServices?.getSalesAgentData(),
+      ApplicationFormServices?.getProgramData(),
+      applicationCode &&
+        ApplicationFormServices?.getApplicationData(applicationCode),
+    ]);
+    const payload = {
+      ...masterData,
+      masterData: data[0],
+      salesAgentData: data[1],
+      programData: data[2],
+      applicationData: data[3],
+    };
+    setMasterData(payload);
   };
-
   useEffect(() => {
-    getCommonMasterData();
+    getAllData();
   }, []);
 
-  const saveApplication = (e: any) => {
-    e.preventDefault();
-    const data = methods.watch();
-    console.log("data", data);
-  };
-
-  const saveApplicationAsDraft = (e: any) => {
-    e.preventDefault();
-    const data = methods.watch();
-    console.log("data", data);
-  };
-
-  return { masterData, methods, saveApplication, saveApplicationAsDraft };
+  return masterData;
 };
-
-export default LoadFormCustomHook;

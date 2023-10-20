@@ -1,7 +1,6 @@
 import { APPLICATION_STATUS, CommonEnums } from "../../common/constant";
 
 const UseCardActionHook = (applicationDetail) => {
-  console.log("application Details =============>", applicationDetail);
   const { status, educationDetail, sponsor, document } = applicationDetail;
   const isEditBTN =
     status === CommonEnums.FEES_PENDING_STATUS ||

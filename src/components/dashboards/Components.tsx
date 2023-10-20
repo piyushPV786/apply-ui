@@ -8,8 +8,6 @@ import UseCardActionHook from "./customHook/UseCardActionHook";
 import { useRouter } from "next/router";
 
 export const EducationDetails = ({ educationInfo }) => {
-  console.log("educationInfo ===========>", educationInfo);
-
   return (
     <div className="row px-4">
       <div className="col-md-6">

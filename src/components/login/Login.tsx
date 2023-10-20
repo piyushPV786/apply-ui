@@ -78,11 +78,12 @@ const StudentLogin = () => {
     };
     try {
       const response = await verifyOTP(payload);
-      if (response?.data?.data) {
-        const tokenDetails = response?.data?.data?.tokenDetails;
+      const data = response?.data?.data;
+      if (data) {
+        const { tokenDetails, ...rest } = data;
         await window.localStorage.setItem(
           StorageName?.STUDENT_DETAIL,
-          JSON.stringify(response?.data?.data)
+          JSON.stringify(rest)
         );
         await window.localStorage.setItem(
           StorageName?.ACCESS_TOKEN,

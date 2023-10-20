@@ -12,9 +12,8 @@ import UserCircleIcon from "../../../../public/assets/images/user-circle-svgrepo
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const PersonalInformation = (props: any) => {
-  const { masterData } = props;
+  const { masterData } = props?.masterData;
   const { register } = useFormContext();
-  const router = useRouter();
   return (
     <StyledAccordion>
       <AccordionSummary

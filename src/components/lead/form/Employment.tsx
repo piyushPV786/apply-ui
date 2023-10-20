@@ -12,7 +12,8 @@ import { IMasterData } from "../../common/types";
 
 const Employment = (props: any) => {
   const { register, watch } = useFormContext();
-  const { masterData } = props;
+  const { masterData } = props?.masterData;
+
   const activeSponsor = watch("sponsor.isActive");
   return (
     <StyledAccordion>

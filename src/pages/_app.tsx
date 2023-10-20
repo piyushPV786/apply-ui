@@ -9,14 +9,16 @@ import Loader from "../components/Loader";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <LoaderContextProvider>
-      <Loader />
+    <>
+      <LoaderContextProvider>
+        <Loader />
+      </LoaderContextProvider>
       <Component {...pageProps} />
       <ToastContainer
         position="bottom-right"
         autoClose={3500}
         hideProgressBar
       />
-    </LoaderContextProvider>
+    </>
   );
 }

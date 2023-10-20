@@ -11,8 +11,8 @@ import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-c
 
 import { IMasterData } from "../../common/types";
 const Kin = (props: any) => {
+  const { masterData } = props?.masterData;
   const { register, watch } = useFormContext();
-  const { masterData } = props;
   const activeSponsor = watch("sponsor.isActive");
   return (
     <StyledAccordion>
