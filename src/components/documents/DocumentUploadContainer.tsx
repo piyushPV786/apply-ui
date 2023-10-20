@@ -12,7 +12,7 @@ import { StyledLabel } from "../common/common";
 import styled from "styled-components";
 import React, { useRef } from "react";
 import AlertBox from "../alert/Alert";
-import { EyeCircleOutline, CloseCircleOutline } from "mdi-material-ui";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
 
 interface propsType {
   documentName: string;
@@ -134,10 +134,10 @@ const DocumentUploadContainer = ({
               </Grid>
               <Grid item>
                 <a href="">
-                  <EyeCircleOutline />
+                  <Visibility />
                 </a>
                 <a href="">
-                  <CloseCircleOutline />
+                  <VisibilityOff />
                 </a>
               </Grid>
             </Grid>

@@ -8,7 +8,13 @@ class DashboardApplicationServices {
     return response?.data;
   }
   async getAllProgram() {
-    const url = `${apiUrls?.academicBaseUrl}${apiEndPoint?.programAll}`;
+    const url = `${apiUrls?.academicBaseUrl}${apiEndPoint?.programs}`;
+    const response = await apiServer.get(url);
+    return response?.data;
+  }
+  async getDocumentURL(fileName: string, studentCode: string) {
+    const filetype = fileName.split(".")[1];
+    const url = `${apiUrls?.commonBaseUrl}${apiEndPoint?.document}?filename=${fileName}&filetype=${filetype}&studentCode=${studentCode}`;
     const response = await apiServer.get(url);
     return response?.data;
   }

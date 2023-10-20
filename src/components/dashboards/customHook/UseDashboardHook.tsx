@@ -4,7 +4,6 @@ import { StorageName } from "../../common/constant";
 
 const UseDashboardHook = () => {
   const [applicationData, setApplicationData] = useState([]);
-  const [allPrograms, setAllPrograms] = useState([]);
 
   const getApplicationData = async () => {
     const userDetails = window?.localStorage?.getItem(
@@ -19,19 +18,11 @@ const UseDashboardHook = () => {
     }
   };
 
-  const getAllPrograms = async () => {
-    const programResponse = await DashboardApplicationServices?.getAllProgram();
-    if (programResponse?.statusCode === 200 && programResponse?.data) {
-      setAllPrograms(programResponse?.data);
-    }
-  };
-
   useEffect(() => {
     getApplicationData();
-    getAllPrograms();
   }, []);
 
-  return { applicationData, allPrograms, getApplicationData };
+  return { applicationData, getApplicationData };
 };
 
 export default UseDashboardHook;

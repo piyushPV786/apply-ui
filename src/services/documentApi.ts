@@ -1,6 +1,8 @@
 import { apiEndPoint, apiUrls } from "./config";
 import { apiServer, refreshApiServer } from "./index";
 import { apiStatus } from "../context/common";
+import { getLocalStorageData } from "../Util/Util";
+import { StorageName } from "../components/common/constant";
 
 class DocumentApplicationServices {
   commonBaseUrl: string | undefined = apiUrls?.commonBaseUrl;
@@ -16,6 +18,17 @@ class DocumentApplicationServices {
     } else {
       return null;
     }
+  }
+  async getApplicationData(applicationCode: string) {
+    const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
+    const route = apiEndPoint?.applicationDetails
+      .replace(":applicationCode", applicationCode)
+      .replace(":leadCode", studentDetails?.leadCode);
+    const url = `${apiUrls?.applyBaseUrl}${route}`;
+    const response = await apiServer.get(url);
+    const result = response?.data?.data ? response?.data?.data : {};
+    console.log("result", result);
+    return result;
   }
 }
 

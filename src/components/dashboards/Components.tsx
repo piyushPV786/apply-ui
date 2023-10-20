@@ -100,7 +100,8 @@ export const CardAction = (props) => {
 };
 
 export const DocumentInformation = ({ applicationDetail }) => {
-  const { documentData } = UseCardActionHook(applicationDetail);
+  const { documentData, getDownloadDocument } =
+    UseCardActionHook(applicationDetail);
 
   return (
     <Grid sm={3} item>
@@ -111,7 +112,9 @@ export const DocumentInformation = ({ applicationDetail }) => {
           </ContentCard>
           <Dropdown.Menu>
             {documentData?.map((item) => (
-              <Dropdown.Item>{`${capitalizeFirstLetter(
+              <Dropdown.Item
+                onClick={() => getDownloadDocument(item)}
+              >{`${capitalizeFirstLetter(
                 item?.documentTypeCode.split("-")[0].toLowerCase()
               )} ${item?.documentTypeCode
                 .split("-")[1]
@@ -176,7 +179,7 @@ export const ActionButtons = ({ applicationDetail }) => {
         <Grid item>
           <StyledButton
             onClick={() => {
-              router.push(`/payment/${applicationDetail?.studentCode}`);
+              router.push(`/payment/${applicationDetail?.applicationCode}`);
             }}
             className="card-button"
             title={payBtnTitle}
@@ -187,7 +190,7 @@ export const ActionButtons = ({ applicationDetail }) => {
         <Grid item>
           <StyledButton
             onClick={() => {
-              router.push(`/uploads/${applicationDetail?.studentCode}`);
+              router.push(`/uploads/${applicationDetail?.applicationCode}`);
             }}
             className="card-button"
             title="Upload Documents"
@@ -198,7 +201,7 @@ export const ActionButtons = ({ applicationDetail }) => {
         <Grid item>
           <StyledButton
             onClick={() => {
-              router.push(`/uploads/${applicationDetail?.studentCode}`);
+              router.push(`/uploads/${applicationDetail?.applicationCode}`);
             }}
             className="card-button"
             title="Upload Employee Bursary Letter"
