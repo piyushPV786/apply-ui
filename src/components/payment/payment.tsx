@@ -680,7 +680,13 @@ const Payment = (props: any) => {
 export default Payment;
 
 export const MainContainer = styled.div`
-  background: #fff;
+  background: #dde1e3;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  padding-bottom: 1rem;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch !important;
 `;
 
 export const PaymentContainer = styled.div`

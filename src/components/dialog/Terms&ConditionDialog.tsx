@@ -21,10 +21,9 @@ import StyledButton from "../../components/button/button";
 // ** Third Party Library
 
 export const EditGroup = ({
+  showTerms,
+  onClickShowTerms,
   updateTermsConditions,
-  termsOpen,
-  termsHandelClose,
-  termsHandelOpen,
 }) => {
   // ** States
 
@@ -36,7 +35,7 @@ export const EditGroup = ({
           style={{ color: "Green", fontFamily: "roboto-medium" }}
           href="#"
           onClick={() => {
-            termsHandelOpen();
+            onClickShowTerms();
           }}
         >
           {" "}
@@ -44,7 +43,7 @@ export const EditGroup = ({
         </a>
       </label>
 
-      <Dialog open={termsOpen} scroll="body" onClose={() => termsHandelClose}>
+      <Dialog open={showTerms} scroll="body" onClose={() => onClickShowTerms}>
         <Box sx={{ mt: 5, textAlign: "center" }}>
           <Typography
             className="popup-title"
@@ -1917,6 +1916,7 @@ export const EditGroup = ({
             type="button"
             isGreenWhiteCombination={true}
             onClick={() => {
+              onClickShowTerms();
               updateTermsConditions(false);
             }}
             title={"Decline"}

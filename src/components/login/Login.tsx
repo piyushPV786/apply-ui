@@ -34,13 +34,10 @@ const StudentLogin = () => {
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
-      sessionStorage?.getItem("authenticate") as any
+      window.localStorage?.getItem(StorageName?.STUDENT_DETAIL) as any
     );
-    const studentId = JSON.parse(
-      sessionStorage?.getItem("studentId") as any
-    )?.id;
-    if (studentId && isAuthenticate) {
-      router.push(RoutePaths.Dashboard);
+    if (isAuthenticate) {
+      router.push("/dashboard");
     }
   }, []);
 

@@ -52,13 +52,11 @@ const DocumentUploadPage = () => {
               </Box>
             </Card>
             <Card className="mt-3">
-              {" "}
               <Typography textAlign="left" component="header" fontWeight="bold">
                 Document Status
               </Typography>
             </Card>
             <Card className="mt-3">
-              {" "}
               <Typography textAlign="left" component="header" fontWeight="bold">
                 Document Acceptance Criteria
               </Typography>

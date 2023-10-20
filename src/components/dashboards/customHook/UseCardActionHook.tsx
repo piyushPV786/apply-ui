@@ -2,7 +2,7 @@ import { APPLICATION_STATUS, CommonEnums } from "../../common/constant";
 
 const UseCardActionHook = (applicationDetail) => {
   console.log("application Details =============>", applicationDetail);
-  const { status, educationDetail, sponsor } = applicationDetail;
+  const { status, educationDetail, sponsor, document } = applicationDetail;
   const isEditBTN =
     status === CommonEnums.FEES_PENDING_STATUS ||
     status === CommonEnums.APP_FEE_DOC_VER_PEND ||
@@ -28,6 +28,13 @@ const UseCardActionHook = (applicationDetail) => {
     educationDetail?.studentTypeCode === CommonEnums?.BURSARY &&
     sponsor?.sponsorModeType === CommonEnums?.EMPLOYEE_BURSARY;
   const isAdamiteBTN = status === CommonEnums.PROG_ADMITTED;
+  const documentData = document?.filter((item) => {
+    return (
+      item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER ||
+      item?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER ||
+      item?.documentTypeCode === CommonEnums.WELCOME_LETTER
+    );
+  });
   return {
     isEditBTN,
     isRmatBTN,
@@ -36,6 +43,7 @@ const UseCardActionHook = (applicationDetail) => {
     isUploadBTN,
     isBursaryBTN,
     isAdamiteBTN,
+    documentData,
   };
 };
 

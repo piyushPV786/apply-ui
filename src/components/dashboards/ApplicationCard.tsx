@@ -43,7 +43,7 @@ const ApplicationCard = ({
         <EducationDetails educationInfo={applicationDetail?.education} />
         <UserNumberInformation applicationDetail={applicationDetail} />
         <CardAction>
-          <DocumentInformation />
+          <DocumentInformation applicationDetail={applicationDetail} />
           <ActionButtons applicationDetail={applicationDetail} />
         </CardAction>
       </ApplicationContainer>

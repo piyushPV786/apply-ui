@@ -157,3 +157,10 @@ export const ContentCard = styled(Dropdown.Toggle)`
   font-size: 0.86rem;
   border-radius: 4px;
 `;
+
+export const FormContainer = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+`;

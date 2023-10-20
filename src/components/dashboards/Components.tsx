@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import { ContentCard, StudentIdCard } from "../login/style";
 import { Green } from "../common/common";
 import Dropdown from "react-bootstrap/Dropdown";
-import { transformDate } from "../../Util/Util";
+import { capitalizeFirstLetter, transformDate } from "../../Util/Util";
 import StyledButton from "../button/button";
 import UseCardActionHook from "./customHook/UseCardActionHook";
 import { useRouter } from "next/router";
@@ -101,19 +101,27 @@ export const CardAction = (props) => {
   );
 };
 
-export const DocumentInformation = () => {
+export const DocumentInformation = ({ applicationDetail }) => {
+  const { documentData } = UseCardActionHook(applicationDetail);
+
   return (
     <Grid sm={3} item>
-      <Dropdown style={{ width: "100%" }}>
-        <ContentCard variant="success" id="dropdown-basic">
-          Downloads
-        </ContentCard>
-        <Dropdown.Menu>
-          <Dropdown.Item>ABCD</Dropdown.Item>
-          <Dropdown.Item>ABCD</Dropdown.Item>
-          <Dropdown.Item>ABCD</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
+      {!!documentData?.length && (
+        <Dropdown style={{ width: "100%" }}>
+          <ContentCard variant="success" id="dropdown-basic">
+            Downloads
+          </ContentCard>
+          <Dropdown.Menu>
+            {documentData?.map((item) => (
+              <Dropdown.Item>{`${capitalizeFirstLetter(
+                item?.documentTypeCode.split("-")[0].toLowerCase()
+              )} ${item?.documentTypeCode
+                .split("-")[1]
+                .toLowerCase()}`}</Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      )}
     </Grid>
   );
 };

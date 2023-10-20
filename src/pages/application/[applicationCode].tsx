@@ -11,8 +11,14 @@ import LeadFormCustomHook from "../../components/lead/customHooks/LeadFormCustom
 import StepperComponent from "../../components/stepper/stepper";
 import styled from "styled-components";
 import { Container } from "@material-ui/core";
+import { useRouter } from "next/router";
+import { FormContainer } from "../../components/login/style";
+import StyledButton from "../../components/button/button";
+import TermsAndCondition from "../../components/lead/form/TermsAndCondition";
 
 const LeadForm = () => {
+  const router: any = useRouter();
+  const applicationCode = router.query.applicationCode;
   const { masterData, methods, saveApplication, saveApplicationAsDraft } =
     LeadFormCustomHook();
 
@@ -23,16 +29,31 @@ const LeadForm = () => {
         <StepperComponent active={0} />
       </StepperContainer>
       <FormProvider {...methods}>
-        <form>
-          <PersonalInformation masterData={masterData} />
-          <Address masterData={masterData} />
-          <Education masterData={masterData} />
-          <Sponsor masterData={masterData} />
-          <Employment masterData={masterData} />
-          <Kin masterData={masterData} />
-          <button onClick={saveApplication}>Save</button>
-          <button onClick={saveApplicationAsDraft}>Save As Draft</button>
-        </form>
+        <FormContainer>
+          <div className="application-form">
+            <form>
+              <PersonalInformation masterData={masterData} />
+              <Address masterData={masterData} />
+              <Education masterData={masterData} />
+              <Sponsor masterData={masterData} />
+              <Employment masterData={masterData} />
+              <Kin masterData={masterData} />
+              <TermsAndCondition />
+              <div className="mt-4 text-center">
+                <StyledButton
+                  onClick={saveApplicationAsDraft}
+                  className="form-button btn-space"
+                  title="Save As Draft"
+                />
+                <StyledButton
+                  onClick={saveApplication}
+                  className="form-button btn-space"
+                  title="Save & Next"
+                />
+              </div>
+            </form>
+          </div>
+        </FormContainer>
       </FormProvider>
     </MainContainer>
   );
