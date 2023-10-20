@@ -8,7 +8,7 @@ import Education from "../../components/lead/form/Education";
 import Sponsor from "../../components/lead/form/Sponser";
 import Employment from "../../components/lead/form/Employment";
 import Kin from "../../components/lead/form/Kin";
-import { useFormHook } from "../../components/lead/customHooks/LeadFormCustomHook";
+import { useFormHook } from "./customHooks/formHooks";
 import StepperComponent from "../../components/stepper/stepper";
 import styled from "styled-components";
 import { Container } from "@material-ui/core";

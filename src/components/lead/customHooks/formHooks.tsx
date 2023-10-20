@@ -6,7 +6,7 @@ export const useFormHook = (applicationCode: string) => {
     masterData: null,
     salesAgentData: null,
     applicationData: null,
-    programData: null,
+    programsData: null,
   });
 
   const getAllData = async () => {
@@ -21,7 +21,7 @@ export const useFormHook = (applicationCode: string) => {
       ...masterData,
       masterData: data[0],
       salesAgentData: data[1],
-      programData: data[2],
+      programsData: data[2],
       applicationData: data[3],
     };
     setMasterData(payload);

@@ -12,15 +12,16 @@ import { useEffect, useState } from "react";
 import { getProgramsData, getStudyModeData } from "../../../service/service";
 import { IMasterData } from "../../common/types";
 import { refferedById } from "../../../constants";
+import useEducationHook from "../customHooks/educationHooks";
 
 const Education = (props: any) => {
   const { register, watch, setValue } = useFormContext();
-  const { masterData, programData } = props?.masterData;
-  const [studyMode, setStudyMode] = useState([]);
+  const { masterData, programsData } = props?.masterData;
   const programCode = watch("education.programCode");
-  const studyModeCode = watch("education.studyModeCode");
+  const studentProgram = useEducationHook(programCode);
   const refferedBy = watch("education.refferedById");
-  const fees = feeHelper(studyMode, programCode, studyModeCode);
+  console.log("refferedBy", refferedBy);
+  // const fees = feeHelper(studyMode, programCode, studyModeCode);
   return (
     <StyledAccordion>
       <AccordionSummary
@@ -46,8 +47,8 @@ const Education = (props: any) => {
               <option value="" key={`${0}_gender`}>
                 Select Program
               </option>
-              {programData?.length &&
-                programData?.map((item: IMasterData) => {
+              {programsData?.length &&
+                programsData?.map((item: IMasterData) => {
                   return (
                     <option value={item?.code} key={`${item?.code}_program`}>
                       {" "}
@@ -57,30 +58,27 @@ const Education = (props: any) => {
                 })}
             </select>
           </div>
-          {!!studyMode?.length && (
+          {!!studentProgram?.studyModes?.length && (
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Course Fees</StyledLabel>
-              {studyMode?.length &&
-                studyMode?.map((item: any) => {
-                  {
-                    return item?.studyModes?.map((studyModeItem) => {
-                      return (
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input me-2"
-                            type={"radio"}
-                            {...register("education.studyModeCode")}
-                            value={studyModeItem?.studyModeCode}
-                          />
-                          {studyModeItem?.studyModeCode}
-                        </div>
-                      );
-                    });
-                  }
-                })}
+              {studentProgram?.studyModes?.map((item: any) => {
+                {
+                  return (
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input me-2"
+                        type={"radio"}
+                        {...register("education.studyModeCode")}
+                        value={item?.studyModeCode}
+                      />
+                      {item?.studyModeCode}
+                    </div>
+                  );
+                }
+              })}
             </div>
           )}
-          {!!fees?.length && (
+          {/* {!!fees?.length && (
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Course Mode</StyledLabel>
               <div className="form-check form-check-inline">
@@ -107,7 +105,7 @@ const Education = (props: any) => {
                 })}
               </div>
             </div>
-          )}
+          )} */}
           <div className="col-lg-4 mb-4">
             <StyledLabel required>Highest Qualification</StyledLabel>
             <select

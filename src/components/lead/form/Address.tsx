@@ -31,7 +31,7 @@ const Address = (props: any) => {
         <div className="row">
           {masterData?.addressTypeData?.length &&
             masterData?.addressTypeData?.map((item: any, index: any) => (
-              <AddressType data={item} index={index} />
+              <AddressType masterData={masterData} data={item} index={index} />
             ))}
         </div>
       </AccordionDetails>

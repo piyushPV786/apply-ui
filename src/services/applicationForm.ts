@@ -35,6 +35,28 @@ class ApplicationFormServices {
     console.log("result", result);
     return result;
   }
+
+  async getStudentProgram(programCode: string) {
+    const route = apiEndPoint?.studentProgram.replace(
+      ":programCode",
+      programCode
+    );
+    const url = `${apiUrls?.financeBaseUrl}${route}`;
+    const response = await apiServer.get(url);
+    const result = response?.data?.data ? response?.data?.data : null;
+    return result;
+  }
+
+  async getStateList(countryCode: string) {
+    const route = apiEndPoint?.stateDetails.replace(
+      ":countryCode",
+      countryCode
+    );
+    const url = `${apiUrls?.commonBaseUrl}${route}`;
+    const response = await apiServer.get(url);
+    const result = response?.data?.data ? response?.data?.data : null;
+    return result;
+  }
 }
 
 export default new ApplicationFormServices();

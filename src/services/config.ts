@@ -16,4 +16,6 @@ export const apiEndPoint = {
   programs: "programs/all",
   commonDocuments: "document-type",
   applicationDetails: "lead/:leadCode/application/:applicationCode",
+  studentProgram: "programs-fee/byProgramCode/:programCode",
+  stateDetails: "state/:countryCode",
 };

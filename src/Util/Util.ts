@@ -702,14 +702,14 @@ export const downloadDocument = (url, fileName: string) => {
 export const mapFormDefaultValue = (studentData: object, setValue: any) => {
   for (let [key, value] of Object.entries(studentData)) {
     if (acceptedKeysToMap.includes(key)) {
+      setValue(key, value);
       if (key === "education" && studentData[key]) {
         if (studentData[key]?.socialMediaCode) {
-          setValue("education.refferedById", `${refferedById.social}`);
+          setValue("education.refferedById", refferedById.social);
         } else if (studentData[key]?.agentCode) {
-          setValue("education.refferedById", `${refferedById.agent}`);
+          setValue("education.refferedById", refferedById.agent);
         }
       }
-      setValue(key, value);
     }
   }
 };
