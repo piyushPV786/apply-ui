@@ -571,7 +571,8 @@ function ApplicationCard({
                 return (
                   item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER ||
                   item?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER ||
-                  item?.documentTypeCode === CommonEnums.WELCOME_LETTER
+                  item?.documentTypeCode === CommonEnums.WELCOME_LETTER ||
+                  item?.documentTypeCode === CommonEnums.QUOTE
                 );
               })?.length && (
                 <Dropdown style={{ width: "100%" }}>
@@ -587,7 +588,9 @@ function ApplicationCard({
                             CommonEnums.CONFIRMATION_LETTER ||
                           item?.documentTypeCode ===
                             CommonEnums.ACCEPTANCE_LETTER ||
-                          item?.documentTypeCode === CommonEnums.WELCOME_LETTER
+                          item?.documentTypeCode ===
+                            CommonEnums.WELCOME_LETTER ||
+                          item?.documentTypeCode === CommonEnums.QUOTE
                         );
                       })
                       ?.map((item) => {
@@ -603,10 +606,16 @@ function ApplicationCard({
                             style={{ width: "100%" }}
                           >
                             {`${capitalizeFirstLetter(
-                              item?.documentTypeCode.split("-")[0].toLowerCase()
-                            )} ${item?.documentTypeCode
-                              .split("-")[1]
-                              .toLowerCase()}`}
+                              item?.documentTypeCode
+                                .split("-")[0]
+                                ?.toLowerCase()
+                            )} ${
+                              item?.documentTypeCode.split("-")[1]
+                                ? item?.documentTypeCode
+                                    .split("-")[1]
+                                    .toLowerCase()
+                                : ""
+                            }`}
                           </Dropdown.Item>
                         );
                       })}
