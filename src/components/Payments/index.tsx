@@ -5,8 +5,8 @@ import PaymentOption from "../../components/Payments/payment";
 import StepperComponent from "../../components/stepper/stepper";
 import { Box, Button, Grid } from "@mui/material";
 
-const PaymentPage = () => {
-  const { paymentDiscount } = CustomHookPayment();
+const PaymentPage = ({ applicationCode }) => {
+  const { paymentDiscount, userDetails } = CustomHookPayment(applicationCode);
 
   return (
     <>

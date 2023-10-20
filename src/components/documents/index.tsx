@@ -3,11 +3,12 @@ import DocumentUploadContainer from "../../components/documents/DocumentUploadCo
 import { MainContainer } from "../../components/login/style";
 import React from "react";
 import StepperComponent from "../../components/stepper/stepper";
-import DocumentsHook from "../../components/documents/customHook/documentsHook";
 import { docValidation } from "../../components/documents/context/common";
+import UseDocumentHook from "./customHook/UseDocumentHook";
 
-const DocumentUploadPage = () => {
-  const { documentTypeData } = DocumentsHook();
+const DocumentUploadPage = (props) => {
+  const { applicationCode } = props;
+  const { documentTypeData, userDetails } = UseDocumentHook(applicationCode);
 
   return (
     <MainContainer>

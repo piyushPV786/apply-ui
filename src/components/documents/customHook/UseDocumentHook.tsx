@@ -7,22 +7,33 @@ interface documentTypeApiResponseType {
   name: string;
 }
 
-const LoadDocumentHook = () => {
+const UseDocumentHook = (applicationCode) => {
   const [documentTypeData, setDocumentTypeData] = useState<
     documentTypeApiResponseType[]
   >([]);
+  const [userDetails, setUserDetails] = useState({});
 
   const getDocumentTypeData = async () => {
     const response = await DocumentServices.DocumentType();
-
     setDocumentTypeData(response);
+  };
+
+  const getUserDetails = async (applicationCode) => {
+    const response = DocumentServices?.getApplicationData(applicationCode);
+    setUserDetails(response);
   };
 
   useEffect(() => {
     getDocumentTypeData();
   }, []);
 
-  return { documentTypeData };
+  useEffect(() => {
+    if (applicationCode) {
+      getUserDetails(applicationCode);
+    }
+  }, [applicationCode]);
+
+  return { documentTypeData, userDetails };
 };
 
-export default LoadDocumentHook;
+export default UseDocumentHook;
