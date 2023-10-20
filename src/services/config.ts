@@ -15,4 +15,5 @@ export const apiEndPoint = {
   application: "application",
   programAll: "programs/all",
   commonDocuments: "document-type",
+  document: "document",
 };

@@ -12,6 +12,12 @@ class DashboardApplicationServices {
     const response = await apiServer.get(url);
     return response?.data;
   }
+  async getDocumentURL(fileName: string, studentCode: string) {
+    const filetype = fileName.split(".")[1];
+    const url = `${apiUrls?.commonBaseUrl}${apiEndPoint?.document}?filename=${fileName}&filetype=${filetype}&studentCode=${studentCode}`;
+    const response = await apiServer.get(url);
+    return response?.data;
+  }
 }
 
 export default new DashboardApplicationServices();

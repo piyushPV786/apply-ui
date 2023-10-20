@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import StyledButton from "../button/button";
 import { RoutePaths } from "../common/constant";
-import { useEffect } from "react";
 
 export const LoginCredentials = () => {
   const router = useRouter();

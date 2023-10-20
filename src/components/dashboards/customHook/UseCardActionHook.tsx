@@ -1,8 +1,11 @@
 import { APPLICATION_STATUS, CommonEnums } from "../../common/constant";
+import DashboardApplicationServices from "../../../services/dashboardApplication";
+import { downloadDocument } from "../../../Util/Util";
 
 const UseCardActionHook = (applicationDetail) => {
   console.log("application Details =============>", applicationDetail);
-  const { status, educationDetail, sponsor, document } = applicationDetail;
+  const { status, educationDetail, sponsor, document, studentCode } =
+    applicationDetail;
   const isEditBTN =
     status === CommonEnums.FEES_PENDING_STATUS ||
     status === CommonEnums.APP_FEE_DOC_VER_PEND ||
@@ -35,6 +38,16 @@ const UseCardActionHook = (applicationDetail) => {
       item?.documentTypeCode === CommonEnums.WELCOME_LETTER
     );
   });
+
+  const getDownloadDocument = async (documentDetail) => {
+    const { name } = documentDetail;
+    const documentResponse = await DashboardApplicationServices?.getDocumentURL(
+      name,
+      studentCode
+    );
+    downloadDocument(documentResponse?.data, name);
+  };
+
   return {
     isEditBTN,
     isRmatBTN,
@@ -44,6 +57,7 @@ const UseCardActionHook = (applicationDetail) => {
     isBursaryBTN,
     isAdamiteBTN,
     documentData,
+    getDownloadDocument,
   };
 };
 

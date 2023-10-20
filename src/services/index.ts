@@ -19,9 +19,12 @@ const refreshTokenFunction = async () => {
         StorageName?.REFRESH_TOKEN,
         data.refresh_token
       );
+      return data;
+    } else {
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+      window.location.href = `/`;
     }
-
-    return data;
   } catch (err) {
     window.localStorage.clear();
     window.sessionStorage.clear();
