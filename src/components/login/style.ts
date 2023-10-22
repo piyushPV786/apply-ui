@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { getStatusColor } from "../../Util/Util";
 import Dropdown from "react-bootstrap/Dropdown";
+import { Accordion } from "@material-ui/core";
+import { DefaultGrey } from "../common/common";
 
 export const ApplicationFormContainerStyle = {
   display: "flex",
@@ -163,4 +165,27 @@ export const FormContainer = styled.div`
   width: 100%;
   justify-content: center;
   flex-wrap: wrap;
+`;
+
+export const StyleContainer = styled.div`
+  display: flex;
+  column-gap: 10px;
+  padding: 1rem 0.2rem;
+  width: 500;
+`;
+
+export const StyleFeeCards = styled.div`
+  background: #dde1e3;
+  padding: 6px;
+  font-size: 14px;
+  font-family: roboto;
+  font-weight: 600;
+  border-radius: 2px;
+  box-shadow: 0px 0px 30px 0px rgb(82 63 105 / 15%);
+  border: 2px solid #fff;
+  transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -o-transition: all 0.5s;
 `;

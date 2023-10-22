@@ -111,6 +111,44 @@ const Employment = (props: any) => {
                 {...register("employment.officeMobileNumber")}
               />
             </div>
+            <div className="col-lg-4 mb-4">
+              {!!masterData?.countryData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.countryData}
+                  label="Country"
+                  registerName={`employment.country`}
+                  required={true}
+                />
+              )}
+            </div>
+            <div className="col-lg-4 mb-4">
+              {!!masterData?.countryData?.length && (
+                <CommonAutocomplete
+                  options={[]}
+                  label="State/Provinces"
+                  registerName={`employment.state`}
+                  required={true}
+                />
+              )}
+            </div>
+            <div className="col-lg-4 mb-4">
+              <StyledLabel required> City </StyledLabel>
+              <input
+                className="form-control"
+                type={"text"}
+                placeholder={"e.g 10 church street"}
+                {...register(`employment.city`)}
+              />
+            </div>
+            <div className="col-lg-4 mb-4">
+              <StyledLabel required>Pin Code / Zip Code</StyledLabel>
+              <input
+                className="form-control"
+                type={"text"}
+                placeholder={"Enter Zip/Postal Code"}
+                {...register(`employment.zipcode`)}
+              />
+            </div>
           </div>
         </div>
       </AccordionDetails>

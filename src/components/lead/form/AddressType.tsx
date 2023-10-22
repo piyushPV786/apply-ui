@@ -5,6 +5,7 @@ import useAddressHook from "../customHooks/addressHooks";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 
 const AddressType = (props) => {
+  console.log("props ========>", props);
   const { data, index, masterData } = props;
   const { register, watch } = useFormContext();
   const countryCode = watch(`address[${index}].country`);
@@ -13,7 +14,7 @@ const AddressType = (props) => {
   return (
     <>
       <div className="col-lg-4 mb-4">
-        <StyledLabel required> Street </StyledLabel>
+        <StyledLabel required> {`${data?.name} Address`} </StyledLabel>
         <input
           className="form-control"
           type={"text"}
@@ -37,7 +38,7 @@ const AddressType = (props) => {
         {!!stateList?.length && (
           <CommonAutocomplete
             options={stateList}
-            label="State"
+            label="State/Provinces"
             registerName={`address[${index}].state`}
             required={true}
           />
@@ -54,7 +55,7 @@ const AddressType = (props) => {
         />
       </div>
       <div className="col-lg-4 mb-4">
-        <StyledLabel required> Pin Code </StyledLabel>
+        <StyledLabel required>Pin Code / Zip Code</StyledLabel>
         <input
           className="form-control"
           type={"text"}

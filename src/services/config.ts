@@ -19,4 +19,6 @@ export const apiEndPoint = {
   applicationDetails: "lead/:leadCode/application/:applicationCode",
   studentProgram: "programs-fee/byProgramCode/:programCode",
   stateDetails: "state/:countryCode",
+  nationalityStatus: "nationality-status",
+  identificationType: "identification-Type",
 };

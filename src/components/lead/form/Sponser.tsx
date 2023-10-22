@@ -58,6 +58,17 @@ const Sponsor = (props: any) => {
             </div>
 
             <div className="col-lg-4 mb-4">
+              {!!masterData?.relationData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.relationData}
+                  label="Relationship Type"
+                  registerName={`sponsor.relationshipCode`}
+                  required={true}
+                />
+              )}
+            </div>
+
+            <div className="col-lg-4 mb-4">
               <StyledLabel required>Sponsor Name</StyledLabel>
               <input
                 className="form-control"
@@ -91,6 +102,44 @@ const Sponsor = (props: any) => {
                 type={"text"}
                 placeholder="text"
                 {...register("sponsor.address")}
+              />
+            </div>
+            <div className="col-lg-4 mb-4">
+              {!!masterData?.countryData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.countryData}
+                  label="Country"
+                  registerName={`sponsor.country`}
+                  required={true}
+                />
+              )}
+            </div>
+            <div className="col-lg-4 mb-4">
+              {!!masterData?.countryData?.length && (
+                <CommonAutocomplete
+                  options={[]}
+                  label="State/Provinces"
+                  registerName={`sponsor.state`}
+                  required={true}
+                />
+              )}
+            </div>
+            <div className="col-lg-4 mb-4">
+              <StyledLabel required> City </StyledLabel>
+              <input
+                className="form-control"
+                type={"text"}
+                placeholder={"e.g 10 church street"}
+                {...register(`sponsor.city`)}
+              />
+            </div>
+            <div className="col-lg-4 mb-4">
+              <StyledLabel required>Pin Code / Zip Code</StyledLabel>
+              <input
+                className="form-control"
+                type={"text"}
+                placeholder={"Enter Zip/Postal Code"}
+                {...register(`sponsor.zipcode`)}
               />
             </div>
           </div>

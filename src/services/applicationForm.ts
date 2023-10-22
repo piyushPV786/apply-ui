@@ -57,6 +57,18 @@ class ApplicationFormServices {
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
+  async getNationalityStatus() {
+    const url = `${apiUrls?.commonBaseUrl}${apiEndPoint?.nationalityStatus}`;
+    const response = await apiServer.get(url);
+    const result = response?.data?.data ? response?.data?.data : null;
+    return result;
+  }
+  async getIdentificationType() {
+    const url = `${apiUrls?.commonBaseUrl}${apiEndPoint?.identificationType}`;
+    const response = await apiServer.get(url);
+    const result = response?.data?.data ? response?.data?.data : null;
+    return result;
+  }
 }
 
 export default new ApplicationFormServices();

@@ -432,7 +432,7 @@ export const EducationForm = (props: IEducationProps) => {
                 </div>
               </div>
 
-              <div className="col-md-4">
+              <div className="col-md-4 mb-8">
                 <div className="mb-4">
                   <StyledLabel required>
                     Referred by <strong>Agent/Social Media</strong>

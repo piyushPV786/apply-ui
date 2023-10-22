@@ -14,6 +14,8 @@ import { IMasterData } from "../../common/types";
 import { refferedById } from "../../../constants";
 import useEducationHook from "../customHooks/educationHooks";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
+import { StyleContainer } from "../../login/style";
+import { FeeCard } from "./components/CommonComponents";
 
 const Education = (props: any) => {
   const { register, watch, setValue } = useFormContext();
@@ -24,7 +26,7 @@ const Education = (props: any) => {
   console.log("refferedBy", refferedBy);
   // const fees = feeHelper(studyMode, programCode, studyModeCode);
   return (
-    <StyledAccordion>
+    <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
@@ -51,7 +53,7 @@ const Education = (props: any) => {
           </div>
           {!!studentProgram?.studyModes?.length && (
             <div className="col-lg-4 mb-4">
-              <StyledLabel required>Course Fees</StyledLabel>
+              <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
               {studentProgram?.studyModes?.map((item: any) => {
                 {
                   return (
@@ -67,6 +69,11 @@ const Education = (props: any) => {
                   );
                 }
               })}
+              <StyleContainer className="fee-cards">
+                <div className="fee-card-list">
+                  <FeeCard />
+                </div>
+              </StyleContainer>
             </div>
           )}
           {/* {!!fees?.length && (
@@ -97,6 +104,7 @@ const Education = (props: any) => {
               </div>
             </div>
           )} */}
+
           <div className="col-lg-4 mb-4">
             {!!masterData?.highestQualificationData?.length && (
               <CommonAutocomplete
@@ -117,49 +125,73 @@ const Education = (props: any) => {
             />
           </div>
 
-          <div className="col-lg-4 mb-4">
-            <CommonAutocomplete
-              options={[
-                { name: "Agent", code: refferedById.agent },
-                { name: "Social Media", code: refferedById.social },
-              ]}
-              label="Referred by Agent/Social Media"
-              registerName={`education.refferedById`}
-              required={true}
-            />
+          <div className="col-md-4 mb-4">
+            <StyledLabel required>
+              Are you an international degree holder?
+            </StyledLabel>
+            <br />
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input me-2"
+                type="radio"
+                {...register("education.isInternationDegree")}
+                value="yes"
+              />
+              <label className="form-check-label">
+                Yes
+                <br />
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input me-2"
+                type="radio"
+                {...register("education.isInternationDegree")}
+                value="no"
+              />
+              <label className="form-check-label">
+                No
+                <br />
+              </label>
+            </div>
           </div>
-          {refferedBy === refferedById.agent && (
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.agentData?.length && (
-                <CommonAutocomplete
-                  options={masterData?.agentData}
-                  label="Agent Name"
-                  registerName={`education.agentCode`}
-                  required={true}
-                />
-              )}
-            </div>
-          )}
-          {refferedBy === refferedById.social && (
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.socialMediaData?.length && (
-                <CommonAutocomplete
-                  options={masterData?.socialMediaData}
-                  label="Agent Name"
-                  registerName={`education.socialMediaCode`}
-                  required={true}
-                />
-              )}
-            </div>
-          )}
+
           <div className="col-lg-4 mb-4">
-            {!!masterData?.studentTypeData?.length && (
+            <div className="mb-4">
               <CommonAutocomplete
-                options={masterData?.studentTypeData}
-                label="Student Type"
-                registerName={`education.studentTypeCode`}
+                options={[
+                  { name: "Agent", code: refferedById.agent },
+                  { name: "Social Media", code: refferedById.social },
+                ]}
+                label="Referred by Agent/Social Media"
+                registerName={`education.refferedById`}
                 required={true}
               />
+            </div>
+
+            {refferedBy === refferedById.agent && (
+              <div className="mb-4 others">
+                {!!masterData?.agentData?.length && (
+                  <CommonAutocomplete
+                    options={masterData?.agentData}
+                    label="Agent Name"
+                    registerName={`education.agentCode`}
+                    required={true}
+                  />
+                )}
+              </div>
+            )}
+            {refferedBy === refferedById.social && (
+              <div className="mb-4 others">
+                {!!masterData?.socialMediaData?.length && (
+                  <CommonAutocomplete
+                    options={masterData?.socialMediaData}
+                    label="Agent Name"
+                    registerName={`education.socialMediaCode`}
+                    required={true}
+                  />
+                )}
+              </div>
             )}
           </div>
         </div>

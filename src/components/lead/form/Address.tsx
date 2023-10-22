@@ -14,7 +14,7 @@ const Address = (props: any) => {
   const { masterData } = props?.masterData;
 
   return (
-    <StyledAccordion>
+    <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"

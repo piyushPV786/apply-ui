@@ -10,12 +10,14 @@ import Image from "next/image";
 import UserCircleIcon from "../../../../public/assets/images/user-circle-svgrepo-com.svg";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
+import NationalityStatus from "./components/NationalityStatus";
 
 const PersonalInformation = (props: any) => {
-  const { masterData } = props?.masterData;
+  const { masterData, nationalityStatus, identificationType } =
+    props?.masterData;
   const { register } = useFormContext();
   return (
-    <StyledAccordion>
+    <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
@@ -92,26 +94,6 @@ const PersonalInformation = (props: any) => {
                 {...register("lead.mobileNumber")}
               />
             </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>
-                Identification / Passport Number
-              </StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                {...register("lead.identificationNumber")}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.nationalityData?.length && (
-                <CommonAutocomplete
-                  options={masterData?.nationalityData}
-                  label="Nationality"
-                  registerName={"lead.nationality"}
-                  required={true}
-                />
-              )}
-            </div>
 
             <div className="col-lg-4 mb-4">
               {!!masterData?.languageData?.length && (
@@ -135,6 +117,12 @@ const PersonalInformation = (props: any) => {
               )}
             </div>
           </div>
+
+          <NationalityStatus
+            masterData={masterData}
+            nationalityStatus={nationalityStatus}
+            identificationType={identificationType}
+          />
         </div>
       </AccordionDetails>
     </StyledAccordion>
