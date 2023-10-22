@@ -7,9 +7,9 @@ import {
 } from "../../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
-import { IMasterData } from "../../common/types";
 import UserCircleIcon from "../../../../public/assets/images/user-circle-svgrepo-com.svg";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import CommonAutocomplete from "./components/CommonAutocomplete ";
 
 const PersonalInformation = (props: any) => {
   const { masterData } = props?.masterData;
@@ -57,21 +57,14 @@ const PersonalInformation = (props: any) => {
               />
             </div>
             <div className="col-lg-4 mb-4">
-              <StyledLabel required>Gender</StyledLabel>
-              <select {...register("lead.gender")} className="form-control">
-                <option value="" key={`${0}_gender`}>
-                  Select Gender
-                </option>
-                {masterData?.genderData?.length &&
-                  masterData?.genderData?.map((item: IMasterData) => {
-                    return (
-                      <option value={item?.code} key={`${item?.code}_gender`}>
-                        {" "}
-                        {item?.name}{" "}
-                      </option>
-                    );
-                  })}
-              </select>
+              {!!masterData?.genderData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.genderData}
+                  label="Gender"
+                  registerName={"lead.gender"}
+                  required={true}
+                />
+              )}
             </div>
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Date of Birth</StyledLabel>
@@ -110,63 +103,36 @@ const PersonalInformation = (props: any) => {
               />
             </div>
             <div className="col-lg-4 mb-4">
-              <StyledLabel required>Nationality</StyledLabel>
-              <select
-                {...register("lead.nationality")}
-                className="form-control"
-              >
-                <option value="" key={`${0}_nationality`}>
-                  Select Nationality
-                </option>
-                {masterData?.nationalityData?.length &&
-                  masterData?.nationalityData?.map((item: IMasterData) => {
-                    return (
-                      <option
-                        value={item?.code}
-                        key={`${item?.code}_nationality`}
-                      >
-                        {" "}
-                        {item?.name}{" "}
-                      </option>
-                    );
-                  })}
-              </select>
+              {!!masterData?.nationalityData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.nationalityData}
+                  label="Nationality"
+                  registerName={"lead.nationality"}
+                  required={true}
+                />
+              )}
             </div>
 
             <div className="col-lg-4 mb-4">
-              <StyledLabel required>Home Language</StyledLabel>
-              <select {...register("lead.language")} className="form-control">
-                <option value="" key={`${0}_language`}>
-                  Select Home Language
-                </option>
-                {masterData?.languageData?.length &&
-                  masterData?.languageData?.map((item: IMasterData) => {
-                    return (
-                      <option value={item?.code} key={`${item?.code}_language`}>
-                        {" "}
-                        {item?.name}{" "}
-                      </option>
-                    );
-                  })}
-              </select>
+              {!!masterData?.languageData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.languageData}
+                  label="Home Language"
+                  registerName={"lead.language"}
+                  required={true}
+                />
+              )}
             </div>
 
             <div className="col-lg-4 mb-4">
-              <StyledLabel required>Race</StyledLabel>
-              <select {...register("lead.race")} className="form-control">
-                <option value="" key={`${0}_race`}>
-                  Select Race
-                </option>
-                {masterData?.raceData?.length &&
-                  masterData?.raceData?.map((item: IMasterData) => {
-                    return (
-                      <option value={item?.code} key={`${item?.code}_race`}>
-                        {" "}
-                        {item?.name}{" "}
-                      </option>
-                    );
-                  })}
-              </select>
+              {!!masterData?.raceData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.raceData}
+                  label="Race"
+                  registerName={"lead.race"}
+                  required={true}
+                />
+              )}
             </div>
           </div>
         </div>

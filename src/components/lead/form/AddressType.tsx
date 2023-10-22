@@ -2,6 +2,7 @@ import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../common/common";
 import { IMasterData } from "../../common/types";
 import useAddressHook from "../customHooks/addressHooks";
+import CommonAutocomplete from "./components/CommonAutocomplete ";
 
 const AddressType = (props) => {
   const { data, index, masterData } = props;
@@ -22,37 +23,25 @@ const AddressType = (props) => {
       </div>
 
       <div className="col-lg-4 mb-4">
-        <StyledLabel required> Country </StyledLabel>
-        <select
-          {...register(`address[${index}].country`)}
-          className="form-control"
-        >
-          {masterData?.countryData?.map((item: IMasterData) => {
-            return (
-              <option value={item?.code} key={`${item?.code}_countryCode`}>
-                {" "}
-                {item?.name}{" "}
-              </option>
-            );
-          })}
-        </select>
+        {!!masterData?.countryData?.length && (
+          <CommonAutocomplete
+            options={masterData?.countryData}
+            label="Country"
+            registerName={`address[${index}].country`}
+            required={true}
+          />
+        )}
       </div>
 
       <div className="col-lg-4 mb-4">
-        <StyledLabel required> State </StyledLabel>
-        <select
-          {...register(`address[${index}].state`)}
-          className="form-control"
-        >
-          {stateList?.map((item: IMasterData) => {
-            return (
-              <option value={item?.code} key={`${item?.code}_countryCode`}>
-                {" "}
-                {item?.name}{" "}
-              </option>
-            );
-          })}
-        </select>
+        {!!stateList?.length && (
+          <CommonAutocomplete
+            options={stateList}
+            label="State"
+            registerName={`address[${index}].state`}
+            required={true}
+          />
+        )}
       </div>
 
       <div className="col-lg-4 mb-4">

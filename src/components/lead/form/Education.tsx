@@ -13,6 +13,7 @@ import { getProgramsData, getStudyModeData } from "../../../service/service";
 import { IMasterData } from "../../common/types";
 import { refferedById } from "../../../constants";
 import useEducationHook from "../customHooks/educationHooks";
+import CommonAutocomplete from "./components/CommonAutocomplete ";
 
 const Education = (props: any) => {
   const { register, watch, setValue } = useFormContext();
@@ -39,24 +40,14 @@ const Education = (props: any) => {
       <AccordionDetails>
         <div className="row">
           <div className="col-lg-4 mb-4">
-            <StyledLabel required>Interested Program</StyledLabel>
-            <select
-              {...register("education.programCode")}
-              className="form-control"
-            >
-              <option value="" key={`${0}_gender`}>
-                Select Program
-              </option>
-              {programsData?.length &&
-                programsData?.map((item: IMasterData) => {
-                  return (
-                    <option value={item?.code} key={`${item?.code}_program`}>
-                      {" "}
-                      {item?.name}{" "}
-                    </option>
-                  );
-                })}
-            </select>
+            {programsData?.length && (
+              <CommonAutocomplete
+                options={programsData}
+                label="Interested Program"
+                registerName={`education.programCode`}
+                required={true}
+              />
+            )}
           </div>
           {!!studentProgram?.studyModes?.length && (
             <div className="col-lg-4 mb-4">
@@ -107,29 +98,14 @@ const Education = (props: any) => {
             </div>
           )} */}
           <div className="col-lg-4 mb-4">
-            <StyledLabel required>Highest Qualification</StyledLabel>
-            <select
-              {...register("education.qualificationCode")}
-              className="form-control"
-            >
-              <option value="" key={`${0}_qualificationCode`}>
-                Select Highest Qualification
-              </option>
-              {masterData?.highestQualificationData?.length &&
-                masterData?.highestQualificationData?.map(
-                  (item: IMasterData) => {
-                    return (
-                      <option
-                        value={item?.code}
-                        key={`${item?.code}_qualificationCode`}
-                      >
-                        {" "}
-                        {item?.name}{" "}
-                      </option>
-                    );
-                  }
-                )}
-            </select>
+            {!!masterData?.highestQualificationData?.length && (
+              <CommonAutocomplete
+                options={masterData?.highestQualificationData}
+                label="Highest Qualification"
+                registerName={`education.qualificationCode`}
+                required={true}
+              />
+            )}
           </div>
           <div className="col-lg-4 mb-4">
             <StyledLabel required>High School Name</StyledLabel>
@@ -142,94 +118,49 @@ const Education = (props: any) => {
           </div>
 
           <div className="col-lg-4 mb-4">
-            <StyledLabel required>Referred by Agent/Social Media</StyledLabel>
-            <select
-              {...register("education.refferedById")}
-              className="form-control"
-            >
-              <option value="" key={`${0}_refferedById`}>
-                Select
-              </option>
-              <option value={refferedById.agent} key={`${0}_refferedById`}>
-                Agent
-              </option>
-              <option value={refferedById.social} key={`${0}_refferedById`}>
-                Social Media
-              </option>
-            </select>
+            <CommonAutocomplete
+              options={[
+                { name: "Agent", code: refferedById.agent },
+                { name: "Social Media", code: refferedById.social },
+              ]}
+              label="Referred by Agent/Social Media"
+              registerName={`education.refferedById`}
+              required={true}
+            />
           </div>
           {refferedBy === refferedById.agent && (
             <div className="col-lg-4 mb-4">
-              <StyledLabel required>Agent Name</StyledLabel>
-              <select
-                {...register("education.agentCode")}
-                className="form-control"
-              >
-                <option value="" key={`${0}_agentCode`}>
-                  Select
-                </option>
-                {masterData?.agentData?.length &&
-                  masterData?.agentData?.map((item: IMasterData) => {
-                    return (
-                      <option
-                        value={item?.code}
-                        key={`${item?.code}_agentCode`}
-                      >
-                        {" "}
-                        {item?.name}{" "}
-                      </option>
-                    );
-                  })}
-              </select>
+              {!!masterData?.agentData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.agentData}
+                  label="Agent Name"
+                  registerName={`education.agentCode`}
+                  required={true}
+                />
+              )}
             </div>
           )}
           {refferedBy === refferedById.social && (
             <div className="col-lg-4 mb-4">
-              <StyledLabel required>Agent Name</StyledLabel>
-              <select
-                {...register("education.socialMediaCode")}
-                className="form-control"
-              >
-                <option value="" key={`${0}_socialMediaCode`}>
-                  Select
-                </option>
-                {masterData?.socialMediaData?.length &&
-                  masterData?.socialMediaData?.map((item: IMasterData) => {
-                    return (
-                      <option
-                        value={item?.code}
-                        key={`${item?.code}_socialMediaCode`}
-                      >
-                        {" "}
-                        {item?.name}{" "}
-                      </option>
-                    );
-                  })}
-              </select>
+              {!!masterData?.socialMediaData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.socialMediaData}
+                  label="Agent Name"
+                  registerName={`education.socialMediaCode`}
+                  required={true}
+                />
+              )}
             </div>
           )}
           <div className="col-lg-4 mb-4">
-            <StyledLabel required>Student Type</StyledLabel>
-            <select
-              {...register("education.studentTypeCode")}
-              className="form-control"
-            >
-              <option value="" key={`${0}_studentTypeCode`}>
-                Select Student Type
-              </option>
-              {masterData?.studentTypeData?.length &&
-                masterData?.studentTypeData?.map((item: IMasterData) => {
-                  return (
-                    <option
-                      value={item?.code}
-                      key={`${item?.code}_studentTypeCode`}
-                    >
-                      {" "}
-                      {item?.name}{" "}
-                    </option>
-                  );
-                })}
-            </select>
+            {!!masterData?.studentTypeData?.length && (
+              <CommonAutocomplete
+                options={masterData?.studentTypeData}
+                label="Student Type"
+                registerName={`education.studentTypeCode`}
+                required={true}
+              />
+            )}
           </div>
         </div>
       </AccordionDetails>

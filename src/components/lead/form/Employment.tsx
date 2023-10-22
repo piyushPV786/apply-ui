@@ -9,6 +9,7 @@ import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import { IMasterData } from "../../common/types";
+import CommonAutocomplete from "./components/CommonAutocomplete ";
 
 const Employment = (props: any) => {
   const { register, watch } = useFormContext();
@@ -46,27 +47,14 @@ const Employment = (props: any) => {
         <div className="container-fluid">
           <div className="row">
             <div className="col-lg-4 mb-4">
-              <StyledLabel required>Employment Status</StyledLabel>
-              <select
-                {...register("employment.employmentStatusCode")}
-                className="form-control"
-              >
-                <option value="" key={`${0}_employmentStatusCode`}>
-                  Select Employment Status
-                </option>
-                {masterData?.employmentStatusData?.length &&
-                  masterData?.employmentStatusData?.map((item: IMasterData) => {
-                    return (
-                      <option
-                        value={item?.code}
-                        key={`${item?.code}_employmentStatusCode`}
-                      >
-                        {" "}
-                        {item?.name}{" "}
-                      </option>
-                    );
-                  })}
-              </select>
+              {!!masterData?.employmentStatusData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.employmentStatusData}
+                  label="Employment Status"
+                  registerName={`employment.employmentStatusCode`}
+                  required={true}
+                />
+              )}
             </div>
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Employer</StyledLabel>
@@ -87,29 +75,14 @@ const Employment = (props: any) => {
               />
             </div>
             <div className="col-lg-4 mb-4">
-              <StyledLabel required>Industry</StyledLabel>
-              <select
-                {...register("employment.employmentIndustryCode")}
-                className="form-control"
-              >
-                <option value="" key={`${0}_employmentIndustryCode`}>
-                  Select Industry
-                </option>
-                {masterData?.employmentIndustryData?.length &&
-                  masterData?.employmentIndustryData?.map(
-                    (item: IMasterData) => {
-                      return (
-                        <option
-                          value={item?.code}
-                          key={`${item?.code}_employmentIndustryCode`}
-                        >
-                          {" "}
-                          {item?.name}{" "}
-                        </option>
-                      );
-                    }
-                  )}
-              </select>
+              {!!masterData?.employmentIndustryData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.employmentIndustryData}
+                  label="Industry"
+                  registerName={`employment.employmentIndustryCode`}
+                  required={true}
+                />
+              )}
             </div>
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Manager Name</StyledLabel>

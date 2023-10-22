@@ -10,6 +10,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 
 import { IMasterData } from "../../common/types";
+import CommonAutocomplete from "./components/CommonAutocomplete ";
 const Kin = (props: any) => {
   const { masterData } = props?.masterData;
   const { register, watch } = useFormContext();
@@ -54,27 +55,14 @@ const Kin = (props: any) => {
               />
             </div>
             <div className="col-lg-4 mb-4">
-              <StyledLabel required>RelationShip</StyledLabel>
-              <select
-                {...register("kin.relationshipCode")}
-                className="form-control"
-              >
-                <option value="" key={`${0}_relationshipCode`}>
-                  Select Relationship
-                </option>
-                {masterData?.relationData?.length &&
-                  masterData?.relationData?.map((item: IMasterData) => {
-                    return (
-                      <option
-                        value={item?.code}
-                        key={`${item?.code}_relationshipCode`}
-                      >
-                        {" "}
-                        {item?.name}{" "}
-                      </option>
-                    );
-                  })}
-              </select>
+              {!!masterData?.relationData?.length && (
+                <CommonAutocomplete
+                  options={masterData?.relationData}
+                  label="RelationShip"
+                  registerName={`kin.relationshipCode`}
+                  required={true}
+                />
+              )}
             </div>
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Email</StyledLabel>
