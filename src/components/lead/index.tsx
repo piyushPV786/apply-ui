@@ -17,6 +17,7 @@ import TermsAndCondition from "./form/TermsAndCondition";
 import StyledButton from "../button/button";
 import { FormContainer } from "../login/style";
 import { mapFormDefaultValue } from "../../Util/Util";
+import "react-phone-number-input/style.css";
 
 interface IProps {
   applicationCode: string;
@@ -24,7 +25,7 @@ interface IProps {
 
 const LeadForm = (props: IProps) => {
   const methods = useForm({ mode: "onChange" });
-  const { watch } = methods;
+  const { watch, handleSubmit } = methods;
   const masterData = useFormHook(props?.applicationCode);
   const { saveApplication, saveApplicationAsDraft } = useHelperHook(
     methods.watch
@@ -45,33 +46,35 @@ const LeadForm = (props: IProps) => {
       <StepperContainer>
         <StepperComponent active={0} />
       </StepperContainer>
-      <FormProvider {...methods}>
-        <FormContainer>
-          <div className="application-form">
-            <form>
-              <PersonalInformation masterData={masterData} />
-              <Address masterData={masterData} />
-              <Education masterData={masterData} />
-              <Sponsor masterData={masterData} />
-              <Employment masterData={masterData} />
-              <Kin masterData={masterData} />
-              <TermsAndCondition />
-              <div className="mt-4 text-center">
-                <StyledButton
-                  onClick={saveApplicationAsDraft}
-                  className="form-button btn-space"
-                  title="Save As Draft"
-                />
-                <StyledButton
-                  onClick={saveApplication}
-                  className="form-button btn-space"
-                  title="Save & Next"
-                />
-              </div>
-            </form>
-          </div>
-        </FormContainer>
-      </FormProvider>
+      {masterData?.masterData && (
+        <FormProvider {...methods}>
+          <FormContainer>
+            <div className="application-form">
+              <form>
+                <PersonalInformation masterData={masterData} />
+                <Address masterData={masterData} />
+                <Education masterData={masterData} />
+                <Sponsor masterData={masterData} />
+                <Employment masterData={masterData} />
+                <Kin masterData={masterData} />
+                <TermsAndCondition />
+                <div className="mt-4 text-center">
+                  <StyledButton
+                    onClick={handleSubmit((d) => saveApplicationAsDraft(d))}
+                    className="form-button btn-space"
+                    title="Save As Draft"
+                  />
+                  <StyledButton
+                    onClick={handleSubmit((d) => saveApplication(d))}
+                    className="form-button btn-space"
+                    title="Save & Next"
+                  />
+                </div>
+              </form>
+            </div>
+          </FormContainer>
+        </FormProvider>
+      )}
     </MainContainer>
   );
 };

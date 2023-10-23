@@ -11,16 +11,34 @@ import UserCircleIcon from "../../../../public/assets/images/user-circle-svgrepo
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import NationalityStatus from "./components/NationalityStatus";
+import PhoneInput from "react-phone-number-input";
+import {
+  emailValidation,
+  getLocalStorageData,
+  isValidDate,
+} from "../../../Util/Util";
+import { useEffect } from "react";
+import { StorageName } from "../../common/constant";
 
 const PersonalInformation = (props: any) => {
   const { masterData, nationalityStatus, identificationType } =
     props?.masterData;
   const {
     register,
+    setError,
+    clearErrors,
+    setValue,
+    watch,
     formState: { errors, touchedFields },
   } = useFormContext();
+  const Errors = errors["lead"] as any;
 
-  console.log("errors ==========>", errors);
+  useEffect(() => {
+    const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
+    setValue("lead.mobileNumber", studentDetails?.mobileNumber);
+  }, []);
+
+  console.log("errors ==========>", watch());
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
@@ -42,11 +60,20 @@ const PersonalInformation = (props: any) => {
             <div className="col-lg-4 mb-4">
               <StyledLabel required>First Name</StyledLabel>
               <input
+                {...register("lead.firstName", {
+                  required: true,
+                })}
                 className="form-control"
                 placeholder="e.g Robert"
                 type={"text"}
-                {...register("lead.firstName")}
               />
+              {Errors?.firstName && (
+                <>
+                  <div className="invalid-feedback">
+                    Please enter your First Name
+                  </div>
+                </>
+              )}
             </div>
             <div className="col-lg-4 mb-4">
               <StyledLabel>Middle Name</StyledLabel>
@@ -59,10 +86,15 @@ const PersonalInformation = (props: any) => {
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Last Name</StyledLabel>
               <input
+                {...register("lead.lastName", {
+                  required: true,
+                })}
                 type={"text"}
                 className="form-control"
-                {...register("lead.lastName")}
               />
+              {Errors?.lastName && (
+                <div className="invalid-feedback">Please enter Last Name</div>
+              )}
             </div>
             <div className="col-lg-4 mb-4">
               {!!masterData?.genderData?.length && (
@@ -73,6 +105,9 @@ const PersonalInformation = (props: any) => {
                   required={true}
                 />
               )}
+              {Errors?.gender && (
+                <div className="invalid-feedback">Please enter Gender</div>
+              )}
             </div>
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Date of Birth</StyledLabel>
@@ -80,8 +115,18 @@ const PersonalInformation = (props: any) => {
                 className="form-control"
                 type={"date"}
                 placeholder="dateofBirth"
-                {...register("lead.dateofBirth")}
+                {...register("lead.dateofBirth", {
+                  required: true,
+                  validate: isValidDate,
+                })}
               />
+              {Errors?.dateofBirth && (
+                <div className="invalid-feedback">
+                  {Errors?.dateOfBirth?.type === "validate"
+                    ? "Please enter valid date"
+                    : "Please enter valid  Date of Birth"}
+                </div>
+              )}
             </div>
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Email</StyledLabel>
@@ -89,16 +134,74 @@ const PersonalInformation = (props: any) => {
                 className="form-control"
                 type={"email"}
                 placeholder="email"
-                {...register("lead.email")}
+                {...register("lead.email", {
+                  required: true,
+                })}
+                onBlur={async (e) => {
+                  if (e.target.value) {
+                    const res = await emailValidation(e);
+                    if (
+                      res?.message == "Provided email address alredy exists"
+                    ) {
+                      setError("lead.email", {
+                        type: "custom",
+                        message: "Provided email address already exists",
+                      });
+                    } else if (
+                      res?.message ==
+                      "you have entered an invalid email address. Please try again"
+                    ) {
+                      setError("lead.email", {
+                        type: "custom",
+                        message:
+                          "you have entered an invalid email address. Please try again",
+                      });
+                    } else if (res?.message == "clear") {
+                      clearErrors("lead.email");
+                    }
+                  } else if (e.target.value == "") {
+                    setError("lead.email", {
+                      type: "custom",
+                      message: "Please enter Email",
+                    });
+                  }
+                }}
               />
+              {Errors?.email && (
+                <div className="invalid-feedback">
+                  {Errors?.email?.type === "custom" && Errors?.email?.message}
+                </div>
+              )}
             </div>
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Mobile Number</StyledLabel>
-              <input
+              <div className="disabled">
+                <PhoneInput
+                  id="1"
+                  international
+                  disabled
+                  countryCallingCodeEditable={false}
+                  placeholder="Select Country Code*"
+                  {...register("lead.mobileNumber", { required: false })}
+                  onCountryChange={(value: any) => {
+                    return;
+                  }}
+                  onBlur={() => {
+                    return;
+                  }}
+                  onChange={() => {
+                    return;
+                  }}
+                />
+              </div>
+
+              {/* <input
                 type={"text"}
                 className="form-control"
-                {...register("lead.mobileNumber")}
-              />
+                {...register("lead.mobileNumber", {
+                  required: true,
+                })}
+              /> */}
             </div>
 
             <div className="col-lg-4 mb-4">
@@ -110,6 +213,11 @@ const PersonalInformation = (props: any) => {
                   required={true}
                 />
               )}
+              {Errors?.language && (
+                <div className="invalid-feedback">
+                  Please select Home Language
+                </div>
+              )}
             </div>
 
             <div className="col-lg-4 mb-4">
@@ -120,6 +228,9 @@ const PersonalInformation = (props: any) => {
                   registerName={"lead.race"}
                   required={true}
                 />
+              )}
+              {Errors?.race && (
+                <div className="invalid-feedback">Please select Race</div>
               )}
             </div>
           </div>

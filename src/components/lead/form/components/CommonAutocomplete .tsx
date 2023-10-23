@@ -23,8 +23,11 @@ const CommonAutocomplete = ({
       <StyledLabel hideLabel={!label} required={true}>
         {label}
       </StyledLabel>
+      <br />
       <Controller
-        name={registerName}
+        {...register(registerName, {
+          required: required,
+        })}
         control={control}
         defaultValue={null}
         render={({ field: props }) => (

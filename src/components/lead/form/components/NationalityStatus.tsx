@@ -7,8 +7,11 @@ import { useFormContext } from "react-hook-form";
 
 const NationalityStatus = (props: any) => {
   const { masterData, nationalityStatus, identificationType } = props;
-  const { register } = useFormContext();
-  console.log("master data =========>", masterData);
+  const {
+    register,
+    formState: { errors, touchedFields },
+  } = useFormContext();
+  const Errors = errors["lead"] as any;
   return (
     <GreyStyledAccordion expanded={true} defaultExpanded={true}>
       <AccordionSummary className="nationality-card">
@@ -26,6 +29,9 @@ const NationalityStatus = (props: any) => {
             required={true}
           />
         )}
+        {Errors?.nationalityStatus && (
+          <div className="invalid-feedback">Please Select Nationality</div>
+        )}
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid form-padding">
@@ -39,6 +45,11 @@ const NationalityStatus = (props: any) => {
                   required={true}
                 />
               )}
+              {Errors?.permanentResident && (
+                <div className="invalid-feedback">
+                  Please Select Permanent Resident
+                </div>
+              )}
             </div>
             <div className="col-md-4 mb-4">
               {!!identificationType?.length && (
@@ -49,6 +60,11 @@ const NationalityStatus = (props: any) => {
                   required={true}
                 />
               )}
+              {Errors?.identificationDocumentType && (
+                <div className="invalid-feedback">
+                  Please Select Document Type
+                </div>
+              )}
             </div>
             <div className="col-lg-4 mb-4">
               <StyledLabel required> Identification Number</StyledLabel>
@@ -56,8 +72,15 @@ const NationalityStatus = (props: any) => {
                 className="form-control"
                 placeholder="e.g Robert"
                 type={"number"}
-                {...register("lead.identificationNumber")}
+                {...register("lead.identificationNumber", {
+                  required: true,
+                })}
               />
+              {Errors?.identificationNumber && (
+                <div className="invalid-feedback">
+                  Please enter Identification Number
+                </div>
+              )}
             </div>
           </div>
         </div>

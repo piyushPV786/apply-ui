@@ -9,8 +9,9 @@ const AddressType = (props) => {
   const { data, index, masterData } = props;
   const { register, watch } = useFormContext();
   const countryCode = watch(`address[${index}].country`);
-  const stateDetails: any = useAddressHook(countryCode);
+  const stateDetails: any = useAddressHook(countryCode?.code);
   const stateList = stateDetails[countryCode];
+  console.log("stateList =======>", stateList);
   return (
     <>
       <div className="col-lg-4 mb-4">
@@ -35,14 +36,13 @@ const AddressType = (props) => {
       </div>
 
       <div className="col-lg-4 mb-4">
-        {!!stateList?.length && (
-          <CommonAutocomplete
-            options={stateList}
-            label="State/Provinces"
-            registerName={`address[${index}].state`}
-            required={true}
-          />
-        )}
+        <CommonAutocomplete
+          disable={stateList?.length > 0}
+          options={stateList}
+          label="State/Provinces"
+          registerName={`address[${index}].state`}
+          required={true}
+        />
       </div>
 
       <div className="col-lg-4 mb-4">
