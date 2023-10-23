@@ -1,17 +1,20 @@
 import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../common/common";
-import { IMasterData } from "../../common/types";
 import useAddressHook from "../customHooks/addressHooks";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 
 const AddressType = (props) => {
-  console.log("props ========>", props);
   const { data, index, masterData } = props;
-  const { register, watch } = useFormContext();
-  const countryCode = watch(`address[${index}].country`);
-  const stateDetails: any = useAddressHook(countryCode?.code);
-  const stateList = stateDetails[countryCode];
-  console.log("stateList =======>", stateList);
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext();
+  const countryDetail = watch(`address[${index}].country`);
+  const stateDetails: any = useAddressHook(countryDetail?.code);
+  const stateList = stateDetails[countryDetail?.code];
+  const Errors = errors["address"] as any;
+
   return (
     <>
       <div className="col-lg-4 mb-4">
@@ -20,8 +23,15 @@ const AddressType = (props) => {
           className="form-control"
           type={"text"}
           placeholder={"e.g 10 church street"}
-          {...register(`address[${index}].street`)}
+          {...register(`address[${index}].street`, {
+            required: true,
+          })}
         />
+        {Errors && Errors[index]?.street && (
+          <div className="invalid-feedback">
+            Please enter Residential Address
+          </div>
+        )}
       </div>
 
       <div className="col-lg-4 mb-4">
@@ -33,16 +43,23 @@ const AddressType = (props) => {
             required={true}
           />
         )}
+        {Errors && Errors[index]?.country && (
+          <div className="invalid-feedback">
+            Please enter Residential Country
+          </div>
+        )}
       </div>
 
       <div className="col-lg-4 mb-4">
         <CommonAutocomplete
-          disable={stateList?.length > 0}
-          options={stateList}
+          options={stateList ? stateList : []}
           label="State/Provinces"
           registerName={`address[${index}].state`}
           required={true}
         />
+        {Errors && Errors[index]?.state && (
+          <div className="invalid-feedback">Please enter Residential State</div>
+        )}
       </div>
 
       <div className="col-lg-4 mb-4">
@@ -51,8 +68,13 @@ const AddressType = (props) => {
           className="form-control"
           type={"text"}
           placeholder={"e.g 10 church street"}
-          {...register(`address[${index}].city`)}
+          {...register(`address[${index}].city`, {
+            required: true,
+          })}
         />
+        {Errors && Errors[index]?.city && (
+          <div className="invalid-feedback">Please enter Residential City</div>
+        )}
       </div>
       <div className="col-lg-4 mb-4">
         <StyledLabel required>Pin Code / Zip Code</StyledLabel>
@@ -60,8 +82,21 @@ const AddressType = (props) => {
           className="form-control"
           type={"text"}
           placeholder={"Enter Zip/Postal Code"}
-          {...register(`address[${index}].zipcode`)}
+          {...register(`address[${index}].zipcode`, {
+            required: true,
+            maxLength: 10,
+            minLength: 4,
+          })}
         />
+        {Errors && Errors[index]?.zipcode && (
+          <div className="invalid-feedback">
+            {Errors[index]?.zipcode.type === "maxLength"
+              ? "Max length exceeded"
+              : Errors[index]?.zipcode.type === "minLength"
+              ? "Minimum length should be 4"
+              : "Please enter Zip/Postal Code"}
+          </div>
+        )}
       </div>
       <div className="col-lg-4 mb-4">
         <input

@@ -29,9 +29,11 @@ const NationalityStatus = (props: any) => {
             required={true}
           />
         )}
-        {Errors?.nationalityStatus && (
-          <div className="invalid-feedback">Please Select Nationality</div>
-        )}
+        <div>
+          {Errors?.nationalityStatus && (
+            <div className="invalid-feedback">Please Select Nationality</div>
+          )}
+        </div>
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid form-padding">

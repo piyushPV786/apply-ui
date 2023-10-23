@@ -12,6 +12,7 @@ import AddressType from "./AddressType";
 
 const Address = (props: any) => {
   const { masterData } = props?.masterData;
+  const { register } = useFormContext();
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
@@ -31,7 +32,27 @@ const Address = (props: any) => {
         <div className="row">
           {masterData?.addressTypeData?.length &&
             masterData?.addressTypeData?.map((item: any, index: any) => (
-              <AddressType masterData={masterData} data={item} index={index} />
+              <>
+                <AddressType
+                  masterData={masterData}
+                  data={item}
+                  index={index}
+                />
+                {index === 0 && (
+                  <div className="col-md-12">
+                    <input
+                      {...register(`address.isSameAsPostalAddress`, {
+                        required: false,
+                      })}
+                      className="form-check-input me-2"
+                      type="checkbox"
+                    />
+                    <label className="form-check-label m1-2 same-address">
+                      Select if same as Residential Address
+                    </label>
+                  </div>
+                )}
+              </>
             ))}
         </div>
       </AccordionDetails>

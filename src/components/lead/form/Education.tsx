@@ -18,12 +18,17 @@ import { StyleContainer } from "../../login/style";
 import { FeeCard } from "./components/CommonComponents";
 
 const Education = (props: any) => {
-  const { register, watch, setValue } = useFormContext();
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext();
 
   const { masterData, programsData } = props?.masterData;
   const programCode = watch("education.programCode");
   const studentProgram: any = useEducationHook(programCode?.code);
   const refferedBy = watch("education.refferedById");
+  const Errors = errors["education"] as any;
   // const fees = feeHelper(studyMode, programCode, studyModeCode);
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
@@ -49,6 +54,11 @@ const Education = (props: any) => {
                 registerName={`education.programCode`}
                 required={true}
               />
+            )}
+            {Errors?.programCode && (
+              <div className="invalid-feedback">
+                select your interested program
+              </div>
             )}
           </div>
           {!!studentProgram?.studyModes?.length && (
@@ -114,6 +124,11 @@ const Education = (props: any) => {
                 required={true}
               />
             )}
+            {Errors?.qualificationCode && (
+              <div className="invalid-feedback">
+                Please select Highest Qualification
+              </div>
+            )}
           </div>
           <div className="col-lg-4 mb-4">
             <StyledLabel required>High School Name</StyledLabel>
@@ -121,8 +136,13 @@ const Education = (props: any) => {
               className="form-control"
               type={"text"}
               placeholder="High School Name"
-              {...register("education.highSchoolName")}
+              {...register("education.highSchoolName", { required: true })}
             />
+            {Errors?.highSchoolName && (
+              <div className="invalid-feedback">
+                Please enter high school name
+              </div>
+            )}
           </div>
 
           <div className="col-md-4 mb-4">
@@ -134,7 +154,9 @@ const Education = (props: any) => {
               <input
                 className="form-check-input me-2"
                 type="radio"
-                {...register("education.isInternationDegree")}
+                {...register("education.isInternationDegree", {
+                  required: true,
+                })}
                 value="yes"
               />
               <label className="form-check-label">
@@ -146,7 +168,9 @@ const Education = (props: any) => {
               <input
                 className="form-check-input me-2"
                 type="radio"
-                {...register("education.isInternationDegree")}
+                {...register("education.isInternationDegree", {
+                  required: true,
+                })}
                 value="no"
               />
               <label className="form-check-label">
@@ -154,6 +178,11 @@ const Education = (props: any) => {
                 <br />
               </label>
             </div>
+            {Errors?.isInternationDegree && (
+              <div className="invalid-feedback">
+                international degree is required
+              </div>
+            )}
           </div>
 
           <div className="col-lg-4 mb-4">
@@ -167,6 +196,11 @@ const Education = (props: any) => {
                 registerName={`education.refferedById`}
                 required={true}
               />
+              {Errors?.refferedById && (
+                <div className="invalid-feedback">
+                  Please select Referred by
+                </div>
+              )}
             </div>
 
             {refferedBy === refferedById.agent && (
@@ -179,6 +213,11 @@ const Education = (props: any) => {
                     required={true}
                   />
                 )}
+                {Errors?.agentCode && (
+                  <div className="invalid-feedback">
+                    Please select Agent Name
+                  </div>
+                )}
               </div>
             )}
             {refferedBy === refferedById.social && (
@@ -190,6 +229,11 @@ const Education = (props: any) => {
                     registerName={`education.socialMediaCode`}
                     required={true}
                   />
+                )}
+                {Errors?.socialMediaCode && (
+                  <div className="invalid-feedback">
+                    Please select social media
+                  </div>
                 )}
               </div>
             )}
