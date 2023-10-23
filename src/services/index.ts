@@ -57,6 +57,18 @@ export const updateInterceptors = (callback) => {
       return Promise.reject(error);
     }
   );
+  refreshApiServer.interceptors.response.use(
+    (response) => {
+      // You can update the response data or handle errors globally here.
+      callback(false);
+      return response;
+    },
+    (error) => {
+      myErrorInterceptor(error);
+      callback(false);
+      return Promise.reject(error);
+    }
+  );
   // Add a request interceptor
   apiServer.interceptors.request.use(
     (config) => {

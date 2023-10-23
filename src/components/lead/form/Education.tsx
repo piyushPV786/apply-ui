@@ -19,11 +19,11 @@ import { FeeCard } from "./components/CommonComponents";
 
 const Education = (props: any) => {
   const { register, watch, setValue } = useFormContext();
+
   const { masterData, programsData } = props?.masterData;
   const programCode = watch("education.programCode");
-  const studentProgram = useEducationHook(programCode);
+  const studentProgram: any = useEducationHook(programCode?.code);
   const refferedBy = watch("education.refferedById");
-  console.log("refferedBy", refferedBy);
   // const fees = feeHelper(studyMode, programCode, studyModeCode);
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">

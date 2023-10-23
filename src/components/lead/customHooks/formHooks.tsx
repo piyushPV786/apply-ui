@@ -17,6 +17,7 @@ export const useFormHook = (applicationCode: string) => {
       ApplicationFormServices?.getSalesAgentData(),
       ApplicationFormServices?.getProgramData(),
       applicationCode &&
+        applicationCode !== "new" &&
         ApplicationFormServices?.getApplicationData(applicationCode),
       ApplicationFormServices?.getNationalityStatus(),
       ApplicationFormServices?.getIdentificationType(),

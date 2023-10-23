@@ -23,11 +23,13 @@ interface IProps {
 }
 
 const LeadForm = (props: IProps) => {
-  const methods = useForm();
+  const methods = useForm({ mode: "onChange" });
+  const { watch } = methods;
   const masterData = useFormHook(props?.applicationCode);
   const { saveApplication, saveApplicationAsDraft } = useHelperHook(
     methods.watch
   );
+  const programCode = watch("education.programCode");
 
   //Setting values in form after data fetch
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { UseFormRegister } from "react-hook-form";
+import { Controller, UseFormRegister } from "react-hook-form";
 import { StyledLabel } from "../common/common";
 
 import TextField, { textFieldClasses } from "@mui/material/TextField";

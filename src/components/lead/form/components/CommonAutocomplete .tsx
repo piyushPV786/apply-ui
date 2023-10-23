@@ -1,7 +1,8 @@
 import TextField from "@mui/material/TextField";
+
 import { Autocomplete, autocompleteClasses } from "@mui/material";
 import { StyledLabel } from "../../../common/common";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
 interface iProps {
   options: any[];
@@ -16,40 +17,49 @@ const CommonAutocomplete = ({
   registerName,
   required,
 }: iProps) => {
-  const { register } = useFormContext();
+  const { register, control } = useFormContext();
   return (
     <>
       <StyledLabel hideLabel={!label} required={true}>
         {label}
       </StyledLabel>
-      <Autocomplete
-        clearOnEscape
-        sx={{
-          [`& .${autocompleteClasses.inputRoot}`]: {
-            border: "2px solid #ced4da",
-            borderRadius: 1.5,
-          },
-          "& .MuiIconButton-root": { padding: "3px !important" },
-        }}
-        options={options && options}
-        getOptionLabel={(option) => option.name}
-        style={{ width: "100%" }}
-        renderInput={(params) => (
-          <TextField
-            {...register(registerName, { required: required })}
+      <Controller
+        name={registerName}
+        control={control}
+        defaultValue={null}
+        render={({ field: props }) => (
+          <Autocomplete
             sx={{
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: "none !important",
+              [`& .${autocompleteClasses.inputRoot}`]: {
+                border: "2px solid #ced4da",
+                borderRadius: 1.5,
               },
-              "& .MuiAutocomplete-input": {
-                padding: "2px 4px 2px 3px !important",
-                fontSize: "14px !important",
-              },
-              "& .MuiOutlinedInput-root": {
-                padding: "0.375rem 0.75rem",
-              },
+              "& .MuiIconButton-root": { padding: "3px !important" },
             }}
-            {...params}
+            {...props}
+            fullWidth
+            options={options}
+            getOptionLabel={(option: any) => option.name}
+            renderInput={(params) => (
+              <TextField
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "none !important",
+                  },
+                  "& .MuiAutocomplete-input": {
+                    padding: "2px 4px 2px 3px !important",
+                    fontSize: "14px !important",
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    padding: "0.375rem 0.75rem",
+                  },
+                }}
+                {...params}
+              />
+            )}
+            onChange={(event, data) => {
+              props.onChange(data);
+            }}
           />
         )}
       />

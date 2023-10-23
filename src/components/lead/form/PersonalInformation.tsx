@@ -15,7 +15,13 @@ import NationalityStatus from "./components/NationalityStatus";
 const PersonalInformation = (props: any) => {
   const { masterData, nationalityStatus, identificationType } =
     props?.masterData;
-  const { register } = useFormContext();
+  const {
+    register,
+    formState: { errors, touchedFields },
+  } = useFormContext();
+
+  console.log("errors ==========>", errors);
+
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary
