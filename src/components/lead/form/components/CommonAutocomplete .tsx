@@ -6,10 +6,11 @@ import { Controller, useFormContext } from "react-hook-form";
 
 interface IProps {
   options: any[];
-  label: string;
+  label: string | null;
   registerName: any;
   required: boolean;
   defaultValue: any;
+  disabled?: boolean;
 }
 
 const CommonAutocomplete = ({
@@ -18,10 +19,11 @@ const CommonAutocomplete = ({
   registerName,
   required,
   defaultValue,
+  disabled = false,
 }: IProps) => {
   const { register, setValue } = useFormContext();
   const dropDownOptions = options?.map((item) => item.code);
-  if (label === "Gender") {
+  if (registerName === "lead.nationalityStatus") {
     console.log("-------------------------------------");
     console.log("options", options);
     console.log("label", label);
@@ -32,11 +34,10 @@ const CommonAutocomplete = ({
   }
   return (
     <>
-      <StyledLabel hideLabel={!label} required={true}>
-        {label}
-      </StyledLabel>
+      {label && <StyledLabel required={required}>{label}</StyledLabel>}
       <br />
       <Autocomplete
+        fullWidth
         sx={{
           [`& .${autocompleteClasses.inputRoot}`]: {
             border: "2px solid #ced4da",
@@ -44,9 +45,10 @@ const CommonAutocomplete = ({
           },
           "& .MuiIconButton-root": { padding: "3px !important" },
         }}
-        {...register(registerName)}
+        {...register(registerName, { value: defaultValue })}
         options={dropDownOptions}
         defaultValue={defaultValue}
+        disabled={disabled}
         getOptionLabel={(option: any) => {
           const optionValue = options?.find((item) => item?.code === option);
           return optionValue?.name;

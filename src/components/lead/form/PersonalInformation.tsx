@@ -25,8 +25,8 @@ import DateField from "./components/DateField";
 import EmailField from "./components/EmailField";
 
 const PersonalInformation = (props: any) => {
-  const { masterData, nationalityStatus, identificationType, applicationData } =
-    props?.masterData;
+  console.log("props in personal information", props);
+  const { masterData, applicationData } = props?.masterData;
   const {
     register,
     setError,
@@ -35,7 +35,6 @@ const PersonalInformation = (props: any) => {
     formState: { errors, touchedFields },
   } = useFormContext();
   const Errors = errors["lead"] as any;
-  console.log("errors ======>", Errors);
 
   useEffect(() => {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
@@ -106,11 +105,7 @@ const PersonalInformation = (props: any) => {
             ))}
           </div>
 
-          <NationalityStatus
-            masterData={masterData}
-            nationalityStatus={nationalityStatus}
-            identificationType={identificationType}
-          />
+          <NationalityStatus masterData={props?.masterData} />
         </div>
       </AccordionDetails>
     </StyledAccordion>
