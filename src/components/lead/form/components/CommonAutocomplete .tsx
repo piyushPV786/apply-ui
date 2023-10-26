@@ -24,48 +24,44 @@ const CommonAutocomplete = ({
         {label}
       </StyledLabel>
       <br />
-      <Controller
+
+      <Autocomplete
         {...register(registerName, {
           required: required,
         })}
-        control={control}
-        defaultValue={null}
-        render={({ field: props }) => (
-          <Autocomplete
+        sx={{
+          [`& .${autocompleteClasses.inputRoot}`]: {
+            border: "2px solid #ced4da",
+            borderRadius: 1.5,
+          },
+          "& .MuiIconButton-root": { padding: "3px !important" },
+        }}
+        fullWidth
+        filterSelectedOptions
+        options={options}
+        value={options?.find((item) => item.code === watch(registerName))}
+        getOptionLabel={(option: any) => option.name}
+        renderInput={(params) => (
+          <TextField
             sx={{
-              [`& .${autocompleteClasses.inputRoot}`]: {
-                border: "2px solid #ced4da",
-                borderRadius: 1.5,
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: "none !important",
               },
-              "& .MuiIconButton-root": { padding: "3px !important" },
+              "& .MuiAutocomplete-input": {
+                padding: "2px 4px 2px 3px !important",
+                fontSize: "14px !important",
+              },
+              "& .MuiOutlinedInput-root": {
+                padding: "0.375rem 0.75rem",
+              },
             }}
-            {...props}
-            fullWidth
-            options={options}
-            getOptionLabel={(option: any) => option.name}
-            value={options?.find((item) => item?.code === watch(registerName))}
-            renderInput={(params) => (
-              <TextField
-                sx={{
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    border: "none !important",
-                  },
-                  "& .MuiAutocomplete-input": {
-                    padding: "2px 4px 2px 3px !important",
-                    fontSize: "14px !important",
-                  },
-                  "& .MuiOutlinedInput-root": {
-                    padding: "0.375rem 0.75rem",
-                  },
-                }}
-                {...params}
-              />
-            )}
-            onChange={(event, data) => {
-              props.onChange(data);
-            }}
+            {...params}
           />
         )}
+        // value={options?.find(
+        //   (item) => item?.code === watch(registerName)
+        // )}
+        onChange={(event, data) => {}}
       />
     </>
   );
