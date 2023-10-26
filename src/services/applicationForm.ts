@@ -32,7 +32,6 @@ class ApplicationFormServices {
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
-    console.log("result", result);
     return result;
   }
 

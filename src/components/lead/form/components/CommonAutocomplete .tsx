@@ -1,14 +1,15 @@
 import TextField from "@mui/material/TextField";
-
+import { useState, useEffect } from "react";
 import { Autocomplete, autocompleteClasses } from "@mui/material";
 import { StyledLabel } from "../../../common/common";
 import { Controller, useFormContext } from "react-hook-form";
 
-interface iProps {
+interface IProps {
   options: any[];
   label: string;
   registerName: any;
   required: boolean;
+  defaultValue: any;
 }
 
 const CommonAutocomplete = ({
@@ -16,54 +17,58 @@ const CommonAutocomplete = ({
   label,
   registerName,
   required,
-}: iProps) => {
-  const { register, control, watch } = useFormContext();
+  defaultValue,
+}: IProps) => {
+  const { register, setValue } = useFormContext();
+  const dropDownOptions = options?.map((item) => item.code);
+  if (label === "Gender") {
+    console.log("-------------------------------------");
+    console.log("options", options);
+    console.log("label", label);
+    console.log("registerName", registerName);
+    console.log("required", required);
+    console.log("defaultValue", defaultValue);
+    console.log("-------------------------------------");
+  }
   return (
     <>
       <StyledLabel hideLabel={!label} required={true}>
         {label}
       </StyledLabel>
       <br />
-      <Controller
-        {...register(registerName, {
-          required: required,
-        })}
-        control={control}
-        defaultValue={null}
-        render={({ field: props }) => (
-          <Autocomplete
+      <Autocomplete
+        sx={{
+          [`& .${autocompleteClasses.inputRoot}`]: {
+            border: "2px solid #ced4da",
+            borderRadius: 1.5,
+          },
+          "& .MuiIconButton-root": { padding: "3px !important" },
+        }}
+        {...register(registerName)}
+        options={dropDownOptions}
+        defaultValue={defaultValue}
+        getOptionLabel={(option: any) => {
+          const optionValue = options?.find((item) => item?.code === option);
+          return optionValue?.name;
+        }}
+        onChange={(e, value) => {
+          setValue(registerName, value);
+        }}
+        renderInput={(params) => (
+          <TextField
             sx={{
-              [`& .${autocompleteClasses.inputRoot}`]: {
-                border: "2px solid #ced4da",
-                borderRadius: 1.5,
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: "none !important",
               },
-              "& .MuiIconButton-root": { padding: "3px !important" },
+              "& .MuiAutocomplete-input": {
+                padding: "2px 4px 2px 3px !important",
+                fontSize: "14px !important",
+              },
+              "& .MuiOutlinedInput-root": {
+                padding: "0.375rem 0.75rem",
+              },
             }}
-            {...props}
-            fullWidth
-            options={options}
-            getOptionLabel={(option: any) => option.name}
-            value={options?.find((item) => item?.code === watch(registerName))}
-            renderInput={(params) => (
-              <TextField
-                sx={{
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    border: "none !important",
-                  },
-                  "& .MuiAutocomplete-input": {
-                    padding: "2px 4px 2px 3px !important",
-                    fontSize: "14px !important",
-                  },
-                  "& .MuiOutlinedInput-root": {
-                    padding: "0.375rem 0.75rem",
-                  },
-                }}
-                {...params}
-              />
-            )}
-            onChange={(event, data) => {
-              props.onChange(data);
-            }}
+            {...params}
           />
         )}
       />

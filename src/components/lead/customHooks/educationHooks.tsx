@@ -18,7 +18,6 @@ export const useEducationHook = (programCode: string) => {
   };
 
   useEffect(() => {
-    console.log("onChange ==========>", programCode);
     if (programCode) {
       getStudentProgramData();
     }

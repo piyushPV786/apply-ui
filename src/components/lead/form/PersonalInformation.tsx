@@ -21,14 +21,13 @@ import { useEffect } from "react";
 import { StorageName } from "../../common/constant";
 
 const PersonalInformation = (props: any) => {
-  const { masterData, nationalityStatus, identificationType } =
+  const { masterData, nationalityStatus, identificationType, applicationData } =
     props?.masterData;
   const {
     register,
     setError,
     clearErrors,
     setValue,
-    watch,
     formState: { errors, touchedFields },
   } = useFormContext();
   const Errors = errors["lead"] as any;
@@ -37,8 +36,6 @@ const PersonalInformation = (props: any) => {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
     setValue("lead.mobileNumber", studentDetails?.mobileNumber);
   }, []);
-
-  console.log("errors ==========>", watch());
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
@@ -97,14 +94,14 @@ const PersonalInformation = (props: any) => {
               )}
             </div>
             <div className="col-lg-4 mb-4">
-              {!!masterData?.genderData?.length && (
-                <CommonAutocomplete
-                  options={masterData?.genderData}
-                  label="Gender"
-                  registerName={"lead.gender"}
-                  required={true}
-                />
-              )}
+              <CommonAutocomplete
+                defaultValue={applicationData?.lead?.gender}
+                options={masterData?.genderData}
+                label="Gender"
+                registerName={"lead.gender"}
+                required={true}
+              />
+
               {Errors?.gender && (
                 <div className="invalid-feedback">Please enter Gender</div>
               )}

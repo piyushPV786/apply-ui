@@ -22,7 +22,6 @@ export const useFormHook = (applicationCode: string) => {
       ApplicationFormServices?.getNationalityStatus(),
       ApplicationFormServices?.getIdentificationType(),
     ]);
-    console.log("data ======>", data);
     const payload = {
       ...masterData,
       masterData: data[0],
