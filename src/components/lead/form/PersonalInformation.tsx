@@ -39,7 +39,7 @@ const PersonalInformation = (props: any) => {
 
   useEffect(() => {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
-    setValue("lead.mobileNumber", studentDetails?.mobileNumber);
+    setValue("lead.mobileNumber", `+${studentDetails?.mobileNumber}`);
   }, []);
 
   return (
@@ -66,7 +66,6 @@ const PersonalInformation = (props: any) => {
                     element={element}
                     Errors={Errors}
                     registerName={`lead.${element?.name}`}
-                    disabled={element?.disabled}
                   />
                 )}
                 {element?.type === "select" && (
@@ -80,6 +79,7 @@ const PersonalInformation = (props: any) => {
                       label={element?.label}
                       registerName={`lead.${element?.name}`}
                       required={true}
+                      defaultValue={applicationData?.lead[element?.name]}
                     />
                     {Errors && Errors[element?.name] && (
                       <div className="invalid-feedback">
