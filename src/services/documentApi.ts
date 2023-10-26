@@ -6,6 +6,20 @@ import { StorageName } from "../components/common/constant";
 
 class DocumentApplicationServices {
   commonBaseUrl: string | undefined = apiUrls?.commonBaseUrl;
+  applyBaseUrl: string | undefined = apiUrls?.commonBaseUrl;
+
+  async uploadDocuments(payload, applicationCode) {
+    const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${applicationCode}`;
+    const response = await apiServer.post(url, { payload });
+    if (
+      response?.status == apiStatus.success ||
+      response?.status == apiStatus.success1
+    ) {
+      return response?.data?.data;
+    } else {
+      return null;
+    }
+  }
 
   async DocumentType() {
     const url = `${this.commonBaseUrl}${apiEndPoint?.commonDocuments}?projectDocument=false`;

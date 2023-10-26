@@ -7,12 +7,14 @@ import {
   Container,
   Box,
 } from "@mui/material";
-import { List } from "@material-ui/core";
+
 import { StyledLabel } from "../common/common";
 import styled from "styled-components";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import AlertBox from "../alert/Alert";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Visibility, CloseOutlined } from "@material-ui/icons";
+import { useFormContext } from "react-hook-form";
+import { docType } from "./context/common";
 
 interface propsType {
   documentName: string;
@@ -24,13 +26,24 @@ const DocumentUploadContainer = ({
   documentName,
   documentCode,
   isRequired,
+  files,
 }: propsType) => {
+  const {
+    register,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext();
   const fileUploadRef = useRef<any>(null);
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current as HTMLInputElement;
     fileElement?.click() as any;
   };
 
+  useEffect(() => {
+    setValue(`fileInput_${documentCode}`, files);
+  }, [files]);
+  console.log(errors);
   return (
     <Card sx={{ padding: 3, marginTop: 5 }}>
       <Grid container spacing={1}>
@@ -70,7 +83,7 @@ const DocumentUploadContainer = ({
           </Grid>
         )} */}
 
-        {documentCode == "DECLARATIONFORM" && (
+        {documentCode == docType.DECLARATIONFORM && (
           <Grid sm={12} xs={12} item>
             <InnerContainer className="mobile-block">
               <Box>
@@ -93,12 +106,20 @@ const DocumentUploadContainer = ({
           <FileUploadContainer className="upload-box">
             <Box className="d-flex align-items-center">
               <input
+                multiple={documentCode == docType.IDPASSPORT}
+                {...register(`fileInput_${documentCode}`, {
+                  required: isRequired,
+                })}
                 // id={`fileInput_${documentType}`}
                 className="d-none"
                 ref={fileUploadRef}
                 accept="image/jpeg, application/pdf"
                 type="file"
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  const newFile = e?.target?.files && (e?.target?.files as any);
+
+                  setValue(`fileInput_${documentCode}`, [...newFile]);
+                }}
               />
               <Box className="mr-2">
                 <Button
@@ -111,37 +132,52 @@ const DocumentUploadContainer = ({
                 </Button>
               </Box>
               <Typography className="doc-upload-text">
-                Drop files here or click browse through your machine
+                Click on browse and Select all files to be uploded from your
+                machine
               </Typography>
             </Box>
           </FileUploadContainer>
         </Grid>
         <Grid item sm={12} xs={12}>
-          <Container
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              background: "#f5f5f5",
-              borderLeft: "5px solid",
-              borderColor: "green",
-            }}
-            className="pr-0"
-            // key={`file_${file?.name}_${index}_uploaded`}
-          >
-            <Grid container>
-              <Grid item sm={11}>
-                FileName
-              </Grid>
-              <Grid item>
-                <a href="">
-                  <Visibility />
-                </a>
-                <a href="">
-                  <VisibilityOff />
-                </a>
-              </Grid>
-            </Grid>
-          </Container>
+          {errors[`fileInput_${documentCode}`] && (
+            <Typography color={"error"}>Please upload documents</Typography>
+          )}
+          {watch(`fileInput_${documentCode}`)
+            ? watch(`fileInput_${documentCode}`)?.map((item, index) => {
+                return (
+                  <UploadedFileViewContainer
+                    className="pr-0"
+                    // key={`file_${file?.name}_${index}_uploaded`}
+                  >
+                    <Grid container>
+                      <Grid item sm={11}>
+                        {item?.name}
+                      </Grid>
+                      <Grid item>
+                        <a href="">
+                          <Visibility />
+                        </a>
+                        <a
+                          onClick={() => {
+                            const currentFiles = watch(
+                              `fileInput_${documentCode}`
+                            );
+                            const updatedFiles = [
+                              ...currentFiles.slice(0, index), // Elements before the index
+                              ...currentFiles.slice(index + 1), // Elements after the index
+                            ];
+
+                            setValue(`fileInput_${documentCode}`, updatedFiles);
+                          }}
+                        >
+                          <CloseOutlined />
+                        </a>
+                      </Grid>
+                    </Grid>
+                  </UploadedFileViewContainer>
+                );
+              })
+            : null}
         </Grid>
       </Grid>
     </Card>
@@ -171,5 +207,17 @@ const FileUploadContainer = styled(Container)<{ disabled?: boolean }>`
   color: #bebdbf!important
   
   `}
+`;
+
+const UploadedFileViewContainer = styled(Container)`
+  background-color: #f5f5f5;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  border-left: 5px solid ${"green"};
+  & > span {
+    word-break: break-all;
+  }
 `;
 export default DocumentUploadContainer;
