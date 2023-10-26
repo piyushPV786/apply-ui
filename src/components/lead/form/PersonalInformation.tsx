@@ -25,7 +25,7 @@ import DateField from "./components/DateField";
 import EmailField from "./components/EmailField";
 
 const PersonalInformation = (props: any) => {
-  const { masterData, nationalityStatus, identificationType } =
+  const { masterData, nationalityStatus, identificationType, applicationData } =
     props?.masterData;
   const {
     register,
@@ -40,10 +40,8 @@ const PersonalInformation = (props: any) => {
 
   useEffect(() => {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
-    setValue("lead.mobileNumber", studentDetails?.mobileNumber);
+    setValue("lead.mobileNumber", `+${studentDetails?.mobileNumber}`);
   }, []);
-
-  console.log("master Data ========>", masterData);
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
@@ -69,7 +67,6 @@ const PersonalInformation = (props: any) => {
                     element={element}
                     Errors={Errors}
                     registerName={`lead.${element?.name}`}
-                    disabled={element?.disabled}
                   />
                 )}
                 {element?.type === "select" && (
@@ -83,6 +80,7 @@ const PersonalInformation = (props: any) => {
                       label={element?.label}
                       registerName={`lead.${element?.name}`}
                       required={true}
+                      defaultValue={applicationData?.lead[element?.name]}
                     />
                     {Errors && Errors[element?.name] && (
                       <div className="invalid-feedback">

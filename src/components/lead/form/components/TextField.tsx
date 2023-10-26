@@ -13,6 +13,7 @@ const TextField = ({ element, Errors, registerName }: any) => {
         className="form-control"
         placeholder={element?.placeholder}
         type={"text"}
+        disabled={element?.disabled}
       />
       {Errors && Errors[element?.name] && (
         <>
