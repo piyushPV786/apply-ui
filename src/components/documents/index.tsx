@@ -16,12 +16,23 @@ const DocumentUploadPage = (props) => {
   const { documentTypeData, docJson, uploadDocuments } =
     UseDocumentHook(applicationCode);
 
+  const onSubmit = (data) => {
+    let Files = [];
+    documentTypeData.forEach((element) => {
+      Files.push(data[`fileInput_${element?.code}`]);
+    });
+    Files = [].concat(...Files);
+
+    console.log(Files);
+    const payload = { files: Files };
+    // uploadDocuments()
+  };
   return (
     <MainContainer>
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit((data) => {
-            console.log(data);
+            onSubmit(data);
           })}
         >
           <Grid
@@ -62,19 +73,7 @@ const DocumentUploadPage = (props) => {
                     <Button className="mb-2" variant="outlined">
                       Save as Draft
                     </Button>
-                    <Button
-                      variant="contained"
-                      onClick={methods.handleSubmit((data) => {
-                        let Files = [];
-                        documentTypeData.forEach((element) => {
-                          Files.push(data[`fileInput_${element?.code}`]);
-                        });
-                        Files = [].concat(Files);
-                        console.log(Files.concat());
-                        // const payload;
-                        // uploadDocuments();
-                      })}
-                    >
+                    <Button variant="contained" type="submit">
                       Submit Documents
                     </Button>
                   </Box>
