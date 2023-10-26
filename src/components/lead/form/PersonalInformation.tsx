@@ -1,22 +1,12 @@
-import { useRouter } from "next/router";
 import { useFormContext } from "react-hook-form";
-import {
-  GreenFormHeading,
-  StyledAccordion,
-  StyledLabel,
-} from "../../common/common";
+import { GreenFormHeading, StyledAccordion } from "../../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
 import UserCircleIcon from "../../../../public/assets/images/user-circle-svgrepo-com.svg";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import NationalityStatus from "./components/NationalityStatus";
-import PhoneInput from "react-phone-number-input";
-import {
-  emailValidation,
-  getLocalStorageData,
-  isValidDate,
-} from "../../../Util/Util";
+import { getLocalStorageData } from "../../../Util/Util";
 import { useEffect } from "react";
 import { StorageName } from "../../common/constant";
 import { personalInfoData } from "./data/personalInfoData";
@@ -27,11 +17,8 @@ import EmailField from "./components/EmailField";
 const PersonalInformation = (props: any) => {
   const { masterData, applicationData } = props?.masterData;
   const {
-    register,
-    setError,
-    clearErrors,
     setValue,
-    formState: { errors, touchedFields },
+    formState: { errors },
   } = useFormContext();
   const Errors = errors["lead"] as any;
 

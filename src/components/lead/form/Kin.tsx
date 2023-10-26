@@ -12,8 +12,9 @@ import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-c
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import { formOptions, isValidEmail, validateNumber } from "../../../Util/Util";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
+import RadioField from "./components/RadioField";
 const Kin = (props: any) => {
-  const { masterData } = props?.masterData;
+  const { masterData, applicationData } = props?.masterData;
   const {
     register,
     watch,
@@ -35,7 +36,8 @@ const Kin = (props: any) => {
   };
   return (
     <StyledAccordion
-      defaultExpanded={isKinNeed === "true"}
+      defaultExpanded={false}
+      expanded={isNextKinVal === "true" || isNextKinVal === true}
       className="card-shadow"
     >
       <AccordionSummary
@@ -48,22 +50,11 @@ const Kin = (props: any) => {
           Next of Kin? <span className="text-danger me-2">*</span>
         </GreenFormHeading>
 
-        <input
-          className="form-check-input me-2"
-          type="radio"
-          {...register(`kin.isActive`, { required: true })}
-          value={"true"}
-          checked={Boolean(isNextKinVal) === true}
+        <RadioField
+          registerName={"kin.isActive"}
+          defaultValue={applicationData?.kin?.isActive}
+          defaultChecked={applicationData?.kin?.isActive}
         />
-        <label className="form-check-label me-2">Yes</label>
-        <input
-          className="form-check-input me-2"
-          type="radio"
-          {...register(`kin.isActive`, { required: true })}
-          value={"false"}
-          checked={!Boolean(isNextKinVal) || Boolean(isNextKinVal) === false}
-        />
-        <label className="form-check-label">No</label>
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid">
@@ -83,6 +74,7 @@ const Kin = (props: any) => {
             <div className="col-lg-4 mb-4">
               {!!masterData?.relationData?.length && (
                 <CommonAutocomplete
+                  defaultValue={applicationData?.kin?.relationship}
                   options={masterData?.relationData}
                   label="RelationShip"
                   registerName={`kin.relationshipCode`}

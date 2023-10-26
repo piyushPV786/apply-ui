@@ -1,4 +1,4 @@
-export const personalInfoData = [
+export const employmentData = [
   {
     name: "employmentStatusCode",
     label: "Employment Status",
@@ -114,8 +114,8 @@ export const personalInfoData = [
     placeholder: "",
   },
   {
-    name: "zipcode",
-    key: "zipcode",
+    name: "zipCode",
+    key: "zipCode",
     label: "Pin Code / Zip Code",
     type: "text",
     required: false,
