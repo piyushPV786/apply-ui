@@ -17,7 +17,9 @@ const CommonAutocomplete = ({
   registerName,
   required,
 }: iProps) => {
-  const { register, control } = useFormContext();
+  const { register, control, watch } = useFormContext();
+  console.log("watch value ========>", watch());
+  console.log("options =========>", options);
   return (
     <>
       <StyledLabel hideLabel={!label} required={true}>
@@ -43,6 +45,7 @@ const CommonAutocomplete = ({
             fullWidth
             options={options}
             getOptionLabel={(option: any) => option.name}
+            value={options?.find((item) => item.code === watch(registerName))}
             renderInput={(params) => (
               <TextField
                 sx={{
