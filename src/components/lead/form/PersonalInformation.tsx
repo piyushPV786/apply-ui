@@ -25,7 +25,6 @@ import DateField from "./components/DateField";
 import EmailField from "./components/EmailField";
 
 const PersonalInformation = (props: any) => {
-  console.log("props in personal information", props);
   const { masterData, applicationData } = props?.masterData;
   const {
     register,

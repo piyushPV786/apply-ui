@@ -9,11 +9,12 @@ import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddressImg from "../../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import AddressType from "./AddressType";
+import { useCompareAddressHook } from "../customHooks/addressHooks";
 
 const Address = (props: any) => {
-  const { masterData } = props?.masterData;
+  const { masterData, applicationData } = props?.masterData;
   const { register } = useFormContext();
-
+  const compareAddress = useCompareAddressHook(applicationData?.address);
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary
@@ -34,6 +35,7 @@ const Address = (props: any) => {
             masterData?.addressTypeData?.map((item: any, index: any) => (
               <>
                 <AddressType
+                  applicationData={applicationData}
                   masterData={masterData}
                   data={item}
                   index={index}

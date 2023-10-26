@@ -9,8 +9,6 @@ import { useNationalityHook } from "../../customHooks/nationalityHooks";
 import { nationalityStatusEnum } from "../../../../constants";
 
 const NationalityStatus = (props: any) => {
-  console.log("props in nationality status", props);
-
   const { masterData, nationalityStatus, identificationType, applicationData } =
     props?.masterData;
   const {
@@ -111,6 +109,9 @@ const NationalityStatus = (props: any) => {
             <div className="col-md-4 mb-4">
               {!!identificationType?.length && (
                 <CommonAutocomplete
+                  defaultValue={
+                    applicationData?.lead?.identificationDocumentType
+                  }
                   options={identificationType}
                   label="Identification Document Type"
                   registerName={"lead.identificationDocumentType"}
@@ -128,7 +129,7 @@ const NationalityStatus = (props: any) => {
               <input
                 className="form-control"
                 placeholder="e.g Robert"
-                type={"number"}
+                type={"text"}
                 {...register("lead.identificationNumber", {
                   required: true,
                 })}
