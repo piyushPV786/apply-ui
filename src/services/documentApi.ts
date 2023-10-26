@@ -6,11 +6,11 @@ import { StorageName } from "../components/common/constant";
 
 class DocumentApplicationServices {
   commonBaseUrl: string | undefined = apiUrls?.commonBaseUrl;
-  applyBaseUrl: string | undefined = apiUrls?.commonBaseUrl;
+  applyBaseUrl: string | undefined = apiUrls?.applyBaseUrl;
 
   async uploadDocuments(payload, applicationCode) {
-    const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${applicationCode}`;
-    const response = await apiServer.post(url, { payload });
+    const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${applicationCode}/document`;
+    const response = await apiServer.post(url, payload);
     if (
       response?.status == apiStatus.success ||
       response?.status == apiStatus.success1

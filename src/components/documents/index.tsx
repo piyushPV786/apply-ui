@@ -3,36 +3,22 @@ import DocumentUploadContainer from "../../components/documents/DocumentUploadCo
 import { MainContainer } from "../../components/login/style";
 import React, { useEffect } from "react";
 import StepperComponent from "../../components/stepper/stepper";
-import { mbaDocs } from "../../components/documents/context/common";
 import UseDocumentHook from "./customHook/UseDocumentHook";
 
 import { FormProvider, useForm } from "react-hook-form";
 
 const DocumentUploadPage = (props) => {
   const methods = useForm();
-
   const { applicationCode } = props;
-
-  const { documentTypeData, docJson, uploadDocuments } =
+  const { documentTypeData, docJson, onSubmit } =
     UseDocumentHook(applicationCode);
 
-  const onSubmit = (data) => {
-    let Files = [];
-    documentTypeData.forEach((element) => {
-      Files.push(data[`fileInput_${element?.code}`]);
-    });
-    Files = [].concat(...Files);
-
-    console.log(Files);
-    const payload = { files: Files };
-    // uploadDocuments()
-  };
   return (
     <MainContainer>
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit((data) => {
-            onSubmit(data);
+            onSubmit(data, false);
           })}
         >
           <Grid
@@ -70,7 +56,13 @@ const DocumentUploadPage = (props) => {
               >
                 <Card sx={{ padding: 2 }}>
                   <Box className="d-flex justify-content-center flex-column">
-                    <Button className="mb-2" variant="outlined">
+                    <Button
+                      className="mb-2"
+                      variant="outlined"
+                      onClick={methods.handleSubmit((data) => {
+                        onSubmit(data, true);
+                      })}
+                    >
                       Save as Draft
                     </Button>
                     <Button variant="contained" type="submit">

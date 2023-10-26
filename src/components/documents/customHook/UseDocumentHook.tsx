@@ -59,25 +59,34 @@ const UseDocumentHook = (applicationCode) => {
     });
     setDocumentTypeData(response);
   };
+
   const uploadDocuments = async (payload) => {
     let response = await DocumentServices.uploadDocuments(
       payload,
-      application.applicationCode
+      application?.applicationCode
     );
-    cosnole.log(response);
   };
+  const onSubmit = (data, isDraft) => {
+    let Files = [];
+    documentTypeData.forEach((element) => {
+      data[`fileInput_${element?.code}`].forEach((item) => {
+        let Obj = {
+          documentTypeCode: element?.code,
+          fileName: item.name,
+          fileType: item?.fileExtension ? item.fileExtension : item.type,
+        };
+        Files.push(Obj);
+      });
+    });
 
-  // const getUserDetails = async (applicationCode) => {
-  //   const response = await DocumentServices?.getApplicationData(
-  //     applicationCode
-  //   );
-  //   setUserDetails(response);
-  // };
-  // useEffect(() => {
-  //   if (applicationCode) {
-  //     getUserDetails(applicationCode);
-  //   }
-  // }, [applicationCode]);
+    const payload = {
+      files: Files,
+      paymentModeCode: "OFFLINE",
+      isDraft: isDraft,
+      studentCode: application?.studentCode,
+    };
+    uploadDocuments(payload);
+  };
 
   useEffect(() => {
     getDocumentTypeData();
@@ -97,6 +106,7 @@ const UseDocumentHook = (applicationCode) => {
     application,
     docJson,
     uploadDocuments,
+    onSubmit,
   };
 };
 
