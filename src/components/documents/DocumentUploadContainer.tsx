@@ -43,7 +43,7 @@ const DocumentUploadContainer = ({
   useEffect(() => {
     setValue(`fileInput_${documentCode}`, files);
   }, [files]);
-  console.log(errors);
+
   return (
     <Card sx={{ padding: 3, marginTop: 5 }}>
       <Grid container spacing={1}>
