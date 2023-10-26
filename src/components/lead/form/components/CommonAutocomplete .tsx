@@ -33,7 +33,7 @@ const CommonAutocomplete = ({
       return isoCode;
     }
   });
-  if (registerName === "address[0].state") {
+  if (registerName === "voila") {
     console.log("-------------------------------------");
     console.log("options", options);
     console.log("label", label);
