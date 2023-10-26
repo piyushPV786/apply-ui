@@ -1,4 +1,4 @@
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -13,18 +13,24 @@ import useEducationHook from "../customHooks/educationHooks";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import { StyleContainer } from "../../login/style";
 import { FeeCard } from "./components/CommonComponents";
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import {
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
+import RadioField from "./components/RadioField";
 
 const Education = (props: any) => {
   const {
     register,
     watch,
     formState: { errors },
+    control,
   } = useFormContext();
 
   const { masterData, programsData, applicationData, salesAgentData } =
     props?.masterData;
-  console.log("app", applicationData);
   const programCode = watch("education.programCode");
   const studentProgram: any = useEducationHook(programCode);
   const refferedBy = watch("education.refferedById");
@@ -125,42 +131,11 @@ const Education = (props: any) => {
             </StyledLabel>
             <br />
             <div className="form-check form-check-inline">
-              <RadioGroup
-                row
+              <RadioField
+                registerName={"education.isInternationDegree"}
                 defaultValue={applicationData?.education?.isInternationDegree}
-                {...register("education.isInternationDegree", {
-                  required: true,
-                })}
-              >
-                <FormControlLabel
-                  value={true}
-                  control={
-                    <Radio
-                      sx={{
-                        color: "#008554",
-                        "&.Mui-checked": {
-                          color: "#008554",
-                        },
-                      }}
-                    />
-                  }
-                  label="Yes"
-                />
-                <FormControlLabel
-                  value={false}
-                  control={
-                    <Radio
-                      sx={{
-                        color: "#008554",
-                        "&.Mui-checked": {
-                          color: "#008554",
-                        },
-                      }}
-                    />
-                  }
-                  label="No"
-                />
-              </RadioGroup>
+                defaultChecked={applicationData?.education?.isInternationDegree}
+              />
             </div>
             {Errors?.isInternationDegree && (
               <div className="invalid-feedback">

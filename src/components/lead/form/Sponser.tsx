@@ -10,13 +10,22 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import { IMasterData } from "../../common/types";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
+import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { useAddressHook } from "../customHooks/addressHooks";
+import RadioField from "./components/RadioField";
 
 const Sponsor = (props: any) => {
   const { register, watch } = useFormContext();
-  const { masterData } = props?.masterData;
+  const { masterData, applicationData } = props?.masterData;
   const activeSponsor = watch("sponsor.isActive");
+  const countryDetail = watch(`sponsor.country`);
+  const stateDetails: any = useAddressHook(countryDetail);
+  const stateList = stateDetails[countryDetail];
   return (
-    <StyledAccordion>
+    <StyledAccordion
+      defaultExpanded={false}
+      expanded={activeSponsor === "true" || activeSponsor === true}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
@@ -28,27 +37,19 @@ const Sponsor = (props: any) => {
           <span className="text-danger me-2">*</span>
         </GreenFormHeading>
 
-        <input
-          className="form-check-input me-2"
-          type="radio"
-          {...register(`sponsor.isActive`)}
-          value={"true"}
+        <RadioField
+          registerName={"sponsor.isActive"}
+          defaultValue={applicationData?.sponsor?.isActive}
+          defaultChecked={applicationData?.sponsor?.isActive}
         />
-        <label className="form-check-label me-2">Yes</label>
-        <input
-          className="form-check-input me-2"
-          type="radio"
-          {...register(`sponsor.isActive`)}
-          value={"false"}
-        />
-        <label className="form-check-label">No</label>
       </AccordionSummary>
-      <AccordionDetails hidden={activeSponsor !== "true"}>
+      <AccordionDetails>
         <div className="container-fluid">
           <div className="row">
             <div className="col-lg-4 mb-4">
               {!!masterData?.sponsorModeData?.length && (
                 <CommonAutocomplete
+                  defaultValue={applicationData?.sponsor?.sponsorModeCode}
                   options={masterData?.sponsorModeData}
                   label="Sponsor Type"
                   registerName={`sponsor.sponsorModeCode`}
@@ -60,6 +61,7 @@ const Sponsor = (props: any) => {
             <div className="col-lg-4 mb-4">
               {!!masterData?.relationData?.length && (
                 <CommonAutocomplete
+                  defaultValue={applicationData?.sponsor?.relationshipCode}
                   options={masterData?.relationData}
                   label="Relationship Type"
                   registerName={`sponsor.relationshipCode`}
@@ -107,6 +109,7 @@ const Sponsor = (props: any) => {
             <div className="col-lg-4 mb-4">
               {!!masterData?.countryData?.length && (
                 <CommonAutocomplete
+                  defaultValue={applicationData?.sponsor?.country}
                   options={masterData?.countryData}
                   label="Country"
                   registerName={`sponsor.country`}
@@ -115,9 +118,10 @@ const Sponsor = (props: any) => {
               )}
             </div>
             <div className="col-lg-4 mb-4">
-              {!!masterData?.countryData?.length && (
+              {!!stateList?.length && (
                 <CommonAutocomplete
-                  options={[]}
+                  defaultValue={applicationData?.sponsor?.state}
+                  options={stateList}
                   label="State/Provinces"
                   registerName={`sponsor.state`}
                   required={true}
@@ -139,7 +143,7 @@ const Sponsor = (props: any) => {
                 className="form-control"
                 type={"text"}
                 placeholder={"Enter Zip/Postal Code"}
-                {...register(`sponsor.zipcode`)}
+                {...register(`sponsor.zipCode`)}
               />
             </div>
           </div>
