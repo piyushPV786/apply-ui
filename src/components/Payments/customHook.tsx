@@ -9,7 +9,7 @@ const CustomHookPayment = (applicationCode) => {
   const paymentDiscount = async (payload: IPaymentPayload) => {
     await PaymentServices.applicationDiscount(payload);
   };
-  console.log(paymentPayload);
+
   const getUserDetails = async (applicationCode) => {
     const response = await PaymentServices?.getApplicationData(applicationCode);
     setUserDetails(response);
