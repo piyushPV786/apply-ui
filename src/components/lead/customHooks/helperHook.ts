@@ -7,6 +7,7 @@ export const useHelperHook = (watch) => {
     const data = watch();
     console.log("data", data);
     // ApplicationServices.createLead(payload, isDraft);
+    // ApplicationServices.updateLead(payload, leadCode);
   };
 
   const saveApplicationAsDraft = (e: any) => {
@@ -14,6 +15,7 @@ export const useHelperHook = (watch) => {
     const data = watch();
     console.log("data", data);
     // ApplicationServices.createLead(payload, isDraft);
+    // ApplicationServices.updateLead(payload, leadCode);
   };
   return { saveApplication, saveApplicationAsDraft };
 };
