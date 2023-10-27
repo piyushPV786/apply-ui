@@ -20,18 +20,7 @@ class PaymentServices {
 
     return response;
   }
-  uploadDocuments = async (uploadFileUrl: string, file: File) => {
-    try {
-      const response = await axios.put(uploadFileUrl, file);
-      if (response.status == 200) {
-        return await response;
-      } else return await response;
-    } catch (error: any) {
-      console.log(error.message);
 
-      return await error;
-    }
-  };
   async getApplicationData(applicationCode: string) {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
     const route = apiEndPoint?.applicationDetails

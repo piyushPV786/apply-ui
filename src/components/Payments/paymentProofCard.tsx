@@ -32,7 +32,7 @@ export interface IFormValue {
   file: File | null;
 }
 
-const PaymentProofCard = () => {
+const PaymentProofCard = ({ uploadPaymentProof, paymentDetails }) => {
   const {
     watch,
     handleSubmit,
@@ -47,7 +47,27 @@ const PaymentProofCard = () => {
   });
 
   const submitFile = (data: any) => {
-    console.log("formdata", data);
+    // const Files = data?.file?.map((item) => {
+    //   return {
+    //     documentTypeCode: "PAYMENTPROOF",
+    //     fileName: item?.name,
+    //     fileType: item?.type,
+    //   };
+    // });
+
+    const payload = {
+      amount: "500",
+      discountAmount: 0,
+      discountCode: "",
+      files: [
+        {
+          documentTypeCode: "PAYMENTPROOF",
+          fileName: data?.file?.name,
+          fileType: data?.file?.type,
+        },
+      ],
+    };
+    uploadPaymentProof(payload);
   };
 
   return (
