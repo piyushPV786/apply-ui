@@ -21,5 +21,5 @@ export const apiEndPoint = {
   stateDetails: "state/:countryCode",
   nationalityStatus: "nationality-status",
   identificationType: "identification-Type",
-  lead: "/lead",
+  lead: "lead",
 };
