@@ -24,21 +24,24 @@ interface IProps {
 }
 
 const LeadForm = (props: IProps) => {
-  const methods = useForm({ mode: "onChange" });
+  const methods = useForm();
   const { watch, handleSubmit } = methods;
   const masterData = useFormHook(props?.applicationCode);
   const { saveApplication, saveApplicationAsDraft } = useHelperHook(
     methods.watch
   );
   const programCode = watch("education.programCode");
-
+  const applicationData: any = masterData?.applicationData;
   //Setting values in form after data fetch
   useEffect(() => {
     if (masterData?.applicationData) {
       mapFormDefaultValue(masterData?.applicationData, methods.setValue);
     }
-  }, [masterData?.applicationData]);
+  }, [applicationData?.applicationCode]);
   //form code  ends
+  if (!masterData?.masterData) {
+    return <>asdasdasdasd</>;
+  }
 
   return (
     <MainContainer>
@@ -46,8 +49,8 @@ const LeadForm = (props: IProps) => {
       <StepperContainer>
         <StepperComponent active={0} />
       </StepperContainer>
-      {masterData?.masterData && (
-        <FormProvider {...methods}>
+      <FormProvider {...methods}>
+        {masterData?.masterData && (
           <FormContainer>
             <div className="application-form">
               <form>
@@ -60,7 +63,8 @@ const LeadForm = (props: IProps) => {
                 <TermsAndCondition />
                 <div className="mt-4 text-center">
                   <StyledButton
-                    onClick={handleSubmit((d) => saveApplicationAsDraft(d))}
+                    // onClick={handleSubmit((d) => saveApplicationAsDraft(d))}
+                    onClick={saveApplicationAsDraft}
                     className="form-button btn-space"
                     title="Save As Draft"
                   />
@@ -73,8 +77,8 @@ const LeadForm = (props: IProps) => {
               </form>
             </div>
           </FormContainer>
-        </FormProvider>
-      )}
+        )}
+      </FormProvider>
     </MainContainer>
   );
 };

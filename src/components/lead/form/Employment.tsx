@@ -10,14 +10,30 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import { IMasterData } from "../../common/types";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
+import RadioField from "./components/RadioField";
+import { employmentData } from "./data/employmentData";
+import TextField from "./components/TextField";
+import { useAddressHook } from "../customHooks/addressHooks";
 
 const Employment = (props: any) => {
-  const { register, watch } = useFormContext();
-  const { masterData } = props?.masterData;
+  const {
+    watch,
+    formState: { errors },
+  } = useFormContext();
+  const { masterData, applicationData } = props?.masterData;
 
-  const activeSponsor = watch("sponsor.isActive");
+  const activeEmp = watch("employment.isActive");
+  const Errors = errors["employment"] as any;
+
+  const countryDetail = watch(`employment.country`);
+  const stateDetails: any = useAddressHook(countryDetail);
+  const stateList = stateDetails[countryDetail];
+
   return (
-    <StyledAccordion>
+    <StyledAccordion
+      defaultExpanded={false}
+      expanded={activeEmp === "true" || activeEmp === true}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
@@ -27,128 +43,62 @@ const Employment = (props: any) => {
           <Image alt="Dollar" src={DollarIcon} className="me-2" />
           Are you Employed? <span className="text-danger me-2">*</span>
         </GreenFormHeading>
-
-        <input
-          className="form-check-input me-2"
-          type="radio"
-          {...register(`employment.isActive`)}
-          value={"true"}
+        <RadioField
+          registerName={"employment.isActive"}
+          defaultValue={applicationData?.employment?.isActive}
+          defaultChecked={applicationData?.employment?.isActive}
         />
-        <label className="form-check-label me-2">Yes</label>
-        <input
-          className="form-check-input me-2"
-          type="radio"
-          {...register(`employment.isActive`)}
-          value={"false"}
-        />
-        <label className="form-check-label">No</label>
       </AccordionSummary>
-      <AccordionDetails hidden={activeSponsor !== "true"}>
+      <AccordionDetails>
         <div className="container-fluid">
           <div className="row">
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.employmentStatusData?.length && (
-                <CommonAutocomplete
-                  options={masterData?.employmentStatusData}
-                  label="Employment Status"
-                  registerName={`employment.employmentStatusCode`}
-                  required={true}
-                />
-              )}
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Employer</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("employment.employer")}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Job Title</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("employment.jobTitle")}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.employmentIndustryData?.length && (
-                <CommonAutocomplete
-                  options={masterData?.employmentIndustryData}
-                  label="Industry"
-                  registerName={`employment.employmentIndustryCode`}
-                  required={true}
-                />
-              )}
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Manager Name</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("employment.managerName")}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Office Address</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("employment.officeAddress")}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Office Number</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("employment.officeMobileNumber")}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.countryData?.length && (
-                <CommonAutocomplete
-                  options={masterData?.countryData}
-                  label="Country"
-                  registerName={`employment.country`}
-                  required={true}
-                />
-              )}
-            </div>
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.countryData?.length && (
-                <CommonAutocomplete
-                  options={[]}
-                  label="State/Provinces"
-                  registerName={`employment.state`}
-                  required={true}
-                />
-              )}
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required> City </StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder={"e.g 10 church street"}
-                {...register(`employment.city`)}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Pin Code / Zip Code</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder={"Enter Zip/Postal Code"}
-                {...register(`employment.zipcode`)}
-              />
-            </div>
+            {employmentData?.map((element) => (
+              <>
+                {element?.type === "text" && (
+                  <TextField
+                    element={element}
+                    Errors={Errors}
+                    registerName={`employment.${element?.name}`}
+                  />
+                )}
+                {element?.type === "select" && element?.key !== "state" && (
+                  <div className="col-lg-4 mb-4">
+                    <CommonAutocomplete
+                      options={
+                        masterData[element?.key]
+                          ? masterData[element?.key]
+                          : element.option
+                      }
+                      label={element?.label}
+                      registerName={`employment.${element?.name}`}
+                      required={true}
+                      defaultValue={applicationData?.employment[element?.name]}
+                    />
+                    {Errors && Errors[element?.name] && (
+                      <div className="invalid-feedback">
+                        {element?.errorMessage}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {element?.type === "select" && element?.key === "state" && (
+                  <div className="col-lg-4 mb-4">
+                    <CommonAutocomplete
+                      options={stateList ? stateList : element.option}
+                      label={element?.label}
+                      registerName={`employment.${element?.name}`}
+                      required={true}
+                      defaultValue={applicationData?.employment[element?.name]}
+                    />
+                    {Errors && Errors[element?.name] && (
+                      <div className="invalid-feedback">
+                        {element?.errorMessage}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            ))}
           </div>
         </div>
       </AccordionDetails>

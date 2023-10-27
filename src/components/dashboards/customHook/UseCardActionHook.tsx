@@ -3,7 +3,6 @@ import DashboardApplicationServices from "../../../services/dashboardApplication
 import { downloadDocument } from "../../../Util/Util";
 
 const UseCardActionHook = (applicationDetail) => {
-  console.log("application Details =============>", applicationDetail);
   const { status, educationDetail, sponsor, document, studentCode } =
     applicationDetail;
   const isEditBTN =

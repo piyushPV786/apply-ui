@@ -1,18 +1,18 @@
 import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../common/common";
-import useAddressHook from "../customHooks/addressHooks";
+import { useAddressHook } from "../customHooks/addressHooks";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 
 const AddressType = (props) => {
-  const { data, index, masterData } = props;
+  const { data, index, masterData, applicationData } = props;
   const {
     register,
     watch,
     formState: { errors },
   } = useFormContext();
   const countryDetail = watch(`address[${index}].country`);
-  const stateDetails: any = useAddressHook(countryDetail?.code);
-  const stateList = stateDetails[countryDetail?.code];
+  const stateDetails: any = useAddressHook(countryDetail);
+  const stateList = stateDetails[countryDetail];
   const Errors = errors["address"] as any;
 
   return (
@@ -37,6 +37,7 @@ const AddressType = (props) => {
       <div className="col-lg-4 mb-4">
         {!!masterData?.countryData?.length && (
           <CommonAutocomplete
+            defaultValue={applicationData?.address[index]?.country}
             options={masterData?.countryData}
             label="Country"
             registerName={`address[${index}].country`}
@@ -52,6 +53,7 @@ const AddressType = (props) => {
 
       <div className="col-lg-4 mb-4">
         <CommonAutocomplete
+          defaultValue={applicationData?.address[index]?.state}
           options={stateList ? stateList : []}
           label="State/Provinces"
           registerName={`address[${index}].state`}

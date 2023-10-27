@@ -1,4 +1,4 @@
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -8,25 +8,31 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import EducationImg from "../../../../public/assets/images/education-svgrepo-com.svg";
-import { useEffect, useState } from "react";
-import { getProgramsData, getStudyModeData } from "../../../service/service";
-import { IMasterData } from "../../common/types";
 import { refferedById } from "../../../constants";
 import useEducationHook from "../customHooks/educationHooks";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import { StyleContainer } from "../../login/style";
 import { FeeCard } from "./components/CommonComponents";
+import {
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
+import RadioField from "./components/RadioField";
 
 const Education = (props: any) => {
   const {
     register,
     watch,
     formState: { errors },
+    control,
   } = useFormContext();
 
-  const { masterData, programsData } = props?.masterData;
+  const { masterData, programsData, applicationData, salesAgentData } =
+    props?.masterData;
   const programCode = watch("education.programCode");
-  const studentProgram: any = useEducationHook(programCode?.code);
+  const studentProgram: any = useEducationHook(programCode);
   const refferedBy = watch("education.refferedById");
   const Errors = errors["education"] as any;
   // const fees = feeHelper(studyMode, programCode, studyModeCode);
@@ -49,6 +55,7 @@ const Education = (props: any) => {
           <div className="col-lg-4 mb-4">
             {programsData?.length && (
               <CommonAutocomplete
+                defaultValue={applicationData?.education?.programCode}
                 options={programsData}
                 label="Interested Program"
                 registerName={`education.programCode`}
@@ -64,6 +71,7 @@ const Education = (props: any) => {
           {!!studentProgram?.studyModes?.length && (
             <div className="col-lg-4 mb-4">
               <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
+              <br />
               {studentProgram?.studyModes?.map((item: any) => {
                 {
                   return (
@@ -86,38 +94,10 @@ const Education = (props: any) => {
               </StyleContainer>
             </div>
           )}
-          {/* {!!fees?.length && (
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Course Mode</StyledLabel>
-              <div className="form-check form-check-inline">
-                {fees?.map((feeItem: any) => {
-                  return (
-                    <>
-                      <input
-                        type={"radio"}
-                        className="form-check-input me-2"
-                        {...register("education.programFees")}
-                        value={feeItem?.fee}
-                        onChange={(e) =>
-                          setValue("education.programMode", feeItem?.feeMode)
-                        }
-                      />
-                      {feeItem?.feeMode}
-                      {feeItem?.fee}
-                      <input
-                        type={"hidden"}
-                        {...register("education.programMode")}
-                      />
-                    </>
-                  );
-                })}
-              </div>
-            </div>
-          )} */}
-
           <div className="col-lg-4 mb-4">
             {!!masterData?.highestQualificationData?.length && (
               <CommonAutocomplete
+                defaultValue={applicationData?.education?.qualificationCode}
                 options={masterData?.highestQualificationData}
                 label="Highest Qualification"
                 registerName={`education.qualificationCode`}
@@ -151,32 +131,11 @@ const Education = (props: any) => {
             </StyledLabel>
             <br />
             <div className="form-check form-check-inline">
-              <input
-                className="form-check-input me-2"
-                type="radio"
-                {...register("education.isInternationDegree", {
-                  required: true,
-                })}
-                value="yes"
+              <RadioField
+                registerName={"education.isInternationDegree"}
+                defaultValue={applicationData?.education?.isInternationDegree}
+                defaultChecked={applicationData?.education?.isInternationDegree}
               />
-              <label className="form-check-label">
-                Yes
-                <br />
-              </label>
-            </div>
-            <div className="form-check form-check-inline">
-              <input
-                className="form-check-input me-2"
-                type="radio"
-                {...register("education.isInternationDegree", {
-                  required: true,
-                })}
-                value="no"
-              />
-              <label className="form-check-label">
-                No
-                <br />
-              </label>
             </div>
             {Errors?.isInternationDegree && (
               <div className="invalid-feedback">
@@ -188,6 +147,11 @@ const Education = (props: any) => {
           <div className="col-lg-4 mb-4">
             <div className="mb-4">
               <CommonAutocomplete
+                defaultValue={
+                  applicationData?.education?.agentCode
+                    ? refferedById.agent
+                    : refferedById.social
+                }
                 options={[
                   { name: "Agent", code: refferedById.agent },
                   { name: "Social Media", code: refferedById.social },
@@ -205,9 +169,10 @@ const Education = (props: any) => {
 
             {refferedBy === refferedById.agent && (
               <div className="mb-4 others">
-                {!!masterData?.agentData?.length && (
+                {!!salesAgentData?.length && (
                   <CommonAutocomplete
-                    options={masterData?.agentData}
+                    defaultValue={applicationData?.education?.agentCode}
+                    options={salesAgentData}
                     label="Agent Name"
                     registerName={`education.agentCode`}
                     required={true}
@@ -224,6 +189,7 @@ const Education = (props: any) => {
               <div className="mb-4 others">
                 {!!masterData?.socialMediaData?.length && (
                   <CommonAutocomplete
+                    defaultValue={applicationData?.education?.socialMediaCode}
                     options={masterData?.socialMediaData}
                     label="Agent Name"
                     registerName={`education.socialMediaCode`}
