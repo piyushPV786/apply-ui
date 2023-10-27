@@ -9,7 +9,6 @@ import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import EducationImg from "../../../../public/assets/images/education-svgrepo-com.svg";
 import { refferedById } from "../../../constants";
-import useEducationHook from "../customHooks/educationHooks";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import { StyleContainer } from "../../login/style";
 import { FeeCard } from "./components/CommonComponents";
@@ -20,6 +19,7 @@ import {
   RadioGroup,
 } from "@mui/material";
 import RadioField from "./components/RadioField";
+import { useEducationHook } from "../customHooks/educationHooks";
 
 const Education = (props: any) => {
   const {
@@ -32,10 +32,14 @@ const Education = (props: any) => {
   const { masterData, programsData, applicationData, salesAgentData } =
     props?.masterData;
   const programCode = watch("education.programCode");
+  const studyModeCodeWatch = watch("education.studyModeCode");
   const studentProgram: any = useEducationHook(programCode);
   const refferedBy = watch("education.refferedById");
   const Errors = errors["education"] as any;
-  // const fees = feeHelper(studyMode, programCode, studyModeCode);
+  const feesDetails = studentProgram?.studyModes?.find(
+    (item) => item?.studyModeCode === studyModeCodeWatch
+  );
+  console.log("feesDetails ===========>", feesDetails);
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary
@@ -90,9 +94,13 @@ const Education = (props: any) => {
                   }
                 })}
                 <StyleContainer className="fee-cards">
-                  <div className="fee-card-list">
-                    <FeeCard />
-                  </div>
+                  {feesDetails && feesDetails?.fees && (
+                    <div className="row">
+                      {feesDetails?.fees?.map((item) => (
+                        <FeeCard item={item} />
+                      ))}
+                    </div>
+                  )}
                 </StyleContainer>
               </>
             )}
@@ -212,23 +220,6 @@ const Education = (props: any) => {
       </AccordionDetails>
     </StyledAccordion>
   );
-};
-
-const feeHelper = (
-  studyMode: any,
-  programCode: string,
-  studyModeCode: string
-) => {
-  let result = [];
-
-  if (studyMode.length && programCode && studyModeCode) {
-    const program = studyMode.find((item) => item.programCode === programCode);
-    const { fees } = program?.studyModes?.find(
-      (item) => item.studyModeCode === studyModeCode
-    );
-    result = fees;
-  }
-  return result;
 };
 
 export default Education;

@@ -82,6 +82,14 @@ class ApplicationFormServices {
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
+  async getTermsAndConditionFile(name: string, email: string) {
+    let route = apiEndPoint?.termAndCondFile.replace(":name", name);
+    route = route.replace(":email", email);
+    const url = `${apiUrls?.applyBaseUrl}${route}`;
+    const response = await apiServer.get(url);
+    const result = response?.data ? response?.data : null;
+    return result;
+  }
 }
 
 export default new ApplicationFormServices();

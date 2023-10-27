@@ -18,14 +18,32 @@ import {
 } from "@mui/material";
 
 import StyledButton from "../../components/button/button";
+import ApplicationFormServices from "../../services/applicationForm";
 // ** Third Party Library
 
 export const EditGroup = ({
   showTerms,
   onClickShowTerms,
   updateTermsConditions,
+  name,
+  email,
 }) => {
   // ** States
+
+  const acceptTermAndCondition = async () => {
+    const response = await ApplicationFormServices?.getTermsAndConditionFile(
+      name,
+      email
+    );
+    const blobFile = new Blob([response], {
+      type: "application/pdf",
+    });
+
+    const fileURL = URL.createObjectURL(blobFile);
+    updateTermsConditions(true);
+    onClickShowTerms();
+    window.open(fileURL);
+  };
 
   return (
     <Grid>
@@ -1922,9 +1940,10 @@ export const EditGroup = ({
             title={"Decline"}
           />
           <StyledButton
+            disabled={!name || !email}
             title={"Accept"}
             onClick={() => {
-              updateTermsConditions(true);
+              acceptTermAndCondition();
             }}
           />
         </DialogActions>

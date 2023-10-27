@@ -25,5 +25,3 @@ export const useEducationHook = (programCode: string) => {
 
   return studentProgramData;
 };
-
-export default useEducationHook;

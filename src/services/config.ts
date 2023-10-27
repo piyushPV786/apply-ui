@@ -23,4 +23,5 @@ export const apiEndPoint = {
   identificationType: "identification-Type",
   lead: "lead",
   payu: "/payment/payu",
+  termAndCondFile: "application/terms-condition/:name/:email",
 };

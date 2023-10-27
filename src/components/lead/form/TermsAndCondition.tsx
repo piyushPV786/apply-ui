@@ -22,6 +22,8 @@ const TermsAndCondition = (props: any) => {
           showTerms={showTerms}
           onClickShowTerms={onClickShowTerms}
           updateTermsConditions={updateTermsConditions}
+          name={`${watch("lead.firstName")} ${watch("lead.lastName")}`}
+          email={watch("lead.email")}
         />
       </div>
     </div>
