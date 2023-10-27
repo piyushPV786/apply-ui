@@ -21,7 +21,7 @@ const CommonAutocomplete = ({
   defaultValue,
   disabled = false,
 }: IProps) => {
-  const { register, setValue } = useFormContext();
+  const { register, setValue, watch } = useFormContext();
   const optionList: any = [];
   const dropDownOptions = options?.map((item) => {
     if (item?.code) {
@@ -66,23 +66,31 @@ const CommonAutocomplete = ({
         onChange={(e, value) => {
           setValue(registerName, value);
         }}
-        renderInput={(params) => (
-          <TextField
-            sx={{
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: "none !important",
-              },
-              "& .MuiAutocomplete-input": {
-                padding: "2px 4px 2px 3px !important",
-                fontSize: "14px !important",
-              },
-              "& .MuiOutlinedInput-root": {
-                padding: "0.375rem 0.75rem",
-              },
-            }}
-            {...params}
-          />
-        )}
+        renderInput={(params) => {
+          const { inputProps, ...rest } = params;
+          const optionValue = optionList?.find(
+            (item) => item?.code === watch(registerName)
+          );
+          inputProps.value = optionValue?.name;
+          return (
+            <TextField
+              sx={{
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: "none !important",
+                },
+                "& .MuiAutocomplete-input": {
+                  padding: "2px 4px 2px 3px !important",
+                  fontSize: "14px !important",
+                },
+                "& .MuiOutlinedInput-root": {
+                  padding: "0.375rem 0.75rem",
+                },
+              }}
+              {...rest}
+              inputProps={inputProps}
+            />
+          );
+        }}
       />
     </>
   );

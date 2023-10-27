@@ -45,10 +45,25 @@ export const useCompareAddressHook = (address: any) => {
 
 export const useSameResidentialAddress = () => {
   const { setValue, watch } = useFormContext();
+  const address = watch("address");
   const isSameAsPostalAddress = watch("address.isSameAsPostalAddress");
   useEffect(() => {
     if (isSameAsPostalAddress) {
-      console.log(watch("address"));
+      const _p = address[0];
+      const _r = address[1];
+      const { addressType, ...rest } = _r;
+      const data = Object.keys(address[1]);
+
+      const residentialAddress: any = { addressType };
+      data.forEach((item) => {
+        if (item !== "addressType" && item !== "isSameAsPostalAddress") {
+          residentialAddress[item] = _p[item];
+        }
+      });
+      const newAddress: any = [];
+      newAddress.push(_p);
+      newAddress.push(residentialAddress);
+      setValue("address", newAddress);
     }
   }, [isSameAsPostalAddress]);
 };
