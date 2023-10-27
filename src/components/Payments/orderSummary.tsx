@@ -24,18 +24,12 @@ const OrderSummary = ({
   const [promoCode, setPromoCode] = useState<string>("");
 
   const OnSubmit = async () => {
-    // To Be used after StudentCode api
-    // const payload = {
-    //   applicationCode: applicationCode,
-    //   studentType: studentType,
-    //   discountCode: promoCode,
-    // };
-    // await paymentDiscount(payload);
-    // setShowPromoCode(false);
+    paymentDiscount(promoCode);
+    setShowPromoCode(false);
     // setPromoCode("");
   };
 
-  console.log(paymentDetails);
+  console.log("paymentdetails", paymentDetails);
   return (
     <Card>
       <Grid container spacing={2}>
@@ -60,9 +54,9 @@ const OrderSummary = ({
               </Typography>
             </Grid>
             <Grid item md={6} xs={12}>
-              <label>Application Fee (R 1100)</label>
+              <label>Application Fee ({paymentDetails?.feeDetails?.fee})</label>
               <Typography variant="body1">
-                <strong>{paymentDetails?.feeDetails[0]?.fee}</strong> (
+                <strong>{paymentDetails?.feeDetails?.fee}</strong> (
                 Non-refundable )
               </Typography>
             </Grid>
@@ -82,7 +76,7 @@ const OrderSummary = ({
                   >
                     <label>Total Application</label>
                     <Typography variant="body1">
-                      <strong>$ 20097</strong>
+                      <strong>{paymentDetails?.feeDetails?.fee}</strong>
                     </Typography>
                   </Grid>
                   <Grid
@@ -94,7 +88,7 @@ const OrderSummary = ({
                   >
                     <label>RMAT Fee</label>
                     <Typography variant="body1">
-                      <strong>$ 913.5</strong>
+                      <strong>{paymentDetails?.feeDetails?.rmatFee}</strong>
                     </Typography>
                   </Grid>
                   <Grid
@@ -106,7 +100,9 @@ const OrderSummary = ({
                   >
                     <label>Discount</label>
                     <Typography variant="body1">
-                      <strong>$ 20097</strong>
+                      <strong>
+                        {paymentDetails?.feeDetails?.discountAmount}
+                      </strong>
                     </Typography>
                   </Grid>
                 </Grid>
@@ -121,7 +117,7 @@ const OrderSummary = ({
                   >
                     <strong>Total Amount</strong>
                     <Typography variant="body1">
-                      <strong>$ 20097</strong>
+                      <strong>{paymentDetails?.feeDetails?.totaAmount}</strong>
                     </Typography>
                   </Grid>
                 </Grid>

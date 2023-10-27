@@ -9,14 +9,13 @@ const CustomHookPayment = (applicationCode) => {
   const [userDetails, setUserDetails] = useState({});
   const [paymentDetails, setPaymentDetails] = useState();
   const [paymentPayload, setPaymentPayload] = useState();
-  const paymentDiscount = async (payload: IPaymentPayload) => {
-    await PaymentServices.applicationDiscount(payload);
-  };
 
   const getUserDetails = async (applicationCode) => {
     const response = await PaymentServices?.getApplicationData(applicationCode);
     setUserDetails(response);
+    getPaymentDetail(response?.education?.programCode, 0, "");
   };
+
   const getPayuDetails = async (payload) => {
     const apiPayload = {
       amount: payload?.amount,
@@ -36,7 +35,6 @@ const CustomHookPayment = (applicationCode) => {
     );
     setPaymentPayload(response);
   };
-  console.log(userDetails);
 
   const uploadPaymentProof = async (payload) => {
     const apiPayload = {
@@ -54,21 +52,55 @@ const CustomHookPayment = (applicationCode) => {
       apiPayload,
       applicationCode
     );
+    console.log("paymentProofRes=====>", response);
   };
 
-  const getPaymentDetail = async () => {
-    const res = await FinanceServices.getStudentProgram(
-      userDetails?.education?.programCode
+  const paymentDiscount = async (promoCode) => {
+    const res = await PaymentServices.applicationDiscount(
+      userDetails?.education?.studentTypeCode,
+      applicationCode,
+      promoCode
     );
+    if (res.id) {
+      console.log("discountApplied");
+
+      getPaymentDetail(
+        userDetails?.education?.programCode,
+        res?.maxAmount,
+        res?.discountCode
+      );
+    }
+  };
+
+  const getPaymentDetail = async (
+    programCode,
+    discountAmount,
+    discountCode
+  ) => {
+    const res = await FinanceServices.getStudentProgram(programCode);
 
     const paymentDetails = {
       programCode: res[0]?.programCode,
       programName: res[0]?.programName,
-      rmatFee: res[0]?.rmatFee,
-      feeDetails: res[0]?.studyModes[0]?.fees?.filter((item) => {
-        return item.feeMode == "APPLICATION";
-      }),
+
+      feeDetails: {
+        fee: res[0]?.studyModes[0]?.fees?.filter((item) => {
+          return item.feeMode == "APPLICATION";
+        })[0].fee,
+        rmatFee: res[0]?.rmatFee,
+        discountAmount: discountAmount,
+        discountCode: discountCode,
+        totaAmount:
+          Number(
+            res[0]?.studyModes[0]?.fees?.filter((item) => {
+              return item.feeMode == "APPLICATION";
+            })[0].fee
+          ) +
+          res[0]?.rmatFee -
+          discountAmount,
+      },
     };
+
     setPaymentDetails(paymentDetails);
   };
 
@@ -77,12 +109,6 @@ const CustomHookPayment = (applicationCode) => {
       getUserDetails(applicationCode);
     }
   }, [applicationCode]);
-
-  useEffect(() => {
-    if (userDetails) {
-      getPaymentDetail();
-    }
-  }, [userDetails]);
 
   return {
     paymentDiscount,
