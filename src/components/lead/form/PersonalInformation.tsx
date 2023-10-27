@@ -22,8 +22,6 @@ const PersonalInformation = (props: any) => {
   } = useFormContext();
   const Errors = errors["lead"] as any;
 
-  console.log("errors ============>", Errors);
-
   useEffect(() => {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
     setValue("lead.mobileNumber", `+${studentDetails?.mobileNumber}`);

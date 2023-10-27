@@ -13,11 +13,11 @@ import {
   removedKeysToMap,
   StorageName,
 } from "../components/common/constant";
-import { ILeadFormValues } from "../components/common/types";
 import { AuthApi, CommonAPI, FinanceApi, baseAuth } from "../service/Axios";
 import { parsePhoneNumber } from "react-phone-number-input";
 import { toast } from "react-toastify";
 import { refferedById } from "../constants";
+import ApplicationFormServices from "../services/applicationForm";
 const ignorKeys = {
   createdAt: "",
   deletedAt: "",
@@ -675,20 +675,17 @@ export const emailValidation = async (e) => {
       message: "clear",
     };
   }
-  await AuthApi.get(
-    `${CommonApi.EMAILCHECK}/${e?.target?.value}/leadCode/${
-      JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
-    }`
-  ).then((data) => {
-    if (
-      data &&
-      data?.data?.data?.message == "Provided email address alredy exists"
-    ) {
-      returnVal = {
-        message: "Provided email address alredy exists",
-      };
-    }
-  });
+  const response = await ApplicationFormServices?.checkDuplicateEmail(
+    e?.target?.value
+  );
+  console.log("response Message ===========>", response);
+  if (response?.message) {
+    returnVal = {
+      message: "Provided email address already exists",
+    };
+  }
+  console.log("returnVal ==========>", returnVal);
+
   return returnVal;
 };
 

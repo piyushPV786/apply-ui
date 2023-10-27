@@ -24,4 +24,5 @@ export const apiEndPoint = {
   lead: "lead",
   payu: "/payment/payu",
   termAndCondFile: "application/terms-condition/:name/:email",
+  checkDuplicateEmail: "lead/check-duplicate-email/:email/leadCode/:leadCode",
 };
