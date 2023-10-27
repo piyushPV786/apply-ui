@@ -1,11 +1,11 @@
 import React from "react";
 import { GreenFormHeading } from "../common/common";
-import { PaymentContainer, MainContainer } from "../payment/payment";
 import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
 import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import { RoutePaths } from "../common/constant";
+import { MainContainer, PaymentContainer } from "../login/style";
 
 export const DocumentSaveSuccess = (props: any) => {
   const router = useRouter();

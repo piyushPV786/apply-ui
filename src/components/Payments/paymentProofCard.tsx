@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
+import React from "react";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+
 import {
   Grid,
   Button,
@@ -12,22 +10,7 @@ import {
   CardHeader,
 } from "@mui/material";
 import UploadPaymentProof from "../uploadDocument/uploadPaymentProof";
-import StyledButton from "../button/button";
 
-const schema = yup.object().shape({
-  file: yup
-    .mixed()
-    .test("fileType", "File type must be .pdf,.png or jpeg", (value) => {
-      if (!value) return true; // Allow empty values
-      return ["image/jpeg", "image/png", "application/pdf"].includes(
-        value.type
-      );
-    })
-    .test("fileSize", "File size is too large", (value) => {
-      if (!value) return true; // Allow empty values
-      return value.size <= 1024 * 1024 * 2; // 5 MB
-    }),
-});
 export interface IFormValue {
   file: File | null;
 }
@@ -41,10 +24,7 @@ const PaymentProofCard = ({ uploadPaymentProof, paymentDetails }) => {
     clearErrors,
     register,
     formState: { errors },
-  } = useForm({
-    mode: "onChange",
-    resolver: yupResolver(schema),
-  });
+  } = useForm();
 
   const submitFile = (data: any) => {
     // const Files = data?.file?.map((item) => {

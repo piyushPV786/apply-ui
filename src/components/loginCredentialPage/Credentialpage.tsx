@@ -1,6 +1,5 @@
 import React from "react";
 import { GreenFormHeading } from "../common/common";
-import { PaymentContainer, MainContainer } from "../payment/payment";
 import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
 import Link from "next/link";
@@ -8,6 +7,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import StyledButton from "../button/button";
 import { RoutePaths } from "../common/constant";
+import { MainContainer, PaymentContainer } from "../login/style";
 
 export const LoginCredentials = () => {
   const router = useRouter();

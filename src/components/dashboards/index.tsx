@@ -8,8 +8,7 @@ import UseDashboardHook from "./customHook/UseDashboardHook";
 
 const ApplicationDashboard = () => {
   const router = useRouter();
-  const { applicationData, allPrograms, getApplicationData } =
-    UseDashboardHook();
+  const { applicationData, getApplicationData } = UseDashboardHook();
   return (
     <>
       <MainContainer>
@@ -46,7 +45,6 @@ const ApplicationDashboard = () => {
                     <div className="col-md-6 mb-2">
                       <ApplicationCard
                         applicationDetail={applicationDetail}
-                        allPrograms={allPrograms}
                         getApplicationData={getApplicationData}
                       />
                     </div>

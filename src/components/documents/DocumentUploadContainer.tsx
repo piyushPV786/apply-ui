@@ -1,17 +1,8 @@
-import {
-  Typography,
-  Card,
-  Grid,
-  Button,
-  Tooltip,
-  Container,
-  Box,
-} from "@mui/material";
+import { Typography, Card, Grid, Button, Container, Box } from "@mui/material";
 
 import { StyledLabel } from "../common/common";
 import styled from "styled-components";
 import React, { useEffect, useRef } from "react";
-import AlertBox from "../alert/Alert";
 import { Visibility, CloseOutlined } from "@material-ui/icons";
 import { useFormContext } from "react-hook-form";
 import { docType } from "./context/common";
@@ -20,6 +11,7 @@ interface propsType {
   documentName: string;
   documentCode: string;
   isRequired: boolean;
+  files: any;
 }
 
 const DocumentUploadContainer = ({

@@ -1,8 +1,8 @@
 import React from "react";
 import { GreenFormHeading } from "../common/common";
-import { PaymentContainer, MainContainer } from "../payment/payment";
 import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
+import { MainContainer, PaymentContainer } from "../login/style";
 
 export const DocumentSuccess = (props: any) => {
   return (

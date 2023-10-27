@@ -5,7 +5,8 @@ import { StyledLink } from "../login/style";
 import { useRouter } from "next/router";
 import RbsLogo from "../../../public/assets/images/RBS_logo_2_white.png";
 import Image from "next/image";
-import { RoutePaths } from "./constant";
+import { RoutePaths, StorageName } from "./constant";
+import { getLocalStorageData } from "../../Util/Util";
 
 const Header = (props: any) => {
   const [studentMob, setStudentMob] = useState<string>("");
@@ -13,20 +14,17 @@ const Header = (props: any) => {
 
   useEffect(() => {
     if (window) {
-      const studentMobileNumber =
-        window &&
-        window !== undefined &&
-        JSON.parse(sessionStorage?.getItem("studentMobile") as any)
-          ?.mobileNumber;
-      setStudentMob(studentMobileNumber);
+      const studentDetail: any = getLocalStorageData(
+        StorageName?.STUDENT_DETAIL
+      );
+      if (studentDetail?.mobileNumber) {
+        setStudentMob(`+${studentDetail?.mobileNumber}`);
+      }
     }
   }, [props]);
   const exitApp = () => {
-    sessionStorage.clear();
-    localStorage.clear();
-    setTimeout(() => {
-      router.push("/");
-    }, 1000);
+    window.localStorage.clear();
+    router.push("/");
   };
   return (
     <>
@@ -35,9 +33,7 @@ const Header = (props: any) => {
           <>
             <div className="row align-items-center">
               <div className="col-md-6">
-                <LogoContainer
-                  onClick={() => router.push(RoutePaths.Dashboard)}
-                >
+                <LogoContainer onClick={() => router.push("/dashboard")}>
                   <div
                     style={{
                       borderRight: "2px solid white",

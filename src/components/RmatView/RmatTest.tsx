@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { MainContainer, PaymentContainer } from "../payment/payment";
 import { GreenFormHeading } from "../common/common";
 import Header from "../common/header";
-import { AlertEnums, CommonApi, RoutePaths } from "../common/constant";
+import { CommonApi, RoutePaths } from "../common/constant";
 import rmatimage from "../../../public/assets/images/rmatlogo.png";
 import infoicon from "../../../public/assets/images/info.png";
 import Image from "next/image";
 
 import StyledButton from "../button/button";
 import { useRouter } from "next/router";
-import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { AuthApi } from "../../service/Axios";
+import { MainContainer } from "../login/style";
 
 const RmatTest: React.FC = () => {
   const [userDetail, setUserDetail] = useState<any>(null);
@@ -50,7 +49,7 @@ const RmatTest: React.FC = () => {
   }, []);
 
   return (
-    <ParentContainer className="text-center">
+    <MainContainer className="text-center">
       <Header />
       <div
         className="container-fluid w-50 mt-5 p-2"
@@ -116,7 +115,7 @@ const RmatTest: React.FC = () => {
           </>
         </div>
       </div>
-    </ParentContainer>
+    </MainContainer>
   );
 };
 

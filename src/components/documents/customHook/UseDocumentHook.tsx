@@ -13,16 +13,19 @@ const UseDocumentHook = (applicationCode) => {
   const [documentTypeData, setDocumentTypeData] = useState<
     documentTypeApiResponseType[]
   >([]);
-  const [userDetails, setUserDetails] = useState({});
-  const [application, setApplication] = useState();
-  const [docJson, setDocJson] = useState({});
+  const [userDetails, setUserDetails] = useState<any>({});
+  const [application, setApplication] = useState<any>();
+  const [docJson, setDocJson] = useState<any>({});
 
   const mapDraftFiles = (code) => {
-    const files =
-      application &&
+    let files = [];
+    if (application && application?.document) {
+      files = application && application?.document;
       application?.document?.filter((element) => {
         return element?.documentTypeCode == code;
       });
+    }
+
     return files;
   };
 
@@ -67,7 +70,7 @@ const UseDocumentHook = (applicationCode) => {
     );
   };
   const onSubmit = (data, isDraft) => {
-    let Files = [];
+    let Files: any = [];
     documentTypeData.forEach((element) => {
       data[`fileInput_${element?.code}`].forEach((item) => {
         let Obj = {
@@ -90,7 +93,7 @@ const UseDocumentHook = (applicationCode) => {
 
   useEffect(() => {
     getDocumentTypeData();
-    const res = applicationData.find((item) => {
+    const res = applicationData.find((item: any) => {
       return item?.applicationCode == applicationCode;
     });
     res && setApplication(res);

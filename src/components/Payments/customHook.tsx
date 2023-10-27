@@ -6,9 +6,9 @@ import { Toaster } from "../common/common";
 import { IPaymentPayload } from "./commonDataType";
 
 const CustomHookPayment = (applicationCode) => {
-  const [userDetails, setUserDetails] = useState({});
-  const [paymentDetails, setPaymentDetails] = useState();
-  const [paymentPayload, setPaymentPayload] = useState();
+  const [userDetails, setUserDetails] = useState<any>({});
+  const [paymentDetails, setPaymentDetails] = useState<any>();
+  const [paymentPayload, setPaymentPayload] = useState<any>();
   const paymentDiscount = async (payload: IPaymentPayload) => {
     await PaymentServices.applicationDiscount(payload);
   };

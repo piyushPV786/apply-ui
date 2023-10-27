@@ -1,7 +1,6 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { useEffect } from "react";
 import Header from "../../components/common/header";
-import { MainContainer } from "../../components/payment/payment";
 import PersonalInformation from "../../components/lead/form/PersonalInformation";
 import Address from "../../components/lead/form/Address";
 import Education from "../../components/lead/form/Education";
@@ -15,7 +14,7 @@ import { Container } from "@material-ui/core";
 import { useHelperHook } from "./customHooks/helperHook";
 import TermsAndCondition from "./form/TermsAndCondition";
 import StyledButton from "../button/button";
-import { FormContainer } from "../login/style";
+import { FormContainer, MainContainer } from "../login/style";
 import { mapFormDefaultValue } from "../../Util/Util";
 import "react-phone-number-input/style.css";
 

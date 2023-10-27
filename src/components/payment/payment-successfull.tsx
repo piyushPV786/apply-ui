@@ -1,8 +1,6 @@
 import React from "react";
 import StyledButton from "../button/button";
 import { Green, GreenFormHeading } from "../common/common";
-import { MainContainer, PaymentContainer } from "./payment";
-import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { useRouter } from "next/router";
 import Header from "../common/header";
 import WarningIcon from "../../../public/assets/images/warning-svgrepo-com.png";
@@ -11,6 +9,7 @@ import Image from "next/image";
 import { RoutePaths } from "../common/constant";
 import { DocumentSuccess } from "../document/DocumentUploadSuccess";
 import { DocumentSaveSuccess } from "../document/DocumentSaveSuccess";
+import { MainContainer, PaymentContainer } from "../login/style";
 
 const PaymentSuccessFull = (props: any) => {
   const router = useRouter();
@@ -216,7 +215,7 @@ const PaymentSuccessFull = (props: any) => {
   };
 
   return (
-    <ParentContainer className="text-center">
+    <MainContainer className="text-center">
       <Header />
       <div className="container-fluid w-75 mt-5">
         <MainContainer style={{ paddingBottom: "1rem" }}>
@@ -255,7 +254,7 @@ const PaymentSuccessFull = (props: any) => {
           )}
         </MainContainer>
       </div>
-    </ParentContainer>
+    </MainContainer>
   );
 };
 
