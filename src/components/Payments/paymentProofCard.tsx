@@ -27,18 +27,10 @@ const PaymentProofCard = ({ uploadPaymentProof, paymentDetails }) => {
   } = useForm();
 
   const submitFile = (data: any) => {
-    // const Files = data?.file?.map((item) => {
-    //   return {
-    //     documentTypeCode: "PAYMENTPROOF",
-    //     fileName: item?.name,
-    //     fileType: item?.type,
-    //   };
-    // });
-
     const payload = {
-      amount: "500",
-      discountAmount: 0,
-      discountCode: "",
+      amount: paymentDetails?.feeDetails?.totaAmount,
+      discountAmount: paymentDetails?.feeDetails?.discountAmount,
+      discountCode: paymentDetails?.feeDetails?.discountCode,
       files: [
         {
           documentTypeCode: "PAYMENTPROOF",

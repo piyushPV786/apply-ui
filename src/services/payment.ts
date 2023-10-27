@@ -8,11 +8,11 @@ import { StorageName } from "../components/common/constant";
 class PaymentServices {
   applyBaseUrl: string | undefined = apiUrls?.applyBaseUrl;
 
-  async applicationDiscount(payload: IPaymentPayload) {
-    const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${payload.applicationCode}/discount/${payload?.discountCode}?studentType=${payload?.studentType}`;
+  async applicationDiscount(studentType, applicationCode, discountCode) {
+    const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${applicationCode}/discount/${discountCode}?studentType=${studentType}`;
     const response = await apiServer.get(url);
-
-    return response;
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
   }
   async applicationDocument(payload: any) {
     const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${payload.appCode}/document`;

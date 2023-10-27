@@ -18,14 +18,18 @@ import { PaymentTypes } from "../common/constant";
 import { GetPaymentImage } from "../../Util/Util";
 import { PaymentCardDetail } from "../../styles/styled";
 
-const PaymentOptionCard = ({ getPayuDetails, paymentPayload }) => {
+const PaymentOptionCard = ({
+  getPayuDetails,
+  paymentPayload,
+  paymentDetails,
+}) => {
   const [selectedPayment, setSelectedPaymentOption] = useState<string>("");
 
   const getPayuPaymentUrl = () => {
     const payload = {
-      amount: 500,
-      discountAmount: 0,
-      discountCode: "",
+      amount: Number(paymentDetails?.feeDetails?.totaAmount),
+      discountAmount: paymentDetails?.feeDetails?.discountAmount,
+      discountCode: paymentDetails?.feeDetails?.discountCode,
     };
     getPayuDetails(payload);
   };

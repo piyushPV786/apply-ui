@@ -16,6 +16,7 @@ const PaymentOption = ({
           <PaymentOptionCard
             getPayuDetails={getPayuDetails}
             paymentPayload={paymentPayload}
+            paymentDetails={paymentDetails}
           />
         </Grid>
         <Grid
