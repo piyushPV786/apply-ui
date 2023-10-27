@@ -14,8 +14,12 @@ import { IPaymentPayload } from "./commonDataType";
 
 interface IPaymentPageProps {
   paymentDiscount: (arg0: IPaymentPayload) => void;
+  paymentDetails: any;
 }
-const OrderSummary = ({ paymentDiscount }: IPaymentPageProps) => {
+const OrderSummary = ({
+  paymentDiscount,
+  paymentDetails,
+}: IPaymentPageProps) => {
   const [showPromoCode, setShowPromoCode] = useState<boolean>(false);
   const [promoCode, setPromoCode] = useState<string>("");
 
@@ -31,6 +35,7 @@ const OrderSummary = ({ paymentDiscount }: IPaymentPageProps) => {
     // setPromoCode("");
   };
 
+  console.log(paymentDetails);
   return (
     <Card>
       <Grid container spacing={2}>
@@ -44,7 +49,7 @@ const OrderSummary = ({ paymentDiscount }: IPaymentPageProps) => {
             <Grid item md={6} xs={12}>
               <label>Proposal Qualification</label>
               <Typography variant="body1">
-                <strong>Ankit Sharma Program</strong>
+                <strong>{paymentDetails?.programName}</strong>
               </Typography>
             </Grid>
             <Grid item md={6} xs={12}>
@@ -57,7 +62,8 @@ const OrderSummary = ({ paymentDiscount }: IPaymentPageProps) => {
             <Grid item md={6} xs={12}>
               <label>Application Fee (R 1100)</label>
               <Typography variant="body1">
-                <strong>$ 20097</strong> ( Non-refundable )
+                <strong>{paymentDetails?.feeDetails[0]?.fee}</strong> (
+                Non-refundable )
               </Typography>
             </Grid>
           </Grid>

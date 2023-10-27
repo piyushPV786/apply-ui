@@ -3,7 +3,12 @@ import { Grid } from "@mui/material";
 import PaymentOptionCard from "./paymentOptionCard";
 import PaymentProofCard from "./paymentProofCard";
 
-const PaymentOption = ({ getPayuDetails, paymentPayload }) => {
+const PaymentOption = ({
+  getPayuDetails,
+  paymentPayload,
+  uploadPaymentProof,
+  paymentDetails,
+}) => {
   return (
     <>
       <Grid container>
@@ -24,7 +29,10 @@ const PaymentOption = ({ getPayuDetails, paymentPayload }) => {
         </Grid>
 
         <Grid item xs={5} md={5}>
-          <PaymentProofCard />
+          <PaymentProofCard
+            uploadPaymentProof={uploadPaymentProof}
+            paymentDetails={paymentDetails}
+          />
         </Grid>
       </Grid>
     </>
