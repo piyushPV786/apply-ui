@@ -22,4 +22,5 @@ export const apiEndPoint = {
   nationalityStatus: "nationality-status",
   identificationType: "identification-Type",
   lead: "lead",
+  payu: "/payment/payu",
 };

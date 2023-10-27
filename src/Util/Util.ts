@@ -297,7 +297,7 @@ export const onlyAlphabetsOrNumbersDash = (value) =>
 export const GetPaymentImage = (type) => {
   const imgUrl = "/assets/images";
 
-  if (type === "payu") {
+  if (type === "payuForm") {
     return `${imgUrl}/payu.png`;
   }
 

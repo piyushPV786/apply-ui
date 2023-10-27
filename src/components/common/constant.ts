@@ -157,7 +157,7 @@ export const FeemodeCode = {
 export const PaymentTypes = [
   {
     name: "Payu",
-    value: "payu",
+    value: "payuForm",
   },
   { name: "RazorPay", value: "razorpay" },
   { name: "Stripe", value: "stripe" },

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+
+import PayuInput from "./payuInput";
 import {
   Grid,
   Box,
@@ -18,10 +18,17 @@ import { PaymentTypes } from "../common/constant";
 import { GetPaymentImage } from "../../Util/Util";
 import { PaymentCardDetail } from "../../styles/styled";
 
-const PaymentOptionCard = () => {
-  const [paymentPayload] = useState<any>(null);
+const PaymentOptionCard = ({ getPayuDetails, paymentPayload }) => {
   const [selectedPayment, setSelectedPaymentOption] = useState<string>("");
-  console.log("selectedPayment", selectedPayment);
+
+  const getPayuPaymentUrl = () => {
+    const payload = {
+      amount: 500,
+      discountAmount: 0,
+      discountCode: "",
+    };
+    getPayuDetails(payload);
+  };
 
   return (
     <>
@@ -34,48 +41,48 @@ const PaymentOptionCard = () => {
           <Grid container display="flex" justifyContent="center">
             <Grid item xs={10} md={10}>
               <div className="d-flex justify-content-around ">
-                {PaymentTypes.map(({ value }) => (
-                  <>
-                    <PaymentCardDetail
-                      className="mt-4"
-                      onClick={() => setSelectedPaymentOption(value)}
-                      key={value}
-                      image={GetPaymentImage(value)}
-                    >
-                      <input
-                        onClick={() => undefined}
-                        className="form-check-input "
-                        type="radio"
-                        value={value}
-                        onChange={() => setSelectedPaymentOption(value)}
-                        checked={selectedPayment === value}
+                {PaymentTypes.map(({ name, value }) => (
+                  <PaymentCardDetail
+                    className="mt-4"
+                    onClick={() => {
+                      setSelectedPaymentOption(value);
+                      if (name == "Payu") {
+                        getPayuPaymentUrl();
+                      }
+                    }}
+                    key={value}
+                    image={GetPaymentImage(value)}
+                  >
+                    {name === "Payu" ? (
+                      <PayuInput
+                        selectedPayment={selectedPayment}
+                        paymentPayload={paymentPayload}
+                        setSelectedPaymentOption={setSelectedPaymentOption}
                       />
-
-                      <Image
-                        width={100}
-                        height={80}
-                        src={GetPaymentImage(value) as any}
-                        alt={GetPaymentImage(value) as string}
-                      />
-                    </PaymentCardDetail>
-                    <>
+                    ) : (
                       <form
-                        method="post"
                         id={value}
-                        action={paymentPayload?.paymenturl}
+                        onSubmit={(data) => {
+                          console.log("formsubmit", data);
+                        }}
                       >
-                        {paymentPayload &&
-                          Object.keys(paymentPayload).map((item) => (
-                            <input
-                              key={item}
-                              type="hidden"
-                              name={item}
-                              value={paymentPayload[item]}
-                            />
-                          ))}
+                        <input
+                          onClick={() => undefined}
+                          className="form-check-input "
+                          type="radio"
+                          value={value}
+                          onChange={() => setSelectedPaymentOption(value)}
+                          checked={selectedPayment === value}
+                        />
                       </form>
-                    </>
-                  </>
+                    )}
+                    <Image
+                      width={100}
+                      height={80}
+                      src={GetPaymentImage(value) as any}
+                      alt={GetPaymentImage(value) as string}
+                    />
+                  </PaymentCardDetail>
                 ))}
               </div>
             </Grid>
@@ -84,6 +91,8 @@ const PaymentOptionCard = () => {
         <CardActions>
           <Grid container display="flex" justifyContent="center" sx={{ p: 2 }}>
             <Button
+              form={selectedPayment}
+              type="submit"
               size="small"
               variant="contained"
               disabled={!selectedPayment}

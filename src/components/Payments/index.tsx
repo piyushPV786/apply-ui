@@ -6,7 +6,8 @@ import StepperComponent from "../../components/stepper/stepper";
 import { Box, Button, Grid } from "@mui/material";
 
 const PaymentPage = ({ applicationCode }) => {
-  const { paymentDiscount, userDetails } = CustomHookPayment(applicationCode);
+  const { paymentDiscount, userDetails, getPayuDetails, paymentPayload } =
+    CustomHookPayment(applicationCode);
 
   return (
     <>
@@ -26,7 +27,10 @@ const PaymentPage = ({ applicationCode }) => {
             <OrderSummary paymentDiscount={paymentDiscount} />
           </Grid>
           <Grid item xs={12}>
-            <PaymentOption />
+            <PaymentOption
+              getPayuDetails={getPayuDetails}
+              paymentPayload={paymentPayload}
+            />
           </Grid>
           <Grid item xs={12} display="flex" justifyContent="center">
             <Grid item xs={6} display="flex" justifyContent="center">

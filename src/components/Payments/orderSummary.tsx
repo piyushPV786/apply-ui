@@ -50,8 +50,8 @@ const OrderSummary = ({ paymentDiscount }: IPaymentPageProps) => {
             <Grid item md={6} xs={12}>
               <label>Study Mode</label>
               <Typography variant="body1">
-                <strong>2DAY</strong>- These classes will be conducted during
-                the week
+                <strong>DAY</strong> (These classes will be conducted during the
+                week)
               </Typography>
             </Grid>
             <Grid item md={6} xs={12}>

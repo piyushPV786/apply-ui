@@ -43,6 +43,13 @@ class PaymentServices {
     console.log("result", result);
     return result;
   }
+
+  async getPayuDetais(applicationCode: string, payload) {
+    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint.application}/${applicationCode}${apiEndPoint.payu}`;
+    const response = await apiServer.post(url, payload);
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
+  }
 }
 
 export default new PaymentServices();
