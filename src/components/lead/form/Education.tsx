@@ -68,32 +68,36 @@ const Education = (props: any) => {
               </div>
             )}
           </div>
-          {!!studentProgram?.studyModes?.length && (
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
-              <br />
-              {studentProgram?.studyModes?.map((item: any) => {
-                {
-                  return (
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input me-2"
-                        type={"radio"}
-                        {...register("education.studyModeCode")}
-                        value={item?.studyModeCode}
-                      />
-                      {item?.studyModeCode}
-                    </div>
-                  );
-                }
-              })}
-              <StyleContainer className="fee-cards">
-                <div className="fee-card-list">
-                  <FeeCard />
-                </div>
-              </StyleContainer>
-            </div>
-          )}
+
+          <div className="col-lg-4 mb-4">
+            <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
+            <br />
+            {!!studentProgram?.studyModes?.length && (
+              <>
+                {studentProgram?.studyModes?.map((item: any) => {
+                  {
+                    return (
+                      <div className="form-check form-check-inline">
+                        <input
+                          className="form-check-input me-2"
+                          type={"radio"}
+                          {...register("education.studyModeCode")}
+                          value={item?.studyModeCode}
+                        />
+                        {item?.studyModeCode}
+                      </div>
+                    );
+                  }
+                })}
+                <StyleContainer className="fee-cards">
+                  <div className="fee-card-list">
+                    <FeeCard />
+                  </div>
+                </StyleContainer>
+              </>
+            )}
+          </div>
+
           <div className="col-lg-4 mb-4">
             {!!masterData?.highestQualificationData?.length && (
               <CommonAutocomplete

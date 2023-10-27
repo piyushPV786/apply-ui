@@ -14,9 +14,7 @@ const RadioField = ({ registerName, defaultValue, defaultChecked }: any) => {
     <FormControl component="fieldset">
       <Controller
         control={control}
-        {...register(registerName, {
-          required: true,
-        })}
+        {...register(registerName)}
         defaultValue={defaultValue} // Set the default value here
         render={({ field }) => {
           return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import {
   GreenFormHeading,
@@ -28,6 +28,19 @@ const Kin = (props: any) => {
   const error = errors["kin"] as any;
   const isNextKinVal = watch("kin.isActive");
   const Errors = errors["kin"] as any;
+  const [SpData, setSpData] = useState<any>([]);
+
+  useEffect(() => {
+    const sponsorData: any = [];
+    kinInfoData?.forEach((item) => {
+      if (isNextKinVal === "true" || isNextKinVal === true) {
+        sponsorData.push({ ...item, required: true });
+      } else {
+        sponsorData.push({ ...item, required: false });
+      }
+    });
+    setSpData(sponsorData);
+  }, [isNextKinVal]);
   return (
     <StyledAccordion
       defaultExpanded={false}
@@ -46,14 +59,22 @@ const Kin = (props: any) => {
 
         <RadioField
           registerName={"kin.isActive"}
-          defaultValue={applicationData?.kin?.isActive}
-          defaultChecked={applicationData?.kin?.isActive}
+          defaultValue={
+            applicationData?.kin?.isActive
+              ? applicationData?.kin?.isActive
+              : false
+          }
+          defaultChecked={
+            applicationData?.kin?.isActive?.isActive
+              ? applicationData?.kin?.isActive
+              : false
+          }
         />
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid">
           <div className="row">
-            {kinInfoData?.map((element) => (
+            {SpData?.map((element) => (
               <>
                 {element?.type === "text" && (
                   <TextField

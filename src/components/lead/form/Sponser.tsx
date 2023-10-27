@@ -17,6 +17,7 @@ import { sponsorInfoData } from "./data/sponsorData";
 import TextField from "./components/TextField";
 import { isValidEmail } from "../../../Util/Util";
 import { MobileField } from "./components/MobileField";
+import { useEffect, useState } from "react";
 
 const Sponsor = (props: any) => {
   const {
@@ -30,6 +31,19 @@ const Sponsor = (props: any) => {
   const stateDetails: any = useAddressHook(countryDetail);
   const stateList = stateDetails[countryDetail];
   const Errors = errors["sponsor"] as any;
+  const [SpData, setSpData] = useState<any>([]);
+
+  useEffect(() => {
+    const sponsorData: any = [];
+    sponsorInfoData?.forEach((item) => {
+      if (activeSponsor === "true" || activeSponsor === true) {
+        sponsorData.push({ ...item, required: true });
+      } else {
+        sponsorData.push({ ...item, required: false });
+      }
+    });
+    setSpData(sponsorData);
+  }, [activeSponsor]);
   return (
     <StyledAccordion
       defaultExpanded={false}
@@ -48,14 +62,22 @@ const Sponsor = (props: any) => {
 
         <RadioField
           registerName={"sponsor.isActive"}
-          defaultValue={applicationData?.sponsor?.isActive}
-          defaultChecked={applicationData?.sponsor?.isActive}
+          defaultValue={
+            applicationData?.sponsor?.isActive
+              ? applicationData?.sponsor?.isActive
+              : false
+          }
+          defaultChecked={
+            applicationData?.sponsor?.isActive
+              ? applicationData?.sponsor?.isActive
+              : false
+          }
         />
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid">
           <div className="row">
-            {sponsorInfoData?.map((element) => (
+            {SpData?.map((element) => (
               <>
                 {element?.type === "text" && (
                   <TextField
@@ -74,7 +96,7 @@ const Sponsor = (props: any) => {
                       }
                       label={element?.label}
                       registerName={`sponsor.${element?.name}`}
-                      required={true}
+                      required={element?.required}
                       defaultValue={
                         applicationData && applicationData?.sponsor
                           ? applicationData?.sponsor[element?.name]
@@ -94,7 +116,7 @@ const Sponsor = (props: any) => {
                       options={stateList ? stateList : element.option}
                       label={element?.label}
                       registerName={`sponsor.${element?.name}`}
-                      required={true}
+                      required={element?.required}
                       defaultValue={
                         applicationData && applicationData?.sponsor
                           ? applicationData?.sponsor[element?.name]
@@ -140,17 +162,6 @@ const Sponsor = (props: any) => {
                 )}
               </>
             ))}
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.sponsorModeData?.length && (
-                <CommonAutocomplete
-                  defaultValue={applicationData?.sponsor?.sponsorModeCode}
-                  options={masterData?.sponsorModeData}
-                  label="Sponsor Type"
-                  registerName={`sponsor.sponsorModeCode`}
-                  required={true}
-                />
-              )}
-            </div>
           </div>
         </div>
       </AccordionDetails>

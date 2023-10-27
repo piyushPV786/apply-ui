@@ -1,19 +1,15 @@
 import { useFormContext } from "react-hook-form";
-import {
-  GreenFormHeading,
-  StyledAccordion,
-  StyledLabel,
-} from "../../common/common";
+import { GreenFormHeading, StyledAccordion } from "../../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
-import { IMasterData } from "../../common/types";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import RadioField from "./components/RadioField";
 import { employmentData } from "./data/employmentData";
 import TextField from "./components/TextField";
 import { useAddressHook } from "../customHooks/addressHooks";
+import { useEffect, useState } from "react";
 
 const Employment = (props: any) => {
   const {
@@ -29,6 +25,19 @@ const Employment = (props: any) => {
   const stateDetails: any = useAddressHook(countryDetail);
   const stateList = stateDetails[countryDetail];
 
+  const [SpData, setSpData] = useState<any>([]);
+
+  useEffect(() => {
+    const sponsorData: any = [];
+    employmentData?.forEach((item) => {
+      if (activeEmp === "true" || activeEmp === true) {
+        sponsorData.push({ ...item, required: true });
+      } else {
+        sponsorData.push({ ...item, required: false });
+      }
+    });
+    setSpData(sponsorData);
+  }, [activeEmp]);
   return (
     <StyledAccordion
       defaultExpanded={false}
@@ -45,14 +54,22 @@ const Employment = (props: any) => {
         </GreenFormHeading>
         <RadioField
           registerName={"employment.isActive"}
-          defaultValue={applicationData?.employment?.isActive}
-          defaultChecked={applicationData?.employment?.isActive}
+          defaultValue={
+            applicationData?.employment?.isActive
+              ? applicationData?.employment?.isActive
+              : false
+          }
+          defaultChecked={
+            applicationData?.employment?.isActive
+              ? applicationData?.employment?.isActive
+              : false
+          }
         />
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid">
           <div className="row">
-            {employmentData?.map((element) => (
+            {SpData?.map((element) => (
               <>
                 {element?.type === "text" && (
                   <TextField
@@ -71,7 +88,7 @@ const Employment = (props: any) => {
                       }
                       label={element?.label}
                       registerName={`employment.${element?.name}`}
-                      required={true}
+                      required={element?.required}
                       defaultValue={
                         applicationData && applicationData?.employment
                           ? applicationData?.employment[element?.name]
@@ -91,7 +108,7 @@ const Employment = (props: any) => {
                       options={stateList ? stateList : element.option}
                       label={element?.label}
                       registerName={`employment.${element?.name}`}
-                      required={true}
+                      required={element?.required}
                       defaultValue={
                         applicationData && applicationData?.employment
                           ? applicationData?.employment[element?.name]
