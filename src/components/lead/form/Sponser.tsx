@@ -13,14 +13,23 @@ import CommonAutocomplete from "./components/CommonAutocomplete ";
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { useAddressHook } from "../customHooks/addressHooks";
 import RadioField from "./components/RadioField";
+import { sponsorInfoData } from "./data/sponsorData";
+import TextField from "./components/TextField";
+import { isValidEmail } from "../../../Util/Util";
+import { MobileField } from "./components/MobileField";
 
 const Sponsor = (props: any) => {
-  const { register, watch } = useFormContext();
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext();
   const { masterData, applicationData } = props?.masterData;
   const activeSponsor = watch("sponsor.isActive");
   const countryDetail = watch(`sponsor.country`);
   const stateDetails: any = useAddressHook(countryDetail);
   const stateList = stateDetails[countryDetail];
+  const Errors = errors["sponsor"] as any;
   return (
     <StyledAccordion
       defaultExpanded={false}
@@ -46,6 +55,91 @@ const Sponsor = (props: any) => {
       <AccordionDetails>
         <div className="container-fluid">
           <div className="row">
+            {sponsorInfoData?.map((element) => (
+              <>
+                {element?.type === "text" && (
+                  <TextField
+                    element={element}
+                    Errors={Errors}
+                    registerName={`sponsor.${element?.name}`}
+                  />
+                )}
+                {element?.type === "select" && element?.key !== "state" && (
+                  <div className="col-lg-4 mb-4">
+                    <CommonAutocomplete
+                      options={
+                        masterData[element?.key]
+                          ? masterData[element?.key]
+                          : element.option
+                      }
+                      label={element?.label}
+                      registerName={`sponsor.${element?.name}`}
+                      required={true}
+                      defaultValue={
+                        applicationData && applicationData?.sponsor
+                          ? applicationData?.sponsor[element?.name]
+                          : null
+                      }
+                    />
+                    {Errors && Errors[element?.name] && (
+                      <div className="invalid-feedback">
+                        {element?.errorMessage}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {element?.type === "select" && element?.key === "state" && (
+                  <div className="col-lg-4 mb-4">
+                    <CommonAutocomplete
+                      options={stateList ? stateList : element.option}
+                      label={element?.label}
+                      registerName={`sponsor.${element?.name}`}
+                      required={true}
+                      defaultValue={
+                        applicationData && applicationData?.sponsor
+                          ? applicationData?.sponsor[element?.name]
+                          : null
+                      }
+                    />
+                    {Errors && Errors[element?.name] && (
+                      <div className="invalid-feedback">
+                        {element?.errorMessage}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {element?.type === "email" && (
+                  <div className="col-lg-4 mb-4">
+                    <StyledLabel required>{element?.label}</StyledLabel>
+                    <input
+                      className="form-control"
+                      type={element.type}
+                      placeholder=""
+                      {...register(`sponsor.${element?.name}`, {
+                        required: element.required,
+                        validate: (value) =>
+                          isValidEmail(value, !element.required),
+                      })}
+                    />
+                    {Errors && Errors?.email && (
+                      <div className="invalid-feedback">
+                        {Errors?.email?.type == "validate"
+                          ? element?.validateErrorMessage
+                          : element?.errorMessage}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {element?.type === "mobileNumber" && (
+                  <MobileField
+                    element={element}
+                    registerName={`sponsor.${element?.name}`}
+                    countryCodeRegisterName={`sponsor.${element?.countryCodeRegisterName}`}
+                    error={Errors}
+                  />
+                )}
+              </>
+            ))}
             <div className="col-lg-4 mb-4">
               {!!masterData?.sponsorModeData?.length && (
                 <CommonAutocomplete
@@ -56,95 +150,6 @@ const Sponsor = (props: any) => {
                   required={true}
                 />
               )}
-            </div>
-
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.relationData?.length && (
-                <CommonAutocomplete
-                  defaultValue={applicationData?.sponsor?.relationshipCode}
-                  options={masterData?.relationData}
-                  label="Relationship Type"
-                  registerName={`sponsor.relationshipCode`}
-                  required={true}
-                />
-              )}
-            </div>
-
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Sponsor Name</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("sponsor.name")}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Email Address</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("sponsor.email")}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Phone Number</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("sponsor.mobileNumber")}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Address</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("sponsor.address")}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.countryData?.length && (
-                <CommonAutocomplete
-                  defaultValue={applicationData?.sponsor?.country}
-                  options={masterData?.countryData}
-                  label="Country"
-                  registerName={`sponsor.country`}
-                  required={true}
-                />
-              )}
-            </div>
-            <div className="col-lg-4 mb-4">
-              {!!stateList?.length && (
-                <CommonAutocomplete
-                  defaultValue={applicationData?.sponsor?.state}
-                  options={stateList}
-                  label="State/Provinces"
-                  registerName={`sponsor.state`}
-                  required={true}
-                />
-              )}
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required> City </StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder={"e.g 10 church street"}
-                {...register(`sponsor.city`)}
-              />
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Pin Code / Zip Code</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder={"Enter Zip/Postal Code"}
-                {...register(`sponsor.zipCode`)}
-              />
             </div>
           </div>
         </div>

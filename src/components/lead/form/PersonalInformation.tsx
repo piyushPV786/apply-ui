@@ -22,6 +22,8 @@ const PersonalInformation = (props: any) => {
   } = useFormContext();
   const Errors = errors["lead"] as any;
 
+  console.log("errors ============>", Errors);
+
   useEffect(() => {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
     setValue("lead.mobileNumber", `+${studentDetails?.mobileNumber}`);
@@ -64,7 +66,11 @@ const PersonalInformation = (props: any) => {
                       label={element?.label}
                       registerName={`lead.${element?.name}`}
                       required={true}
-                      defaultValue={applicationData?.lead[element?.name]}
+                      defaultValue={
+                        applicationData && applicationData?.lead[element?.name]
+                          ? applicationData?.lead[element?.name]
+                          : null
+                      }
                     />
                     {Errors && Errors[element?.name] && (
                       <div className="invalid-feedback">

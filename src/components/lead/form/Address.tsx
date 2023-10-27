@@ -9,12 +9,17 @@ import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddressImg from "../../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import AddressType from "./AddressType";
-import { useCompareAddressHook } from "../customHooks/addressHooks";
+import {
+  useCompareAddressHook,
+  useSameResidentialAddress,
+} from "../customHooks/addressHooks";
 
 const Address = (props: any) => {
   const { masterData, applicationData } = props?.masterData;
   const { register } = useFormContext();
-  const compareAddress = useCompareAddressHook(applicationData?.address);
+  useCompareAddressHook(applicationData?.address);
+  useSameResidentialAddress();
+
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary
@@ -42,6 +47,7 @@ const Address = (props: any) => {
                 />
                 {index === 0 && (
                   <div className="col-md-12">
+                    <br />
                     <input
                       {...register(`address.isSameAsPostalAddress`, {
                         required: false,

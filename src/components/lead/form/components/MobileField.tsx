@@ -11,7 +11,7 @@ export const MobileField = ({
   error,
 }) => {
   const { control, setValue } = useFormContext();
-  const [countryCodeRef, setCountryCode] = useState<any>("SA");
+  const [countryCodeRef, setCountryCode] = useState<any>("ZA");
   const updateMobNumber = () => {
     if (countryCodeRef) {
       const countryCode = getCountryCallingCode(countryCodeRef);

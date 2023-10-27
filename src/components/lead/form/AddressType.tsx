@@ -37,7 +37,11 @@ const AddressType = (props) => {
       <div className="col-lg-4 mb-4">
         {!!masterData?.countryData?.length && (
           <CommonAutocomplete
-            defaultValue={applicationData?.address[index]?.country}
+            defaultValue={
+              applicationData && applicationData?.address?.length
+                ? applicationData?.address[index]?.country
+                : null
+            }
             options={masterData?.countryData}
             label="Country"
             registerName={`address[${index}].country`}
@@ -53,7 +57,11 @@ const AddressType = (props) => {
 
       <div className="col-lg-4 mb-4">
         <CommonAutocomplete
-          defaultValue={applicationData?.address[index]?.state}
+          defaultValue={
+            applicationData && applicationData?.address?.length
+              ? applicationData?.address[index]?.state
+              : null
+          }
           options={stateList ? stateList : []}
           label="State/Provinces"
           registerName={`address[${index}].state`}

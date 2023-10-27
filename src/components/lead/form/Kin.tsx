@@ -73,7 +73,11 @@ const Kin = (props: any) => {
                       label={element?.label}
                       registerName={`kin.${element?.name}`}
                       required={element.required}
-                      defaultValue={applicationData?.kin[element?.name]}
+                      defaultValue={
+                        applicationData?.kin
+                          ? applicationData?.kin[element?.name]
+                          : null
+                      }
                     />
                     {Errors && Errors[element?.name] && (
                       <div className="invalid-feedback">
@@ -91,7 +95,11 @@ const Kin = (props: any) => {
                       placeholder=""
                       {...register(`kin.${element?.name}`, {
                         required: element.required,
-                        validate: (value) => isValidEmail(value, !isKinNeed),
+                        validate: (value) => {
+                          if (element.required) {
+                            return isValidEmail(value, element.required);
+                          }
+                        },
                       })}
                     />
                     {error && error?.email && (

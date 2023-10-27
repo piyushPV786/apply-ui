@@ -72,7 +72,11 @@ const Employment = (props: any) => {
                       label={element?.label}
                       registerName={`employment.${element?.name}`}
                       required={true}
-                      defaultValue={applicationData?.employment[element?.name]}
+                      defaultValue={
+                        applicationData && applicationData?.employment
+                          ? applicationData?.employment[element?.name]
+                          : null
+                      }
                     />
                     {Errors && Errors[element?.name] && (
                       <div className="invalid-feedback">
@@ -88,7 +92,11 @@ const Employment = (props: any) => {
                       label={element?.label}
                       registerName={`employment.${element?.name}`}
                       required={true}
-                      defaultValue={applicationData?.employment[element?.name]}
+                      defaultValue={
+                        applicationData && applicationData?.employment
+                          ? applicationData?.employment[element?.name]
+                          : null
+                      }
                     />
                     {Errors && Errors[element?.name] && (
                       <div className="invalid-feedback">

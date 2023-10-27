@@ -55,7 +55,7 @@ const CommonAutocomplete = ({
           },
           "& .MuiIconButton-root": { padding: "3px !important" },
         }}
-        {...register(registerName, { value: defaultValue })}
+        {...register(registerName, { required: required })}
         options={dropDownOptions}
         defaultValue={defaultValue}
         disabled={disabled}
