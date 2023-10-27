@@ -68,6 +68,20 @@ class ApplicationFormServices {
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
+
+  async createLead(payload, isDraft) {
+    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.lead}?isDraft=${isDraft}`;
+    const response = await apiServer.post(url, payload);
+    const result = response?.data?.data ? response?.data?.data : null;
+    return result;
+  }
+
+  async updateLead(payload, leadCode) {
+    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.lead}/${leadCode}/${apiEndPoint?.application}/${payload.applicationCode}`;
+    const response = await apiServer.put(url, payload);
+    const result = response?.data?.data ? response?.data?.data : null;
+    return result;
+  }
 }
 
 export default new ApplicationFormServices();
