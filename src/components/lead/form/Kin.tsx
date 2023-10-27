@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import React from "react";
+import { useFormContext } from "react-hook-form";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -10,30 +10,24 @@ import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
-import { formOptions, isValidEmail, validateNumber } from "../../../Util/Util";
-import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
+import { isValidEmail } from "../../../Util/Util";
+
 import RadioField from "./components/RadioField";
+import { kinInfoData } from "./data/kinData";
+import TextField from "./components/TextField";
+import { MobileField } from "./components/MobileField";
+
 const Kin = (props: any) => {
   const { masterData, applicationData } = props?.masterData;
   const {
     register,
     watch,
-    control,
-    setValue,
     formState: { errors },
   } = useFormContext();
   const isKinNeed = watch("kin.isActive");
   const error = errors["kin"] as any;
   const isNextKinVal = watch("kin.isActive");
-  const [countryCodeRef, setCountryCode] = useState<any>("SA");
-  const updateMobNumber = () => {
-    if (countryCodeRef) {
-      const countryCode = getCountryCallingCode(countryCodeRef);
-      setValue(`kin.mobileCountryCode`, `+${countryCode}`);
-    } else {
-      setValue(`kin.mobileCountryCode`, "", formOptions);
-    }
-  };
+  const Errors = errors["kin"] as any;
   return (
     <StyledAccordion
       defaultExpanded={false}
@@ -59,104 +53,66 @@ const Kin = (props: any) => {
       <AccordionDetails>
         <div className="container-fluid">
           <div className="row">
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Full Name</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("kin.fullName", { required: isKinNeed })}
-              />
-              {error && error?.fullName && (
-                <div className="invalid-feedback">Please enter full name</div>
-              )}
-            </div>
-            <div className="col-lg-4 mb-4">
-              {!!masterData?.relationData?.length && (
-                <CommonAutocomplete
-                  defaultValue={applicationData?.kin?.relationship}
-                  options={masterData?.relationData}
-                  label="RelationShip"
-                  registerName={`kin.relationshipCode`}
-                  required={isKinNeed}
-                />
-              )}
-              {error && error?.relationship && (
-                <div className="invalid-feedback">
-                  Please enter relationship
-                </div>
-              )}
-            </div>
-            <div className="col-lg-4 mb-4">
-              <StyledLabel required>Email</StyledLabel>
-              <input
-                className="form-control"
-                type={"text"}
-                placeholder="text"
-                {...register("kin.email", {
-                  required: isKinNeed,
-                  validate: (value) => isValidEmail(value, !isKinNeed),
-                })}
-              />
-              {error && error?.email && (
-                <div className="invalid-feedback">
-                  {error?.email?.type == "validate"
-                    ? "you have entered an invalid email address. Please try again"
-                    : "Please enter email"}
-                </div>
-              )}
-            </div>
-            <div className="col-md-4">
-              <div className="mb-4">
-                <StyledLabel required>Mobile Number</StyledLabel>
-                <Controller
-                  control={control}
-                  name={"kin.mobileNumber"}
-                  rules={{
-                    required: isKinNeed ? true : false,
-                    validate: {
-                      validPhoneNumber: (value) => {
-                        if (isKinNeed) {
-                          return (
-                            validateNumber(value, countryCodeRef) ||
-                            "Invalid phone number"
-                          );
-                        }
-                      },
-                    },
-                  }}
-                  render={({ field }) => (
-                    <PhoneInput
-                      fullWidth
-                      {...field}
-                      id="2"
-                      international
-                      countryCallingCodeEditable={false}
-                      defaultCountry={countryCodeRef}
-                      placeholder="Select Country Code*"
-                      onCountryChange={(value: any) => {
-                        setCountryCode(value);
-                      }}
-                      onBlur={() => {
-                        field.onBlur();
-                        updateMobNumber();
-                      }}
-                      onChange={(value) => {
-                        field.onChange(value);
-                      }}
-                      value={field.value}
+            {kinInfoData?.map((element) => (
+              <>
+                {element?.type === "text" && (
+                  <TextField
+                    element={element}
+                    Errors={Errors}
+                    registerName={`kin.${element?.name}`}
+                  />
+                )}
+                {element?.type === "select" && (
+                  <div className="col-lg-4 mb-4">
+                    <CommonAutocomplete
+                      options={
+                        masterData[element?.key]
+                          ? masterData[element?.key]
+                          : element.option
+                      }
+                      label={element?.label}
+                      registerName={`kin.${element?.name}`}
+                      required={element.required}
+                      defaultValue={applicationData?.kin[element?.name]}
                     />
-                  )}
-                />
-                {error && error?.mobileNumber && (
-                  <div className="invalid-feedback">
-                    {error?.mobileNumber.type === "validate"
-                      ? "you have entered an invalid number"
-                      : " Please enter phone number"}
+                    {Errors && Errors[element?.name] && (
+                      <div className="invalid-feedback">
+                        {element?.errorMessage}
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-            </div>
+                {element?.type === "email" && (
+                  <div className="col-lg-4 mb-4">
+                    <StyledLabel required>{element?.label}</StyledLabel>
+                    <input
+                      className="form-control"
+                      type={element.type}
+                      placeholder=""
+                      {...register(`kin.${element?.name}`, {
+                        required: element.required,
+                        validate: (value) => isValidEmail(value, !isKinNeed),
+                      })}
+                    />
+                    {error && error?.email && (
+                      <div className="invalid-feedback">
+                        {error?.email?.type == "validate"
+                          ? element?.validateErrorMessage
+                          : element?.errorMessage}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {element?.type === "mobileNumber" && (
+                  <MobileField
+                    element={element}
+                    registerName={`kin.${element?.name}`}
+                    countryCodeRegisterName={`kin.${element?.countryCodeRegisterName}`}
+                    error={Errors}
+                  />
+                )}
+              </>
+            ))}
           </div>
         </div>
       </AccordionDetails>
