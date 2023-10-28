@@ -3,6 +3,8 @@ import { StyledLabel } from "../../../common/common";
 
 const EmailField = ({ element, Errors, registerName }: any) => {
   const { register, setError, clearErrors } = useFormContext();
+  console.log(registerName);
+  console.log("Errors ==============>", Errors);
   return (
     <div className="col-lg-4 mb-4">
       <StyledLabel required>Email</StyledLabel>
@@ -16,24 +18,15 @@ const EmailField = ({ element, Errors, registerName }: any) => {
         onBlur={async (e) => {
           if (e.target.value) {
             const res = await element?.validate(e);
-            if (res?.message == "Provided email address alredy exists") {
+            if (res?.message !== "clear") {
               setError(registerName, {
                 type: "custom",
-                message: "Provided email address already exists",
+                message: res?.message,
               });
-            } else if (
-              res?.message ==
-              "you have entered an invalid email address. Please try again"
-            ) {
-              setError(registerName, {
-                type: "custom",
-                message:
-                  "you have entered an invalid email address. Please try again",
-              });
-            } else if (res?.message == "clear") {
+            } else if (res?.message === "clear") {
               clearErrors(registerName);
             }
-          } else if (e.target.value == "") {
+          } else if (e.target.value === "") {
             setError(registerName, {
               type: "custom",
               message: "Please enter Email",
@@ -41,10 +34,10 @@ const EmailField = ({ element, Errors, registerName }: any) => {
           }
         }}
       />
-      {Errors && Errors[registerName] && (
+      {Errors && Errors[element?.name] && (
         <div className="invalid-feedback">
-          {Errors[registerName]?.type === "custom" &&
-            Errors[registerName].message}
+          {Errors[element?.name]?.type === "custom" &&
+            Errors[element?.name].message}
         </div>
       )}
     </div>
