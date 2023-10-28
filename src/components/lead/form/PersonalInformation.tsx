@@ -92,6 +92,11 @@ const PersonalInformation = (props: any) => {
                 )}
                 {element?.type === "date" && (
                   <DateField
+                    defaultValue={
+                      applicationData?.lead?.dateOfBirth
+                        ? new Date(applicationData?.lead?.dateOfBirth)
+                        : null
+                    }
                     element={element}
                     Errors={Errors}
                     registerName={`lead.${element?.name}`}

@@ -6,6 +6,7 @@ import StepperComponent from "../../components/stepper/stepper";
 import UseDocumentHook from "./customHook/UseDocumentHook";
 
 import { FormProvider, useForm } from "react-hook-form";
+import Header from "../common/header";
 
 const DocumentUploadPage = (props) => {
   const methods = useForm();
@@ -15,6 +16,7 @@ const DocumentUploadPage = (props) => {
 
   return (
     <MainContainer>
+      <Header />
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit((data) => {

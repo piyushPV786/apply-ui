@@ -45,6 +45,8 @@ const Kin = (props: any) => {
   useEffect(() => {
     if (!applicationData?.kin?.isActive) {
       setValue("kin.isKin", "no");
+    } else if (applicationData?.kin?.isActive) {
+      setValue("kin.isKin", "yes");
     }
   }, [applicationData?.kin?.isActive]);
 

@@ -49,6 +49,8 @@ const Sponsor = (props: any) => {
   useEffect(() => {
     if (!applicationData?.sponsor?.isActive) {
       setValue("sponsor.isSponsor", "no");
+    } else if (applicationData?.sponsor?.isActive) {
+      setValue("sponsor.isSponsor", "yes");
     }
   }, [applicationData?.sponsor?.isActive]);
 

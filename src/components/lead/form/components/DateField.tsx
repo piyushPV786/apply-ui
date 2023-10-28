@@ -1,11 +1,12 @@
 import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../../common/common";
-const DateField = ({ element, Errors, registerName }: any) => {
+const DateField = ({ element, Errors, registerName, defaultValue }: any) => {
   const { register } = useFormContext();
   return (
     <div className="col-lg-4 mb-4">
       <StyledLabel required={element?.required}>{element?.label}</StyledLabel>
       <input
+        defaultValue={defaultValue}
         className="form-control"
         type={"date"}
         placeholder={element?.placeholder}

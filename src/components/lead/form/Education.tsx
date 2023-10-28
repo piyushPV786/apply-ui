@@ -20,12 +20,14 @@ import {
 } from "@mui/material";
 import RadioField from "./components/RadioField";
 import { useEducationHook } from "../customHooks/educationHooks";
+import { useEffect } from "react";
 
 const Education = (props: any) => {
   const {
     register,
     watch,
     formState: { errors },
+    setValue,
     control,
   } = useFormContext();
 
@@ -39,7 +41,13 @@ const Education = (props: any) => {
   const feesDetails = studentProgram?.studyModes?.find(
     (item) => item?.studyModeCode === studyModeCodeWatch
   );
-  console.log("feesDetails ===========>", feesDetails);
+  useEffect(() => {
+    if (applicationData?.education?.isInternationDegree) {
+      setValue("education.isInternationDegree", "yes");
+    } else if (!applicationData?.education?.isInternationDegree) {
+      setValue("education.isInternationDegree", "no");
+    }
+  }, [applicationData?.education?.qualificationCode]);
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary
@@ -151,7 +159,9 @@ const Education = (props: any) => {
             <div className="form-check form-check-inline">
               <RadioField
                 registerName={"education.isInternationDegree"}
-                defaultValue={applicationData?.education?.isInternationDegree}
+                defaultValue={
+                  applicationData?.education?.isInternationDegree ? "yes" : "no"
+                }
                 defaultChecked={applicationData?.education?.isInternationDegree}
               />
             </div>

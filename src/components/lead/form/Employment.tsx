@@ -43,6 +43,8 @@ const Employment = (props: any) => {
   useEffect(() => {
     if (!applicationData?.employment?.isActive) {
       setValue("employment.isEmployment", "no");
+    } else if (applicationData?.employment?.isActive) {
+      setValue("employment.isEmployment", "yes");
     }
   }, [applicationData?.employment?.isActive]);
   return (
