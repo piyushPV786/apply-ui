@@ -31,7 +31,7 @@ const Employment = (props: any) => {
   useEffect(() => {
     const sponsorData: any = [];
     employmentData?.forEach((item) => {
-      if (activeEmp === "true" || activeEmp === true) {
+      if (activeEmp === "yes" || activeEmp === true) {
         sponsorData.push({ ...item, required: true });
       } else {
         sponsorData.push({ ...item, required: false });

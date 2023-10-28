@@ -33,7 +33,7 @@ const Kin = (props: any) => {
   useEffect(() => {
     const sponsorData: any = [];
     kinInfoData?.forEach((item) => {
-      if (isNextKinVal === "true" || isNextKinVal === true) {
+      if (isNextKinVal === "yes") {
         sponsorData.push({ ...item, required: true });
       } else {
         sponsorData.push({ ...item, required: false });

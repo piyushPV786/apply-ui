@@ -37,7 +37,7 @@ const Sponsor = (props: any) => {
   useEffect(() => {
     const sponsorData: any = [];
     sponsorInfoData?.forEach((item) => {
-      if (activeSponsor === "true" || activeSponsor === true) {
+      if (activeSponsor === "yes") {
         sponsorData.push({ ...item, required: true });
       } else {
         sponsorData.push({ ...item, required: false });

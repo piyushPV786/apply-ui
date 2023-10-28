@@ -34,7 +34,7 @@ const Education = (props: any) => {
   const programCode = watch("education.programCode");
   const studyModeCodeWatch = watch("education.studyModeCode");
   const studentProgram: any = useEducationHook(programCode);
-  const refferedBy = watch("education.refferedById");
+  const refferedBy = watch("education.referredById");
   const Errors = errors["education"] as any;
   const feesDetails = studentProgram?.studyModes?.find(
     (item) => item?.studyModeCode === studyModeCodeWatch
