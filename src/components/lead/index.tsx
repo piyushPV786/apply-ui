@@ -26,9 +26,7 @@ const LeadForm = (props: IProps) => {
   const methods = useForm();
   const { watch, handleSubmit } = methods;
   const masterData = useFormHook(props?.applicationCode);
-  const { saveApplication, saveApplicationAsDraft } = useHelperHook(
-    methods.watch
-  );
+  const { saveApplication, saveApplicationAsDraft } = useHelperHook();
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
   //Setting values in form after data fetch
@@ -62,8 +60,7 @@ const LeadForm = (props: IProps) => {
                 <TermsAndCondition />
                 <div className="mt-4 text-center">
                   <StyledButton
-                    // onClick={handleSubmit((d) => saveApplicationAsDraft(d))}
-                    onClick={saveApplicationAsDraft}
+                    onClick={handleSubmit((d) => saveApplicationAsDraft(d))}
                     className="form-button btn-space"
                     title="Save As Draft"
                   />

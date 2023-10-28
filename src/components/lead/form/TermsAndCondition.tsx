@@ -14,7 +14,7 @@ const TermsAndCondition = (props: any) => {
         <input
           className="form-check-input me-2"
           type="checkbox"
-          {...register("isAgreedTermsAndConditions", {
+          {...register("lead.isAgreedTermsAndConditions", {
             required: true,
           })}
         />

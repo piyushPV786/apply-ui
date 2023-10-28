@@ -69,6 +69,13 @@ class ApplicationFormServices {
     return result;
   }
 
+  async createDraft(payload) {
+    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.draft}`;
+    const response = await apiServer.post(url, payload);
+    const result = response?.data ? response?.data : null;
+    return result;
+  }
+
   async createLead(payload, isDraft) {
     const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.lead}?isDraft=${isDraft}`;
     const response = await apiServer.post(url, payload);

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Step, StepLabel, Stepper } from "@material-ui/core";
 import styled from "styled-components";
-const steps = ["Information", "Payment", "Upload Document"];
+const steps = ["Information", "Upload Document", "Payment"];
 interface IStepperProps {
   active: number;
 }

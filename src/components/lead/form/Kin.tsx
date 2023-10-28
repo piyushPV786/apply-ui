@@ -22,11 +22,11 @@ const Kin = (props: any) => {
   const {
     register,
     watch,
+    setValue,
     formState: { errors },
   } = useFormContext();
-  const isKinNeed = watch("kin.isActive");
   const error = errors["kin"] as any;
-  const isNextKinVal = watch("kin.isActive");
+  const isNextKinVal = watch("kin.isKin");
   const Errors = errors["kin"] as any;
   const [SpData, setSpData] = useState<any>([]);
 
@@ -41,10 +41,17 @@ const Kin = (props: any) => {
     });
     setSpData(sponsorData);
   }, [isNextKinVal]);
+
+  useEffect(() => {
+    if (!applicationData?.kin?.isActive) {
+      setValue("kin.isKin", "no");
+    }
+  }, [applicationData?.kin?.isActive]);
+
   return (
     <StyledAccordion
       defaultExpanded={false}
-      expanded={isNextKinVal === "true" || isNextKinVal === true}
+      expanded={isNextKinVal === "yes"}
       className="card-shadow"
     >
       <AccordionSummary
@@ -58,7 +65,7 @@ const Kin = (props: any) => {
         </GreenFormHeading>
 
         <RadioField
-          registerName={"kin.isActive"}
+          registerName={"kin.isKin"}
           defaultValue={
             applicationData?.kin?.isActive
               ? applicationData?.kin?.isActive
@@ -73,76 +80,78 @@ const Kin = (props: any) => {
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid">
-          <div className="row">
-            {SpData?.map((element) => (
-              <>
-                {element?.type === "text" && (
-                  <TextField
-                    element={element}
-                    Errors={Errors}
-                    registerName={`kin.${element?.name}`}
-                  />
-                )}
-                {element?.type === "select" && (
-                  <div className="col-lg-4 mb-4">
-                    <CommonAutocomplete
-                      options={
-                        masterData[element?.key]
-                          ? masterData[element?.key]
-                          : element.option
-                      }
-                      label={element?.label}
+          {isNextKinVal === "yes" && (
+            <div className="row">
+              {SpData?.map((element) => (
+                <>
+                  {element?.type === "text" && (
+                    <TextField
+                      element={element}
+                      Errors={Errors}
                       registerName={`kin.${element?.name}`}
-                      required={element.required}
-                      defaultValue={
-                        applicationData?.kin
-                          ? applicationData?.kin[element?.name]
-                          : null
-                      }
                     />
-                    {Errors && Errors[element?.name] && (
-                      <div className="invalid-feedback">
-                        {element?.errorMessage}
-                      </div>
-                    )}
-                  </div>
-                )}
-                {element?.type === "email" && (
-                  <div className="col-lg-4 mb-4">
-                    <StyledLabel required>{element?.label}</StyledLabel>
-                    <input
-                      className="form-control"
-                      type={element.type}
-                      placeholder=""
-                      {...register(`kin.${element?.name}`, {
-                        required: element.required,
-                        validate: (value) => {
-                          if (element.required) {
-                            return isValidEmail(value, element.required);
-                          }
-                        },
-                      })}
+                  )}
+                  {element?.type === "select" && (
+                    <div className="col-lg-4 mb-4">
+                      <CommonAutocomplete
+                        options={
+                          masterData[element?.key]
+                            ? masterData[element?.key]
+                            : element.option
+                        }
+                        label={element?.label}
+                        registerName={`kin.${element?.name}`}
+                        required={element.required}
+                        defaultValue={
+                          applicationData?.kin
+                            ? applicationData?.kin[element?.name]
+                            : null
+                        }
+                      />
+                      {Errors && Errors[element?.name] && (
+                        <div className="invalid-feedback">
+                          {element?.errorMessage}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {element?.type === "email" && (
+                    <div className="col-lg-4 mb-4">
+                      <StyledLabel required>{element?.label}</StyledLabel>
+                      <input
+                        className="form-control"
+                        type={element.type}
+                        placeholder=""
+                        {...register(`kin.${element?.name}`, {
+                          required: element.required,
+                          validate: (value) => {
+                            if (element.required) {
+                              return isValidEmail(value, element.required);
+                            }
+                          },
+                        })}
+                      />
+                      {error && error?.email && (
+                        <div className="invalid-feedback">
+                          {error?.email?.type == "validate"
+                            ? element?.validateErrorMessage
+                            : element?.errorMessage}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {element?.type === "mobileNumber" && (
+                    <MobileField
+                      element={element}
+                      registerName={`kin.${element?.name}`}
+                      countryCodeRegisterName={`kin.${element?.countryCodeRegisterName}`}
+                      error={Errors}
                     />
-                    {error && error?.email && (
-                      <div className="invalid-feedback">
-                        {error?.email?.type == "validate"
-                          ? element?.validateErrorMessage
-                          : element?.errorMessage}
-                      </div>
-                    )}
-                  </div>
-                )}
-                {element?.type === "mobileNumber" && (
-                  <MobileField
-                    element={element}
-                    registerName={`kin.${element?.name}`}
-                    countryCodeRegisterName={`kin.${element?.countryCodeRegisterName}`}
-                    error={Errors}
-                  />
-                )}
-              </>
-            ))}
-          </div>
+                  )}
+                </>
+              ))}
+            </div>
+          )}
         </div>
       </AccordionDetails>
     </StyledAccordion>

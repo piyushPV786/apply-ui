@@ -14,11 +14,12 @@ import { useEffect, useState } from "react";
 const Employment = (props: any) => {
   const {
     watch,
+    setValue,
     formState: { errors },
   } = useFormContext();
   const { masterData, applicationData } = props?.masterData;
 
-  const activeEmp = watch("employment.isActive");
+  const activeEmp = watch("employment.isEmployment");
   const Errors = errors["employment"] as any;
 
   const countryDetail = watch(`employment.country`);
@@ -38,11 +39,14 @@ const Employment = (props: any) => {
     });
     setSpData(sponsorData);
   }, [activeEmp]);
+
+  useEffect(() => {
+    if (!applicationData?.employment?.isActive) {
+      setValue("employment.isEmployment", "no");
+    }
+  }, [applicationData?.employment?.isActive]);
   return (
-    <StyledAccordion
-      defaultExpanded={false}
-      expanded={activeEmp === "true" || activeEmp === true}
-    >
+    <StyledAccordion defaultExpanded={false} expanded={activeEmp === "yes"}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
@@ -53,7 +57,7 @@ const Employment = (props: any) => {
           Are you Employed? <span className="text-danger me-2">*</span>
         </GreenFormHeading>
         <RadioField
-          registerName={"employment.isActive"}
+          registerName={"employment.isEmployment"}
           defaultValue={
             applicationData?.employment?.isActive
               ? applicationData?.employment?.isActive
@@ -68,63 +72,65 @@ const Employment = (props: any) => {
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid">
-          <div className="row">
-            {SpData?.map((element) => (
-              <>
-                {element?.type === "text" && (
-                  <TextField
-                    element={element}
-                    Errors={Errors}
-                    registerName={`employment.${element?.name}`}
-                  />
-                )}
-                {element?.type === "select" && element?.key !== "state" && (
-                  <div className="col-lg-4 mb-4">
-                    <CommonAutocomplete
-                      options={
-                        masterData[element?.key]
-                          ? masterData[element?.key]
-                          : element.option
-                      }
-                      label={element?.label}
+          {activeEmp === "yes" && (
+            <div className="row">
+              {SpData?.map((element) => (
+                <>
+                  {element?.type === "text" && (
+                    <TextField
+                      element={element}
+                      Errors={Errors}
                       registerName={`employment.${element?.name}`}
-                      required={element?.required}
-                      defaultValue={
-                        applicationData && applicationData?.employment
-                          ? applicationData?.employment[element?.name]
-                          : null
-                      }
                     />
-                    {Errors && Errors[element?.name] && (
-                      <div className="invalid-feedback">
-                        {element?.errorMessage}
-                      </div>
-                    )}
-                  </div>
-                )}
-                {element?.type === "select" && element?.key === "state" && (
-                  <div className="col-lg-4 mb-4">
-                    <CommonAutocomplete
-                      options={stateList ? stateList : element.option}
-                      label={element?.label}
-                      registerName={`employment.${element?.name}`}
-                      required={element?.required}
-                      defaultValue={
-                        applicationData && applicationData?.employment
-                          ? applicationData?.employment[element?.name]
-                          : null
-                      }
-                    />
-                    {Errors && Errors[element?.name] && (
-                      <div className="invalid-feedback">
-                        {element?.errorMessage}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </>
-            ))}
-          </div>
+                  )}
+                  {element?.type === "select" && element?.key !== "state" && (
+                    <div className="col-lg-4 mb-4">
+                      <CommonAutocomplete
+                        options={
+                          masterData[element?.key]
+                            ? masterData[element?.key]
+                            : element.option
+                        }
+                        label={element?.label}
+                        registerName={`employment.${element?.name}`}
+                        required={element?.required}
+                        defaultValue={
+                          applicationData && applicationData?.employment
+                            ? applicationData?.employment[element?.name]
+                            : null
+                        }
+                      />
+                      {Errors && Errors[element?.name] && (
+                        <div className="invalid-feedback">
+                          {element?.errorMessage}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {element?.type === "select" && element?.key === "state" && (
+                    <div className="col-lg-4 mb-4">
+                      <CommonAutocomplete
+                        options={stateList ? stateList : element.option}
+                        label={element?.label}
+                        registerName={`employment.${element?.name}`}
+                        required={element?.required}
+                        defaultValue={
+                          applicationData && applicationData?.employment
+                            ? applicationData?.employment[element?.name]
+                            : null
+                        }
+                      />
+                      {Errors && Errors[element?.name] && (
+                        <div className="invalid-feedback">
+                          {element?.errorMessage}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              ))}
+            </div>
+          )}
         </div>
       </AccordionDetails>
     </StyledAccordion>

@@ -57,6 +57,12 @@ const Education = (props: any) => {
       <AccordionDetails>
         <div className="row">
           <div className="col-lg-4 mb-4">
+            <input
+              type="text"
+              {...register("education.studentTypeCode")}
+              hidden={true}
+              value={"RETAIL"}
+            />
             {programsData?.length && (
               <CommonAutocomplete
                 defaultValue={applicationData?.education?.programCode}
@@ -169,7 +175,7 @@ const Education = (props: any) => {
                   { name: "Social Media", code: refferedById.social },
                 ]}
                 label="Referred by Agent/Social Media"
-                registerName={`education.refferedById`}
+                registerName={`education.referredById`}
                 required={true}
               />
               {Errors?.refferedById && (

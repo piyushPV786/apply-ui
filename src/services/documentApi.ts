@@ -15,7 +15,7 @@ class DocumentApplicationServices {
       response?.status == apiStatus.success ||
       response?.status == apiStatus.success1
     ) {
-      return response?.data?.data;
+      return response?.data;
     } else {
       return null;
     }

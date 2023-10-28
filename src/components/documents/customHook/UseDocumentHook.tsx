@@ -68,6 +68,8 @@ const UseDocumentHook = (applicationCode) => {
       payload,
       application?.applicationCode
     );
+    console.log("applicationData ==========>", applicationData);
+    console.log("response ============>", response);
   };
   const onSubmit = (data, isDraft) => {
     let Files: any = [];

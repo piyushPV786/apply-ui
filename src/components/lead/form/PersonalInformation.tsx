@@ -19,12 +19,15 @@ const PersonalInformation = (props: any) => {
   const {
     setValue,
     formState: { errors },
+    register,
   } = useFormContext();
   const Errors = errors["lead"] as any;
+  const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
 
   useEffect(() => {
-    const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
     setValue("lead.mobileNumber", `+${studentDetails?.mobileNumber}`);
+    setValue("lead.leadCode", `${studentDetails?.leadCode}`);
+    setValue("lead.mobileCountryCode", `27`);
   }, []);
 
   return (
@@ -46,6 +49,16 @@ const PersonalInformation = (props: any) => {
           <div className="row">
             {personalInfoData?.map((element) => (
               <>
+                <input
+                  type="text"
+                  {...register("lead.leadCode")}
+                  hidden={true}
+                />
+                <input
+                  type="text"
+                  {...register("lead.mobileCountryCode")}
+                  hidden={true}
+                />
                 {element?.type === "text" && (
                   <TextField
                     element={element}

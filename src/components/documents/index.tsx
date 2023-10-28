@@ -29,7 +29,7 @@ const DocumentUploadPage = (props) => {
             className="d-flex justify-content-center align-items-center"
           >
             <Grid sm={9}>
-              <StepperComponent active={3} />
+              <StepperComponent active={1} />
             </Grid>
             <Grid container sm={9}>
               <Grid item sm={9} sx={{ padding: 2 }}>
