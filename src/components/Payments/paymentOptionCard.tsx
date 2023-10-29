@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
 
 import PayuInput from "./payuInput";
 import {
   Grid,
-  Box,
-  Paper,
-  Typography,
   Button,
   Card,
   CardContent,

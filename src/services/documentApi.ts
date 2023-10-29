@@ -3,6 +3,7 @@ import { apiServer, refreshApiServer } from "./index";
 import { apiStatus } from "../context/common";
 import { getLocalStorageData } from "../Util/Util";
 import { StorageName } from "../components/common/constant";
+import axios from "axios";
 
 class DocumentApplicationServices {
   commonBaseUrl: string | undefined = apiUrls?.commonBaseUrl;
@@ -24,13 +25,38 @@ class DocumentApplicationServices {
   async downloadDeclarationLetter(applicationCode) {
     const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${applicationCode}/${apiEndPoint?.declarationForm}`;
     const response = await apiServer.get(url, { responseType: "blob" });
+
     if (
       response?.status == apiStatus.success ||
       response?.status == apiStatus.success1
     ) {
+      return response;
     } else {
       return null;
     }
+  }
+
+  async getFilePreview(fileName, studentCode) {
+    const url = `/document?filename=${fileName}.${fileExt}`;
+    await apiServer.get(url).then(({ data: url }) => {
+      const fileUrl = url?.data?.split("?");
+      const data = fileUrl[0];
+      const ext = data.split(".").pop();
+      axios
+        .get(url?.data, {
+          responseType: "arraybuffer",
+        })
+        .then((response) => {
+          const file = new Blob([response.data], {
+            type: ext === "pdf" ? "application/pdf" : "image/jpeg",
+          });
+          const fileURL = URL.createObjectURL(file);
+          window.open(fileURL);
+        })
+        .catch((error) => {
+          console.log("Error viewing file", error.message);
+        });
+    });
   }
 
   async DocumentType() {

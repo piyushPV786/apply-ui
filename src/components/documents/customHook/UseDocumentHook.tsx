@@ -36,8 +36,7 @@ const UseDocumentHook = (applicationCode) => {
   const mapDraftFiles = (code) => {
     let files = [];
     if (application && application?.document) {
-      files = application && application?.document;
-      application?.document?.filter((element) => {
+      files = application?.document?.filter((element) => {
         return element?.documentTypeCode == code;
       });
     }
@@ -49,6 +48,16 @@ const UseDocumentHook = (applicationCode) => {
     const response = await DocumentServices.downloadDeclarationLetter(
       applicationCode
     );
+    const blob = new Blob([response?.data], {
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    });
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    const filename = "declaration-letter.docx";
+    downloadLink.download = filename;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    URL.revokeObjectURL(downloadLink.href);
   };
 
   const Createjson = () => {
