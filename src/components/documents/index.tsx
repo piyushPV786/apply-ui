@@ -4,14 +4,14 @@ import { MainContainer } from "../../components/login/style";
 import React, { useEffect } from "react";
 import StepperComponent from "../../components/stepper/stepper";
 import UseDocumentHook from "./customHook/UseDocumentHook";
-
+import StyledButton from "../button/button";
 import { FormProvider, useForm } from "react-hook-form";
 import Header from "../common/header";
 
 const DocumentUploadPage = (props) => {
   const methods = useForm();
   const { applicationCode } = props;
-  const { documentTypeData, docJson, onSubmit } =
+  const { documentTypeData, docJson, onSubmit, documetDiclarationLeter } =
     UseDocumentHook(applicationCode);
 
   return (
@@ -40,6 +40,7 @@ const DocumentUploadPage = (props) => {
                       if (docJson[item?.code]) {
                         return (
                           <DocumentUploadContainer
+                            documetDiclarationLeter={documetDiclarationLeter}
                             documentName={item?.name}
                             documentCode={item?.code}
                             isRequired={docJson[item?.code]?.isRequired}
@@ -50,26 +51,24 @@ const DocumentUploadPage = (props) => {
                     })
                   : null}
               </Grid>
-              <Grid
-                item
-                sm={3}
-                sx={{ padding: 2, marginTop: 5 }}
-                className="sticky-wrapper"
-              >
-                <Card sx={{ padding: 2 }}>
+              <Grid item sm={3} sx={{ padding: 2 }} className="sticky-wrapper">
+                <Card sx={{ padding: 2, marginTop: 5 }}>
                   <Box className="d-flex justify-content-center flex-column">
-                    <Button
+                    <StyledButton
+                      isGreenWhiteCombination
+                      title="Save As Draft"
                       className="mb-2"
-                      variant="outlined"
                       onClick={methods.handleSubmit((data) => {
                         onSubmit(data, true);
                       })}
-                    >
-                      Save as Draft
-                    </Button>
-                    <Button variant="contained" type="submit">
-                      Submit Documents
-                    </Button>
+                    />
+
+                    <StyledButton
+                      title="Submit Documents"
+                      onClick={methods.handleSubmit((data) => {
+                        onSubmit(data, false);
+                      })}
+                    />
                   </Box>
                 </Card>
                 <Card className="mt-3">

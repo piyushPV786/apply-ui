@@ -21,6 +21,18 @@ class DocumentApplicationServices {
     }
   }
 
+  async downloadDeclarationLetter(applicationCode) {
+    const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${applicationCode}/${apiEndPoint?.declarationForm}`;
+    const response = await apiServer.get(url, { responseType: "blob" });
+    if (
+      response?.status == apiStatus.success ||
+      response?.status == apiStatus.success1
+    ) {
+    } else {
+      return null;
+    }
+  }
+
   async DocumentType() {
     const url = `${this.commonBaseUrl}${apiEndPoint?.commonDocuments}?projectDocument=false`;
     const response = await apiServer.get(url);
@@ -33,6 +45,7 @@ class DocumentApplicationServices {
       return null;
     }
   }
+
   async getApplicationData(applicationCode: string) {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
     const route = apiEndPoint?.applicationDetails
@@ -41,7 +54,6 @@ class DocumentApplicationServices {
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : {};
-    console.log("result", result);
     return result;
   }
 }

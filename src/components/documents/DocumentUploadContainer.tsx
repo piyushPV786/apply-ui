@@ -6,12 +6,14 @@ import React, { useEffect, useRef } from "react";
 import { Visibility, CloseOutlined } from "@material-ui/icons";
 import { useFormContext } from "react-hook-form";
 import { docType } from "./context/common";
+import StyledButton from "../button/button";
 
 interface propsType {
   documentName: string;
   documentCode: string;
   isRequired: boolean;
   files: any;
+  documetDiclarationLeter: any;
 }
 
 const DocumentUploadContainer = ({
@@ -19,6 +21,7 @@ const DocumentUploadContainer = ({
   documentCode,
   isRequired,
   files,
+  documetDiclarationLeter,
 }: propsType) => {
   const {
     register,
@@ -89,7 +92,12 @@ const DocumentUploadContainer = ({
                 </Typography>
               </Box>
               <Box>
-                <Button variant="contained">Download Declaration form</Button>
+                <StyledButton
+                  title="Download Declaration form"
+                  onClick={() => {
+                    documetDiclarationLeter();
+                  }}
+                />
               </Box>
             </InnerContainer>
           </Grid>
@@ -114,14 +122,12 @@ const DocumentUploadContainer = ({
                 }}
               />
               <Box className="mr-2">
-                <Button
-                  variant="contained"
+                <StyledButton
+                  title="Browse"
                   onClick={() => {
                     onDocUploadClick();
                   }}
-                >
-                  Browse
-                </Button>
+                />
               </Box>
               <Typography className="doc-upload-text">
                 Click on browse and Select all files to be uploded from your
