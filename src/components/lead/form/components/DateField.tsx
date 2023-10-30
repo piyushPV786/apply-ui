@@ -19,11 +19,11 @@ const DateField = ({ element, Errors, registerName, defaultValue }: any) => {
         })}
         max={transformDate(new Date(), true)}
       />
-      {Errors?.dateofBirth && (
+      {Errors?.dateOfBirth && (
         <div className="invalid-feedback">
           {Errors?.dateOfBirth?.type === "validate"
-            ? element?.errorMessage
-            : element?.validateErrorMessage}
+            ? element?.validateErrorMessage
+            : element?.errorMessage}
         </div>
       )}
     </div>
