@@ -26,7 +26,7 @@ const LeadForm = (props: IProps) => {
   const methods = useForm();
   const { watch, handleSubmit } = methods;
   const masterData = useFormHook(props?.applicationCode);
-  const { saveApplication, saveApplicationAsDraft } = useHelperHook();
+  const { saveApplication, saveApplicationAsDraft } = useHelperHook(masterData);
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
   //Setting values in form after data fetch

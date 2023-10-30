@@ -47,10 +47,10 @@ export const personalInfoData = [
     placeholder: "",
   },
   {
-    name: "dateofBirth",
+    name: "dateOfBirth",
     label: "Date of Birth",
     type: "date",
-    key: "dateofBirth",
+    key: "dateOfBirth",
     required: true,
     validate: isValidDate,
     errorMessage: "Please enter gender",

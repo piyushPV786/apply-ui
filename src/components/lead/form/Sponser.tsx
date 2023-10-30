@@ -47,12 +47,12 @@ const Sponsor = (props: any) => {
   }, [activeSponsor]);
 
   useEffect(() => {
-    if (!applicationData?.sponsor?.isActive) {
-      setValue("sponsor.isSponsor", "no");
-    } else if (applicationData?.sponsor?.isActive) {
+    if (applicationData?.sponsor?.isActive) {
       setValue("sponsor.isSponsor", "yes");
+    } else {
+      setValue("sponsor.isSponsor", "no");
     }
-  }, [applicationData?.sponsor?.isActive]);
+  }, [applicationData]);
 
   return (
     <StyledAccordion defaultExpanded={false} expanded={activeSponsor === "yes"}>
@@ -69,16 +69,8 @@ const Sponsor = (props: any) => {
 
         <RadioField
           registerName={"sponsor.isSponsor"}
-          defaultValue={
-            applicationData?.sponsor?.isActive
-              ? applicationData?.sponsor?.isActive
-              : false
-          }
-          defaultChecked={
-            applicationData?.sponsor?.isActive
-              ? applicationData?.sponsor?.isActive
-              : false
-          }
+          defaultValue={applicationData?.sponsor?.isActive ? "yes" : "no"}
+          defaultChecked={applicationData?.sponsor?.isActive ? "yes" : "no"}
         />
       </AccordionSummary>
       <AccordionDetails>

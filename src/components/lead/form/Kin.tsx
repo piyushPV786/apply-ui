@@ -43,12 +43,12 @@ const Kin = (props: any) => {
   }, [isNextKinVal]);
 
   useEffect(() => {
-    if (!applicationData?.kin?.isActive) {
-      setValue("kin.isKin", "no");
-    } else if (applicationData?.kin?.isActive) {
+    if (applicationData?.kin?.isActive) {
       setValue("kin.isKin", "yes");
+    } else {
+      setValue("kin.isKin", "no");
     }
-  }, [applicationData?.kin?.isActive]);
+  }, [applicationData]);
 
   return (
     <StyledAccordion
@@ -68,15 +68,9 @@ const Kin = (props: any) => {
 
         <RadioField
           registerName={"kin.isKin"}
-          defaultValue={
-            applicationData?.kin?.isActive
-              ? applicationData?.kin?.isActive
-              : false
-          }
+          defaultValue={applicationData?.kin?.isActive ? "yes" : "no"}
           defaultChecked={
-            applicationData?.kin?.isActive?.isActive
-              ? applicationData?.kin?.isActive
-              : false
+            applicationData?.kin?.isActive?.isActive ? "yes" : "no"
           }
         />
       </AccordionSummary>

@@ -6,7 +6,6 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import { YoutubeSearchedFor } from "@material-ui/icons";
 
 const RadioField = ({ registerName, defaultValue, defaultChecked }: any) => {
   const { register, control } = useFormContext();
@@ -22,7 +21,6 @@ const RadioField = ({ registerName, defaultValue, defaultChecked }: any) => {
             <RadioGroup row {...field}>
               <FormControlLabel
                 value={"yes"}
-                defaultChecked={defaultChecked}
                 control={
                   <Radio
                     sx={{
@@ -37,7 +35,6 @@ const RadioField = ({ registerName, defaultValue, defaultChecked }: any) => {
               />
               <FormControlLabel
                 value={"no"}
-                defaultChecked={!defaultChecked}
                 control={
                   <Radio
                     sx={{
