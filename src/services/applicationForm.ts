@@ -27,7 +27,12 @@ class ApplicationFormServices {
   async getApplicationData(applicationCode: string) {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
     const route = apiEndPoint?.applicationDetails
-      .replace(":applicationCode", applicationCode)
+      .replace(
+        ":applicationCode",
+        applicationCode.includes("RAPP")
+          ? applicationCode
+          : `${applicationCode}?isDraft=true`
+      )
       .replace(":leadCode", studentDetails?.leadCode);
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
@@ -75,6 +80,12 @@ class ApplicationFormServices {
     const result = response?.data ? response?.data : null;
     return result;
   }
+  async updateDraft(payload, applicationCode) {
+    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.draft}/${applicationCode}`;
+    const response = await apiServer.put(url, payload);
+    const result = response?.data ? response?.data : null;
+    return result;
+  }
 
   async createLead(payload, isDraft) {
     const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.lead}?isDraft=${isDraft}`;
@@ -83,8 +94,9 @@ class ApplicationFormServices {
     return result;
   }
 
-  async updateLead(payload, leadCode) {
-    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.lead}/${leadCode}/${apiEndPoint?.application}/${payload.applicationCode}`;
+  async updateLead(payload, applicationCode) {
+    const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
+    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.lead}/${studentDetails?.leadCode}/${apiEndPoint?.application}/${applicationCode}?isDraft=false`;
     const response = await apiServer.put(url, payload);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;

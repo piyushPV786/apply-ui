@@ -42,9 +42,9 @@ const Education = (props: any) => {
     (item) => item?.studyModeCode === studyModeCodeWatch
   );
   useEffect(() => {
-    if (applicationData?.education?.isInternationDegree) {
+    if (applicationData?.education?.qualificationCode) {
       setValue("education.isInternationDegree", "yes");
-    } else if (!applicationData?.education?.isInternationDegree) {
+    } else if (!applicationData?.education?.qualificationCode) {
       setValue("education.isInternationDegree", "no");
     }
   }, [applicationData?.education?.qualificationCode]);
