@@ -2,7 +2,6 @@ import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../../common/common";
 import { isValidDate, transformDate } from "../../../../Util/Util";
 const DateField = ({ element, Errors, registerName, defaultValue }: any) => {
-  console.log("date of birth error =========>", Errors);
   const { register, watch } = useFormContext();
   return (
     <div className="col-lg-4 mb-4">

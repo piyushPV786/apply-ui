@@ -2,23 +2,21 @@ import { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
 const UseTermsAndConditionHook = () => {
-  const { watch } = useFormContext();
-  const termAndConditionWatch = watch("lead.isAgreedTermsAndConditions");
   const [showTerms, setShowTerms] = useState(false);
 
   const onClickShowTerms = () => {
     setShowTerms(!showTerms);
   };
 
-  useEffect(() => {
-    if (termAndConditionWatch) {
+  const onChangeTerms = (value) => {
+    if (value) {
       setShowTerms(true);
     } else {
       setShowTerms(false);
     }
-  }, [termAndConditionWatch]);
+  };
 
-  return { showTerms, onClickShowTerms };
+  return { showTerms, onClickShowTerms, onChangeTerms };
 };
 
 export default UseTermsAndConditionHook;

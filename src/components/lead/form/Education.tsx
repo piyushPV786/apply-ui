@@ -36,10 +36,10 @@ const Education = (props: any) => {
     (item) => item?.studyModeCode === studyModeCodeWatch
   );
   useEffect(() => {
-    if (applicationData?.education?.qualificationCode) {
-      setValue("education.isInternationDegree", "yes");
+    if (applicationData?.education?.agentCode) {
+      setValue("education.referredById", refferedById.agent);
     } else {
-      setValue("education.isInternationDegree", "no");
+      setValue("education.isInternationDegree", refferedById.social);
     }
   }, [applicationData]);
   return (
@@ -177,8 +177,8 @@ const Education = (props: any) => {
                     : refferedById.social
                 }
                 options={[
-                  { name: "Agent", code: refferedById.agent },
-                  { name: "Social Media", code: refferedById.social },
+                  { name: "Agent", code: refferedById.agent, id: 1 },
+                  { name: "Social Media", code: refferedById.social, id: 2 },
                 ]}
                 label="Referred by Agent/Social Media"
                 registerName={`education.referredById`}
@@ -191,7 +191,8 @@ const Education = (props: any) => {
               )}
             </div>
 
-            {refferedBy === refferedById.agent && (
+            {(refferedBy === refferedById.agent ||
+              applicationData?.education?.agentCode) && (
               <div className="mb-4 others">
                 {!!salesAgentData?.length && (
                   <CommonAutocomplete
@@ -209,13 +210,14 @@ const Education = (props: any) => {
                 )}
               </div>
             )}
-            {refferedBy === refferedById.social && (
+            {(refferedBy === refferedById.social ||
+              applicationData?.education?.socialMediaCode) && (
               <div className="mb-4 others">
                 {!!masterData?.socialMediaData?.length && (
                   <CommonAutocomplete
                     defaultValue={applicationData?.education?.socialMediaCode}
                     options={masterData?.socialMediaData}
-                    label="Agent Name"
+                    label="Social Media"
                     registerName={`education.socialMediaCode`}
                     required={true}
                   />

@@ -5,7 +5,8 @@ import UseTermsAndConditionHook from "../customHooks/UseTermsAndConditionHook";
 const TermsAndCondition = (props: any) => {
   const { register, watch } = useFormContext();
   const { masterData } = props;
-  const { showTerms, onClickShowTerms } = UseTermsAndConditionHook();
+  const { showTerms, onClickShowTerms, onChangeTerms } =
+    UseTermsAndConditionHook();
   const updateTermsConditions = (data) => {};
 
   return (
@@ -17,6 +18,7 @@ const TermsAndCondition = (props: any) => {
           {...register("lead.isAgreedTermsAndConditions", {
             required: true,
           })}
+          onChange={(e) => onChangeTerms(e.target.checked)}
         />
         <TermAndCondition
           showTerms={showTerms}

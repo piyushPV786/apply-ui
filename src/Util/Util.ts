@@ -177,7 +177,6 @@ export const getStatusColor = (status) => {
  * @returns {boolean} - Whether the date is valid or not.
  */
 export const isValidDate = (value) => {
-  console.log("value ==========>", value);
   const currentYear = new Date().getFullYear();
   const year = value?.split("-")[0];
   const age = currentYear - +year;
