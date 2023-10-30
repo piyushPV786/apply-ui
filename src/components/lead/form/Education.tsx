@@ -12,12 +12,6 @@ import { refferedById } from "../../../constants";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import { StyleContainer } from "../../login/style";
 import { FeeCard } from "./components/CommonComponents";
-import {
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-} from "@mui/material";
 import RadioField from "./components/RadioField";
 import { useEducationHook } from "../customHooks/educationHooks";
 import { useEffect } from "react";
@@ -44,10 +38,10 @@ const Education = (props: any) => {
   useEffect(() => {
     if (applicationData?.education?.qualificationCode) {
       setValue("education.isInternationDegree", "yes");
-    } else if (!applicationData?.education?.qualificationCode) {
+    } else {
       setValue("education.isInternationDegree", "no");
     }
-  }, [applicationData?.education?.qualificationCode]);
+  }, [applicationData]);
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary
@@ -162,7 +156,9 @@ const Education = (props: any) => {
                 defaultValue={
                   applicationData?.education?.isInternationDegree ? "yes" : "no"
                 }
-                defaultChecked={applicationData?.education?.isInternationDegree}
+                defaultChecked={
+                  applicationData?.education?.isInternationDegree ? "yes" : "no"
+                }
               />
             </div>
             {Errors?.isInternationDegree && (

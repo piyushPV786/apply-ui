@@ -3,10 +3,8 @@ import { useFormContext } from "react-hook-form";
 
 const UseTermsAndConditionHook = () => {
   const { watch } = useFormContext();
-  const termAndConditionWatch = watch("isAgreedTermsAndConditions");
+  const termAndConditionWatch = watch("lead.isAgreedTermsAndConditions");
   const [showTerms, setShowTerms] = useState(false);
-
-  console.log("termAndConditionWatch =========>", termAndConditionWatch);
 
   const onClickShowTerms = () => {
     setShowTerms(!showTerms);

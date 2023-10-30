@@ -8,7 +8,12 @@ import {
 } from "@mui/material";
 
 const RadioField = ({ registerName, defaultValue, defaultChecked }: any) => {
-  const { register, control } = useFormContext();
+  const { register, control, watch } = useFormContext();
+
+  if (registerName === "education.isInternationDegree") {
+    console.log("defaultValue =====>", defaultValue);
+    console.log("watch value ========>", watch(registerName));
+  }
 
   return (
     <FormControl component="fieldset">
@@ -18,7 +23,12 @@ const RadioField = ({ registerName, defaultValue, defaultChecked }: any) => {
         defaultValue={defaultValue} // Set the default value here
         render={({ field }) => {
           return (
-            <RadioGroup row {...field}>
+            <RadioGroup
+              row
+              {...field}
+              defaultValue={watch(registerName)}
+              name={registerName}
+            >
               <FormControlLabel
                 value={"yes"}
                 control={

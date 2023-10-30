@@ -1,9 +1,9 @@
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 import ApplicationServices from "../../../services/applicationForm";
 import { Router } from "mdi-material-ui";
 import { useRouter } from "next/router";
 
-export const useHelperHook = (masterData) => {
+export const useHelperHook = (masterData, watch, setError) => {
   const { applicationData } = masterData;
   const router = useRouter();
   const { applicationCode } = router?.query;
@@ -47,7 +47,38 @@ export const useHelperHook = (masterData) => {
     // ApplicationServices.updateLead(payload, leadCode);
   };
 
-  const saveApplicationAsDraft = async (data: any) => {
+  const saveApplicationAsDraft = async () => {
+    const data = watch();
+    const { lead } = data;
+
+    console.log("lead =====>", lead);
+
+    if (
+      lead?.firstName.length === 0 ||
+      lead?.lastName.length === 0 ||
+      lead?.email.length === 0
+    ) {
+      if (lead?.firstName.length === 0) {
+        setError("lead.firstName", {
+          type: "manual",
+          message: "Please enter your first name",
+        });
+      }
+      if (lead?.lastName.length === 0) {
+        setError("lead.lastName", {
+          type: "manual",
+          message: "Please enter your last name",
+        });
+      }
+      if (lead?.email.length === 0) {
+        setError("lead.email", {
+          type: "custom",
+          message: "Please enter your email",
+        });
+      }
+      return;
+    }
+
     if (
       applicationData?.status === "APP-DRAFT" &&
       applicationData?.applicationCode
@@ -65,9 +96,6 @@ export const useHelperHook = (masterData) => {
         router.push("/dashboard");
       }
     }
-
-    // ApplicationServices.createLead(payload, isDraft);
-    // ApplicationServices.updateLead(payload, leadCode);
   };
   return { saveApplication, saveApplicationAsDraft };
 };
