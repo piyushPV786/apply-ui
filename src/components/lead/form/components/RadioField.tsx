@@ -10,11 +10,6 @@ import {
 const RadioField = ({ registerName, defaultValue, defaultChecked }: any) => {
   const { register, control, watch } = useFormContext();
 
-  if (registerName === "education.isInternationDegree") {
-    console.log("defaultValue =====>", defaultValue);
-    console.log("watch value ========>", watch(registerName));
-  }
-
   return (
     <FormControl component="fieldset">
       <Controller

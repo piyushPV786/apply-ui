@@ -116,7 +116,6 @@ class ApplicationFormServices {
       .replace(":leadCode", studentDetails?.leadCode);
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
-    console.log("response ==========>", response);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }

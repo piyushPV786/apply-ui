@@ -29,7 +29,6 @@ class PaymentServices {
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : {};
-    console.log("result", result);
     return result;
   }
 

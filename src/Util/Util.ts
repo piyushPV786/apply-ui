@@ -177,8 +177,9 @@ export const getStatusColor = (status) => {
  * @returns {boolean} - Whether the date is valid or not.
  */
 export const isValidDate = (value) => {
+  console.log("value ==========>", value);
   const currentYear = new Date().getFullYear();
-  const year = value.split("-")[0];
+  const year = value?.split("-")[0];
   const age = currentYear - +year;
 
   if (age < 16) return false;
@@ -678,13 +679,11 @@ export const emailValidation = async (e) => {
   const response = await ApplicationFormServices?.checkDuplicateEmail(
     e?.target?.value
   );
-  console.log("response Message ===========>", response);
   if (response?.message) {
     returnVal = {
       message: "Provided email address already exists",
     };
   }
-  console.log("returnVal ==========>", returnVal);
 
   return returnVal;
 };

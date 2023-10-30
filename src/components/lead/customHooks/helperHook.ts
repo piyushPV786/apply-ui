@@ -51,8 +51,6 @@ export const useHelperHook = (masterData, watch, setError) => {
     const data = watch();
     const { lead } = data;
 
-    console.log("lead =====>", lead);
-
     if (
       lead?.firstName.length === 0 ||
       lead?.lastName.length === 0 ||

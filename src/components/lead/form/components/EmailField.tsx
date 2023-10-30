@@ -3,8 +3,7 @@ import { StyledLabel } from "../../../common/common";
 
 const EmailField = ({ element, Errors, registerName }: any) => {
   const { register, setError, clearErrors } = useFormContext();
-  console.log(registerName);
-  console.log("Errors ==============>", Errors);
+
   return (
     <div className="col-lg-4 mb-4">
       <StyledLabel required>Email</StyledLabel>

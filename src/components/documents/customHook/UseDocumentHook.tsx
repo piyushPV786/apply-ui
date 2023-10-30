@@ -20,10 +20,8 @@ const UseDocumentHook = (applicationCode) => {
   const [userDocuments, setUserDocuments] = useState<any>({});
 
   const [docJson, setDocJson] = useState<any>({});
-  console.log("appcode", applicationCode);
 
   const getUserDocuments = async (applicationCode) => {
-    console.log("aaaa", applicationCode);
     const response = await DocumentServices.getDocumentsByApplicationCode(
       applicationCode
     );
@@ -118,8 +116,6 @@ const UseDocumentHook = (applicationCode) => {
       payload,
       userDetails?.applicationCode
     );
-    console.log("applicationData ==========>", applicationData);
-    console.log("response ============>", response);
     if (response) {
       response?.data
         .map((url, index) => {

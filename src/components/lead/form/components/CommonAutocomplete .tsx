@@ -33,15 +33,7 @@ const CommonAutocomplete = ({
       return isoCode;
     }
   });
-  if (registerName === "voila") {
-    console.log("-------------------------------------");
-    console.log("options", options);
-    console.log("label", label);
-    console.log("registerName", registerName);
-    console.log("required", required);
-    console.log("defaultValue", defaultValue);
-    console.log("-------------------------------------");
-  }
+
   return (
     <>
       {label && <StyledLabel required={required}>{label}</StyledLabel>}

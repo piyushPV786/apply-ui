@@ -62,7 +62,6 @@ const CustomHookPayment = (applicationCode) => {
       apiPayload,
       applicationCode
     );
-    console.log("paymentProofRes=====>", response);
   };
 
   const paymentDiscount = async (promoCode) => {
@@ -72,8 +71,6 @@ const CustomHookPayment = (applicationCode) => {
       promoCode
     );
     if (res.id) {
-      console.log("discountApplied");
-
       getPaymentDetail(
         userDetails?.education?.programCode,
         res?.maxAmount,
@@ -121,7 +118,6 @@ const CustomHookPayment = (applicationCode) => {
   }, [applicationCode]);
 
   useEffect(() => {
-    console.log("user", userDetails);
     if (userDetails) {
       getCurrencyConversion(userDetails?.lead?.nationality);
     }

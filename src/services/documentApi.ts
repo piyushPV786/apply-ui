@@ -44,7 +44,6 @@ class DocumentApplicationServices {
       response?.status == apiStatus.success ||
       response?.status == apiStatus.success1
     ) {
-      console.log("rs", response);
       return response?.data?.data;
     } else {
       return null;
