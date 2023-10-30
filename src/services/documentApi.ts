@@ -51,28 +51,28 @@ class DocumentApplicationServices {
     }
   }
 
-  async getFilePreview(fileName, studentCode) {
-    const url = `/document?filename=${fileName}.${fileExt}`;
-    await apiServer.get(url).then(({ data: url }) => {
-      const fileUrl = url?.data?.split("?");
-      const data = fileUrl[0];
-      const ext = data.split(".").pop();
-      axios
-        .get(url?.data, {
-          responseType: "arraybuffer",
-        })
-        .then((response) => {
-          const file = new Blob([response.data], {
-            type: ext === "pdf" ? "application/pdf" : "image/jpeg",
-          });
-          const fileURL = URL.createObjectURL(file);
-          window.open(fileURL);
-        })
-        .catch((error) => {
-          console.log("Error viewing file", error.message);
-        });
-    });
-  }
+  // async getFilePreview(fileName, studentCode) {
+  //   const url = `/document?filename=${fileName}.${fileExt}`;
+  //   await apiServer.get(url).then(({ data: url }) => {
+  //     const fileUrl = url?.data?.split("?");
+  //     const data = fileUrl[0];
+  //     const ext = data.split(".").pop();
+  //     axios
+  //       .get(url?.data, {
+  //         responseType: "arraybuffer",
+  //       })
+  //       .then((response) => {
+  //         const file = new Blob([response.data], {
+  //           type: ext === "pdf" ? "application/pdf" : "image/jpeg",
+  //         });
+  //         const fileURL = URL.createObjectURL(file);
+  //         window.open(fileURL);
+  //       })
+  //       .catch((error) => {
+  //         console.log("Error viewing file", error.message);
+  //       });
+  //   });
+  // }
 
   async DocumentType() {
     const url = `${this.commonBaseUrl}${apiEndPoint?.commonDocuments}?projectDocument=false`;

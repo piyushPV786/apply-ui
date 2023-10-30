@@ -33,6 +33,13 @@ class PaymentServices {
     return result;
   }
 
+  async getCurrencyConversion(selectedNationality) {
+    const response = await apiServer.get(
+      `${apiUrls.financeBaseUrl}${apiEndPoint.GETCURRENCYCONVERSION}${selectedNationality}`
+    );
+    console.log("curres", response);
+  }
+
   async getPayuDetais(applicationCode: string, payload) {
     const url = `${apiUrls?.applyBaseUrl}${apiEndPoint.application}/${applicationCode}${apiEndPoint.payu}`;
     const response = await apiServer.post(url, payload);
