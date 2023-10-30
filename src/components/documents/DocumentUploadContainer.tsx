@@ -117,7 +117,7 @@ const DocumentUploadContainer = ({
               <input
                 {...register(`fileInput_${documentCode}`, {
                   validate: (value) => {
-                    return fileValidation(value);
+                    return fileValidation(value, isRequired);
                   },
                 })}
                 id={`fileInput_${documentCode}`}

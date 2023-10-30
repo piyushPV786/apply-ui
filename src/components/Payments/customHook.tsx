@@ -7,17 +7,23 @@ const CustomHookPayment = (applicationCode) => {
   const [userDetails, setUserDetails] = useState<any>({});
   const [paymentDetails, setPaymentDetails] = useState<any>();
   const [paymentPayload, setPaymentPayload] = useState<any>();
-
+  const [conversionRateDetails, setConversionRateDetails] = useState<any>();
   const getUserDetails = async (applicationCode) => {
     const response = await PaymentServices?.getApplicationData(applicationCode);
     if (response) {
       setUserDetails(response);
-      getPaymentDetail(response?.education?.programCode, 0, "");
+      response?.education?.programCode &&
+        getPaymentDetail(response?.education?.programCode, 0, "");
     }
   };
 
   const getCurrencyConversion = async (nationality) => {
     const response = await PaymentServices?.getCurrencyConversion(nationality);
+    setConversionRateDetails(response);
+  };
+
+  const getConvertedAmount = (conversionRate: number | null, amount) => {
+    return conversionRate ? Number(amount * conversionRate).toFixed(2) : amount;
   };
 
   const getPayuDetails = async (payload) => {
@@ -115,6 +121,7 @@ const CustomHookPayment = (applicationCode) => {
   }, [applicationCode]);
 
   useEffect(() => {
+    console.log("user", userDetails);
     if (userDetails) {
       getCurrencyConversion(userDetails?.lead?.nationality);
     }
@@ -127,6 +134,8 @@ const CustomHookPayment = (applicationCode) => {
     paymentPayload,
     uploadPaymentProof,
     paymentDetails,
+    conversionRateDetails,
+    getConvertedAmount,
   };
 };
 export default CustomHookPayment;

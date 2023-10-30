@@ -13,9 +13,11 @@ const PaymentPage = ({ applicationCode }) => {
     paymentPayload,
     uploadPaymentProof,
     paymentDetails,
+    conversionRateDetails,
+    getConvertedAmount,
   } = CustomHookPayment(applicationCode);
 
-  return (
+  return paymentDetails ? (
     <>
       <Box
         sx={{
@@ -31,6 +33,8 @@ const PaymentPage = ({ applicationCode }) => {
           </Grid>
           <Grid item xs={12}>
             <OrderSummary
+              conversionRateDetails={conversionRateDetails}
+              getConvertedAmount={getConvertedAmount}
               paymentDiscount={paymentDiscount}
               paymentDetails={paymentDetails}
             />
@@ -51,7 +55,7 @@ const PaymentPage = ({ applicationCode }) => {
         </Grid>
       </Box>
     </>
-  );
+  ) : null;
 };
 
 export default PaymentPage;
