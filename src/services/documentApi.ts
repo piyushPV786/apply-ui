@@ -36,6 +36,21 @@ class DocumentApplicationServices {
     }
   }
 
+  async getDocumentsByApplicationCode(applicationCode) {
+    const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${apiEndPoint?.document}s/${applicationCode}`;
+    const response = await apiServer.get(url);
+
+    if (
+      response?.status == apiStatus.success ||
+      response?.status == apiStatus.success1
+    ) {
+      console.log("rs", response);
+      return response?.data?.data;
+    } else {
+      return null;
+    }
+  }
+
   async getFilePreview(fileName, studentCode) {
     const url = `/document?filename=${fileName}.${fileExt}`;
     await apiServer.get(url).then(({ data: url }) => {

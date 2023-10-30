@@ -3,6 +3,7 @@ import UseDashboardHook from "../../dashboards/customHook/UseDashboardHook";
 import DocumentServices from "../../../services/documentApi";
 import { mbaDocs } from "../context/common";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 interface documentTypeApiResponseType {
   code: string;
@@ -10,14 +11,32 @@ interface documentTypeApiResponseType {
 }
 
 const UseDocumentHook = (applicationCode) => {
+  const router = useRouter();
   const { applicationData } = UseDashboardHook();
   const [documentTypeData, setDocumentTypeData] = useState<
     documentTypeApiResponseType[]
   >([]);
-  const [userDetails, setUserDetails] = useState<any>({});
-  const [application, setApplication] = useState<any>();
-  const [docJson, setDocJson] = useState<any>({});
+  const [userDetails, setUserDetails] = useState<any>();
+  const [userDocuments, setUserDocuments] = useState<any>({});
 
+  const [docJson, setDocJson] = useState<any>({});
+  console.log("appcode", applicationCode);
+
+  const getUserDocuments = async (applicationCode) => {
+    console.log("aaaa", applicationCode);
+    const response = await DocumentServices.getDocumentsByApplicationCode(
+      applicationCode
+    );
+
+    setUserDocuments(response);
+  };
+
+  const getUserDetails = async (applicationCode) => {
+    const response = await DocumentServices?.getApplicationData(
+      applicationCode
+    );
+    setUserDetails(response);
+  };
   const uploadDocumentsToAws = async (uploadFileUrl, file) => {
     try {
       const response = await axios.put(uploadFileUrl, file);
@@ -33,10 +52,10 @@ const UseDocumentHook = (applicationCode) => {
     }
   };
 
-  const mapDraftFiles = (code) => {
+  const mapDraftFiles = (code, userDocuments) => {
     let files = [];
-    if (application && application?.document) {
-      files = application?.document?.filter((element) => {
+    if (userDocuments.length) {
+      files = userDocuments?.filter((element) => {
         return element?.documentTypeCode == code;
       });
     }
@@ -60,26 +79,26 @@ const UseDocumentHook = (applicationCode) => {
     URL.revokeObjectURL(downloadLink.href);
   };
 
-  const Createjson = () => {
+  const Createjson = (userDocuments) => {
     let docJson = {};
     documentTypeData?.map((item) => {
       if (item.code == "BURSARYLETTER") {
         docJson[item.code] = {
           code: item?.code,
-          isRequired: application?.status == "BURSARY-PEND",
-          draftFiles: mapDraftFiles(item?.code),
+          isRequired: userDetails?.status == "BURSARY-PEND",
+          draftFiles: mapDraftFiles(item?.code, userDocuments),
         };
       } else if (mbaDocs.includes(item.code)) {
         docJson[item.code] = {
           code: item?.code,
-          isRequired: application?.education?.programCode == "MBA",
-          draftFiles: mapDraftFiles(item?.code),
+          isRequired: userDetails?.education?.programCode == "MBA",
+          draftFiles: mapDraftFiles(item?.code, userDocuments),
         };
       } else {
         docJson[item.code] = {
           code: item?.code,
           isRequired: true,
-          draftFiles: mapDraftFiles(item?.code),
+          draftFiles: mapDraftFiles(item?.code, userDocuments),
         };
       }
     });
@@ -97,7 +116,7 @@ const UseDocumentHook = (applicationCode) => {
   const uploadDocuments = async (payload) => {
     let response = await DocumentServices.uploadDocuments(
       payload,
-      application?.applicationCode
+      userDetails?.applicationCode
     );
     console.log("applicationData ==========>", applicationData);
     console.log("response ============>", response);
@@ -127,27 +146,28 @@ const UseDocumentHook = (applicationCode) => {
       files: Files,
       paymentModeCode: "OFFLINE",
       isDraft: isDraft,
-      studentCode: application?.studentCode,
+      studentCode: userDetails?.studentCode,
     };
-    uploadDocuments(payload);
+    payload?.files?.length
+      ? uploadDocuments(payload)
+      : router.push(`/uploads/response/uploadSuccess`);
   };
 
   useEffect(() => {
     getDocumentTypeData();
-    const res = applicationData.find((item: any) => {
-      return item?.applicationCode == applicationCode;
-    });
-    res && setApplication(res);
-  }, [applicationData]);
+    if (applicationCode) {
+      getUserDocuments(applicationCode);
+      getUserDetails(applicationCode);
+    }
+  }, [applicationCode]);
 
   useEffect(() => {
-    application && Createjson();
-  }, [application, documentTypeData]);
+    userDocuments && Createjson(userDocuments);
+  }, [userDetails, documentTypeData, userDocuments]);
 
   return {
     documentTypeData,
     userDetails,
-    application,
     docJson,
     uploadDocuments,
     onSubmit,

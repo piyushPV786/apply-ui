@@ -48,3 +48,5 @@ export const DocumentSaveSuccess = (props: any) => {
     </>
   );
 };
+
+export default DocumentSaveSuccess;

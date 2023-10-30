@@ -4,7 +4,7 @@ import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
 import { MainContainer, PaymentContainer } from "../login/style";
 
-export const DocumentSuccess = (props: any) => {
+const DocumentSuccess = (props: any) => {
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
@@ -31,3 +31,4 @@ export const DocumentSuccess = (props: any) => {
     </>
   );
 };
+export default DocumentSuccess;
