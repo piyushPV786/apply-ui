@@ -41,12 +41,12 @@ const Employment = (props: any) => {
   }, [activeEmp]);
 
   useEffect(() => {
-    if (!applicationData?.employment?.isActive) {
-      setValue("employment.isEmployment", "no");
-    } else if (applicationData?.employment?.isActive) {
+    if (applicationData?.employment?.isActive) {
       setValue("employment.isEmployment", "yes");
+    } else {
+      setValue("employment.isEmployment", "no");
     }
-  }, [applicationData?.employment?.isActive]);
+  }, [applicationData]);
   return (
     <StyledAccordion defaultExpanded={false} expanded={activeEmp === "yes"}>
       <AccordionSummary
@@ -60,16 +60,8 @@ const Employment = (props: any) => {
         </GreenFormHeading>
         <RadioField
           registerName={"employment.isEmployment"}
-          defaultValue={
-            applicationData?.employment?.isActive
-              ? applicationData?.employment?.isActive
-              : false
-          }
-          defaultChecked={
-            applicationData?.employment?.isActive
-              ? applicationData?.employment?.isActive
-              : false
-          }
+          defaultValue={applicationData?.employment?.isActive ? "yes" : "no"}
+          defaultChecked={applicationData?.employment?.isActive ? "yes" : "no"}
         />
       </AccordionSummary>
       <AccordionDetails>

@@ -22,8 +22,16 @@ export const useHelperHook = (masterData) => {
       };
       response = await ApplicationServices.createLead(payload, true);
     } else if (applicationData?.applicationCode) {
+      const payload = {
+        ...data,
+        kin: data?.kin?.isKin ? data?.kin : { isKin: "no" },
+        sponsor: data?.sponsor?.isSponsor ? data?.sponsor : { isSponsor: "no" },
+        employment: data?.employment?.isEmployment
+          ? data?.employment
+          : { isEmployment: "no" },
+      };
       response = await ApplicationServices.updateLead(
-        data,
+        payload,
         applicationData?.applicationCode
       );
     }
