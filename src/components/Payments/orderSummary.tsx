@@ -15,10 +15,14 @@ import { IPaymentPayload } from "./commonDataType";
 interface IPaymentPageProps {
   paymentDiscount: (arg0) => void;
   paymentDetails: any;
+  conversionRateDetails: any;
+  getConvertedAmount: any;
 }
 const OrderSummary = ({
   paymentDiscount,
   paymentDetails,
+  conversionRateDetails,
+  getConvertedAmount,
 }: IPaymentPageProps) => {
   const [showPromoCode, setShowPromoCode] = useState<boolean>(false);
   const [promoCode, setPromoCode] = useState<string>("");
@@ -29,7 +33,6 @@ const OrderSummary = ({
     // setPromoCode("");
   };
 
-  console.log("paymentdetails", paymentDetails);
   return (
     <Card>
       <Grid container spacing={2}>
@@ -56,8 +59,13 @@ const OrderSummary = ({
             <Grid item md={6} xs={12}>
               <label>Application Fee ({paymentDetails?.feeDetails?.fee})</label>
               <Typography variant="body1">
-                <strong>{paymentDetails?.feeDetails?.fee}</strong> (
-                Non-refundable )
+                <strong>{`${
+                  conversionRateDetails?.currencySymbol
+                }${getConvertedAmount(
+                  conversionRateDetails?.rate,
+                  paymentDetails?.feeDetails?.fee
+                )}`}</strong>{" "}
+                ( Non-refundable )
               </Typography>
             </Grid>
           </Grid>
@@ -76,7 +84,12 @@ const OrderSummary = ({
                   >
                     <label>Total Application</label>
                     <Typography variant="body1">
-                      <strong>{paymentDetails?.feeDetails?.fee}</strong>
+                      <strong>{`${
+                        conversionRateDetails?.currencySymbol
+                      }${getConvertedAmount(
+                        conversionRateDetails?.rate,
+                        paymentDetails?.feeDetails?.fee
+                      )}`}</strong>
                     </Typography>
                   </Grid>
                   <Grid
@@ -88,7 +101,12 @@ const OrderSummary = ({
                   >
                     <label>RMAT Fee</label>
                     <Typography variant="body1">
-                      <strong>{paymentDetails?.feeDetails?.rmatFee}</strong>
+                      <strong>{`${
+                        conversionRateDetails?.currencySymbol
+                      }${getConvertedAmount(
+                        conversionRateDetails?.rate,
+                        paymentDetails?.feeDetails?.rmatFee
+                      )}`}</strong>
                     </Typography>
                   </Grid>
                   <Grid
@@ -101,7 +119,12 @@ const OrderSummary = ({
                     <label>Discount</label>
                     <Typography variant="body1">
                       <strong>
-                        {paymentDetails?.feeDetails?.discountAmount}
+                        {`${
+                          conversionRateDetails?.currencySymbol
+                        }${getConvertedAmount(
+                          conversionRateDetails?.rate,
+                          paymentDetails?.feeDetails?.discountAmount
+                        )}`}
                       </strong>
                     </Typography>
                   </Grid>
@@ -117,7 +140,12 @@ const OrderSummary = ({
                   >
                     <strong>Total Amount</strong>
                     <Typography variant="body1">
-                      <strong>{paymentDetails?.feeDetails?.totaAmount}</strong>
+                      <strong>{`${
+                        conversionRateDetails?.currencySymbol
+                      }${getConvertedAmount(
+                        conversionRateDetails?.rate,
+                        paymentDetails?.feeDetails?.totaAmount
+                      )}`}</strong>
                     </Typography>
                   </Grid>
                 </Grid>

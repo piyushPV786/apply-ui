@@ -121,9 +121,13 @@ const UseDocumentHook = (applicationCode) => {
     console.log("applicationData ==========>", applicationData);
     console.log("response ============>", response);
     if (response) {
-      response?.data.map((url, index) => {
-        uploadDocumentsToAws(url, payload?.files[index]);
-      });
+      response?.data
+        .map((url, index) => {
+          uploadDocumentsToAws(url, payload?.files[index]);
+        })
+        .then(() => {
+          router.push(`/uploads/response/uploadSuccess`);
+        });
     }
   };
 

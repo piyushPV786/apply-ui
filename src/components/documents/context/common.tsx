@@ -64,8 +64,8 @@ export const IconButton = styled(Box)<any>(({ color }) => ({
 }));
 
 //common functions//
-export const fileValidation = (value) => {
-  if (!value || value.length === 0) {
+export const fileValidation = (value, isRequired) => {
+  if (!value || (value.length === 0 && isRequired == true)) {
     return "This file is Required please upload file";
   }
   for (let i = 0; i < value.length; i++) {
