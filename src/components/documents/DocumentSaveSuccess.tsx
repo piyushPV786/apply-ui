@@ -6,9 +6,11 @@ import StyledButton from "../button/button";
 import { useRouter } from "next/router";
 import { RoutePaths } from "../common/constant";
 import { MainContainer, PaymentContainer } from "../login/style";
+import Header from "../common/header";
 
 export const DocumentSaveSuccess = (props: any) => {
   const router = useRouter();
+
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
@@ -48,3 +50,5 @@ export const DocumentSaveSuccess = (props: any) => {
     </>
   );
 };
+
+export default DocumentSaveSuccess;

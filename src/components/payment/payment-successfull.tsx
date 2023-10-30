@@ -7,8 +7,8 @@ import WarningIcon from "../../../public/assets/images/warning-svgrepo-com.png";
 import PayIcon from "../../../public/assets/images/pay.png";
 import Image from "next/image";
 import { RoutePaths } from "../common/constant";
-import { DocumentSuccess } from "../document/DocumentUploadSuccess";
-import { DocumentSaveSuccess } from "../document/DocumentSaveSuccess";
+// import { DocumentSuccess } from "../document/DocumentUploadSuccess";
+// import { DocumentSaveSuccess } from "../document/DocumentSaveSuccess";
 import { MainContainer, PaymentContainer } from "../login/style";
 
 const PaymentSuccessFull = (props: any) => {
@@ -222,10 +222,10 @@ const PaymentSuccessFull = (props: any) => {
           {props?.pageType === "failure" && <OnlinePaymentFailed />}
           {props?.pageType === "success" && <OnlinePaymentSuccess />}
           {props?.pageType === "document-success" && <DocumentUploadSuccess />}
-          {props?.pageType === "document-upload-success" && <DocumentSuccess />}
-          {props?.pageType === "document-save-success" && (
+          {/* {props?.pageType === "document-upload-success" && <DocumentSuccess />} */}
+          {/* {props?.pageType === "document-save-success" && (
             <DocumentSaveSuccess />
-          )}
+          )} */}
           {props?.pageType === "document-failure" && <DocumentUploadFailed />}
           {props?.pageType === "application-enrolled-success" && (
             <ApplicationEnrolledSuccess />

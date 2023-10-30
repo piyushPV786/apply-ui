@@ -27,4 +27,5 @@ export const apiEndPoint = {
   checkDuplicateEmail: "lead/check-duplicate-email/:email/leadCode/:leadCode",
   draft: "draft",
   declarationForm: "download/declarationForm",
+  GETCURRENCYCONVERSION: "programs-fee/fee-conversion-rate/",
 };

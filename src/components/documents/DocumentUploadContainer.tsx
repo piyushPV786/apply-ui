@@ -1,4 +1,4 @@
-import { Typography, Card, Grid, Container, Box } from "@mui/material";
+import { Typography, Card, Grid, Container, Box, Chip } from "@mui/material";
 
 import { StyledLabel } from "../common/common";
 import styled from "styled-components";
@@ -115,7 +115,6 @@ const DocumentUploadContainer = ({
           <FileUploadContainer className="upload-box">
             <Box className="d-flex align-items-center">
               <input
-                multiple={documentCode == docType.IDPASSPORT}
                 {...register(`fileInput_${documentCode}`, {
                   validate: (value) => {
                     return fileValidation(value);
@@ -166,16 +165,16 @@ const DocumentUploadContainer = ({
                       backgroundColor: "#f5f5f5",
                       borderLeft: `5px solid ${"green"}`,
                     }}
-                    className="p-3   mt-3"
+                    className="p-3  mt-3  "
                     sm={12}
                     xs={12}
                     md={12}
                     lg={12}
                   >
-                    <Grid sm={10} xs={6} item>
+                    <Grid sm={8} xs={6} item>
                       {item.name}
                     </Grid>
-                    <Grid sm={2} xs={6} item className="d-flex flex-row ">
+                    <Grid sm={4} xs={6} item className="d-flex flex-row  ">
                       <IconButton
                         color={"green"}
                         onClick={() => {

@@ -13,7 +13,7 @@ import React, { useState } from "react";
 import { IPaymentPayload } from "./commonDataType";
 
 interface IPaymentPageProps {
-  paymentDiscount: (arg0: IPaymentPayload) => void;
+  paymentDiscount: (arg0) => void;
   paymentDetails: any;
 }
 const OrderSummary = ({

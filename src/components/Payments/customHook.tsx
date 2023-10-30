@@ -10,8 +10,14 @@ const CustomHookPayment = (applicationCode) => {
 
   const getUserDetails = async (applicationCode) => {
     const response = await PaymentServices?.getApplicationData(applicationCode);
-    setUserDetails(response);
-    getPaymentDetail(response?.education?.programCode, 0, "");
+    if (response) {
+      setUserDetails(response);
+      getPaymentDetail(response?.education?.programCode, 0, "");
+    }
+  };
+
+  const getCurrencyConversion = async (nationality) => {
+    const response = await PaymentServices?.getCurrencyConversion(nationality);
   };
 
   const getPayuDetails = async (payload) => {
@@ -107,6 +113,12 @@ const CustomHookPayment = (applicationCode) => {
       getUserDetails(applicationCode);
     }
   }, [applicationCode]);
+
+  useEffect(() => {
+    if (userDetails) {
+      getCurrencyConversion(userDetails?.lead?.nationality);
+    }
+  }, [userDetails]);
 
   return {
     paymentDiscount,
