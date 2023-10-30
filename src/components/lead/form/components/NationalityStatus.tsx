@@ -128,7 +128,7 @@ const NationalityStatus = (props: any) => {
               <StyledLabel required> Identification Number</StyledLabel>
               <input
                 className="form-control"
-                placeholder="e.g Robert"
+                placeholder=""
                 type={"text"}
                 {...register("lead.identificationNumber", {
                   required: true,
