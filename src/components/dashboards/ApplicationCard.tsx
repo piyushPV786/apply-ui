@@ -10,7 +10,11 @@ import {
   UserNumberInformation,
 } from "./Components";
 
-const ApplicationCard = ({ applicationDetail, getApplicationData }) => {
+const ApplicationCard = ({
+  applicationDetail,
+  getApplicationData,
+  allProgram,
+}) => {
   return (
     <>
       <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
@@ -36,7 +40,10 @@ const ApplicationCard = ({ applicationDetail, getApplicationData }) => {
         <div className="row px-4">
           <UserInformation userInfo={applicationDetail?.lead} />
         </div>
-        <EducationDetails educationInfo={applicationDetail?.education} />
+        <EducationDetails
+          educationInfo={applicationDetail?.education}
+          allProgram={allProgram}
+        />
         <UserNumberInformation applicationDetail={applicationDetail} />
         <CardAction>
           <DocumentInformation applicationDetail={applicationDetail} />

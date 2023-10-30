@@ -750,3 +750,16 @@ export const getLocalStorageData = (key: StorageName) => {
   }
   return null;
 };
+
+export const convertCodeToName = (list, code) => {
+  let result = code;
+  if (list?.length) {
+    const element = list?.find((item) => item?.code === code);
+    if (element) {
+      result = element?.name;
+    } else {
+      result = code;
+    }
+  }
+  return result;
+};

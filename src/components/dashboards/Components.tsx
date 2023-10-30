@@ -2,12 +2,16 @@ import { Grid } from "@mui/material";
 import { ContentCard, StudentIdCard } from "../login/style";
 import { Green } from "../common/common";
 import Dropdown from "react-bootstrap/Dropdown";
-import { capitalizeFirstLetter, transformDate } from "../../Util/Util";
+import {
+  capitalizeFirstLetter,
+  convertCodeToName,
+  transformDate,
+} from "../../Util/Util";
 import StyledButton from "../button/button";
 import UseCardActionHook from "./customHook/UseCardActionHook";
 import { useRouter } from "next/router";
 
-export const EducationDetails = ({ educationInfo }) => {
+export const EducationDetails = ({ educationInfo, allProgram }) => {
   return (
     <div className="row px-4">
       <div className="col-md-6">
@@ -15,7 +19,9 @@ export const EducationDetails = ({ educationInfo }) => {
           <p className="mb-0" style={{ color: `#5a636a` }}>
             Interested Program
           </p>
-          <strong>{educationInfo?.programName}</strong>
+          <strong>
+            {convertCodeToName(allProgram, educationInfo?.programCode)}
+          </strong>
         </div>
       </div>
       <div className="col-md-3">
