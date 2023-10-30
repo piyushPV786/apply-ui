@@ -161,6 +161,7 @@ export const ActionButtons = ({ applicationDetail }) => {
                   `/application/${applicationDetail?.applicationCode}`
                 );
               }}
+              isEditBtn
             />
           </Grid>
         </Grid>
@@ -194,6 +195,7 @@ export const ActionButtons = ({ applicationDetail }) => {
             }}
             className="card-button"
             title="Upload Documents"
+            isUploadBtn
           />
         </Grid>
       )}

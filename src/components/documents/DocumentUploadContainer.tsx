@@ -1,17 +1,19 @@
-import { Typography, Card, Grid, Button, Container, Box } from "@mui/material";
+import { Typography, Card, Grid, Container, Box } from "@mui/material";
 
 import { StyledLabel } from "../common/common";
 import styled from "styled-components";
 import React, { useEffect, useRef } from "react";
-import { Visibility, CloseOutlined } from "@material-ui/icons";
+import { VisibilityOutlined, CloseOutlined } from "@material-ui/icons";
 import { useFormContext } from "react-hook-form";
-import { docType } from "./context/common";
+import { docType, fileValidation, IconButton } from "./context/common";
+import StyledButton from "../button/button";
 
 interface propsType {
   documentName: string;
   documentCode: string;
   isRequired: boolean;
   files: any;
+  documetDiclarationLeter: any;
 }
 
 const DocumentUploadContainer = ({
@@ -19,6 +21,7 @@ const DocumentUploadContainer = ({
   documentCode,
   isRequired,
   files,
+  documetDiclarationLeter,
 }: propsType) => {
   const {
     register,
@@ -31,10 +34,19 @@ const DocumentUploadContainer = ({
     const fileElement = fileUploadRef.current as HTMLInputElement;
     fileElement?.click() as any;
   };
-
   useEffect(() => {
     setValue(`fileInput_${documentCode}`, files);
   }, [files]);
+
+  const handleRemoveFiles = (index) => {
+    const currentFiles = watch(`fileInput_${documentCode}`);
+    const updatedFiles = [
+      ...currentFiles.slice(0, index),
+      ...currentFiles.slice(index + 1),
+    ];
+
+    setValue(`fileInput_${documentCode}`, updatedFiles);
+  };
 
   return (
     <Card sx={{ padding: 3, marginTop: 5 }}>
@@ -89,7 +101,12 @@ const DocumentUploadContainer = ({
                 </Typography>
               </Box>
               <Box>
-                <Button variant="contained">Download Declaration form</Button>
+                <StyledButton
+                  title="Download Declaration form"
+                  onClick={() => {
+                    documetDiclarationLeter();
+                  }}
+                />
               </Box>
             </InnerContainer>
           </Grid>
@@ -100,9 +117,11 @@ const DocumentUploadContainer = ({
               <input
                 multiple={documentCode == docType.IDPASSPORT}
                 {...register(`fileInput_${documentCode}`, {
-                  required: isRequired,
+                  validate: (value) => {
+                    return fileValidation(value);
+                  },
                 })}
-                // id={`fileInput_${documentType}`}
+                id={`fileInput_${documentCode}`}
                 className="d-none"
                 ref={fileUploadRef}
                 accept="image/jpeg, application/pdf"
@@ -110,18 +129,20 @@ const DocumentUploadContainer = ({
                 onChange={(e) => {
                   const newFile = e?.target?.files && (e?.target?.files as any);
 
-                  setValue(`fileInput_${documentCode}`, [...newFile]);
+                  setValue(`fileInput_${documentCode}`, [...newFile], {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  });
                 }}
               />
               <Box className="mr-2">
-                <Button
-                  variant="contained"
+                <StyledButton
+                  title="Browse"
                   onClick={() => {
                     onDocUploadClick();
                   }}
-                >
-                  Browse
-                </Button>
+                />
               </Box>
               <Typography className="doc-upload-text">
                 Click on browse and Select all files to be uploded from your
@@ -132,41 +153,47 @@ const DocumentUploadContainer = ({
         </Grid>
         <Grid item sm={12} xs={12}>
           {errors[`fileInput_${documentCode}`] && (
-            <Typography color={"error"}>Please upload documents</Typography>
+            <Typography color={"error"}>
+              {errors[`fileInput_${documentCode}`]?.message as any}
+            </Typography>
           )}
           {watch(`fileInput_${documentCode}`)
             ? watch(`fileInput_${documentCode}`)?.map((item, index) => {
                 return (
-                  <UploadedFileViewContainer
-                    className="pr-0"
-                    // key={`file_${file?.name}_${index}_uploaded`}
+                  <Grid
+                    container
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                      borderLeft: `5px solid ${"green"}`,
+                    }}
+                    className="p-3   mt-3"
+                    sm={12}
+                    xs={12}
+                    md={12}
+                    lg={12}
                   >
-                    <Grid container>
-                      <Grid item sm={11}>
-                        {item?.name}
-                      </Grid>
-                      <Grid item>
-                        <a href="">
-                          <Visibility />
-                        </a>
-                        <a
-                          onClick={() => {
-                            const currentFiles = watch(
-                              `fileInput_${documentCode}`
-                            );
-                            const updatedFiles = [
-                              ...currentFiles.slice(0, index), // Elements before the index
-                              ...currentFiles.slice(index + 1), // Elements after the index
-                            ];
-
-                            setValue(`fileInput_${documentCode}`, updatedFiles);
-                          }}
-                        >
-                          <CloseOutlined />
-                        </a>
-                      </Grid>
+                    <Grid sm={10} xs={6} item>
+                      {item.name}
                     </Grid>
-                  </UploadedFileViewContainer>
+                    <Grid sm={2} xs={6} item className="d-flex flex-row ">
+                      <IconButton
+                        color={"green"}
+                        onClick={() => {
+                          // DocumentServices.getFilePreview();
+                        }}
+                      >
+                        <VisibilityOutlined />
+                      </IconButton>
+                      <IconButton
+                        color={"red"}
+                        onClick={() => {
+                          handleRemoveFiles(index);
+                        }}
+                      >
+                        <CloseOutlined />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
                 );
               })
             : null}
@@ -201,15 +228,4 @@ const FileUploadContainer = styled(Container)<{ disabled?: boolean }>`
   `}
 `;
 
-const UploadedFileViewContainer = styled(Container)`
-  background-color: #f5f5f5;
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-  border-left: 5px solid ${"green"};
-  & > span {
-    word-break: break-all;
-  }
-`;
 export default DocumentUploadContainer;

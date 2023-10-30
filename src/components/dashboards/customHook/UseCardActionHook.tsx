@@ -1,4 +1,8 @@
-import { APPLICATION_STATUS, CommonEnums } from "../../common/constant";
+import {
+  APPLICATION_STATUS,
+  CommonEnums,
+  UPLOAD_DOCUMENT_BUTTON_STATUS,
+} from "../../common/constant";
 import DashboardApplicationServices from "../../../services/dashboardApplication";
 import { downloadDocument } from "../../../Util/Util";
 
@@ -22,8 +26,7 @@ const UseCardActionHook = (applicationDetail) => {
       ? "Pay Program Fee"
       : "Pay Application Fee";
 
-  const isUploadBTN =
-    status === APPLICATION_STATUS.APPLICATION_DOCUMENTS_UPLOADED;
+  const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
 
   const isBursaryBTN =
     status === CommonEnums.APP_ENROLLED_ACCEPTED &&

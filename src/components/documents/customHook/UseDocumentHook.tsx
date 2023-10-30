@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import UseDashboardHook from "../../dashboards/customHook/UseDashboardHook";
 import DocumentServices from "../../../services/documentApi";
 import { mbaDocs } from "../context/common";
+import axios from "axios";
 
 interface documentTypeApiResponseType {
   code: string;
@@ -17,16 +18,46 @@ const UseDocumentHook = (applicationCode) => {
   const [application, setApplication] = useState<any>();
   const [docJson, setDocJson] = useState<any>({});
 
+  const uploadDocumentsToAws = async (uploadFileUrl, file) => {
+    try {
+      const response = await axios.put(uploadFileUrl, file);
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.log(error.message);
+      return error;
+    }
+  };
+
   const mapDraftFiles = (code) => {
     let files = [];
     if (application && application?.document) {
-      files = application && application?.document;
-      application?.document?.filter((element) => {
+      files = application?.document?.filter((element) => {
         return element?.documentTypeCode == code;
       });
     }
 
     return files;
+  };
+
+  const documetDiclarationLeter = async () => {
+    const response = await DocumentServices.downloadDeclarationLetter(
+      applicationCode
+    );
+    const blob = new Blob([response?.data], {
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    });
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    const filename = "declaration-letter.docx";
+    downloadLink.download = filename;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    URL.revokeObjectURL(downloadLink.href);
   };
 
   const Createjson = () => {
@@ -70,17 +101,25 @@ const UseDocumentHook = (applicationCode) => {
     );
     console.log("applicationData ==========>", applicationData);
     console.log("response ============>", response);
+    if (response) {
+      response?.data.map((url, index) => {
+        uploadDocumentsToAws(url, payload?.files[index]);
+      });
+    }
   };
+
   const onSubmit = (data, isDraft) => {
     let Files: any = [];
     documentTypeData.forEach((element) => {
       data[`fileInput_${element?.code}`].forEach((item) => {
-        let Obj = {
-          documentTypeCode: element?.code,
-          fileName: item.name,
-          fileType: item?.fileExtension ? item.fileExtension : item.type,
-        };
-        Files.push(Obj);
+        if (item.type) {
+          let Obj = {
+            documentTypeCode: element?.code,
+            fileName: item.name,
+            fileType: item?.fileExtension ? item.fileExtension : item.type,
+          };
+          Files.push(Obj);
+        }
       });
     });
 
@@ -112,6 +151,7 @@ const UseDocumentHook = (applicationCode) => {
     docJson,
     uploadDocuments,
     onSubmit,
+    documetDiclarationLeter,
   };
 };
 
