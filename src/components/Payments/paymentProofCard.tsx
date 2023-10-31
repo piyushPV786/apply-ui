@@ -10,21 +10,15 @@ import {
   CardHeader,
 } from "@mui/material";
 import UploadPaymentProof from "../uploadDocument/uploadPaymentProof";
-import { feeMode } from "../common/constant";
+import { usePaymentDetailsHook } from "./customHook";
 
 export interface IFormValue {
   file: File | null;
 }
 
-const PaymentProofCard = ({
-  uploadPaymentProof,
-  isProgamFee,
-  paymentDetailsJson,
-  selectedCode,
-  getConvertedAmount,
-  discountDetails,
-  conversionRateDetails,
-}) => {
+const PaymentProofCard = (props) => {
+  const { uploadPaymentProof, fees } = props;
+
   const {
     watch,
     handleSubmit,
@@ -37,30 +31,9 @@ const PaymentProofCard = ({
 
   const submitFile = (data: any) => {
     const payload = {
-      amount: isProgamFee
-        ? Number(
-            getConvertedAmount(
-              conversionRateDetails?.rate,
-              Number(paymentDetailsJson[selectedCode]?.fee) +
-                Number(paymentDetailsJson[selectedCode]?.rmatFee) -
-                discountDetails?.discountAmount
-            )
-          )
-        : Number(
-            getConvertedAmount(
-              conversionRateDetails?.rate,
-              Number(paymentDetailsJson[feeMode.APPLICATION]?.fee) +
-                Number(paymentDetailsJson[feeMode.APPLICATION]?.rmatFee) -
-                discountDetails?.discountAmount
-            )
-          ),
-      discountAmount: discountDetails?.discountAmount
-        ? getConvertedAmount(
-            conversionRateDetails?.rate,
-            discountDetails?.discountAmount
-          )
-        : 0,
-      discountCode: discountDetails?.discountCode,
+      amount: fees.totalFee,
+      discountAmount: fees?.discountFee,
+
       files: [
         {
           documentTypeCode: "PAYMENTPROOF",

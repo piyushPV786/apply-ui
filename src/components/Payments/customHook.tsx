@@ -2,177 +2,9 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
-import {
-  CommonEnums,
-  UPLOAD_DOCUMENT_BUTTON_STATUS,
-  studyMode,
-} from "../../components/common/constant";
+import { CommonEnums } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
-import { getConvertedAmount } from "./helper";
-
-// const CustomHookPayment2 = (applicationCode) => {
-//   const [userDetails, setUserDetails] = useState<any>({});
-//   const [paymentDetailsJson, setPaymentDetailsJson] = useState<any>();
-//   const [paymentPayload, setPaymentPayload] = useState<any>();
-//   const [conversionRateDetails, setConversionRateDetails] = useState<any>();
-//   const [studyModes, setStudyModes] = useState<any>();
-//   const [isProgamFee, setIsProgramFee] = useState<any>();
-//   const [selectedCode, setSelectedCode] = useState<any>();
-//   const [discountDetails, setDiscountDetails] = useState<any>({
-//     discountAmount: 0,
-//     discountCode: "",
-//   });
-//   const [discountPercent, setDiscountPercent] = useState<any>();
-
-//   const getStudyModeData = async (programCode) => {
-//     // const response = await FinanceServices.getStudentProgram(programCode);
-//     // if (response) {
-//     //   let studyModeData = {
-//     //     programCode: response[0]?.programCode,
-//     //     programName: response[0]?.programName,
-//     //     rmatFee: response[0]?.rmatFee,
-//     //     studyModes: response[0]?.studyModes[0]?.fees,
-//     //   };
-
-//       // setStudyModes(studyModeData);
-//     }
-//   };
-
-//   const getUserDetails = async (applicationCode) => {
-//     await PaymentServices?.getApplicationData(applicationCode).then((data) => {
-//       setSelectedCode(data?.education?.studyModeCode);
-//       setUserDetails(data);
-//       data?.lead?.nationality && getCurrencyConversion(data?.lead?.nationality);
-//       data?.education?.programCode &&
-//         getStudyModeData(data?.education?.programCode);
-
-//       if (UPLOAD_DOCUMENT_BUTTON_STATUS.includes(data?.status)) {
-//         setIsProgramFee(false);
-//       } else {
-//         setIsProgramFee(true);
-//       }
-//     });
-//   };
-
-//   const getCurrencyConversion = async (nationality) => {
-//     const response = await PaymentServices?.getCurrencyConversion(nationality);
-//     setConversionRateDetails(response);
-//   };
-
-//   const getConvertedAmount = (conversionRate: number | null, amount) => {
-//     return conversionRate ? Number(amount * conversionRate).toFixed(2) : amount;
-//   };
-
-//   const getPayuDetails = async (payload) => {
-//     const apiPayload = {
-//       amount: Number(payload?.amount) || 0,
-//       feeModeCode: selectedCode ? selectedCode : feeMode.APPLICATION,
-//       email: userDetails?.lead?.email,
-//       firstname: userDetails?.lead?.firstName,
-//       phone: userDetails?.lead?.mobileNumber,
-//       productinfo: "test",
-//       studentTypeCode: userDetails?.education?.studentTypeCode,
-//       discountAmount: payload?.discountAmount,
-//       discountCode: payload?.discountCode,
-//       currencyCode: conversionRateDetails?.currencyCode,
-//     };
-//     const response = await PaymentServices?.getPayuDetais(
-//       applicationCode,
-//       apiPayload
-//     );
-//     setPaymentPayload(response);
-//   };
-
-//   const uploadPaymentProof = async (payload) => {
-//     const apiPayload = {
-//       files: payload?.files,
-//       amount: payload?.amount,
-//       paymentModeCode: "OFFLINE",
-//       discountCode: payload?.discountCode,
-//       discountAmount: payload.discountAmount,
-//       feeModeCode: selectedCode ? selectedCode : feeMode.APPLICATION,
-//       isDraft: false,
-//       currencyCode: conversionRateDetails?.currencyCode,
-//       studentCode: userDetails?.studentCode,
-//     };
-//     const response = await DocumentServices?.uploadDocuments(
-//       apiPayload,
-//       applicationCode
-//     );
-//     console.log("paymentProofRes=====>", response);
-//   };
-
-//   const updateDiscount = () => {
-//     let discount = {
-//       discountAmount:
-//         (paymentDetailsJson[selectedCode]?.fee * discountPercent) / 100,
-//       discountCode: discountDetails?.discountCode,
-//     };
-
-//     setDiscountDetails(discount);
-//   };
-
-//   const paymentDiscount = async (promoCode) => {
-//     const res = await PaymentServices.applicationDiscount(
-//       userDetails?.education?.studentTypeCode,
-//       applicationCode,
-//       promoCode
-//     );
-//     if (res?.maxAmount) {
-//       let discount = {
-//         discountAmount: isProgamFee
-//           ? (paymentDetailsJson[selectedCode]?.fee * res?.percent) / 100
-//           : (paymentDetailsJson[feeMode.APPLICATION]?.fee * res?.percent) / 100,
-//         discountCode: res?.discountCode,
-//       };
-//       setDiscountPercent(res?.percent);
-//       setDiscountDetails(discount);
-//     }
-//   };
-
-//   const createPaymentDetailsJson = async () => {
-//     const paymentDetaisjson = {};
-//     studyModes?.studyModes.map((item) => {
-//       paymentDetaisjson[item?.feeMode] = {
-//         programCode: studyModes?.programCode,
-//         programName: studyModes?.programName,
-//         fee: Number(item?.fee),
-//         rmatFee: Number(studyModes?.rmatFee),
-//         currrencyCode: conversionRateDetails?.currencyCode,
-//         currencySymbol: conversionRateDetails?.currencySymbol,
-//       };
-//     });
-
-//     setPaymentDetailsJson(paymentDetaisjson);
-//   };
-
-//   useEffect(() => {
-//     if (applicationCode) {
-//       getUserDetails(applicationCode);
-//     }
-//   }, [applicationCode]);
-
-//   useEffect(() => {
-//     createPaymentDetailsJson();
-//   }, [studyModes]);
-
-//   return {
-//     paymentDiscount,
-//     userDetails,
-//     getPayuDetails,
-//     paymentPayload,
-//     uploadPaymentProof,
-//     paymentDetailsJson,
-//     getConvertedAmount,
-//     isProgamFee,
-//     conversionRateDetails,
-//     selectedCode,
-//     setSelectedCode,
-//     studyModes,
-//     discountDetails,
-//     updateDiscount,
-//   };
-// };
+import { uploadDocumentsToAws, getFeeDetails } from "./helper";
 
 export const usePaymentHook = (applicationCode: string) => {
   const [masterData, setMasterData] = useState({
@@ -221,35 +53,128 @@ export const usePaymentHook = (applicationCode: string) => {
 };
 
 export const usePaymentDetailsHook = (masterData: any) => {
+  const [selectedFeeMode, setSelectedFeeMode] = useState("");
+  const [discountDetails, setDiscountDetails] = useState<any>({
+    discountPercent: 0,
+    discountCode: "",
+  });
+  const [paymentPayload, setPaymentPayload] = useState<any>();
+
+  const uploadPaymentProof = async (payload) => {
+    const apiPayload = {
+      files: payload?.files,
+      amount: payload?.amount,
+      paymentModeCode: "OFFLINE",
+      discountCode: discountDetails?.discountCode,
+      discountAmount: payload.discountAmount,
+      feeModeCode:
+        masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS
+          ? feeMode.APPLICATION
+          : selectedFeeMode,
+      isDraft: false,
+      currencyCode: masterData?.currencyData?.currencyCode,
+      studentCode: masterData?.applicationData?.studentCode,
+    };
+    const response = await DocumentServices?.uploadDocuments(
+      apiPayload,
+      masterData?.applicationData?.applicationCode
+    );
+    if (response) {
+      response?.data?.forEach((element, index) => {
+        uploadDocumentsToAws(element, payload?.files[index]);
+      });
+    }
+    console.log("paymentProofRes=====>", response);
+  };
+
+  const getPayuDetails = async (payload) => {
+    const apiPayload = {
+      amount: Number(payload?.amount) || 0,
+      feeModeCode:
+        masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS
+          ? feeMode.APPLICATION
+          : selectedFeeMode,
+      email: masterData?.applicationData?.lead?.email,
+      firstname: masterData?.applicationData?.lead?.firstName,
+      phone: masterData?.applicationData?.lead?.mobileNumber,
+      productinfo: "test",
+      studentTypeCode: masterData?.applicationData?.education?.studentTypeCode,
+      discountAmount: payload?.discountAmount,
+      discountCode: discountDetails?.discountCode,
+      currencyCode: masterData?.currencyData?.currencyCode,
+    };
+    const response = await PaymentServices?.getPayuDetais(
+      masterData?.applicationData?.applicationCode,
+      apiPayload
+    );
+    setPaymentPayload(response);
+  };
+
+  const paymentDiscount = async (promoCode) => {
+    const res = await PaymentServices.applicationDiscount(
+      masterData?.applicationData?.education?.studentTypeCode,
+      masterData?.applicationData?.applicationCode,
+      promoCode
+    );
+    if (res?.maxAmount) {
+      setDiscountDetails({
+        discountPercent: res?.percent,
+        discountCode: res?.discountCode,
+      });
+    }
+  };
+
   let studyModes: any = {};
   if (masterData?.applicationData?.education?.studyModeCode) {
+    const studyModeCode = masterData?.applicationData?.education?.studyModeCode;
     studyModes = masterData?.feeData?.studyModes.find(
-      (item: any) =>
-        item?.studyModeCode ===
-        masterData?.applicationData?.education?.studyModeCode
+      (item: any) => item?.studyModeCode === studyModeCode
     );
+
     const studyModeDetails = masterData?.studyModeData?.find(
-      (item: any) =>
-        item?.code === masterData?.applicationData?.education?.studyModeCode
+      (item: any) => item?.code === studyModeCode
     );
     studyModes.helpText = studyModeDetails?.description;
   }
+
   let fees: any = {};
 
   if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
     const feesStructure = studyModes?.fees?.find(
       (item: any) => item?.feeMode === feeMode.APPLICATION
     );
-    fees = {
-      ...feesStructure,
-      amount: `${masterData?.currencyData?.currencySymbol} ${getConvertedAmount(
-        masterData?.currencyData?.forecastRate,
-        feesStructure?.fee
-      )}`,
-      label: "Application Fees",
-      helpText: "( Non-refundable )",
-    };
+    fees = getFeeDetails(
+      feesStructure,
+      "Application Fees",
+      masterData,
+      discountDetails
+    );
+  } else {
+    const feeJson = {};
+    studyModes?.fees?.map((item) => {
+      if (item?.feeMode !== feeMode.APPLICATION) {
+        feeJson[item?.feeMode] = getFeeDetails(
+          item,
+          "Program Fees",
+          masterData,
+          discountDetails
+        );
+      }
+    });
+
+    if (selectedFeeMode in feeJson) {
+      fees = feeJson[selectedFeeMode];
+    }
   }
 
-  return { studyModes, fees };
+  return {
+    studyModes,
+    fees,
+    setSelectedFeeMode,
+    selectedFeeMode,
+    paymentDiscount,
+    getPayuDetails,
+    paymentPayload,
+    uploadPaymentProof,
+  };
 };
