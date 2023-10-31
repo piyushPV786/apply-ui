@@ -1934,8 +1934,8 @@ export const EditGroup = ({
             type="button"
             isGreenWhiteCombination={true}
             onClick={() => {
-              onClickShowTerms();
               updateTermsConditions(false);
+              onClickShowTerms();
             }}
             title={"Decline"}
           />

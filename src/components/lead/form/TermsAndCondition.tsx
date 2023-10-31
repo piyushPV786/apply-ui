@@ -3,11 +3,13 @@ import TermAndCondition from "../../dialog/Terms&ConditionDialog";
 import UseTermsAndConditionHook from "../customHooks/UseTermsAndConditionHook";
 
 const TermsAndCondition = (props: any) => {
-  const { register, watch } = useFormContext();
+  const { register, watch, setValue } = useFormContext();
   const { masterData } = props;
   const { showTerms, onClickShowTerms, onChangeTerms } =
     UseTermsAndConditionHook();
-  const updateTermsConditions = (data) => {};
+  const updateTermsConditions = (data) => {
+    setValue("lead.isAgreedTermsAndConditions", data);
+  };
 
   return (
     <div className="mt-4 text-center">

@@ -14,7 +14,7 @@ export const kinInfoData = [
   },
   {
     name: "relationship",
-    label: "RelationShip",
+    label: "Relationship",
     type: "select",
     key: "relationData",
     option: [],

@@ -29,6 +29,7 @@ const Sponsor = (props: any) => {
   const { masterData, applicationData } = props?.masterData;
   const activeSponsor = watch("sponsor.isSponsor");
   const countryDetail = watch(`sponsor.country`);
+  const sponsorType = watch(`sponsor.sponsorModeCode`);
   const stateDetails: any = useAddressHook(countryDetail);
   const stateList = stateDetails[countryDetail];
   const Errors = errors["sponsor"] as any;
@@ -79,19 +80,14 @@ const Sponsor = (props: any) => {
             <div className="row">
               {SpData?.map((element) => (
                 <>
-                  {element?.type === "text" && (
-                    <TextField
-                      element={element}
-                      Errors={Errors}
-                      registerName={`sponsor.${element?.name}`}
-                    />
-                  )}
-                  {element?.type === "select" && element?.key !== "state" && (
+                  {element?.type === "sponsorSelect" && (
                     <div className="col-lg-4 mb-4">
                       <CommonAutocomplete
                         options={
                           masterData[element?.key]
-                            ? masterData[element?.key]
+                            ? masterData[element?.key]?.filter(
+                                (item) => item?.code === "GUARDIAN"
+                              )
                             : element.option
                         }
                         label={element?.label}
@@ -110,55 +106,92 @@ const Sponsor = (props: any) => {
                       )}
                     </div>
                   )}
-                  {element?.type === "select" && element?.key === "state" && (
-                    <div className="col-lg-4 mb-4">
-                      <CommonAutocomplete
-                        options={stateList ? stateList : element.option}
-                        label={element?.label}
-                        registerName={`sponsor.${element?.name}`}
-                        required={element?.required}
-                        defaultValue={
-                          applicationData && applicationData?.sponsor
-                            ? applicationData?.sponsor[element?.name]
-                            : null
-                        }
-                      />
-                      {Errors && Errors[element?.name] && (
-                        <div className="invalid-feedback">
-                          {element?.errorMessage}
+                  {sponsorType && (
+                    <>
+                      {element?.type === "text" && (
+                        <TextField
+                          element={element}
+                          Errors={Errors}
+                          registerName={`sponsor.${element?.name}`}
+                        />
+                      )}
+                      {element?.type === "select" &&
+                        element?.key !== "state" && (
+                          <div className="col-lg-4 mb-4">
+                            <CommonAutocomplete
+                              options={
+                                masterData[element?.key]
+                                  ? masterData[element?.key]
+                                  : element.option
+                              }
+                              label={element?.label}
+                              registerName={`sponsor.${element?.name}`}
+                              required={element?.required}
+                              defaultValue={
+                                applicationData && applicationData?.sponsor
+                                  ? applicationData?.sponsor[element?.name]
+                                  : null
+                              }
+                            />
+                            {Errors && Errors[element?.name] && (
+                              <div className="invalid-feedback">
+                                {element?.errorMessage}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      {element?.type === "select" &&
+                        element?.key === "state" && (
+                          <div className="col-lg-4 mb-4">
+                            <CommonAutocomplete
+                              options={stateList ? stateList : element.option}
+                              label={element?.label}
+                              registerName={`sponsor.${element?.name}`}
+                              required={element?.required}
+                              defaultValue={
+                                applicationData && applicationData?.sponsor
+                                  ? applicationData?.sponsor[element?.name]
+                                  : null
+                              }
+                            />
+                            {Errors && Errors[element?.name] && (
+                              <div className="invalid-feedback">
+                                {element?.errorMessage}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      {element?.type === "email" && (
+                        <div className="col-lg-4 mb-4">
+                          <StyledLabel required>{element?.label}</StyledLabel>
+                          <input
+                            className="form-control"
+                            type={element.type}
+                            placeholder=""
+                            {...register(`sponsor.${element?.name}`, {
+                              required: element.required,
+                              validate: (value) =>
+                                isValidEmail(value, !element.required),
+                            })}
+                          />
+                          {Errors && Errors?.email && (
+                            <div className="invalid-feedback">
+                              {Errors?.email?.type == "validate"
+                                ? element?.validateErrorMessage
+                                : element?.errorMessage}
+                            </div>
+                          )}
                         </div>
                       )}
-                    </div>
-                  )}
-                  {element?.type === "email" && (
-                    <div className="col-lg-4 mb-4">
-                      <StyledLabel required>{element?.label}</StyledLabel>
-                      <input
-                        className="form-control"
-                        type={element.type}
-                        placeholder=""
-                        {...register(`sponsor.${element?.name}`, {
-                          required: element.required,
-                          validate: (value) =>
-                            isValidEmail(value, !element.required),
-                        })}
-                      />
-                      {Errors && Errors?.email && (
-                        <div className="invalid-feedback">
-                          {Errors?.email?.type == "validate"
-                            ? element?.validateErrorMessage
-                            : element?.errorMessage}
-                        </div>
+                      {element?.type === "mobileNumber" && (
+                        <MobileField
+                          element={element}
+                          registerName={`sponsor.${element?.name}`}
+                          countryCodeRegisterName={`sponsor.${element?.countryCodeRegisterName}`}
+                          error={Errors}
+                        />
                       )}
-                    </div>
-                  )}
-                  {element?.type === "mobileNumber" && (
-                    <MobileField
-                      element={element}
-                      registerName={`sponsor.${element?.name}`}
-                      countryCodeRegisterName={`sponsor.${element?.countryCodeRegisterName}`}
-                      error={Errors}
-                    />
+                    </>
                   )}
                 </>
               ))}

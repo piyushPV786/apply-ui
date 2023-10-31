@@ -4,7 +4,7 @@ export const sponsorInfoData = [
   {
     name: "sponsorModeCode",
     label: "Sponsor Type",
-    type: "select",
+    type: "sponsorSelect",
     key: "sponsorModeData",
     option: [],
     required: false,

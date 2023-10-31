@@ -6,10 +6,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import RadioField from "./components/RadioField";
-import { employmentData } from "./data/employmentData";
+import { employedData, employmentData } from "./data/employmentData";
 import TextField from "./components/TextField";
 import { useAddressHook } from "../customHooks/addressHooks";
 import { useEffect, useState } from "react";
+import { MobileField } from "./components/MobileField";
 
 const Employment = (props: any) => {
   const {
@@ -20,6 +21,7 @@ const Employment = (props: any) => {
   const { masterData, applicationData } = props?.masterData;
 
   const activeEmp = watch("employment.isEmployment");
+  const employmentStatusWatch = watch("employment.employmentStatusCode");
   const Errors = errors["employment"] as any;
 
   const countryDetail = watch(`employment.country`);
@@ -27,6 +29,7 @@ const Employment = (props: any) => {
   const stateList = stateDetails[countryDetail];
 
   const [SpData, setSpData] = useState<any>([]);
+  const [employedList, setEmployedList] = useState<any>([]);
 
   useEffect(() => {
     const sponsorData: any = [];
@@ -38,6 +41,18 @@ const Employment = (props: any) => {
       }
     });
     setSpData(sponsorData);
+  }, [activeEmp]);
+
+  useEffect(() => {
+    const sponsorData: any = [];
+    employedData?.forEach((item) => {
+      if (activeEmp === "yes" || activeEmp === true) {
+        sponsorData.push({ ...item, required: true });
+      } else {
+        sponsorData.push({ ...item, required: false });
+      }
+    });
+    setEmployedList(sponsorData);
   }, [activeEmp]);
 
   useEffect(() => {
@@ -70,19 +85,14 @@ const Employment = (props: any) => {
             <div className="row">
               {SpData?.map((element) => (
                 <>
-                  {element?.type === "text" && (
-                    <TextField
-                      element={element}
-                      Errors={Errors}
-                      registerName={`employment.${element?.name}`}
-                    />
-                  )}
-                  {element?.type === "select" && element?.key !== "state" && (
+                  {element?.type === "employmentSelect" && (
                     <div className="col-lg-4 mb-4">
                       <CommonAutocomplete
                         options={
                           masterData[element?.key]
-                            ? masterData[element?.key]
+                            ? masterData[element?.key]?.filter(
+                                (item) => item?.code !== "UNEMPLOYED"
+                              )
                             : element.option
                         }
                         label={element?.label}
@@ -101,25 +111,114 @@ const Employment = (props: any) => {
                       )}
                     </div>
                   )}
-                  {element?.type === "select" && element?.key === "state" && (
-                    <div className="col-lg-4 mb-4">
-                      <CommonAutocomplete
-                        options={stateList ? stateList : element.option}
-                        label={element?.label}
-                        registerName={`employment.${element?.name}`}
-                        required={element?.required}
-                        defaultValue={
-                          applicationData && applicationData?.employment
-                            ? applicationData?.employment[element?.name]
-                            : null
-                        }
-                      />
-                      {Errors && Errors[element?.name] && (
-                        <div className="invalid-feedback">
-                          {element?.errorMessage}
+                </>
+              ))}
+              {employedList?.map((element) => (
+                <>
+                  {employmentStatusWatch === "SELFEMPLOYED" && (
+                    <>
+                      {element?.type === "text" && (
+                        <TextField
+                          element={element}
+                          Errors={Errors}
+                          registerName={`employment.${element?.name}`}
+                        />
+                      )}
+
+                      {element?.type === "select" && (
+                        <div className="col-lg-4 mb-4">
+                          <CommonAutocomplete
+                            options={
+                              masterData[element?.key]
+                                ? masterData[element?.key]
+                                : element.option
+                            }
+                            label={element?.label}
+                            registerName={`employment.${element?.name}`}
+                            required={element?.required}
+                            defaultValue={
+                              applicationData && applicationData?.employment
+                                ? applicationData?.employment[element?.name]
+                                : null
+                            }
+                          />
+                          {Errors && Errors[element?.name] && (
+                            <div className="invalid-feedback">
+                              {element?.errorMessage}
+                            </div>
+                          )}
                         </div>
                       )}
-                    </div>
+                    </>
+                  )}
+                </>
+              ))}
+              {SpData?.map((element) => (
+                <>
+                  {employmentStatusWatch === "EMPLOYED" && (
+                    <>
+                      {element?.type === "text" && (
+                        <TextField
+                          element={element}
+                          Errors={Errors}
+                          registerName={`employment.${element?.name}`}
+                        />
+                      )}
+                      {element?.type === "select" &&
+                        element?.key !== "state" && (
+                          <div className="col-lg-4 mb-4">
+                            <CommonAutocomplete
+                              options={
+                                masterData[element?.key]
+                                  ? masterData[element?.key]
+                                  : element.option
+                              }
+                              label={element?.label}
+                              registerName={`employment.${element?.name}`}
+                              required={element?.required}
+                              defaultValue={
+                                applicationData && applicationData?.employment
+                                  ? applicationData?.employment[element?.name]
+                                  : null
+                              }
+                            />
+                            {Errors && Errors[element?.name] && (
+                              <div className="invalid-feedback">
+                                {element?.errorMessage}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      {element?.type === "select" &&
+                        element?.key === "state" && (
+                          <div className="col-lg-4 mb-4">
+                            <CommonAutocomplete
+                              options={stateList ? stateList : element.option}
+                              label={element?.label}
+                              registerName={`employment.${element?.name}`}
+                              required={element?.required}
+                              defaultValue={
+                                applicationData && applicationData?.employment
+                                  ? applicationData?.employment[element?.name]
+                                  : null
+                              }
+                            />
+                            {Errors && Errors[element?.name] && (
+                              <div className="invalid-feedback">
+                                {element?.errorMessage}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      {element?.type === "mobileNumber" && (
+                        <MobileField
+                          element={element}
+                          registerName={`employment.${element?.name}`}
+                          countryCodeRegisterName={`employment.${element?.countryCodeRegisterName}`}
+                          error={Errors}
+                        />
+                      )}
+                    </>
                   )}
                 </>
               ))}

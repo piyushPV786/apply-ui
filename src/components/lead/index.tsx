@@ -64,11 +64,13 @@ const LeadForm = (props: IProps) => {
                 <TermsAndCondition />
                 <div className="mt-4 text-center">
                   <StyledButton
+                    style={{ marginRight: "10px" }}
                     onClick={saveApplicationAsDraft}
                     className="form-button btn-space"
                     title="Save As Draft"
                   />
                   <StyledButton
+                    disabled={!watch("lead.isAgreedTermsAndConditions")}
                     onClick={handleSubmit((d) => saveApplication(d))}
                     className="form-button btn-space"
                     title="Save & Next"
