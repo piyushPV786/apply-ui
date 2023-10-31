@@ -2,19 +2,51 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import FinanceServices from "../../services/applicationForm";
+import { UPLOAD_DOCUMENT_BUTTON_STATUS } from "../../components/common/constant";
+import { feeMode } from "../../components/common/constant";
 
 const CustomHookPayment = (applicationCode) => {
   const [userDetails, setUserDetails] = useState<any>({});
-  const [paymentDetails, setPaymentDetails] = useState<any>();
+  const [paymentDetailsJson, setPaymentDetailsJson] = useState<any>();
   const [paymentPayload, setPaymentPayload] = useState<any>();
   const [conversionRateDetails, setConversionRateDetails] = useState<any>();
-  const getUserDetails = async (applicationCode) => {
-    const response = await PaymentServices?.getApplicationData(applicationCode);
+  const [studyModes, setStudyModes] = useState<any>();
+  const [isProgamFee, setIsProgramFee] = useState<any>();
+  const [selectedCode, setSelectedCode] = useState<any>();
+  const [discountDetails, setDiscountDetails] = useState<any>({
+    discountAmount: 0,
+    discountCode: "",
+  });
+  const [discountPercent, setDiscountPercent] = useState<any>();
+
+  const getStudyModeData = async (programCode) => {
+    const response = await FinanceServices.getStudentProgram(programCode);
     if (response) {
-      setUserDetails(response);
-      response?.education?.programCode &&
-        getPaymentDetail(response?.education?.programCode, 0, "");
+      let studyModeData = {
+        programCode: response[0]?.programCode,
+        programName: response[0]?.programName,
+        rmatFee: response[0]?.rmatFee,
+        studyModes: response[0]?.studyModes[0]?.fees,
+      };
+
+      setStudyModes(studyModeData);
     }
+  };
+
+  const getUserDetails = async (applicationCode) => {
+    await PaymentServices?.getApplicationData(applicationCode).then((data) => {
+      setSelectedCode(data?.education?.studyModeCode);
+      setUserDetails(data);
+      data?.lead?.nationality && getCurrencyConversion(data?.lead?.nationality);
+      data?.education?.programCode &&
+        getStudyModeData(data?.education?.programCode);
+
+      if (UPLOAD_DOCUMENT_BUTTON_STATUS.includes(data?.status)) {
+        setIsProgramFee(false);
+      } else {
+        setIsProgramFee(true);
+      }
+    });
   };
 
   const getCurrencyConversion = async (nationality) => {
@@ -29,7 +61,7 @@ const CustomHookPayment = (applicationCode) => {
   const getPayuDetails = async (payload) => {
     const apiPayload = {
       amount: payload?.amount,
-      feeModeCode: "application",
+      feeModeCode: selectedCode ? selectedCode : feeMode.APPLICATION,
       email: userDetails?.lead?.email,
       firstname: userDetails?.lead?.email,
       phone: userDetails?.lead?.mobileNumber,
@@ -37,7 +69,7 @@ const CustomHookPayment = (applicationCode) => {
       studentTypeCode: userDetails?.education?.studentTypeCode,
       discountAmount: payload?.discountAmount,
       discountCode: payload?.discountCode,
-      currencyCode: userDetails?.lead?.nationality,
+      currencyCode: conversionRateDetails?.currencyCode,
     };
     const response = await PaymentServices?.getPayuDetais(
       applicationCode,
@@ -53,15 +85,26 @@ const CustomHookPayment = (applicationCode) => {
       paymentModeCode: "OFFLINE",
       discountCode: payload?.discountCode,
       discountAmount: payload.discountAmount,
-      feeModeCode: "Day",
+      feeModeCode: selectedCode ? selectedCode : feeMode.APPLICATION,
       isDraft: false,
-      currencyCode: userDetails?.lead?.nationality,
+      currencyCode: conversionRateDetails?.currencyCode,
       studentCode: userDetails?.studentCode,
     };
     const response = await DocumentServices?.uploadDocuments(
       apiPayload,
       applicationCode
     );
+    console.log("paymentProofRes=====>", response);
+  };
+
+  const updateDiscount = () => {
+    let discount = {
+      discountAmount:
+        (paymentDetailsJson[selectedCode]?.fee * discountPercent) / 100,
+      discountCode: discountDetails?.discountCode,
+    };
+
+    setDiscountDetails(discount);
   };
 
   const paymentDiscount = async (promoCode) => {
@@ -70,45 +113,32 @@ const CustomHookPayment = (applicationCode) => {
       applicationCode,
       promoCode
     );
-    if (res.id) {
-      getPaymentDetail(
-        userDetails?.education?.programCode,
-        res?.maxAmount,
-        res?.discountCode
-      );
+    if (res?.maxAmount) {
+      let discount = {
+        discountAmount: isProgamFee
+          ? (paymentDetailsJson[selectedCode]?.fee * res?.percent) / 100
+          : (paymentDetailsJson[feeMode.APPLICATION]?.fee * res?.percent) / 100,
+        discountCode: res?.discountCode,
+      };
+      setDiscountPercent(res?.percent);
+      setDiscountDetails(discount);
     }
   };
 
-  const getPaymentDetail = async (
-    programCode,
-    discountAmount,
-    discountCode
-  ) => {
-    const res = await FinanceServices.getStudentProgram(programCode);
+  const createPaymentDetailsJson = async () => {
+    const paymentDetaisjson = {};
+    studyModes?.studyModes.map((item) => {
+      paymentDetaisjson[item?.feeMode] = {
+        programCode: studyModes?.programCode,
+        programName: studyModes?.programName,
+        fee: Number(item?.fee),
+        rmatFee: Number(studyModes?.rmatFee),
+        currrencyCode: conversionRateDetails?.currencyCode,
+        currencySymbol: conversionRateDetails?.currencySymbol,
+      };
+    });
 
-    const paymentDetails = {
-      programCode: res[0]?.programCode,
-      programName: res[0]?.programName,
-
-      feeDetails: {
-        fee: res[0]?.studyModes[0]?.fees?.filter((item) => {
-          return item.feeMode == "APPLICATION";
-        })[0].fee,
-        rmatFee: res[0]?.rmatFee,
-        discountAmount: discountAmount,
-        discountCode: discountCode,
-        totaAmount:
-          Number(
-            res[0]?.studyModes[0]?.fees?.filter((item) => {
-              return item.feeMode == "APPLICATION";
-            })[0].fee
-          ) +
-          res[0]?.rmatFee -
-          discountAmount,
-      },
-    };
-
-    setPaymentDetails(paymentDetails);
+    setPaymentDetailsJson(paymentDetaisjson);
   };
 
   useEffect(() => {
@@ -118,10 +148,8 @@ const CustomHookPayment = (applicationCode) => {
   }, [applicationCode]);
 
   useEffect(() => {
-    if (userDetails) {
-      getCurrencyConversion(userDetails?.lead?.nationality);
-    }
-  }, [userDetails]);
+    createPaymentDetailsJson();
+  }, [studyModes]);
 
   return {
     paymentDiscount,
@@ -129,9 +157,15 @@ const CustomHookPayment = (applicationCode) => {
     getPayuDetails,
     paymentPayload,
     uploadPaymentProof,
-    paymentDetails,
-    conversionRateDetails,
+    paymentDetailsJson,
     getConvertedAmount,
+    isProgamFee,
+    conversionRateDetails,
+    selectedCode,
+    setSelectedCode,
+    studyModes,
+    discountDetails,
+    updateDiscount,
   };
 };
 export default CustomHookPayment;

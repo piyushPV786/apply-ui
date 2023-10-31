@@ -90,6 +90,7 @@ export const UPLOAD_DOCUMENT_BUTTON_STATUS = [
   APPLICATION_STATUS.APPLICATION_FEE_VERIFICATION_PENDING,
   APPLICATION_STATUS.RESUBMIT_APPLICATION_FEE_PROOF,
   APPLICATION_STATUS.ENROLLED_TO_APPLICATION,
+  APPLICATION_STATUS.APPLICATION_FEE_PENDING,
 ];
 
 export enum DocumentStatus {
@@ -98,7 +99,10 @@ export enum DocumentStatus {
   Submitted = "submitted",
   Rejected = "rejected",
 }
-
+export enum feeMode {
+  DAY = "DAY",
+  APPLICATION = "APPLICATION",
+}
 export const ErrorMessage = "Something went wrong please try again later";
 export enum AlertEnums {
   INFO = "info",

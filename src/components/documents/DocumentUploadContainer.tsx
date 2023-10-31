@@ -29,6 +29,7 @@ const DocumentUploadContainer = ({
     watch,
     formState: { errors },
   } = useFormContext();
+
   const fileUploadRef = useRef<any>(null);
   const onDocUploadClick = () => {
     const fileElement = fileUploadRef.current as HTMLInputElement;

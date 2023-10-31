@@ -11,28 +11,44 @@ import {
 import { PaymentCard, StyledLink } from "../../styles/styled";
 import React, { useState } from "react";
 import { IPaymentPayload } from "./commonDataType";
+import { useFormContext } from "react-hook-form";
+import { feeMode } from "../common/constant";
 
 interface IPaymentPageProps {
-  paymentDiscount: (arg0) => void;
-  paymentDetails: any;
+  paymentDiscount: any;
+  paymentDetailsJson: any;
   conversionRateDetails: any;
+  selectedCode: any;
+  setSelectedCode: any;
+  isProgamFee: any;
+  studyModes: any;
   getConvertedAmount: any;
+  discountDetails: any;
+  userDetails: any;
+  updateDiscount: any;
 }
 const OrderSummary = ({
   paymentDiscount,
-  paymentDetails,
+  paymentDetailsJson,
   conversionRateDetails,
+  selectedCode,
+  setSelectedCode,
+  isProgamFee,
+  studyModes,
   getConvertedAmount,
+  discountDetails,
+  userDetails,
+  updateDiscount,
 }: IPaymentPageProps) => {
   const [showPromoCode, setShowPromoCode] = useState<boolean>(false);
   const [promoCode, setPromoCode] = useState<string>("");
 
   const OnSubmit = async () => {
-    paymentDiscount(promoCode);
+    paymentDiscount(promoCode, false);
     setShowPromoCode(false);
     // setPromoCode("");
   };
-
+  console.log("sel", paymentDetailsJson[selectedCode]);
   return (
     <Card>
       <Grid container spacing={2}>
@@ -46,25 +62,111 @@ const OrderSummary = ({
             <Grid item md={6} xs={12}>
               <label>Proposal Qualification</label>
               <Typography variant="body1">
-                <strong>{paymentDetails?.programName}</strong>
+                <strong>{userDetails?.education?.programName}</strong>
               </Typography>
             </Grid>
-            <Grid item md={6} xs={12}>
-              <label>Study Mode</label>
-              <Typography variant="body1">
-                <strong>DAY</strong> (These classes will be conducted during the
-                week)
-              </Typography>
+            <Grid item md={7} xs={12}>
+              <Grid>
+                <label>Study Mode</label>
+              </Grid>
+              {isProgamFee ? (
+                <Grid>
+                  {studyModes &&
+                    studyModes?.studyModes?.map((item, index) => {
+                      return (
+                        <div className="form-check form-check-inline">
+                          <>
+                            <input
+                              key={index}
+                              className="form-check-input me-2"
+                              type="radio"
+                              onChange={() => {
+                                if (promoCode) {
+                                  updateDiscount(
+                                    paymentDetailsJson[selectedCode]?.fee
+                                  );
+                                }
+                                setSelectedCode(item?.feeMode);
+                              }}
+                              value={item?.feeMode}
+                              checked={item?.feeMode == selectedCode}
+                            />
+                            <label className="form-check-label">
+                              {item?.feeMode}
+                              <br />
+                              <Typography>
+                                {getConvertedAmount(
+                                  conversionRateDetails?.rate,
+                                  item?.fee
+                                )}
+                              </Typography>
+                            </label>
+                          </>
+                        </div>
+                      );
+                    })}
+                </Grid>
+              ) : (
+                <Typography variant="body1">
+                  <strong>DAY</strong> (These classes will be conducted during
+                  the week)
+                </Typography>
+              )}
             </Grid>
             <Grid item md={6} xs={12}>
-              <label>Application Fee ({paymentDetails?.feeDetails?.fee})</label>
+              <label>
+                APPLICATION Fee (
+                {isProgamFee
+                  ? isNaN(
+                      getConvertedAmount(
+                        conversionRateDetails?.rate,
+                        paymentDetailsJson[selectedCode]?.fee
+                      )
+                    )
+                    ? 0
+                    : getConvertedAmount(
+                        conversionRateDetails?.rate,
+                        paymentDetailsJson[selectedCode]?.fee
+                      )
+                  : isNaN(
+                      getConvertedAmount(
+                        conversionRateDetails?.rate,
+                        paymentDetailsJson[feeMode.APPLICATION]?.fee
+                      )
+                    )
+                  ? 0
+                  : getConvertedAmount(
+                      conversionRateDetails?.rate,
+                      paymentDetailsJson[feeMode.APPLICATION]?.fee
+                    )}
+                )
+              </label>
               <Typography variant="body1">
-                <strong>{`${
-                  conversionRateDetails?.currencySymbol
-                }${getConvertedAmount(
-                  conversionRateDetails?.rate,
-                  paymentDetails?.feeDetails?.fee
-                )}`}</strong>{" "}
+                <strong>
+                  {isProgamFee
+                    ? isNaN(
+                        getConvertedAmount(
+                          conversionRateDetails?.rate,
+                          paymentDetailsJson[selectedCode]?.fee
+                        )
+                      )
+                      ? 0
+                      : getConvertedAmount(
+                          conversionRateDetails?.rate,
+                          paymentDetailsJson[selectedCode]?.fee
+                        )
+                    : isNaN(
+                        getConvertedAmount(
+                          conversionRateDetails?.rate,
+                          paymentDetailsJson[feeMode.APPLICATION]?.fee
+                        )
+                      )
+                    ? 0
+                    : getConvertedAmount(
+                        conversionRateDetails?.rate,
+                        paymentDetailsJson[feeMode.APPLICATION]?.fee
+                      )}
+                </strong>
                 ( Non-refundable )
               </Typography>
             </Grid>
@@ -82,14 +184,33 @@ const OrderSummary = ({
                     display="flex"
                     justifyContent="space-between"
                   >
-                    <label>Total Application</label>
+                    <label>Total APPLICATION</label>
                     <Typography variant="body1">
-                      <strong>{`${
-                        conversionRateDetails?.currencySymbol
-                      }${getConvertedAmount(
-                        conversionRateDetails?.rate,
-                        paymentDetails?.feeDetails?.fee
-                      )}`}</strong>
+                      <strong>
+                        {isProgamFee
+                          ? isNaN(
+                              getConvertedAmount(
+                                conversionRateDetails?.rate,
+                                paymentDetailsJson[selectedCode]?.fee
+                              )
+                            )
+                            ? 0
+                            : getConvertedAmount(
+                                conversionRateDetails?.rate,
+                                paymentDetailsJson[selectedCode]?.fee
+                              )
+                          : isNaN(
+                              getConvertedAmount(
+                                conversionRateDetails?.rate,
+                                paymentDetailsJson[feeMode.APPLICATION]?.fee
+                              )
+                            )
+                          ? 0
+                          : getConvertedAmount(
+                              conversionRateDetails?.rate,
+                              paymentDetailsJson[feeMode.APPLICATION]?.fee
+                            )}
+                      </strong>
                     </Typography>
                   </Grid>
                   <Grid
@@ -101,12 +222,31 @@ const OrderSummary = ({
                   >
                     <label>RMAT Fee</label>
                     <Typography variant="body1">
-                      <strong>{`${
-                        conversionRateDetails?.currencySymbol
-                      }${getConvertedAmount(
-                        conversionRateDetails?.rate,
-                        paymentDetails?.feeDetails?.rmatFee
-                      )}`}</strong>
+                      <strong>
+                        {isProgamFee
+                          ? isNaN(
+                              getConvertedAmount(
+                                conversionRateDetails?.rate,
+                                paymentDetailsJson[selectedCode]?.rmatFee
+                              )
+                            )
+                            ? 0
+                            : getConvertedAmount(
+                                conversionRateDetails?.rate,
+                                paymentDetailsJson[selectedCode]?.rmatFee
+                              )
+                          : isNaN(
+                              getConvertedAmount(
+                                conversionRateDetails?.rate,
+                                paymentDetailsJson[feeMode.APPLICATION]?.rmatFee
+                              )
+                            )
+                          ? 0
+                          : getConvertedAmount(
+                              conversionRateDetails?.rate,
+                              paymentDetailsJson[feeMode.APPLICATION]?.rmatFee
+                            )}
+                      </strong>
                     </Typography>
                   </Grid>
                   <Grid
@@ -119,12 +259,12 @@ const OrderSummary = ({
                     <label>Discount</label>
                     <Typography variant="body1">
                       <strong>
-                        {`${
-                          conversionRateDetails?.currencySymbol
-                        }${getConvertedAmount(
-                          conversionRateDetails?.rate,
-                          paymentDetails?.feeDetails?.discountAmount
-                        )}`}
+                        {discountDetails?.discountAmount
+                          ? getConvertedAmount(
+                              conversionRateDetails?.rate,
+                              discountDetails?.discountAmount
+                            )
+                          : 0}
                       </strong>
                     </Typography>
                   </Grid>
@@ -140,12 +280,45 @@ const OrderSummary = ({
                   >
                     <strong>Total Amount</strong>
                     <Typography variant="body1">
-                      <strong>{`${
-                        conversionRateDetails?.currencySymbol
-                      }${getConvertedAmount(
-                        conversionRateDetails?.rate,
-                        paymentDetails?.feeDetails?.totaAmount
-                      )}`}</strong>
+                      <strong>
+                        {isProgamFee
+                          ? `${
+                              isNaN(
+                                getConvertedAmount(
+                                  conversionRateDetails?.rate,
+                                  paymentDetailsJson[selectedCode]?.fee +
+                                    paymentDetailsJson[selectedCode]?.rmatFee -
+                                    discountDetails?.discountAmount
+                                )
+                              )
+                                ? 0
+                                : isNaN(
+                                    getConvertedAmount(
+                                      conversionRateDetails?.rate,
+                                      paymentDetailsJson[selectedCode]?.fee +
+                                        paymentDetailsJson[selectedCode]
+                                          ?.rmatFee -
+                                        discountDetails?.discountAmount
+                                    )
+                                  )
+                                ? 0
+                                : getConvertedAmount(
+                                    conversionRateDetails?.rate,
+                                    paymentDetailsJson[selectedCode]?.fee +
+                                      paymentDetailsJson[selectedCode]
+                                        ?.rmatFee -
+                                      discountDetails?.discountAmount
+                                  )
+                            }`
+                          : `${getConvertedAmount(
+                              conversionRateDetails?.rate,
+                              paymentDetailsJson[feeMode.APPLICATION]?.fee +
+                                paymentDetailsJson[feeMode.APPLICATION]
+                                  ?.rmatFee -
+                                discountDetails?.discountAmount
+                            )} 
+                            `}
+                      </strong>
                     </Typography>
                   </Grid>
                 </Grid>

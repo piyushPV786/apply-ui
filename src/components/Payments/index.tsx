@@ -12,12 +12,18 @@ const PaymentPage = ({ applicationCode }) => {
     getPayuDetails,
     paymentPayload,
     uploadPaymentProof,
-    paymentDetails,
     conversionRateDetails,
+    isProgamFee,
+    paymentDetailsJson,
+    selectedCode,
+    studyModes,
+    setSelectedCode,
     getConvertedAmount,
+    discountDetails,
+    updateDiscount,
   } = CustomHookPayment(applicationCode);
 
-  return paymentDetails ? (
+  return paymentDetailsJson ? (
     <>
       <Box
         sx={{
@@ -34,9 +40,16 @@ const PaymentPage = ({ applicationCode }) => {
           <Grid item xs={12}>
             <OrderSummary
               conversionRateDetails={conversionRateDetails}
-              getConvertedAmount={getConvertedAmount}
               paymentDiscount={paymentDiscount}
-              paymentDetails={paymentDetails}
+              paymentDetailsJson={paymentDetailsJson}
+              selectedCode={selectedCode}
+              setSelectedCode={setSelectedCode}
+              isProgamFee={isProgamFee}
+              studyModes={studyModes}
+              getConvertedAmount={getConvertedAmount}
+              discountDetails={discountDetails}
+              userDetails={userDetails}
+              updateDiscount={updateDiscount}
             />
           </Grid>
           <Grid item xs={12}>
@@ -44,7 +57,12 @@ const PaymentPage = ({ applicationCode }) => {
               getPayuDetails={getPayuDetails}
               paymentPayload={paymentPayload}
               uploadPaymentProof={uploadPaymentProof}
-              paymentDetails={paymentDetails}
+              conversionRateDetails={conversionRateDetails}
+              paymentDetailsJson={paymentDetailsJson}
+              selectedCode={selectedCode}
+              isProgamFee={isProgamFee}
+              getConvertedAmount={getConvertedAmount}
+              discountDetails={discountDetails}
             />
           </Grid>
           <Grid item xs={12} display="flex" justifyContent="center">

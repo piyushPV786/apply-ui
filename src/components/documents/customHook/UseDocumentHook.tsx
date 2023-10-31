@@ -117,13 +117,15 @@ const UseDocumentHook = (applicationCode) => {
       userDetails?.applicationCode
     );
     if (response) {
-      response?.data
-        .map((url, index) => {
-          uploadDocumentsToAws(url, payload?.files[index]);
-        })
-        .then(() => {
-          router.push(`/uploads/response/uploadSuccess`);
-        });
+      let count = 0;
+      response?.data?.map((url, index) => {
+        uploadDocumentsToAws(url, payload?.files[index]);
+        count = count + 1;
+      });
+
+      if (response?.data.length == count) {
+        router.push(`/payments/${applicationCode}`);
+      }
     }
   };
 
@@ -150,7 +152,7 @@ const UseDocumentHook = (applicationCode) => {
     };
     payload?.files?.length
       ? uploadDocuments(payload)
-      : router.push(`/uploads/response/uploadSuccess`);
+      : router.push(`/payments/${applicationCode}`);
   };
 
   useEffect(() => {

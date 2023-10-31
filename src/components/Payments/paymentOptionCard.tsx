@@ -13,19 +13,48 @@ import {
 import { PaymentTypes } from "../common/constant";
 import { GetPaymentImage } from "../../Util/Util";
 import { PaymentCardDetail } from "../../styles/styled";
+import { feeMode } from "../common/constant";
 
 const PaymentOptionCard = ({
   getPayuDetails,
   paymentPayload,
-  paymentDetails,
+  paymentDetailsJson,
+  isProgamFee,
+  selectedCode,
+  getConvertedAmount,
+  discountDetails,
+  conversionRateDetails,
 }) => {
   const [selectedPayment, setSelectedPaymentOption] = useState<string>("");
 
   const getPayuPaymentUrl = () => {
     const payload = {
-      amount: Number(paymentDetails?.feeDetails?.totaAmount),
-      discountAmount: paymentDetails?.feeDetails?.discountAmount,
-      discountCode: paymentDetails?.feeDetails?.discountCode,
+      amount: isProgamFee
+        ? Number(
+            getConvertedAmount(
+              conversionRateDetails?.rate,
+              Number(paymentDetailsJson[selectedCode]?.fee) +
+                Number(paymentDetailsJson[selectedCode]?.rmatFee) -
+                discountDetails?.discountAmount
+            )
+          )
+        : Number(
+            getConvertedAmount(
+              conversionRateDetails?.rate,
+              Number(paymentDetailsJson[feeMode.APPLICATION]?.fee) +
+                Number(paymentDetailsJson[feeMode.APPLICATION]?.rmatFee) -
+                discountDetails?.discountAmount
+            )
+          ),
+      discountAmount: discountDetails?.discountAmount
+        ? getConvertedAmount(
+            conversionRateDetails?.rate,
+            discountDetails?.discountAmount
+          )
+        : 0,
+      discountCode: discountDetails?.discountCode
+        ? discountDetails?.discountCode
+        : discountDetails?.discountCode,
     };
     getPayuDetails(payload);
   };

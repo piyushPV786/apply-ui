@@ -7,7 +7,12 @@ const PaymentOption = ({
   getPayuDetails,
   paymentPayload,
   uploadPaymentProof,
-  paymentDetails,
+  paymentDetailsJson,
+  selectedCode,
+  isProgamFee,
+  getConvertedAmount,
+  discountDetails,
+  conversionRateDetails,
 }) => {
   return (
     <>
@@ -16,7 +21,12 @@ const PaymentOption = ({
           <PaymentOptionCard
             getPayuDetails={getPayuDetails}
             paymentPayload={paymentPayload}
-            paymentDetails={paymentDetails}
+            isProgamFee={isProgamFee}
+            selectedCode={selectedCode}
+            paymentDetailsJson={paymentDetailsJson}
+            getConvertedAmount={getConvertedAmount}
+            discountDetails={discountDetails}
+            conversionRateDetails={conversionRateDetails}
           />
         </Grid>
         <Grid
@@ -32,7 +42,12 @@ const PaymentOption = ({
         <Grid item xs={5} md={5}>
           <PaymentProofCard
             uploadPaymentProof={uploadPaymentProof}
-            paymentDetails={paymentDetails}
+            isProgamFee={isProgamFee}
+            selectedCode={selectedCode}
+            paymentDetailsJson={paymentDetailsJson}
+            getConvertedAmount={getConvertedAmount}
+            discountDetails={discountDetails}
+            conversionRateDetails={conversionRateDetails}
           />
         </Grid>
       </Grid>
