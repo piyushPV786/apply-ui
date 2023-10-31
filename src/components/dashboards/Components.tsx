@@ -186,7 +186,7 @@ export const ActionButtons = ({ applicationDetail }) => {
         <Grid item>
           <StyledButton
             onClick={() => {
-              router.push(`/payment/${applicationDetail?.applicationCode}`);
+              router.push(`/payments/${applicationDetail?.applicationCode}`);
             }}
             className="card-button"
             title={payBtnTitle}

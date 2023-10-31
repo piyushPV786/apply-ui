@@ -35,13 +35,7 @@ const Education = (props: any) => {
   const feesDetails = studentProgram?.studyModes?.find(
     (item) => item?.studyModeCode === studyModeCodeWatch
   );
-  useEffect(() => {
-    if (applicationData?.education?.agentCode) {
-      setValue("education.referredById", refferedById.agent);
-    } else {
-      setValue("education.isInternationDegree", refferedById.social);
-    }
-  }, [applicationData]);
+
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary

@@ -60,12 +60,12 @@ const CustomHookPayment = (applicationCode) => {
 
   const getPayuDetails = async (payload) => {
     const apiPayload = {
-      amount: payload?.amount,
+      amount: Number(payload?.amount) || 0,
       feeModeCode: selectedCode ? selectedCode : feeMode.APPLICATION,
       email: userDetails?.lead?.email,
-      firstname: userDetails?.lead?.email,
+      firstname: userDetails?.lead?.firstName,
       phone: userDetails?.lead?.mobileNumber,
-      productinfo: "Semester fee",
+      productinfo: "test",
       studentTypeCode: userDetails?.education?.studentTypeCode,
       discountAmount: payload?.discountAmount,
       discountCode: payload?.discountCode,

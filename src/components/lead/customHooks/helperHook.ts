@@ -77,19 +77,28 @@ export const useHelperHook = (masterData, watch, setError) => {
       return;
     }
 
+    const payload = {
+      ...data,
+      education: {
+        ...data.education,
+        isInternationDegree:
+          data.education.isInternationDegree === "yes" ? true : false,
+      },
+    };
+
     if (
       applicationData?.status === "APP-DRAFT" &&
       applicationData?.applicationCode
     ) {
       const response = await ApplicationServices?.updateDraft(
-        data,
+        payload,
         applicationData?.applicationCode
       );
       if (response?.statusCode === 200) {
         router.push("/dashboard");
       }
     } else {
-      const response = await ApplicationServices?.createDraft(data);
+      const response = await ApplicationServices?.createDraft(payload);
       if (response?.statusCode === 201) {
         router.push("/dashboard");
       }

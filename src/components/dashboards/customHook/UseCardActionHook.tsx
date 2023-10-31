@@ -19,7 +19,8 @@ const UseCardActionHook = (applicationDetail) => {
 
   const isPayBTN =
     status === CommonEnums.RESUB_APP_FEE_PROOF ||
-    status === CommonEnums.APP_ENROLLED_ACCEPTED;
+    status === CommonEnums.APP_ENROLLED_ACCEPTED ||
+    status === APPLICATION_STATUS.APPLICATION_FEE_PENDING;
 
   const payBtnTitle =
     status === CommonEnums.APP_ENROLLED_ACCEPTED

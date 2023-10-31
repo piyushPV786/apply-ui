@@ -10,7 +10,7 @@ const EmailField = ({ element, Errors, registerName }: any) => {
       <input
         className="form-control"
         type={"email"}
-        placeholder="email"
+        placeholder="Email"
         {...register(registerName, {
           required: true,
         })}

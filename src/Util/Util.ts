@@ -694,16 +694,27 @@ export const downloadDocument = (url, fileName: string) => {
   alink.click();
 };
 
+const setEducationValue = (studentData: object, setValue: any, key: string) => {
+  if (studentData[key]?.socialMediaCode) {
+    setValue("education.referredById", refferedById.social);
+  }
+  if (studentData[key]?.agentCode) {
+    setValue("education.referredById", refferedById.agent);
+  }
+  if (studentData[key]?.isInternationDegree) {
+    setValue("education.isInternationDegree", "yes");
+  }
+  if (!studentData[key]?.isInternationDegree) {
+    setValue("education.isInternationDegree", "no");
+  }
+};
+
 export const mapFormDefaultValue = (studentData: object, setValue: any) => {
   for (let [key, value] of Object.entries(studentData)) {
     if (acceptedKeysToMap.includes(key)) {
       setValue(key, value);
       if (key === "education" && studentData[key]) {
-        if (studentData[key]?.socialMediaCode) {
-          setValue("education.refferedById", refferedById.social);
-        } else if (studentData[key]?.agentCode) {
-          setValue("education.refferedById", refferedById.agent);
-        }
+        setEducationValue(studentData, setValue, key);
       }
     }
   }
