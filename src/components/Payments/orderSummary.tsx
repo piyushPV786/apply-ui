@@ -95,10 +95,12 @@ const OrderSummary = ({
                               {item?.feeMode}
                               <br />
                               <Typography>
-                                {getConvertedAmount(
+                                {`${
+                                  conversionRateDetails?.currencySymbol
+                                }${getConvertedAmount(
                                   conversionRateDetails?.rate,
                                   item?.fee
-                                )}
+                                )}`}
                               </Typography>
                             </label>
                           </>
@@ -115,7 +117,7 @@ const OrderSummary = ({
             </Grid>
             <Grid item md={6} xs={12}>
               <label>
-                APPLICATION Fee (
+                APPLICATION Fee ({conversionRateDetails?.currencySymbol}
                 {isProgamFee
                   ? isNaN(
                       getConvertedAmount(
@@ -143,6 +145,7 @@ const OrderSummary = ({
               </label>
               <Typography variant="body1">
                 <strong>
+                  {conversionRateDetails?.currencySymbol}
                   {isProgamFee
                     ? isNaN(
                         getConvertedAmount(
@@ -187,6 +190,7 @@ const OrderSummary = ({
                     <label>Total APPLICATION</label>
                     <Typography variant="body1">
                       <strong>
+                        {conversionRateDetails?.currencySymbol}
                         {isProgamFee
                           ? isNaN(
                               getConvertedAmount(
@@ -223,6 +227,7 @@ const OrderSummary = ({
                     <label>RMAT Fee</label>
                     <Typography variant="body1">
                       <strong>
+                        {conversionRateDetails?.currencySymbol}
                         {isProgamFee
                           ? isNaN(
                               getConvertedAmount(
@@ -259,6 +264,7 @@ const OrderSummary = ({
                     <label>Discount</label>
                     <Typography variant="body1">
                       <strong>
+                        {conversionRateDetails?.currencySymbol}
                         {discountDetails?.discountAmount
                           ? getConvertedAmount(
                               conversionRateDetails?.rate,
