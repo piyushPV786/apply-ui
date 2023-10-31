@@ -4,6 +4,7 @@ import OrderSummary from "../../components/Payments/orderSummary";
 import PaymentOption from "../../components/Payments/payment";
 import StepperComponent from "../../components/stepper/stepper";
 import { Box, Button, Grid } from "@mui/material";
+import Header from "../common/header";
 
 const PaymentPage = ({ applicationCode }) => {
   const {
@@ -25,6 +26,7 @@ const PaymentPage = ({ applicationCode }) => {
 
   return paymentDetailsJson ? (
     <>
+      <Header />
       <Box
         sx={{
           backgroundColor: "#e3e3e3",
