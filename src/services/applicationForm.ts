@@ -69,6 +69,14 @@ class ApplicationFormServices {
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
+
+  async getStudyModes() {
+    const url = `${apiUrls?.commonBaseUrl}${apiEndPoint?.studyModes}`;
+    const response = await apiServer.get(url);
+    const result = response?.data?.data ? response?.data?.data : null;
+    return result;
+  }
+
   async getIdentificationType() {
     const url = `${apiUrls?.commonBaseUrl}${apiEndPoint?.identificationType}`;
     const response = await apiServer.get(url);

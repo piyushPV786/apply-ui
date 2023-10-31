@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import { PaymentCard, StyledLink } from "../../styles/styled";
 import React, { useState } from "react";
-import { IPaymentPayload } from "./commonDataType";
-import { useFormContext } from "react-hook-form";
-import { feeMode } from "../common/constant";
+import { CommonEnums, feeMode } from "../common/constant";
+import { getConvertedAmount } from "./helper";
+import { usePaymentDetailsHook } from "./customHook";
 
 interface IPaymentPageProps {
   paymentDiscount: any;
@@ -364,4 +364,55 @@ const OrderSummary = ({
     </Card>
   );
 };
-export default OrderSummary;
+
+const OrderSummary2 = (props) => {
+  const { masterData } = props;
+  const { studyModes, fees } = usePaymentDetailsHook(masterData);
+
+  console.log("studyModes", studyModes);
+
+  return (
+    <Card>
+      <Grid container spacing={2}>
+        <Grid item md={12} xs={12} sx={{ borderBottom: " 2px solid green" }}>
+          <Typography variant="h6" color="primary" sx={{ p: 2, pt: 2 }}>
+            Order Summary
+          </Typography>
+        </Grid>
+        <Grid item md={8} xs={8}>
+          <Grid container spacing={4} sx={{ p: 3 }}>
+            <Grid item md={6} xs={12}>
+              <label>Proposal Qualification</label>
+              <Typography variant="body1">
+                <strong>{masterData?.feeData?.programName}</strong>
+              </Typography>
+            </Grid>
+            <Grid item md={7} xs={12}>
+              <Grid>
+                <label>Study Mode</label>
+                <Typography variant="body1">
+                  <strong>{studyModes?.studyModeCode}</strong>(
+                  {studyModes?.helpText} )
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid item md={7} xs={12}>
+              <Grid>
+                <label>
+                  {fees?.label}( {fees?.amount} )
+                </label>
+                <Typography variant="body1">
+                  <strong>
+                    {fees?.amount} {fees?.helpText}
+                  </strong>
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Card>
+  );
+};
+
+export default OrderSummary2;

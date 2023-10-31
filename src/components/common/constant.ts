@@ -99,10 +99,17 @@ export enum DocumentStatus {
   Submitted = "submitted",
   Rejected = "rejected",
 }
-export enum feeMode {
+export enum studyMode {
   DAY = "DAY",
+  ONLINE = "ONLINE",
+  Weekend = "WEEKEND",
+  Fulltime = "FULLTIME",
+}
+
+export enum feeMode {
   APPLICATION = "APPLICATION",
 }
+
 export const ErrorMessage = "Something went wrong please try again later";
 export enum AlertEnums {
   INFO = "info",

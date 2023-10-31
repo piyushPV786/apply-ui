@@ -28,4 +28,5 @@ export const apiEndPoint = {
   draft: "draft",
   declarationForm: "download/declarationForm",
   GETCURRENCYCONVERSION: "programs-fee/fee-conversion-rate/",
+  studyModes: "study-mode",
 };

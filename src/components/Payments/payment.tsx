@@ -39,17 +39,7 @@ const PaymentOption = ({
           <Grid>Or</Grid>
         </Grid>
 
-        <Grid item xs={5} md={5}>
-          <PaymentProofCard
-            uploadPaymentProof={uploadPaymentProof}
-            isProgamFee={isProgamFee}
-            selectedCode={selectedCode}
-            paymentDetailsJson={paymentDetailsJson}
-            getConvertedAmount={getConvertedAmount}
-            discountDetails={discountDetails}
-            conversionRateDetails={conversionRateDetails}
-          />
-        </Grid>
+        <Grid item xs={5} md={5}></Grid>
       </Grid>
     </>
   );
