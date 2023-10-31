@@ -64,9 +64,10 @@ const DocumentUploadPage = (props) => {
                         isGreenWhiteCombination
                         title="Save As Draft"
                         className="mb-2"
-                        onClick={methods.handleSubmit((data) => {
+                        onClick={() => {
+                          const data = methods.watch();
                           onSubmit(data, true);
-                        })}
+                        }}
                       />
 
                       <StyledButton

@@ -136,7 +136,7 @@ const UseDocumentHook = (applicationCode) => {
         if (item.type) {
           let Obj = {
             documentTypeCode: element?.code,
-            fileName: item.name,
+            fileName: element?.name,
             fileType: item?.fileExtension ? item.fileExtension : item.type,
           };
           Files.push(Obj);

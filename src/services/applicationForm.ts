@@ -18,7 +18,9 @@ class ApplicationFormServices {
   }
 
   async getProgramData() {
-    const url = `${apiUrls?.academicBaseUrl}${apiEndPoint?.programs}`;
+    const url = `${apiUrls?.academicBaseUrl}${
+      apiEndPoint?.programs
+    }?project=${false}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
