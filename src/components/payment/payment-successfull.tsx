@@ -18,7 +18,7 @@ const PaymentSuccessFull = (props: any) => {
         <div className="row">
           <div className="col-sm-12">
             <div className="text-center mb-2">
-              <Image width="190" height="17 0" src={PayIcon} alt="payIcon" />
+              <Image width="190" height="170" src={PayIcon} alt="payIcon" />
             </div>
             <div className="text-center w-100">
               <GreenFormHeading style={{ fontSize: "24px" }}>
