@@ -172,11 +172,12 @@ export const FeemodeCode = {
 
 export const PaymentTypes = [
   {
+    registerName: "paymentType",
     name: "Payu",
     value: "payuForm",
   },
-  { name: "RazorPay", value: "razorpay" },
-  { name: "Stripe", value: "stripe" },
+  { name: "RazorPay", registerName: "paymentType", value: "razorpay" },
+  { name: "Stripe", registerName: "paymentType", value: "stripe" },
 ];
 
 export const AgentandSocialMedia = [

@@ -1,5 +1,8 @@
 import StyledButton from "../../components/button/button";
-import { usePaymentHook } from "../../components/Payments/customHook";
+import {
+  usePaymentHook,
+  usePayuHook,
+} from "../../components/Payments/customHook";
 import OrderSummary from "../../components/Payments/orderSummary";
 import StepperComponent from "../../components/stepper/stepper";
 import { Box, Button, Grid } from "@mui/material";
@@ -9,16 +12,11 @@ import PaymentOptionCard from "./paymentOptionCard";
 import PaymentProofCard from "./paymentProofCard";
 const PaymentPage = ({ applicationCode }) => {
   const { masterData } = usePaymentHook(applicationCode);
-  const {
-    studyModes,
-    fees,
-    setSelectedFeeMode,
-    selectedFeeMode,
-    paymentDiscount,
-    getPayuDetails,
-    paymentPayload,
-    uploadPaymentProof,
-  } = usePaymentDetailsHook(masterData);
+
+  const { studyModes, fees, uploadPaymentProof } =
+    usePaymentDetailsHook(masterData);
+
+  const { getPayuDetails, payuDetails } = usePayuHook(masterData, fees);
 
   return (
     <>
@@ -39,9 +37,6 @@ const PaymentPage = ({ applicationCode }) => {
             <OrderSummary
               studyModes={studyModes}
               fees={fees}
-              setSelectedFeeMode={setSelectedFeeMode}
-              selectedFeeMode={selectedFeeMode}
-              paymentDiscount={paymentDiscount}
               masterData={masterData}
             />
           </Grid>
@@ -50,8 +45,7 @@ const PaymentPage = ({ applicationCode }) => {
               <Grid item xs={6}>
                 <PaymentOptionCard
                   getPayuDetails={getPayuDetails}
-                  paymentPayload={paymentPayload}
-                  fees={fees}
+                  payuDetails={payuDetails}
                 />
               </Grid>
               <Grid
