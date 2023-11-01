@@ -24,11 +24,19 @@ export const useFormHook = (applicationCode: string) => {
     ]);
     const payload = {
       ...masterData,
-      masterData: data[0],
+      masterData: {
+        ...data[0],
+        nationalityData: data[0]?.nationalityData?.map((item) => {
+          return { ...item, code: item?.code === "SA" ? "ZA" : item?.code };
+        }),
+      },
       salesAgentData: data[1],
       programsData: data[2],
       applicationData: data[3],
-      nationalityStatus: data[4],
+      nationalityStatus: data[4].map((item) => {
+        return { ...item, code: item?.code === "SA" ? "ZA" : item?.code };
+      }),
+
       identificationType: data[5],
     };
     setMasterData(payload);

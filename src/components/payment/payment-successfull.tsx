@@ -18,7 +18,7 @@ const PaymentSuccessFull = (props: any) => {
         <div className="row">
           <div className="col-sm-12">
             <div className="text-center mb-2">
-              <Image width="190" height="170" src={PayIcon} alt="payIcon" />
+              <Image width="190" height="17 0" src={PayIcon} alt="payIcon" />
             </div>
             <div className="text-center w-100">
               <GreenFormHeading style={{ fontSize: "24px" }}>
@@ -77,7 +77,7 @@ const PaymentSuccessFull = (props: any) => {
     <MainContainer className="text-center">
       <Header />
       <div className="container-fluid w-75 mt-5">
-        <MainContainer style={{ paddingBottom: "1rem" }}>
+        <PaymentContainer style={{ paddingBottom: "1rem" }}>
           {props?.pageType === "failure" && <OnlinePaymentFailed />}
           {props?.pageType === "success" && <OnlinePaymentSuccess />}
 
@@ -93,7 +93,7 @@ const PaymentSuccessFull = (props: any) => {
               className="me-2"
             />
           </div>
-        </MainContainer>
+        </PaymentContainer>
       </div>
     </MainContainer>
   );
