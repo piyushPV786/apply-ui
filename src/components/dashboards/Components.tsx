@@ -185,6 +185,7 @@ export const ActionButtons = ({ applicationDetail }) => {
       {isPayBTN && (
         <Grid item>
           <StyledButton
+            isPayBtn
             onClick={() => {
               router.push(`/payments/${applicationDetail?.applicationCode}`);
             }}
