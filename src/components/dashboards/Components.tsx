@@ -2,6 +2,7 @@ import { Grid } from "@mui/material";
 import { ContentCard, StudentIdCard } from "../login/style";
 import { Green } from "../common/common";
 import Dropdown from "react-bootstrap/Dropdown";
+import LoginCredentialDialog from "./loginCridentialDialog";
 import {
   capitalizeFirstLetter,
   convertCodeToName,
@@ -143,8 +144,11 @@ export const ActionButtons = ({ applicationDetail }) => {
     isUploadBTN,
     isBursaryBTN,
     isAdamiteBTN,
+    openCredentialDialog,
+    setOpenCredentialDialog,
   } = UseCardActionHook(applicationDetail);
 
+  console.log("openCredentialDialog");
   return (
     <Grid
       container
@@ -155,6 +159,11 @@ export const ActionButtons = ({ applicationDetail }) => {
       sm={9}
       spacing={1}
     >
+      <LoginCredentialDialog
+        openCredentialDialog={openCredentialDialog}
+        setOpenCredentialDialog={setOpenCredentialDialog}
+        applicationDetail={applicationDetail}
+      />
       {isEditBTN && (
         <Grid item>
           <Grid item>
@@ -220,7 +229,9 @@ export const ActionButtons = ({ applicationDetail }) => {
       {isAdamiteBTN && (
         <Grid item>
           <StyledButton
-            onClick={() => {}}
+            onClick={() => {
+              setOpenCredentialDialog(true);
+            }}
             className="card-button"
             title="view login credentials"
           />
