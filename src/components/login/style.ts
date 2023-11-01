@@ -112,8 +112,6 @@ export const MainContainer = styled.div`
   height: 100vh;
   overflow: hidden;
   padding-bottom: 1rem;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch !important;
 `;
 
 export const PaymentContainer = styled.div`

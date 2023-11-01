@@ -161,7 +161,7 @@ export const RoutePaths = {
   Document_Success: "/payment/document-upload-success",
   Document_Save_Success: "/payment/document-save-success",
   APPLICATION_ENROLLED_SUCCESS: "/payment/application-enrolled-success",
-  Dashboard: "/student-registration-form/dashboard",
+  Dashboard: "/dashboard",
   StudentDashboard: "/dashboard",
   RMATView: "/rmat",
 };
