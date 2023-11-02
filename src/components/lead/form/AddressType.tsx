@@ -2,6 +2,7 @@ import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../common/common";
 import { useAddressHook } from "../customHooks/addressHooks";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
+import { capitalizeFirstLetter } from "../../../Util/Util";
 
 const AddressType = (props) => {
   const { data, index, masterData, applicationData } = props;
@@ -26,6 +27,9 @@ const AddressType = (props) => {
           {...register(`address[${index}].street`, {
             required: true,
           })}
+          onChange={(e) =>
+            (e.target.value = capitalizeFirstLetter(e.target.value))
+          }
         />
         {Errors && Errors[index]?.street && (
           <div className="invalid-feedback">
@@ -81,6 +85,9 @@ const AddressType = (props) => {
           {...register(`address[${index}].city`, {
             required: true,
           })}
+          onChange={(e) =>
+            (e.target.value = capitalizeFirstLetter(e.target.value))
+          }
         />
         {Errors && Errors[index]?.city && (
           <div className="invalid-feedback">Please enter Residential City</div>
@@ -89,13 +96,15 @@ const AddressType = (props) => {
       <div className="col-lg-4 mb-4">
         <StyledLabel required>Pin Code / Zip Code</StyledLabel>
         <input
+          min="0"
           className="form-control"
-          type={"text"}
+          type={"number"}
           placeholder={"Enter Zip/Postal Code"}
           {...register(`address[${index}].zipcode`, {
             required: true,
             maxLength: 10,
             minLength: 4,
+            min: 1,
           })}
         />
         {Errors && Errors[index]?.zipcode && (
@@ -104,6 +113,8 @@ const AddressType = (props) => {
               ? "Max length exceeded"
               : Errors[index]?.zipcode.type === "minLength"
               ? "Minimum length should be 4"
+              : Errors[index]?.zipcode.type === "min"
+              ? "Please enter positive number"
               : "Please enter Zip/Postal Code"}
           </div>
         )}

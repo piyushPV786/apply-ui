@@ -1,5 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../../common/common";
+import { capitalizeFirstLetter } from "../../../../Util/Util";
 
 const TextField = ({ element, Errors, registerName }: any) => {
   const { register } = useFormContext();
@@ -14,6 +15,9 @@ const TextField = ({ element, Errors, registerName }: any) => {
         placeholder={element?.placeholder}
         type={"text"}
         disabled={element?.disabled}
+        onChange={(e) =>
+          (e.target.value = capitalizeFirstLetter(e.target.value))
+        }
       />
       {Errors && Errors[element?.name] && (
         <>
