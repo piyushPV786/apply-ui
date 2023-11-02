@@ -86,6 +86,11 @@ export const APPLICATION_STATUS = {
   INTAKE_ASSIGNED: "INTAKE-ASSIGNED",
   ENROLLED_BY_ADMISSION: "PROG-ADMITTED/ENROLLED",
 };
+export const PRORAM_FEE_BUTTON_STATUS = [
+  APPLICATION_STATUS.APPLICATION_FEE_VERIFICATION_PENDING,
+  APPLICATION_STATUS.RESUBMIT_APPLICATION_FEE_PROOF,
+  APPLICATION_STATUS.APPLICATION_FEE_PENDING,
+];
 export const UPLOAD_DOCUMENT_BUTTON_STATUS = [
   APPLICATION_STATUS.APPLICATION_FEE_VERIFICATION_PENDING,
   APPLICATION_STATUS.RESUBMIT_APPLICATION_FEE_PROOF,
@@ -161,7 +166,7 @@ export const RoutePaths = {
   Document_Success: "/payment/document-upload-success",
   Document_Save_Success: "/payment/document-save-success",
   APPLICATION_ENROLLED_SUCCESS: "/payment/application-enrolled-success",
-  Dashboard: "/student-registration-form/dashboard",
+  Dashboard: "/dashboard",
   StudentDashboard: "/dashboard",
   RMATView: "/rmat",
 };

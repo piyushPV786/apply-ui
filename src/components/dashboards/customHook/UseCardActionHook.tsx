@@ -18,12 +18,12 @@ const UseCardActionHook = (applicationDetail) => {
   const isRmatBTN = status === CommonEnums.RMAT_PENDING;
 
   const isPayBTN =
+    status == CommonEnums.APP_ENROLLED_STATUS ||
     status === CommonEnums.RESUB_APP_FEE_PROOF ||
     status === CommonEnums.APP_ENROLLED_ACCEPTED ||
     status === APPLICATION_STATUS.APPLICATION_FEE_PENDING;
-
   const payBtnTitle =
-    status === CommonEnums.APP_ENROLLED_ACCEPTED
+    status === CommonEnums.APP_ENROLLED_STATUS
       ? "Pay Program Fee"
       : "Pay Application Fee";
 

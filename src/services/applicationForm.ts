@@ -115,7 +115,7 @@ class ApplicationFormServices {
     let route = apiEndPoint?.termAndCondFile.replace(":name", name);
     route = route.replace(":email", email);
     const url = `${apiUrls?.applyBaseUrl}${route}`;
-    const response = await apiServer.get(url);
+    const response = await apiServer.get(url, { responseType: "blob" });
     const result = response?.data ? response?.data : null;
     return result;
   }

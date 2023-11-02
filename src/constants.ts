@@ -5,5 +5,5 @@ export enum refferedById {
 
 export enum nationalityStatusEnum {
   PRSA = "PRSA",
-  SA = "SA",
+  SA = "ZA",
 }

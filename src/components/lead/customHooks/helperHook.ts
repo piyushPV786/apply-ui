@@ -50,7 +50,6 @@ export const useHelperHook = (masterData, watch, setError) => {
   const saveApplicationAsDraft = async () => {
     const data = watch();
     const { lead } = data;
-
     if (
       lead?.firstName.length === 0 ||
       lead?.lastName.length === 0 ||
