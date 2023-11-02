@@ -772,3 +772,15 @@ export const convertCodeToName = (list, code) => {
   }
   return result;
 };
+
+export const setDocumentValue = (documents, setValue) => {
+  documents?.forEach((element) => {
+    const extension = element?.name?.split(".").pop();
+    const file: File = new File([""], `${element?.code}.${extension}`, {
+      type: element?.fileExtension,
+      lastModified: element?.updatedAt,
+    });
+    console.log("element?.documentTypeCode", element?.documentTypeCode);
+    setValue(element?.documentTypeCode, [file]);
+  });
+};

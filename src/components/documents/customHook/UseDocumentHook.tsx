@@ -1,69 +1,116 @@
 import { useEffect, useState } from "react";
-import UseDashboardHook from "../../dashboards/customHook/UseDashboardHook";
 import DocumentServices from "../../../services/documentApi";
 import { mbaDocs } from "../context/common";
-import axios from "axios";
 import { useRouter } from "next/router";
+import { documentPayload, viewProofDetails } from "./helper";
 
 interface documentTypeApiResponseType {
   code: string;
   name: string;
 }
 
-const UseDocumentHook = (applicationCode) => {
-  const router = useRouter();
-  const { applicationData } = UseDashboardHook();
-  const [documentTypeData, setDocumentTypeData] = useState<
-    documentTypeApiResponseType[]
-  >([]);
-  const [userDetails, setUserDetails] = useState<any>();
-  const [userDocuments, setUserDocuments] = useState<any>({});
+export const UseDocumentHook = (applicationCode) => {
+  const [masterData, setMasterData] = useState<any>({
+    documentTypes: [],
+    userDetails: {},
+    documents: [],
+    documentFormData: [],
+  });
 
-  const [docJson, setDocJson] = useState<any>({});
-
-  const getUserDocuments = async (applicationCode) => {
-    const response = await DocumentServices.getDocumentsByApplicationCode(
-      applicationCode
-    );
-
-    setUserDocuments(response);
-  };
-
-  const getUserDetails = async (applicationCode) => {
-    const response = await DocumentServices?.getApplicationData(
-      applicationCode
-    );
-    setUserDetails(response);
-  };
-  const uploadDocumentsToAws = async (uploadFileUrl, file) => {
-    try {
-      const response = await axios.put(uploadFileUrl, file);
-
-      if (response.status === 200) {
-        return response.data;
+  const convertDataToFormData = (documentTypes, userInfo) => {
+    const result = documentTypes?.map((element) => {
+      if (element.code == "BURSARYLETTER") {
+        return {
+          name: element?.name,
+          label: element?.name,
+          required: userInfo?.status === "BURSARY-PEND",
+          code: element.code,
+        };
+      } else if (mbaDocs.includes(element.code)) {
+        return {
+          name: element?.name,
+          label: element?.name,
+          required: userInfo?.education?.programCode === "MBA", //To Do how to know this program code is MBA
+          code: element.code,
+        };
       } else {
-        return response.data;
+        return {
+          name: element?.name,
+          label: element?.name,
+          required: true,
+          code: element.code,
+        };
       }
-    } catch (error: any) {
-      console.log(error.message);
-      return error;
+    });
+    return result;
+  };
+
+  useEffect(() => {
+    const getMasterData = async (applicationCode: string) => {
+      const result = await Promise.all([
+        DocumentServices.getDocumentsByApplicationCode(applicationCode),
+        DocumentServices?.getApplicationData(applicationCode),
+        DocumentServices.DocumentType(),
+      ]);
+      const documentTypes = result[2].filter(
+        (item) => item.code !== "PAYMENTPROOF"
+      );
+      const payload = {
+        ...masterData,
+        documents: result[0],
+        userDetails: result[1],
+        documentTypes: documentTypes,
+        documentFormData: convertDataToFormData(documentTypes, result[1]),
+      };
+      setMasterData(payload);
+    };
+
+    if (applicationCode) {
+      getMasterData(applicationCode);
+    }
+  }, [applicationCode]);
+
+  return { masterData };
+};
+
+export const ActionDocumentSubmit = () => {
+  const router = useRouter();
+  const uploadFiles = async (payload, masterData) => {
+    const response = await DocumentServices.uploadDocuments(
+      payload,
+      masterData?.userDetails?.applicationCode
+    );
+
+    const result = await response?.map(async (url, index) => {
+      return await DocumentServices.uploadDocumentToAws(
+        url,
+        payload?.files[index].file
+      );
+    });
+  };
+
+  const saveAsDraft = (data, masterData) => {
+    const payload = documentPayload(data, true, masterData);
+    if (payload) {
+      uploadFiles(payload, masterData);
+      router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
+    }
+  };
+  const submitDocument = (data, masterData) => {
+    const payload = documentPayload(data, false, masterData);
+    if (payload) {
+      uploadFiles(payload, masterData);
+      router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
     }
   };
 
-  const mapDraftFiles = (code, userDocuments) => {
-    let files = [];
-    if (userDocuments.length) {
-      files = userDocuments?.filter((element) => {
-        return element?.documentTypeCode == code;
-      });
-    }
+  return { saveAsDraft, submitDocument };
+};
 
-    return files;
-  };
-
-  const documetDiclarationLeter = async () => {
+export const UseDownloadDeclarationLatter = () => {
+  const downloadDeclarationLatter = async (masterData) => {
     const response = await DocumentServices.downloadDeclarationLetter(
-      applicationCode
+      masterData?.userDetails?.applicationCode
     );
     const blob = new Blob([response?.data], {
       type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -77,104 +124,17 @@ const UseDocumentHook = (applicationCode) => {
     URL.revokeObjectURL(downloadLink.href);
   };
 
-  const Createjson = (userDocuments) => {
-    let docJson = {};
-    documentTypeData?.map((item) => {
-      if (item.code == "BURSARYLETTER") {
-        docJson[item.code] = {
-          code: item?.code,
-          isRequired: userDetails?.status == "BURSARY-PEND",
-          draftFiles: mapDraftFiles(item?.code, userDocuments),
-        };
-      } else if (mbaDocs.includes(item.code)) {
-        docJson[item.code] = {
-          code: item?.code,
-          isRequired: userDetails?.education?.programCode == "MBA",
-          draftFiles: mapDraftFiles(item?.code, userDocuments),
-        };
-      } else {
-        docJson[item.code] = {
-          code: item?.code,
-          isRequired: true,
-          draftFiles: mapDraftFiles(item?.code, userDocuments),
-        };
-      }
-    });
-    setDocJson(docJson);
-  };
-
-  const getDocumentTypeData = async () => {
-    let response = await DocumentServices.DocumentType();
-    response = response.filter((item) => {
-      return item.code !== "PAYMENTPROOF";
-    });
-    setDocumentTypeData(response);
-  };
-
-  const uploadDocuments = async (payload) => {
-    let response = await DocumentServices.uploadDocuments(
-      payload,
-      userDetails?.applicationCode
-    );
-    if (response) {
-      let count = 0;
-      response?.data?.map((url, index) => {
-        uploadDocumentsToAws(url, payload?.files[index]);
-        count = count + 1;
-      });
-
-      if (response?.data.length == count) {
-        router.push(`/payments/${applicationCode}`);
-      }
-    }
-  };
-
-  const onSubmit = (data, isDraft) => {
-    let Files: any = [];
-    documentTypeData.forEach((element) => {
-      data[`fileInput_${element?.code}`].forEach((item) => {
-        if (item.type) {
-          let Obj = {
-            documentTypeCode: element?.code,
-            fileName: element?.name,
-            fileType: item?.fileExtension ? item.fileExtension : item.type,
-          };
-          Files.push(Obj);
-        }
-      });
-    });
-
-    const payload = {
-      files: Files,
-      paymentModeCode: "OFFLINE",
-      isDraft: isDraft,
-      studentCode: userDetails?.studentCode,
-    };
-    payload?.files?.length
-      ? uploadDocuments(payload)
-      : router.push(`/payments/${applicationCode}`);
-  };
-
-  useEffect(() => {
-    getDocumentTypeData();
-    if (applicationCode) {
-      getUserDocuments(applicationCode);
-      getUserDetails(applicationCode);
-    }
-  }, [applicationCode]);
-
-  useEffect(() => {
-    userDocuments && Createjson(userDocuments);
-  }, [userDetails, documentTypeData, userDocuments]);
-
-  return {
-    documentTypeData,
-    userDetails,
-    docJson,
-    uploadDocuments,
-    onSubmit,
-    documetDiclarationLeter,
-  };
+  return { downloadDeclarationLatter };
 };
 
-export default UseDocumentHook;
+export const UsePreviewFile = () => {
+  const getFileUrl = async (fileName, masterData) => {
+    const response = await DocumentServices?.getFileUrl(
+      fileName,
+      masterData?.userDetails?.studentCode
+    );
+    viewProofDetails(response);
+  };
+
+  return { getFileUrl };
+};

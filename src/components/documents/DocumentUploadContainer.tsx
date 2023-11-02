@@ -7,6 +7,12 @@ import { VisibilityOutlined, CloseOutlined } from "@material-ui/icons";
 import { useFormContext } from "react-hook-form";
 import { docType, fileValidation, IconButton } from "./context/common";
 import StyledButton from "../button/button";
+import { FileUploadContainer, InnerContainer } from "../login/style";
+import {
+  DeclarationComponent,
+  ErrorHandling,
+  FileRegister,
+} from "./components";
 
 interface propsType {
   documentName: string;
@@ -16,7 +22,7 @@ interface propsType {
   documetDiclarationLeter: any;
 }
 
-const DocumentUploadContainer = ({
+const DocumentUploadContainer2 = ({
   documentName,
   documentCode,
   isRequired,
@@ -72,22 +78,6 @@ const DocumentUploadContainer = ({
             </StyledLabel>
           </Typography>
         </Grid>
-        {/* {isRejectStatus && (
-          <Grid item sm={12} xs={12}>
-            {" "}
-            <AlertBox
-              style={{
-                width: "100%",
-                maxWidth: "unset",
-                margin: "10px 0",
-              }}
-              severity={"danger"}
-            >
-              Reason text why doc was rejected
-            </AlertBox>
-          </Grid>
-        )} */}
-
         {documentCode == docType.DECLARATIONFORM && (
           <Grid sm={12} xs={12} item>
             <InnerContainer className="mobile-block">
@@ -203,29 +193,28 @@ const DocumentUploadContainer = ({
   );
 };
 
-const InnerContainer = styled(Container)`
-  background-color: #faeeda;
-  padding: 16px;
-  margin-top: 16px;
-  display: flex !important;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const FileUploadContainer = styled(Container)<{ disabled?: boolean }>`
-  display: flex;
-  align-items: center;
-  column-gap: 1rem;
-  border: 1px solid;
-  padding: 0.7rem;
-  background: #f5f5f5;
-  ${({ disabled }) =>
-    disabled &&
-    `
-  pointer-events:noneimportant;
-  color: #bebdbf!important
-  
-  `}
-`;
+const DocumentUploadContainer = ({ element, masterData }) => {
+  return (
+    <Card sx={{ padding: 3, marginTop: 5 }}>
+      <Grid container spacing={1}>
+        <Grid item sm={12} xs={12}>
+          <Typography
+            textAlign="left"
+            component="header"
+            style={{ fontFamily: "roboto-medium", fontSize: "14px" }}
+            fontWeight="bold"
+          >
+            <StyledLabel required={element?.required}>
+              {element?.label}
+            </StyledLabel>
+          </Typography>
+        </Grid>
+        <DeclarationComponent element={element} masterData={masterData} />
+        <FileRegister element={element} />
+        <ErrorHandling element={element} masterData={masterData} />
+      </Grid>
+    </Card>
+  );
+};
 
 export default DocumentUploadContainer;

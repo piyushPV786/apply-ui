@@ -3,6 +3,7 @@ import { getStatusColor } from "../../Util/Util";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Accordion } from "@material-ui/core";
 import { DefaultGrey } from "../common/common";
+import { Container } from "@mui/material";
 
 export const ApplicationFormContainerStyle = {
   display: "flex",
@@ -188,4 +189,29 @@ export const StyleFeeCards = styled.div`
   -webkit-transition: all 0.5s;
   -ms-transition: all 0.5s;
   -o-transition: all 0.5s;
+`;
+
+export const InnerContainer = styled(Container)`
+  background-color: #faeeda;
+  padding: 16px;
+  margin-top: 16px;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const FileUploadContainer = styled(Container)<{ disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+  border: 1px solid;
+  padding: 0.7rem;
+  background: #f5f5f5;
+  ${({ disabled }) =>
+    disabled &&
+    `
+  pointer-events:noneimportant;
+  color: #bebdbf!important
+  
+  `}
 `;

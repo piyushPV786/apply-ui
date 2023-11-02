@@ -65,15 +65,21 @@ export const IconButton = styled(Box)<any>(({ color }) => ({
 
 //common functions//
 export const fileValidation = (value, isRequired) => {
-  if (!value || (value.length === 0 && isRequired == true)) {
+  console.log("value =======>", value);
+
+  if (
+    (!value || value?.length === 0 || value[0]?.name?.length === 0) &&
+    isRequired == true
+  ) {
     return "This file is Required please upload file";
   }
-  for (let i = 0; i < value.length; i++) {
-    if (value[i].type && !acceptedFileTypes.includes(value[i].type)) {
+  if (value) {
+    if (value[0]?.type && !acceptedFileTypes.includes(value[0]?.type)) {
       return "This file type is not accepted please upload from accepted file types";
-    } else if (value[i].size > 2 * 1024 * 1024) {
+    } else if (value[0]?.size > 2 * 1024 * 1024) {
       return "File size should be at most 2MB";
     }
   }
+
   return true;
 };

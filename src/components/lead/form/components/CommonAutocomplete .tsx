@@ -33,11 +33,6 @@ const CommonAutocomplete = ({
       return isoCode;
     }
   });
-  if (registerName === "education.referredById") {
-    console.log("dropDownOptions ======>", dropDownOptions);
-    console.log("defaultValue ======>", defaultValue);
-    console.log("options ==========>", options);
-  }
 
   return (
     <>

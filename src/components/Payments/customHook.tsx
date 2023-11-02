@@ -84,7 +84,6 @@ export const usePaymentDetailsHook = (masterData: any) => {
         uploadDocumentsToAws(element, payload?.files[index]);
       });
     }
-    console.log("paymentProofRes=====>", response);
   };
 
   const getPayuDetails = async (payload) => {
