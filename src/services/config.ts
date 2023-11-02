@@ -29,9 +29,6 @@ export const apiEndPoint = {
   declarationForm: "download/declarationForm",
   GETCURRENCYCONVERSION: "programs-fee/fee-conversion-rate/",
   studyModes: "study-mode",
-<<<<<<< Updated upstream
   program: "programs/:programCode",
-=======
   rmat: "application/rmat/details/:studentCode",
->>>>>>> Stashed changes
 };
