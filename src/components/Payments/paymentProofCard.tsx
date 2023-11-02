@@ -17,7 +17,7 @@ export interface IFormValue {
 }
 
 const PaymentProofCard = (props) => {
-  const { uploadPaymentProof, fees } = props;
+  const { uploadPaymentProof } = props;
 
   const {
     watch,
@@ -31,9 +31,6 @@ const PaymentProofCard = (props) => {
 
   const submitFile = (data: any) => {
     const payload = {
-      amount: fees.totalFee,
-      discountAmount: fees?.discountFee,
-
       files: [
         {
           documentTypeCode: "PAYMENTPROOF",

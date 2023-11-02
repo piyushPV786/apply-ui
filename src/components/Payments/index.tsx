@@ -1,5 +1,9 @@
 import StyledButton from "../../components/button/button";
-import { usePaymentHook } from "../../components/Payments/customHook";
+import {
+  useOfflinePaymentHook,
+  usePaymentHook,
+  usePayuHook,
+} from "../../components/Payments/customHook";
 import OrderSummary from "../../components/Payments/orderSummary";
 import StepperComponent from "../../components/stepper/stepper";
 import { Box, Button, Grid } from "@mui/material";
@@ -9,17 +13,12 @@ import PaymentOptionCard from "./paymentOptionCard";
 import PaymentProofCard from "./paymentProofCard";
 const PaymentPage = ({ applicationCode }) => {
   const { masterData } = usePaymentHook(applicationCode);
-  const {
-    studyModes,
-    fees,
-    setSelectedFeeMode,
-    selectedFeeMode,
-    paymentDiscount,
-    getPayuDetails,
-    paymentPayload,
-    uploadPaymentProof,
-  } = usePaymentDetailsHook(masterData);
 
+  const { studyModes, fees, updateFeeMode } = usePaymentDetailsHook(masterData);
+
+  const { getPayuDetails, payuDetails } = usePayuHook(masterData, fees);
+
+  const { uploadPaymentProof } = useOfflinePaymentHook(masterData, fees);
   return (
     <>
       <Header />
@@ -33,16 +32,14 @@ const PaymentPage = ({ applicationCode }) => {
       >
         <Grid container spacing={2} xs={10}>
           <Grid item xs={12}>
-            <StepperComponent active={1} />
+            <StepperComponent active={2} />
           </Grid>
           <Grid item xs={12}>
             <OrderSummary
               studyModes={studyModes}
               fees={fees}
-              setSelectedFeeMode={setSelectedFeeMode}
-              selectedFeeMode={selectedFeeMode}
-              paymentDiscount={paymentDiscount}
               masterData={masterData}
+              updateFeeMode={updateFeeMode}
             />
           </Grid>
           <Grid item xs={12}>
@@ -50,8 +47,7 @@ const PaymentPage = ({ applicationCode }) => {
               <Grid item xs={6}>
                 <PaymentOptionCard
                   getPayuDetails={getPayuDetails}
-                  paymentPayload={paymentPayload}
-                  fees={fees}
+                  payuDetails={payuDetails}
                 />
               </Grid>
               <Grid
@@ -65,10 +61,7 @@ const PaymentPage = ({ applicationCode }) => {
               </Grid>
 
               <Grid item xs={5} md={5}>
-                <PaymentProofCard
-                  uploadPaymentProof={uploadPaymentProof}
-                  fees={fees}
-                />
+                <PaymentProofCard uploadPaymentProof={uploadPaymentProof} />
               </Grid>
             </Grid>
           </Grid>

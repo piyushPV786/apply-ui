@@ -1,25 +1,15 @@
-const PayuInput = ({
-  selectedPayment,
-  paymentPayload,
-  setSelectedPaymentOption,
-}) => {
+const PayuInput = ({ payuDetails, value }) => {
+  console.log("payuDetails", payuDetails);
   return (
     <>
-      <input
-        className="form-check-input "
-        type="radio"
-        value={"payuForm"}
-        onChange={() => setSelectedPaymentOption("payuForm")}
-        checked={selectedPayment === "payuForm"}
-      />
-      <form method="post" id={"payuForm"} action={paymentPayload?.paymenturl}>
-        {paymentPayload &&
-          Object.keys(paymentPayload).map((item) => (
+      <form method="post" id={value} action={payuDetails?.paymenturl}>
+        {payuDetails &&
+          Object.keys(payuDetails).map((item) => (
             <input
               key={item}
               type="hidden"
               name={item}
-              value={paymentPayload[item]}
+              value={payuDetails[item]}
             />
           ))}
       </form>

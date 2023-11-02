@@ -13,21 +13,19 @@ import {
 import { PaymentTypes } from "../common/constant";
 import { GetPaymentImage } from "../../Util/Util";
 import { PaymentCardDetail } from "../../styles/styled";
-
-import { usePaymentDetailsHook } from "./customHook";
+import { useForm } from "react-hook-form";
 
 const PaymentOptionCard = (props) => {
-  const { fees, getPayuDetails, paymentPayload } = props;
-  const [selectedPayment, setSelectedPaymentOption] = useState<string>("");
-
-  const getPayuPaymentUrl = () => {
-    const payload = {
-      amount: fees?.totalFee,
-      discountAmount: fees?.discountFee,
-    };
-    getPayuDetails(payload);
-  };
-
+  const { getPayuDetails, payuDetails } = props;
+  const methods = useForm();
+  const { register, watch } = methods;
+  const onlinePaymentWatch = watch(PaymentTypes[0].registerName);
+  useEffect(() => {
+    const payu = PaymentTypes.find((item) => item?.name === "Payu");
+    if (onlinePaymentWatch && payu?.value === onlinePaymentWatch) {
+      getPayuDetails();
+    }
+  }, [onlinePaymentWatch]);
   return (
     <>
       <Card>
@@ -39,48 +37,26 @@ const PaymentOptionCard = (props) => {
           <Grid container display="flex" justifyContent="center">
             <Grid item xs={10} md={10}>
               <div className="d-flex justify-content-around ">
-                {PaymentTypes.map(({ name, value }) => (
-                  <PaymentCardDetail
-                    className="mt-4"
-                    onClick={() => {
-                      setSelectedPaymentOption(value);
-                      if (name == "Payu") {
-                        getPayuPaymentUrl();
-                      }
-                    }}
-                    key={value}
-                    image={GetPaymentImage(value)}
-                  >
-                    {name === "Payu" ? (
-                      <PayuInput
-                        selectedPayment={selectedPayment}
-                        paymentPayload={paymentPayload}
-                        setSelectedPaymentOption={setSelectedPaymentOption}
+                {PaymentTypes.map(({ name, value, registerName }) => (
+                  <>
+                    <PaymentCardDetail className="mt-4" key={value}>
+                      {name === "Payu" ? (
+                        <PayuInput value={value} payuDetails={payuDetails} />
+                      ) : null}
+                      <input
+                        {...register(registerName)}
+                        className="form-check-input "
+                        type="radio"
+                        value={value}
                       />
-                    ) : (
-                      <form
-                        id={value}
-                        onSubmit={(data) => {
-                          console.log("formsubmit", data);
-                        }}
-                      >
-                        <input
-                          onClick={() => undefined}
-                          className="form-check-input "
-                          type="radio"
-                          value={value}
-                          onChange={() => setSelectedPaymentOption(value)}
-                          checked={selectedPayment === value}
-                        />
-                      </form>
-                    )}
-                    <Image
-                      width={100}
-                      height={80}
-                      src={GetPaymentImage(value) as any}
-                      alt={GetPaymentImage(value) as string}
-                    />
-                  </PaymentCardDetail>
+                      <Image
+                        width={100}
+                        height={80}
+                        src={GetPaymentImage(value) as any}
+                        alt={GetPaymentImage(value) as string}
+                      />
+                    </PaymentCardDetail>
+                  </>
                 ))}
               </div>
             </Grid>
@@ -89,11 +65,11 @@ const PaymentOptionCard = (props) => {
         <CardActions>
           <Grid container display="flex" justifyContent="center" sx={{ p: 2 }}>
             <Button
-              form={selectedPayment}
+              form={onlinePaymentWatch}
               type="submit"
               size="small"
               variant="contained"
-              disabled={!selectedPayment}
+              disabled={!onlinePaymentWatch}
             >
               Pay Now
             </Button>

@@ -5,10 +5,12 @@ import {
 } from "../../common/constant";
 import DashboardApplicationServices from "../../../services/dashboardApplication";
 import { downloadDocument } from "../../../Util/Util";
+import { useState } from "react";
 
 const UseCardActionHook = (applicationDetail) => {
   const { status, educationDetail, sponsor, document, studentCode } =
     applicationDetail;
+  const [openCredentialDialog, setOpenCredentialDialog] = useState(false);
   const isEditBTN =
     status === CommonEnums.FEES_PENDING_STATUS ||
     status === CommonEnums.APP_FEE_DOC_VER_PEND ||
@@ -61,6 +63,8 @@ const UseCardActionHook = (applicationDetail) => {
     isAdamiteBTN,
     documentData,
     getDownloadDocument,
+    openCredentialDialog,
+    setOpenCredentialDialog,
   };
 };
 

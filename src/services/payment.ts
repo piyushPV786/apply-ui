@@ -46,6 +46,16 @@ class PaymentServices {
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
   }
+
+  async getProgramDetails(programCode: string) {
+    const url = `${apiUrls?.academicBaseUrl}${apiEndPoint.program}`.replace(
+      ":programCode",
+      programCode
+    );
+    const response = await apiServer.get(url);
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
+  }
 }
 
 export default new PaymentServices();

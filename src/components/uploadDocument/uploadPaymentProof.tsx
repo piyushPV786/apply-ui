@@ -1,9 +1,6 @@
 import { Box, Grid, Theme, Typography } from "@mui/material";
-import { CloseCircleOutline, FileUpload } from "mdi-material-ui";
-import { calculateFileSize } from "../../Util/Util";
+import { CloseOutlined, CloudUpload } from "@material-ui/icons";
 import Styles from "./uploadPaymentProof.module.css";
-import { useDropzone } from "react-dropzone";
-import { FileSize } from "../common/common";
 import { useRef } from "react";
 import {
   UseFormClearErrors,
@@ -46,8 +43,7 @@ const UploadPaymentProof = ({
         onClick={() => onDocUploadClick()}
       >
         <Box width="100%" className="text-center">
-          <FileUpload fontSize="large" color="primary" />
-
+          <CloudUpload color={"primary"} />
           <input
             {...register(name)}
             name={name}
@@ -93,7 +89,7 @@ const UploadPaymentProof = ({
                     alignItems: "center",
                   }}
                 >
-                  <CloseCircleOutline
+                  <CloseOutlined
                     color="error"
                     onClick={() => unregister(name)}
                   />
