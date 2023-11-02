@@ -10,7 +10,29 @@ import { useState } from "react";
 const UseCardActionHook = (applicationDetail) => {
   const { status, educationDetail, sponsor, document, studentCode } =
     applicationDetail;
+
   const [openCredentialDialog, setOpenCredentialDialog] = useState(false);
+
+  const [rmatOpen, setRmatOpen] = useState({
+    state: false,
+    rmaturl: "",
+    password: "",
+    username: "",
+  });
+
+  const getRmatDetails = async () => {
+    const response = await DashboardApplicationServices.getRmatDetails(
+      applicationDetail?.studentCode
+    );
+
+    setRmatOpen({
+      state: true,
+      rmaturl: response?.url,
+      password: response?.password,
+      username: response?.username,
+    });
+  };
+
   const isEditBTN =
     status === CommonEnums.FEES_PENDING_STATUS ||
     status === CommonEnums.APP_FEE_DOC_VER_PEND ||
@@ -65,6 +87,9 @@ const UseCardActionHook = (applicationDetail) => {
     getDownloadDocument,
     openCredentialDialog,
     setOpenCredentialDialog,
+    rmatOpen,
+    getRmatDetails,
+    setRmatOpen,
   };
 };
 

@@ -18,6 +18,12 @@ class DashboardApplicationServices {
     const response = await apiServer.get(url);
     return response?.data;
   }
+  async getRmatDetails(studentCode) {
+    const route = apiEndPoint?.rmat.replace(":studentCode", studentCode);
+    const url = `${apiUrls?.applyBaseUrl}${route}`;
+    const response = await apiServer.get(url);
+    return response?.data?.data ? response?.data?.data : [];
+  }
 }
 
 export default new DashboardApplicationServices();

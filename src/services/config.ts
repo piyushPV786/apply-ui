@@ -30,4 +30,5 @@ export const apiEndPoint = {
   GETCURRENCYCONVERSION: "programs-fee/fee-conversion-rate/",
   studyModes: "study-mode",
   program: "programs/:programCode",
+  rmat: "application/rmat/details/:studentCode",
 };
