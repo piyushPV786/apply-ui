@@ -62,38 +62,6 @@ export const usePaymentHook = (applicationCode: string) => {
 
 export const usePaymentDetailsHook = (masterData: any) => {
   const [selectedFeeMode, setSelectedFeeMode] = useState("");
-  const [discountDetails, setDiscountDetails] = useState<any>({
-    discountPercent: 0,
-    discountCode: "",
-  });
-  const [paymentPayload, setPaymentPayload] = useState<any>();
-
-  const uploadPaymentProof = async (payload) => {
-    const apiPayload = {
-      files: payload?.files,
-      amount: payload?.amount,
-      paymentModeCode: "OFFLINE",
-      discountCode: discountDetails?.discountCode,
-      discountAmount: payload.discountAmount,
-      feeModeCode:
-        masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS
-          ? feeMode.APPLICATION
-          : selectedFeeMode,
-      isDraft: false,
-      currencyCode: masterData?.currencyData?.currencyCode,
-      studentCode: masterData?.applicationData?.studentCode,
-    };
-    const response = await DocumentServices?.uploadDocuments(
-      apiPayload,
-      masterData?.applicationData?.applicationCode
-    );
-    if (response) {
-      response?.data?.forEach((element, index) => {
-        uploadDocumentsToAws(element, payload?.files[index]);
-      });
-    }
-    console.log("paymentProofRes=====>", response);
-  };
 
   let studyModes: any = {};
   if (masterData?.applicationData?.education?.studyModeCode) {
@@ -114,12 +82,6 @@ export const usePaymentDetailsHook = (masterData: any) => {
     const feesStructure = studyModes?.fees?.find(
       (item: any) => item?.feeMode === feeMode.APPLICATION
     );
-    // fees = getFeeDetails(
-    //   feesStructure,
-    //   "Application Fees",
-    //   masterData,
-    //   discountDetails
-    // );
 
     fees = {
       ...feesStructure,
@@ -134,12 +96,12 @@ export const usePaymentDetailsHook = (masterData: any) => {
     const feeJson = {};
     studyModes?.fees?.map((item) => {
       if (item?.feeMode !== feeMode.APPLICATION) {
-        feeJson[item?.feeMode] = getFeeDetails(
-          item,
-          "Program Fees",
-          masterData,
-          discountDetails
-        );
+        // feeJson[item?.feeMode] = getFeeDetails(
+        //   item,
+        //   "Program Fees",
+        //   masterData,
+        //   // discountDetails
+        // );
       }
     });
 
@@ -153,10 +115,6 @@ export const usePaymentDetailsHook = (masterData: any) => {
     fees,
     setSelectedFeeMode,
     selectedFeeMode,
-    // paymentDiscount,
-    // getPayuDetails,
-    paymentPayload,
-    uploadPaymentProof,
   };
 };
 
@@ -254,5 +212,36 @@ export const usePayuHook = (masterData: any, fees: any) => {
   return {
     payuDetails,
     getPayuDetails,
+  };
+};
+
+export const useOfflinePaymentHook = (masterData: any, fees: any) => {
+  const uploadPaymentProof = async (payload) => {
+    const apiPayload = {
+      files: payload?.files,
+      amount: fees?.totalFee,
+      paymentModeCode: "OFFLINE",
+      discountCode: fees?.discountCode,
+      discountAmount: payload.discountFee,
+      feeModeCode:
+        masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS
+          ? feeMode.APPLICATION
+          : "",
+      isDraft: false,
+      currencyCode: masterData?.currencyData?.currencyCode,
+      studentCode: masterData?.applicationData?.studentCode,
+    };
+    const response = await DocumentServices?.uploadDocuments(
+      apiPayload,
+      masterData?.applicationData?.applicationCode
+    );
+    if (response) {
+      response?.data?.forEach((element, index) => {
+        uploadDocumentsToAws(element, payload?.files[index]);
+      });
+    }
+  };
+  return {
+    uploadPaymentProof,
   };
 };

@@ -1,5 +1,6 @@
 import StyledButton from "../../components/button/button";
 import {
+  useOfflinePaymentHook,
   usePaymentHook,
   usePayuHook,
 } from "../../components/Payments/customHook";
@@ -13,11 +14,11 @@ import PaymentProofCard from "./paymentProofCard";
 const PaymentPage = ({ applicationCode }) => {
   const { masterData } = usePaymentHook(applicationCode);
 
-  const { studyModes, fees, uploadPaymentProof } =
-    usePaymentDetailsHook(masterData);
+  const { studyModes, fees } = usePaymentDetailsHook(masterData);
 
   const { getPayuDetails, payuDetails } = usePayuHook(masterData, fees);
 
+  const { uploadPaymentProof } = useOfflinePaymentHook(masterData, fees);
   return (
     <>
       <Header />
@@ -59,10 +60,7 @@ const PaymentPage = ({ applicationCode }) => {
               </Grid>
 
               <Grid item xs={5} md={5}>
-                <PaymentProofCard
-                  uploadPaymentProof={uploadPaymentProof}
-                  fees={fees}
-                />
+                <PaymentProofCard uploadPaymentProof={uploadPaymentProof} />
               </Grid>
             </Grid>
           </Grid>
