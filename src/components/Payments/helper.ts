@@ -21,7 +21,11 @@ export const getFeeDetails = (
 
   return {
     fee,
-    amount: `${masterData?.currencyData?.currencySymbol} ${getConvertedAmount(
+    amount: `${
+      masterData?.currencyData?.currencySymbol
+        ? masterData?.currencyData?.currencySymbol
+        : ""
+    } ${getConvertedAmount(
       masterData?.currencyData?.forecastRate,
       String(fee)
     )}`,
@@ -30,9 +34,13 @@ export const getFeeDetails = (
     rmatFee,
     rmatAmount: `${
       masterData?.currencyData?.currencySymbol
+        ? masterData?.currencyData?.currencySymbol
+        : ""
     } ${getConvertedAmount(masterData?.currencyData?.forecastRate, rmatFee)}`,
     totalAmount: `${
       masterData?.currencyData?.currencySymbol
+        ? masterData?.currencyData?.currencySymbol
+        : ""
     } ${getConvertedAmount(
       masterData?.currencyData?.forecastRate,
       fee - discountAmount + rmatFee
@@ -40,6 +48,8 @@ export const getFeeDetails = (
     totalFee: fee - discountAmount + rmatFee,
     discountAmount: `${
       masterData?.currencyData?.currencySymbol
+        ? masterData?.currencyData?.currencySymbol
+        : ""
     } ${getConvertedAmount(
       masterData?.currencyData?.forecastRate,
       String(discountAmount)

@@ -3,6 +3,7 @@ import { ContentCard, StudentIdCard } from "../login/style";
 import { Green } from "../common/common";
 import Dropdown from "react-bootstrap/Dropdown";
 import LoginCredentialDialog from "./loginCridentialDialog";
+import RmatCredentialDialog from "./rmatDetailsDialog";
 import {
   capitalizeFirstLetter,
   convertCodeToName,
@@ -146,9 +147,11 @@ export const ActionButtons = ({ applicationDetail }) => {
     isAdamiteBTN,
     openCredentialDialog,
     setOpenCredentialDialog,
+    rmatOpen,
+    setRmatOpen,
+    getRmatDetails,
   } = UseCardActionHook(applicationDetail);
 
-  console.log("openCredentialDialog");
   return (
     <Grid
       container
@@ -164,6 +167,7 @@ export const ActionButtons = ({ applicationDetail }) => {
         setOpenCredentialDialog={setOpenCredentialDialog}
         applicationDetail={applicationDetail}
       />
+      <RmatCredentialDialog rmatOpen={rmatOpen} setRmatOpen={setRmatOpen} />
       {isEditBTN && (
         <Grid item>
           <Grid item>
@@ -184,8 +188,9 @@ export const ActionButtons = ({ applicationDetail }) => {
       {isRmatBTN && (
         <Grid item>
           <StyledButton
+            isRMATBtn
             onClick={() => {
-              router.push(`/rmat`);
+              getRmatDetails();
             }}
             title="Take RMAT Test"
           />
