@@ -9,13 +9,13 @@ import {
   Typography,
 } from "@mui/material";
 import { PaymentCard, StyledLink } from "../../styles/styled";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CommonEnums, feeMode } from "../common/constant";
 import { useDiscountHook, usePaymentDetailsHook } from "./customHook";
 import { FormProvider, useForm } from "react-hook-form";
 
-const OrderSummary2 = (props) => {
-  const { studyModes, fees, masterData } = props;
+const OrderSummary = (props) => {
+  const { studyModes, fees, masterData, updateFeeMode } = props;
   return (
     <Card>
       <Grid container spacing={2}>
@@ -29,6 +29,7 @@ const OrderSummary2 = (props) => {
             masterData={masterData}
             studyModes={studyModes}
             fees={fees}
+            updateFeeMode={updateFeeMode}
           />
         </Grid>
         <Grid item md={4} xs={4}>
@@ -44,7 +45,13 @@ const OrderSummary2 = (props) => {
 };
 
 const ProgramFees = (props) => {
-  const { masterData, studyModes, fees } = props;
+  const { masterData, studyModes, fees, updateFeeMode } = props;
+  const methods = useForm();
+  const { register, watch } = methods;
+  const data = watch("feeModeCode");
+  useEffect(() => {
+    updateFeeMode(data);
+  }, [data]);
   return (
     <Grid container spacing={4} sx={{ p: 3 }}>
       <Grid item md={6} xs={12}>
@@ -55,47 +62,51 @@ const ProgramFees = (props) => {
       </Grid>
       <Grid item md={7} xs={12}>
         <Grid>
-          {masterData?.applicationData?.status ===
-          CommonEnums.FEES_PENDING_STATUS ? (
-            <Grid>
-              <label>Study Mode</label>
-              <Typography variant="body1">
-                <strong>{studyModes?.studyModeCode}</strong>(
-                {studyModes?.helpText} )
-              </Typography>
-            </Grid>
-          ) : (
-            <Grid>
-              <label>Fee Mode</label>
-              <Grid>
-                {studyModes?.fees?.map((item, index) => {
-                  if (item?.feeMode != feeMode.APPLICATION) {
-                    return (
-                      <div className="form-check form-check-inline">
-                        <input
-                          key={index}
-                          className="form-check-input me-2"
-                          type="radio"
-                          // onChange={() => {
-                          //   setSelectedFeeMode(item?.feeMode);
-                          // }}
-                          value={item?.feeMode}
-                          // checked={item?.feeMode == selectedFeeMode}
-                        />
-                        <label className="form-check-label">
-                          {item?.feeMode}
-                          <br />
-                          <Typography>{item.fee}</Typography>
-                        </label>
-                      </div>
-                    );
-                  }
-                })}
-              </Grid>
-            </Grid>
-          )}
+          <Grid>
+            <label>Study Mode</label>
+            <Typography variant="body1">
+              <strong>{studyModes?.studyModeCode}</strong>(
+              {studyModes?.helpText} )
+            </Typography>
+          </Grid>
         </Grid>
       </Grid>
+      <Grid item md={7} xs={12}>
+        {masterData?.applicationData?.status !==
+          CommonEnums.FEES_PENDING_STATUS && (
+          <Grid>
+            <label>Fee Mode</label>
+            <Grid>
+              {studyModes?.fees?.map((item, index) => {
+                if (item?.feeMode !== feeMode.APPLICATION) {
+                  return (
+                    <div className="form-check form-check-inline">
+                      <input
+                        {...register("feeModeCode", {
+                          required: {
+                            value: true,
+                            message: "Please select Fee mode",
+                          },
+                        })}
+                        key={index}
+                        className="form-check-input me-2"
+                        type="radio"
+                        value={item?.feeMode}
+                      />
+                      <label className="form-check-label">
+                        {item?.feeMode}
+                        <br />
+                        <Typography>{item?.fee}</Typography>
+                      </label>
+                    </div>
+                  );
+                }
+              })}
+            </Grid>
+          </Grid>
+        )}
+      </Grid>
+
       <Grid item md={7} xs={12}>
         <Grid>
           <label>
@@ -141,18 +152,20 @@ const FinalFees = (props) => {
                 <strong>{fees?.amount}</strong>
               </Typography>
             </Grid>
-            <Grid
-              item
-              md={12}
-              xs={12}
-              display="flex"
-              justifyContent="space-between"
-            >
-              <label>RMAT Fee</label>
-              <Typography variant="body1">
-                <strong> {fees?.rmatAmount}</strong>
-              </Typography>
-            </Grid>
+            {fees?.rmatAmount && (
+              <Grid
+                item
+                md={12}
+                xs={12}
+                display="flex"
+                justifyContent="space-between"
+              >
+                <label>RMAT Fee</label>
+                <Typography variant="body1">
+                  <strong> {fees?.rmatAmount}</strong>
+                </Typography>
+              </Grid>
+            )}
             <Grid
               item
               md={12}
@@ -225,4 +238,4 @@ const FinalFees = (props) => {
   );
 };
 
-export default OrderSummary2;
+export default OrderSummary;

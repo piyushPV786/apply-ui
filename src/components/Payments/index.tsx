@@ -14,7 +14,7 @@ import PaymentProofCard from "./paymentProofCard";
 const PaymentPage = ({ applicationCode }) => {
   const { masterData } = usePaymentHook(applicationCode);
 
-  const { studyModes, fees } = usePaymentDetailsHook(masterData);
+  const { studyModes, fees, updateFeeMode } = usePaymentDetailsHook(masterData);
 
   const { getPayuDetails, payuDetails } = usePayuHook(masterData, fees);
 
@@ -39,6 +39,7 @@ const PaymentPage = ({ applicationCode }) => {
               studyModes={studyModes}
               fees={fees}
               masterData={masterData}
+              updateFeeMode={updateFeeMode}
             />
           </Grid>
           <Grid item xs={12}>

@@ -4,11 +4,7 @@ import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
 import { CommonEnums } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
-import {
-  uploadDocumentsToAws,
-  getFeeDetails,
-  getConvertedAmount,
-} from "./helper";
+import { uploadDocumentsToAws, getConvertedAmount } from "./helper";
 
 export const usePaymentHook = (applicationCode: string) => {
   const [masterData, setMasterData] = useState({
@@ -61,8 +57,7 @@ export const usePaymentHook = (applicationCode: string) => {
 };
 
 export const usePaymentDetailsHook = (masterData: any) => {
-  const [selectedFeeMode, setSelectedFeeMode] = useState("");
-
+  const [feeModeCode, setFeeModeCode] = useState(feeMode.APPLICATION);
   let studyModes: any = {};
   if (masterData?.applicationData?.education?.studyModeCode) {
     const studyModeCode = masterData?.applicationData?.education?.studyModeCode;
@@ -77,12 +72,10 @@ export const usePaymentDetailsHook = (masterData: any) => {
   }
 
   let fees: any = {};
-
+  const feesStructure = studyModes?.fees?.find(
+    (item: any) => item?.feeMode === feeModeCode
+  );
   if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
-    const feesStructure = studyModes?.fees?.find(
-      (item: any) => item?.feeMode === feeMode.APPLICATION
-    );
-
     fees = {
       ...feesStructure,
       label: "Application Fees",
@@ -93,28 +86,37 @@ export const usePaymentDetailsHook = (masterData: any) => {
       )}`,
     };
   } else {
-    const feeJson = {};
-    studyModes?.fees?.map((item) => {
-      if (item?.feeMode !== feeMode.APPLICATION) {
-        // feeJson[item?.feeMode] = getFeeDetails(
-        //   item,
-        //   "Program Fees",
-        //   masterData,
-        //   // discountDetails
-        // );
-      }
-    });
-
-    if (selectedFeeMode in feeJson) {
-      fees = feeJson[selectedFeeMode];
-    }
+    fees = {
+      fee: "0.0",
+      feeMode: "",
+      label: "Program Fees",
+      helpText: "",
+      amount: `${masterData?.currencyData?.currencySymbol} ${getConvertedAmount(
+        masterData?.currencyData?.forecastRate,
+        String(0)
+      )}`,
+      ...(feeModeCode !== feeMode.APPLICATION && { ...feesStructure }),
+      ...(feeModeCode !== feeMode.APPLICATION && {
+        amount: `${
+          masterData?.currencyData?.currencySymbol
+        } ${getConvertedAmount(
+          masterData?.currencyData?.forecastRate,
+          String(feesStructure?.fee)
+        )}`,
+      }),
+    };
   }
 
+  const updateFeeMode = (feeModeCode: any) => {
+    if (feeModeCode) {
+      setFeeModeCode(feeModeCode);
+    }
+  };
+  console.log("fees", fees);
   return {
     studyModes,
     fees,
-    setSelectedFeeMode,
-    selectedFeeMode,
+    updateFeeMode,
   };
 };
 
@@ -157,14 +159,17 @@ export const useDiscountHook = (masterData: any, fees: any) => {
   fees.discountCode = discount?.code;
 
   //Apply RMAT Fee
+
   let rmatFees = "0";
   if (masterData?.programData?.isRmat) {
     rmatFees = masterData?.feeData?.rmatFee;
   }
   fees.rmatFees = rmatFees;
-  fees.rmatAmount = `${
-    masterData?.currencyData?.currencySymbol
-  } ${getConvertedAmount(masterData?.currencyData?.forecastRate, rmatFees)}`;
+  if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
+    fees.rmatAmount = `${
+      masterData?.currencyData?.currencySymbol
+    } ${getConvertedAmount(masterData?.currencyData?.forecastRate, rmatFees)}`;
+  }
 
   //Total Amount
   const totalAmount =
@@ -189,10 +194,7 @@ export const usePayuHook = (masterData: any, fees: any) => {
   const getPayuDetails = async (payload) => {
     const apiPayload = {
       amount: Number(fees?.totalFee) || 0,
-      feeModeCode:
-        masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS
-          ? feeMode.APPLICATION
-          : "",
+      feeModeCode: fees?.feeMode,
       email: masterData?.applicationData?.lead?.email,
       firstname: masterData?.applicationData?.lead?.firstName,
       phone: masterData?.applicationData?.lead?.mobileNumber,
@@ -245,3 +247,27 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
     uploadPaymentProof,
   };
 };
+
+// export const useFeeModeCodeHook = (
+//   masterData: any,
+//   feeModeCode: string,
+//   fees: any
+// ) => {
+//   const [allFees, setAllFees] = useState(fees);
+//   useEffect(() => {
+//     console.log("feeModeCode", feeModeCode);
+//     if (feeModeCode && feeModeCode !== "") {
+//       const feeMode = studyModes?.fees?.find(
+//         (item) => item?.feeMode === feeModeCode
+//       );
+//       fees = {
+//         ...fees,
+//         ...feeMode,
+//       };
+//       setAllFees(fees);
+//     }
+
+//     return allFees;
+//   }, [feeModeCode]);
+//   return fees;
+// };
