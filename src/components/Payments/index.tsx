@@ -32,7 +32,7 @@ const PaymentPage = ({ applicationCode }) => {
       >
         <Grid container spacing={2} xs={10}>
           <Grid item xs={12}>
-            <StepperComponent active={1} />
+            <StepperComponent active={2} />
           </Grid>
           <Grid item xs={12}>
             <OrderSummary
