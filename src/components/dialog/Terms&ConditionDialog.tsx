@@ -21,6 +21,9 @@ import StyledButton from "../../components/button/button";
 import ApplicationFormServices from "../../services/applicationForm";
 // ** Third Party Library
 
+import { useFormContext } from "react-hook-form";
+import useAxiosInterceptor from "../../service/Axios";
+
 export const EditGroup = ({
   showTerms,
   onClickShowTerms,
@@ -1927,6 +1930,13 @@ export const EditGroup = ({
               </div>
             </div>
           </Box>
+
+          <div className="mt-5">
+            <Typography>
+              Note (Please Enter Firstname Lastname and Emailaddress to accept
+              terms and conditions)
+            </Typography>
+          </div>
         </Grid>
 
         <DialogActions sx={{ pb: { xs: 2, sm: 2 }, justifyContent: "center" }}>
