@@ -94,12 +94,17 @@ export const ErrorHandling = ({ element, masterData }) => {
 };
 
 export const HandleAction = ({ element, masterData }) => {
-  const { watch } = useFormContext();
+  const { watch, setValue } = useFormContext();
   const fileWatch = watch(element?.code);
   const { getFileUrl } = UsePreviewFile();
+  const handleRemoveFiles = () => {
+    setValue(element?.code, undefined);
+  };
+
   if (!fileWatch || fileWatch?.length === 0 || !fileWatch[0]?.name) {
     return <></>;
   }
+
   return (
     <Grid
       container
@@ -126,7 +131,7 @@ export const HandleAction = ({ element, masterData }) => {
         </IconButton>
         <IconButton
           onClick={() => {
-            //handleRemoveFiles(index);
+            handleRemoveFiles();
           }}
         >
           <CloseOutlined />

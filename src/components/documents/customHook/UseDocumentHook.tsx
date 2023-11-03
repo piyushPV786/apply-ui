@@ -129,7 +129,6 @@ export const UseDownloadDeclarationLatter = () => {
 
 export const UsePreviewFile = () => {
   const getFileUrl = async (file, masterData) => {
-    console.log("file =====>", file);
     if (file?.size > 0) {
       const url = URL.createObjectURL(file);
       window.open(url);
