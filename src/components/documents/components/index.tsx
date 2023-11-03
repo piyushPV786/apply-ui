@@ -97,8 +97,7 @@ export const HandleAction = ({ element, masterData }) => {
   const { watch } = useFormContext();
   const fileWatch = watch(element?.code);
   const { getFileUrl } = UsePreviewFile();
-
-  if (fileWatch && fileWatch?.length === 0) {
+  if (!fileWatch || fileWatch?.length === 0 || !fileWatch[0]?.name) {
     return <></>;
   }
   return (
@@ -120,7 +119,7 @@ export const HandleAction = ({ element, masterData }) => {
       <Grid sm={4} xs={6} item className="d-flex flex-row  ">
         <IconButton
           onClick={() => {
-            getFileUrl(fileWatch[0]?.name, masterData);
+            getFileUrl(fileWatch[0], masterData);
           }}
         >
           <VisibilityOutlined />

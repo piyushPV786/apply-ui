@@ -128,12 +128,18 @@ export const UseDownloadDeclarationLatter = () => {
 };
 
 export const UsePreviewFile = () => {
-  const getFileUrl = async (fileName, masterData) => {
-    const response = await DocumentServices?.getFileUrl(
-      fileName,
-      masterData?.userDetails?.studentCode
-    );
-    viewProofDetails(response);
+  const getFileUrl = async (file, masterData) => {
+    console.log("file =====>", file);
+    if (file?.size > 0) {
+      const url = URL.createObjectURL(file);
+      window.open(url);
+    } else {
+      const response = await DocumentServices?.getFileUrl(
+        file?.name,
+        masterData?.userDetails?.studentCode
+      );
+      viewProofDetails(response);
+    }
   };
 
   return { getFileUrl };
