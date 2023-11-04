@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useRouter } from "next/router";
+
 export const getConvertedAmount = (
   conversionRate: string | null,
   amount: string
@@ -59,11 +59,11 @@ export const getFeeDetails = (
 };
 
 export const uploadDocumentsToAws = async (uploadFileUrl, file) => {
-  const router = useRouter();
+  console.log("upload", uploadFileUrl);
   try {
     const result = await Promise.all([axios.put(uploadFileUrl, file)]);
     if (result) {
-      router.push("/payment/success");
+      return result;
     }
   } catch (error: any) {
     console.log(error.message);

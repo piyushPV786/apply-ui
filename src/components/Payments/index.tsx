@@ -7,6 +7,7 @@ import {
 import OrderSummary from "../../components/Payments/orderSummary";
 import StepperComponent from "../../components/stepper/stepper";
 import { Box, Button, Grid } from "@mui/material";
+import { MainContainer } from "../../components/login/style";
 import { usePaymentDetailsHook } from "./customHook";
 import Header from "../common/header";
 import PaymentOptionCard from "./paymentOptionCard";
@@ -20,7 +21,7 @@ const PaymentPage = ({ applicationCode }) => {
 
   const { uploadPaymentProof } = useOfflinePaymentHook(masterData, fees);
   return (
-    <>
+    <MainContainer>
       <Header />
       <Box
         sx={{
@@ -72,7 +73,7 @@ const PaymentPage = ({ applicationCode }) => {
           </Grid>
         </Grid>
       </Box>
-    </>
+    </MainContainer>
   );
 };
 

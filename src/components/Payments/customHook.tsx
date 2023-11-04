@@ -5,6 +5,7 @@ import ApplicationFormService from "../../services/applicationForm";
 import { CommonEnums } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
 import { uploadDocumentsToAws, getConvertedAmount } from "./helper";
+import { useRouter } from "next/router";
 
 export const usePaymentHook = (applicationCode: string) => {
   const [masterData, setMasterData] = useState({
@@ -80,7 +81,11 @@ export const usePaymentDetailsHook = (masterData: any) => {
       ...feesStructure,
       label: "Application Fees",
       helpText: "(Non-refundable)",
-      amount: `${masterData?.currencyData?.currencySymbol} ${getConvertedAmount(
+      amount: `${
+        masterData?.currencyData?.currencySymbol
+          ? masterData?.currencyData?.currencySymbol
+          : ""
+      } ${getConvertedAmount(
         masterData?.currencyData?.forecastRate,
         String(feesStructure?.fee)
       )}`,
@@ -91,7 +96,11 @@ export const usePaymentDetailsHook = (masterData: any) => {
       feeMode: "",
       label: "Program Fees",
       helpText: "",
-      amount: `${masterData?.currencyData?.currencySymbol} ${getConvertedAmount(
+      amount: `${
+        masterData?.currencyData?.currencySymbol
+          ? masterData?.currencyData?.currencySymbol
+          : ""
+      } ${getConvertedAmount(
         masterData?.currencyData?.forecastRate,
         String(0)
       )}`,
@@ -99,6 +108,8 @@ export const usePaymentDetailsHook = (masterData: any) => {
       ...(feeModeCode !== feeMode.APPLICATION && {
         amount: `${
           masterData?.currencyData?.currencySymbol
+            ? masterData?.currencyData?.currencySymbol
+            : ""
         } ${getConvertedAmount(
           masterData?.currencyData?.forecastRate,
           String(feesStructure?.fee)
@@ -152,6 +163,8 @@ export const useDiscountHook = (masterData: any, fees: any) => {
     discountAmount > discount?.max ? discount?.max : discountAmount;
   fees.discountAmount = `${
     masterData?.currencyData?.currencySymbol
+      ? masterData?.currencyData?.currencySymbol
+      : ""
   } ${getConvertedAmount(
     masterData?.currencyData?.forecastRate,
     String(fees.discountFee)
@@ -168,6 +181,8 @@ export const useDiscountHook = (masterData: any, fees: any) => {
   if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
     fees.rmatAmount = `${
       masterData?.currencyData?.currencySymbol
+        ? masterData?.currencyData?.currencySymbol
+        : ""
     } ${getConvertedAmount(masterData?.currencyData?.forecastRate, rmatFees)}`;
   }
 
@@ -177,6 +192,8 @@ export const useDiscountHook = (masterData: any, fees: any) => {
   fees.totalFee = totalAmount;
   fees.totalAmount = `${
     masterData?.currencyData?.currencySymbol
+      ? masterData?.currencyData?.currencySymbol
+      : ""
   } ${getConvertedAmount(
     masterData?.currencyData?.forecastRate,
     String(totalAmount)
@@ -218,6 +235,7 @@ export const usePayuHook = (masterData: any, fees: any) => {
 };
 
 export const useOfflinePaymentHook = (masterData: any, fees: any) => {
+  const router = useRouter();
   const uploadPaymentProof = async (payload) => {
     const apiPayload = {
       files: payload?.files,
@@ -237,10 +255,12 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       apiPayload,
       masterData?.applicationData?.applicationCode
     );
+
     if (response) {
-      response?.data?.forEach((element, index) => {
+      const res = response?.forEach((element, index) => {
         uploadDocumentsToAws(element, payload?.files[index]);
       });
+      res && router.push("/payment/success");
     }
   };
   return {
