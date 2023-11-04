@@ -51,6 +51,11 @@ const NationalityStatus = (props: any) => {
             label={null}
             registerName={"lead.nationalityStatus"}
             required={true}
+            onChange={() => {
+              setValue("lead.nationality", "");
+              setValue("lead.identificationDocumentType", "");
+              setValue("lead.identificationNumber", "");
+            }}
           />
         )}
         <div>

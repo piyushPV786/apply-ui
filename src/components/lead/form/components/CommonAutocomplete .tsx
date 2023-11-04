@@ -11,16 +11,19 @@ interface IProps {
   required: boolean;
   defaultValue: any;
   disabled?: boolean;
+  onChange?: any;
 }
 
-const CommonAutocomplete = ({
-  options,
-  label,
-  registerName,
-  required,
-  defaultValue,
-  disabled = false,
-}: IProps) => {
+const CommonAutocomplete = (props: IProps) => {
+  const {
+    options,
+    label,
+    registerName,
+    required,
+    defaultValue,
+    disabled = false,
+    onChange,
+  } = props;
   const { register, setValue, watch } = useFormContext();
   const optionList: any = [];
   const dropDownOptions = options?.map((item) => {
@@ -57,6 +60,7 @@ const CommonAutocomplete = ({
         }}
         onChange={(e, value) => {
           setValue(registerName, value);
+          onChange && onChange();
         }}
         renderInput={(params) => {
           const { inputProps, ...rest } = params;
