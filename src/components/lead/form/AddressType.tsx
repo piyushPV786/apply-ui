@@ -85,9 +85,11 @@ const AddressType = (props) => {
           {...register(`address[${index}].city`, {
             required: true,
           })}
-          onChange={(e) =>
-            (e.target.value = capitalizeFirstLetter(e.target.value))
-          }
+          onChange={(e) => {
+            const alphabeticValue = e.target.value.replace(/[^A-Za-z]/g, "");
+            e.target.value = alphabeticValue;
+            e.target.value = capitalizeFirstLetter(e.target.value);
+          }}
         />
         {Errors && Errors[index]?.city && (
           <div className="invalid-feedback">Please enter Residential City</div>

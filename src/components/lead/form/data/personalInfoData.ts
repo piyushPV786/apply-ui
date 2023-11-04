@@ -11,6 +11,7 @@ export const personalInfoData = [
     hidden: false,
     disabled: false,
     placeholder: "e.g Robert",
+    numric: false,
   },
   {
     name: "middleName",
@@ -22,6 +23,7 @@ export const personalInfoData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: false,
   },
   {
     name: "lastName",
@@ -33,6 +35,7 @@ export const personalInfoData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: false,
   },
   {
     name: "gender",

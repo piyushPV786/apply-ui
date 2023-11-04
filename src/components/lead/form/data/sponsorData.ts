@@ -35,6 +35,7 @@ export const sponsorInfoData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: false,
   },
   {
     name: "email",
@@ -74,6 +75,7 @@ export const sponsorInfoData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: true,
   },
   {
     name: "country",
@@ -109,6 +111,7 @@ export const sponsorInfoData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: false,
   },
   {
     name: "zipCode",
@@ -120,5 +123,6 @@ export const sponsorInfoData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: true,
   },
 ];

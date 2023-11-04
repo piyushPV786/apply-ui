@@ -11,6 +11,7 @@ export const kinInfoData = [
     hidden: false,
     disabled: false,
     placeholder: "e.g Robert",
+    numric: false,
   },
   {
     name: "relationship",

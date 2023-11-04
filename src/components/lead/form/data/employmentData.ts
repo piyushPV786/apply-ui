@@ -23,6 +23,7 @@ export const employmentData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: false,
   },
   {
     name: "jobTitle",
@@ -34,6 +35,7 @@ export const employmentData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: false,
   },
   {
     name: "employmentIndustryCode",
@@ -57,6 +59,7 @@ export const employmentData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: false,
   },
   {
     name: "officeMobileNumber",
@@ -106,6 +109,7 @@ export const employmentData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: false,
   },
   {
     name: "zipCode",
@@ -117,6 +121,7 @@ export const employmentData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: true,
   },
 ];
 
@@ -131,6 +136,7 @@ export const employedData = [
     hidden: false,
     disabled: false,
     placeholder: "",
+    numric: false,
   },
   {
     name: "employmentIndustryCode",
