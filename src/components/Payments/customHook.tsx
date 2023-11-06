@@ -209,7 +209,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
 export const usePayuHook = (masterData: any, fees: any) => {
   const [payuDetails, setPayuDetails] = useState({});
   const getPayuDetails = async (payload) => {
-    const apiPayload = {
+    let apiPayload: any = {
       amount: Number(fees?.totalFee) || 0,
       feeModeCode: fees?.feeMode,
       email: masterData?.applicationData?.lead?.email,
@@ -217,10 +217,15 @@ export const usePayuHook = (masterData: any, fees: any) => {
       phone: masterData?.applicationData?.lead?.mobileNumber,
       productinfo: "test",
       studentTypeCode: masterData?.applicationData?.education?.studentTypeCode,
-      discountAmount: fees?.discountFee,
-      discountCode: fees?.discountCode,
       currencyCode: masterData?.currencyData?.currencyCode,
     };
+    if (fees?.discountFee && fees?.discountCode) {
+      apiPayload = {
+        ...apiPayload,
+        discountAmount: fees?.discountFee,
+        discountCode: fees?.discountCode,
+      };
+    }
     const response = await PaymentServices?.getPayuDetais(
       masterData?.applicationData?.applicationCode,
       apiPayload

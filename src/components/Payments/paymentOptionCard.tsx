@@ -48,6 +48,7 @@ const PaymentOptionCard = (props) => {
                         className="form-check-input "
                         type="radio"
                         value={value}
+                        style={{ position: "relative" }}
                       />
                       <Image
                         width={100}
