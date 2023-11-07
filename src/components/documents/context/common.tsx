@@ -17,6 +17,7 @@ export const docType = {
 
 export const customStatus = {
   UPLOADPENDING: "UPLOADPENDING",
+  UPLOADED: "UPLOADED",
 };
 
 export const status = {
@@ -25,6 +26,7 @@ export const status = {
   ADMISSION_APPROVED: "Admission Approved",
   REJECT: "Document Rejected",
   UPLOADPENDING: "Upload Pending",
+  UPLOADED: "Uploaded",
 };
 
 export const statusColor = {
@@ -33,6 +35,7 @@ export const statusColor = {
   ADMISSION_APPROVED: { text: "#008554", background: "#eefbe5" },
   REJECT: { text: "#af7300", background: "#fcefd0" },
   UPLOADPENDING: { text: "#af7300", background: "#fcefd0" },
+  UPLOADED: { text: "#af7300", background: "#fcefd0" },
 };
 
 export const acceptedFileTypes = [
@@ -77,12 +80,16 @@ export const DeclarationListitems = (props) => {
             color: `${
               watch(code)?.status
                 ? statusColor[watch(code).status].text
+                : watch(code)
+                ? statusColor[customStatus.UPLOADED].text
                 : statusColor[customStatus.UPLOADPENDING].text
             }`,
           }}
         >
           {watch(code)?.status
             ? status[watch(code)?.status]
+            : watch(code)
+            ? status[customStatus.UPLOADED]
             : status[customStatus.UPLOADPENDING]}
         </Typography>
       )}

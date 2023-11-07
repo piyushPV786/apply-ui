@@ -5,6 +5,7 @@ import styled from "styled-components";
 import React, { useEffect, useRef } from "react";
 import { VisibilityOutlined, CloseOutlined } from "@material-ui/icons";
 import { useFormContext } from "react-hook-form";
+import { MobileField } from "../lead/form/components/MobileField";
 import {
   docType,
   fileValidation,
@@ -20,6 +21,7 @@ import {
   DeclarationComponent,
   ErrorHandling,
   FileRegister,
+  BursaryFeilds,
 } from "./components";
 
 interface propsType {
@@ -221,15 +223,20 @@ const DocumentUploadContainer = ({ element, masterData }) => {
               status={
                 watch(element?.code)?.status
                   ? watch(element?.code)?.status
+                  : watch(element?.code)
+                  ? customStatus.UPLOADED
                   : customStatus.UPLOADPENDING
               }
             >
               {watch(element?.code)?.status
                 ? status[watch(element?.code)?.status]
+                : watch(element?.code)
+                ? status[customStatus.UPLOADED]
                 : status[customStatus.UPLOADPENDING]}
             </Status>
           </Typography>
         </Grid>
+        <BursaryFeilds element={element} masterData={masterData} />
         <DeclarationComponent element={element} masterData={masterData} />
         <FileRegister element={element} />
         <ErrorHandling element={element} masterData={masterData} />

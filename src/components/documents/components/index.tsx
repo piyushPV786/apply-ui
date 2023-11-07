@@ -1,6 +1,8 @@
 import { Box, Card, Grid, IconButton, List, Typography } from "@mui/material";
 import { FileUploadContainer, InnerContainer } from "../../login/style";
+
 import StyledButton from "../../button/button";
+import { StyledLabel } from "../../common/common";
 import {
   DeclarationListitems,
   docType,
@@ -42,6 +44,48 @@ export const DeclarationComponent = ({ element, masterData }) => {
           />
         </Box>
       </InnerContainer>
+    </Grid>
+  );
+};
+
+export const BursaryFeilds = ({ element, masterData }) => {
+  if (element?.code !== docType.BURSARYLETTER) {
+    return <></>;
+  }
+  return (
+    <Grid
+      container
+      sm={12}
+      md={12}
+      mb={2}
+      columnSpacing={2}
+      rowSpacing={2}
+      mt={2}
+    >
+      <Grid sm={4} md={4} item>
+        <StyledLabel required>Bursary Name</StyledLabel>
+        <input
+          className="form-control"
+          type={"text"}
+          placeholder={"e.g 10 church street"}
+        />
+      </Grid>
+      <Grid sm={4} md={4} item>
+        <StyledLabel required>Bursary Email Address</StyledLabel>
+        <input
+          className="form-control"
+          type={"text"}
+          placeholder={"e.g 10 church street"}
+        />
+      </Grid>
+      <Grid sm={4} md={4} item sx={{ height: 20, flexDirection: "row" }}>
+        <StyledLabel required>Bursary Name</StyledLabel>
+        <input
+          className="form-control"
+          type={"text"}
+          placeholder={"e.g 10 church street"}
+        />
+      </Grid>
     </Grid>
   );
 };
@@ -95,7 +139,9 @@ export const ErrorHandling = ({ element, masterData }) => {
 
 export const HandleAction = ({ element, masterData }) => {
   const { watch, setValue } = useFormContext();
-  const fileWatch = watch(element?.code)?.file;
+  const fileWatch = watch(element?.code)?.file
+    ? watch(element?.code)?.file
+    : watch(element?.code);
   const { getFileUrl } = UsePreviewFile();
   const handleRemoveFiles = () => {
     setValue(element?.code, undefined);
@@ -104,7 +150,7 @@ export const HandleAction = ({ element, masterData }) => {
   if (!fileWatch || fileWatch?.length === 0 || !fileWatch[0]?.name) {
     return <></>;
   }
-
+  console.log(`watch${element?.code}`, fileWatch);
   return (
     <Grid
       container
@@ -118,10 +164,10 @@ export const HandleAction = ({ element, masterData }) => {
       md={12}
       lg={12}
     >
-      <Grid sm={8} xs={6} item>
+      <Grid sm={11} xs={6} item>
         {fileWatch && fileWatch[0]?.name}
       </Grid>
-      <Grid sm={4} xs={6} item className="d-flex flex-row  ">
+      <Grid sm={1} xs={6} item className="d-flex flex-row  ">
         <IconButton
           onClick={() => {
             getFileUrl(fileWatch[0], masterData);
