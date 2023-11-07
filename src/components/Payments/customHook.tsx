@@ -35,7 +35,7 @@ export const usePaymentHook = (applicationCode: string) => {
 
       if (response?.lead?.nationality && response?.education?.programCode) {
         const data = await Promise.all([
-          PaymentServices.getCurrencyConversion(response?.lead?.nationality),
+          PaymentServices.getCurrencyConversion(response?.address[0]?.country),
           ApplicationFormService.getStudentProgram(
             response?.education?.programCode
           ),

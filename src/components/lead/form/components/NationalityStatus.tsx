@@ -20,6 +20,7 @@ const NationalityStatus = (props: any) => {
 
   const [nationalityStatusValue, setNationalityStatus] = useState("");
   const nationalityStatusWatch = watch("lead.nationalityStatus");
+  console.log("nationalityStatusWatch ========>", nationalityStatusWatch);
   useEffect(() => {
     if (nationalityStatusWatch) {
       setNationalityStatus(nationalityStatusWatch);
