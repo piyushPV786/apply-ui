@@ -11,6 +11,7 @@ import {
   IconButton,
   statusColor,
   status,
+  customStatus,
 } from "./context/common";
 import StyledButton from "../button/button";
 import { FileUploadContainer, InnerContainer } from "../login/style";
@@ -220,12 +221,12 @@ const DocumentUploadContainer = ({ element, masterData }) => {
               status={
                 watch(element?.code)?.status
                   ? watch(element?.code)?.status
-                  : "UPLOADPENDING"
+                  : customStatus.UPLOADPENDING
               }
             >
               {watch(element?.code)?.status
                 ? status[watch(element?.code)?.status]
-                : status["UPLOADPENDING"]}
+                : status[customStatus.UPLOADPENDING]}
             </Status>
           </Typography>
         </Grid>

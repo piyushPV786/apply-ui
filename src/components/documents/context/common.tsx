@@ -15,6 +15,10 @@ export const docType = {
   INTERVIEWNOTES: "INTERVIEWNOTES",
 };
 
+export const customStatus = {
+  UPLOADPENDING: "UPLOADPENDING",
+};
+
 export const status = {
   PENDING: "Aproval Pending",
   SALES_APPROVED: "Sales Approved",
@@ -73,13 +77,13 @@ export const DeclarationListitems = (props) => {
             color: `${
               watch(code)?.status
                 ? statusColor[watch(code).status].text
-                : statusColor["UPLOADPENDING"].text
+                : statusColor[customStatus.UPLOADPENDING].text
             }`,
           }}
         >
           {watch(code)?.status
             ? status[watch(code)?.status]
-            : status["UPLOADPENDING"]}
+            : status[customStatus.UPLOADPENDING]}
         </Typography>
       )}
     </ListItem>
