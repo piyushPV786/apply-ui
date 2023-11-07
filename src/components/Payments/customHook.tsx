@@ -267,10 +267,15 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
     );
 
     if (response) {
-      const res = response?.forEach((element, index) => {
-        uploadDocumentsToAws(element, payload?.files[index]?.files);
+      const res = [];
+      response?.forEach((element, index) => {
+        res.push(
+          uploadDocumentsToAws(element, payload?.files[index]?.files) as never
+        );
       });
-      res && router.push("/payment/success");
+
+      const uploadDone = await Promise?.all(res);
+      uploadDone && router.push("/payment/success");
     }
   };
   return {

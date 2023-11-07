@@ -61,8 +61,9 @@ export const getFeeDetails = (
 export const uploadDocumentsToAws = async (uploadFileUrl, file) => {
   try {
     const result = await Promise.all([axios.put(uploadFileUrl, file)]);
+    console.log("result", result[0]);
     if (result) {
-      return result;
+      return result[0];
     }
   } catch (error: any) {
     console.log(error.message);
