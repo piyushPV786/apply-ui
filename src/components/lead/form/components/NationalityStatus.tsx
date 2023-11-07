@@ -76,7 +76,7 @@ const NationalityStatus = (props: any) => {
                     registerName={"lead.permenantResident"}
                     required={true}
                     disabled={true}
-                    defaultValue={"ZA"}
+                    defaultValue={"ZAR"}
                   />
                   {Errors?.permanentResident && (
                     <div className="invalid-feedback">
