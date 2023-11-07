@@ -231,6 +231,7 @@ const StudentLogin = () => {
                 className="link-text"
                 onClick={() => {
                   setOtp("");
+                  setIsOtp(false);
                 }}
               >
                 Change Mobile Number
