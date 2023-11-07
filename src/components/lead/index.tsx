@@ -44,6 +44,8 @@ const LeadForm = (props: IProps) => {
     return <>Loading</>;
   }
 
+  console.log("masterData =====>", masterData);
+
   return (
     <MainContainer>
       <Header />

@@ -1,17 +1,25 @@
-import { useForm, useFormContext } from "react-hook-form";
 import ApplicationServices from "../../../services/applicationForm";
-import { Router } from "mdi-material-ui";
 import { useRouter } from "next/router";
 
 export const useHelperHook = (masterData, watch, setError) => {
-  const { applicationData } = masterData;
+  const { applicationData, programsData } = masterData;
   const router = useRouter();
   const { applicationCode } = router?.query;
 
   const saveApplication = async (data: any) => {
+    const programName = programsData?.find(
+      (item) => item?.code === data?.education?.programCode
+    );
     let response: any = null;
     if (applicationCode === "new") {
-      response = await ApplicationServices.createLead(data, false);
+      const payload = {
+        ...data,
+        education: {
+          ...data?.education,
+          programName: programName?.name ? programName?.name : "",
+        },
+      };
+      response = await ApplicationServices.createLead(payload, false);
     } else if (
       applicationData?.status === "APP-DRAFT" &&
       applicationData?.applicationCode
@@ -19,6 +27,10 @@ export const useHelperHook = (masterData, watch, setError) => {
       const payload = {
         ...data,
         applicationCode: applicationData?.applicationCode,
+        education: {
+          ...data?.education,
+          programName: programName?.name ? programName?.name : "",
+        },
       };
       response = await ApplicationServices.createLead(payload, true);
     } else if (applicationData?.applicationCode) {
@@ -29,6 +41,11 @@ export const useHelperHook = (masterData, watch, setError) => {
         employment: data?.employment?.isEmployment
           ? data?.employment
           : { isEmployment: "no" },
+
+        education: {
+          ...data?.education,
+          programName: programName?.name ? programName?.name : "",
+        },
       };
       response = await ApplicationServices.updateLead(
         payload,
