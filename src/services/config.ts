@@ -31,4 +31,6 @@ export const apiEndPoint = {
   studyModes: "study-mode",
   program: "programs/:programCode",
   rmat: "application/rmat/details/:studentCode",
+  ukhesheToken: "payments/get-ukheshe-token",
+  updatePayment: "payments/ukheshe-payment",
 };

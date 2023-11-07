@@ -4,8 +4,13 @@ import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
 import { CommonEnums } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
-import { uploadDocumentsToAws, getConvertedAmount } from "./helper";
+import {
+  uploadDocumentsToAws,
+  getConvertedAmount,
+  getUkheshePayload,
+} from "./helper";
 import { useRouter } from "next/router";
+import { v4 as uuidv4 } from "uuid";
 
 export const usePaymentHook = (applicationCode: string) => {
   const [masterData, setMasterData] = useState({
@@ -123,7 +128,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
       setFeeModeCode(feeModeCode);
     }
   };
-  console.log("fees", fees);
+
   return {
     studyModes,
     fees,
@@ -273,26 +278,68 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
   };
 };
 
-// export const useFeeModeCodeHook = (
-//   masterData: any,
-//   feeModeCode: string,
-//   fees: any
-// ) => {
-//   const [allFees, setAllFees] = useState(fees);
-//   useEffect(() => {
-//     console.log("feeModeCode", feeModeCode);
-//     if (feeModeCode && feeModeCode !== "") {
-//       const feeMode = studyModes?.fees?.find(
-//         (item) => item?.feeMode === feeModeCode
-//       );
-//       fees = {
-//         ...fees,
-//         ...feeMode,
-//       };
-//       setAllFees(fees);
-//     }
+export const useUkhesheHook = (masterData: any, fees: any) => {
+  const router = useRouter();
+  const [paymentToken, setPaymjentToken] = useState<any>();
+  const [loadingPayment, setLoadingPayment] = useState(false);
 
-//     return allFees;
-//   }, [feeModeCode]);
-//   return fees;
-// };
+  const getPaymentToken = async () => {
+    const tokenResponse = await PaymentServices?.getUkhesheToken();
+    setPaymjentToken(tokenResponse);
+  };
+
+  const getPaymentRedirectURL = async () => {
+    setLoadingPayment(true);
+    const payload = {
+      externalUniqueId: uuidv4(),
+      amount: `${fees?.totalFee || 0}`,
+      currency: "ZAR",
+      type: "GLOBAL_PAYMENT_LINK",
+      paymentMechanism: "CARD",
+      paymentData: "198462",
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: paymentToken?.headerValue,
+    };
+
+    const paymentResponse = await PaymentServices?.getPaymentDetails(
+      paymentToken?.tenantId,
+      payload,
+      headers
+    );
+    if (paymentResponse) {
+      window.open(paymentResponse?.completionUrl, "_ blank");
+      const interval = setInterval(async () => {
+        const getPaymentResponse = await PaymentServices.getPaymentInfo(
+          paymentToken?.tenantId,
+          paymentResponse?.paymentId,
+          headers
+        );
+
+        if (getPaymentResponse?.data?.status == "SUCCESSFUL") {
+          const payload = getUkheshePayload(
+            getPaymentResponse,
+            fees,
+            masterData
+          );
+
+          const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
+            payload
+          );
+          if (sendPaymentInfo?.statusCode == 201) {
+            setLoadingPayment(false);
+            router?.push("/payment/success");
+          }
+          clearInterval(interval);
+        } else if (getPaymentResponse?.data?.status == "ERROR_PERM") {
+          clearInterval(interval);
+          setLoadingPayment(false);
+          router?.push("/payment/failure");
+        }
+      }, 10000);
+    }
+  };
+
+  return { getPaymentToken, getPaymentRedirectURL, loadingPayment };
+};

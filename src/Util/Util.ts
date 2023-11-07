@@ -308,6 +308,9 @@ export const GetPaymentImage = (type) => {
   if (type === "stripe") {
     return `${imgUrl}/stripe.png`;
   }
+  if (type === "ukheshe") {
+    return `${imgUrl}/ukheshy.png`;
+  }
 };
 
 /**

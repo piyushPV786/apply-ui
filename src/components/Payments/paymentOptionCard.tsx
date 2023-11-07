@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-import PayuInput from "./payuInput";
+import PayuInput from "./components/payuInput";
 import {
   Grid,
   Button,
@@ -14,9 +14,15 @@ import { PaymentTypes } from "../common/constant";
 import { GetPaymentImage } from "../../Util/Util";
 import { PaymentCardDetail } from "../../styles/styled";
 import { useForm } from "react-hook-form";
+import UkhesheInput from "./components/ukhesheInput";
 
 const PaymentOptionCard = (props) => {
-  const { getPayuDetails, payuDetails } = props;
+  const {
+    getPayuDetails,
+    payuDetails,
+    getUkheshePaymentToken,
+    getPaymentRedirectURL,
+  } = props;
   const methods = useForm();
   const { register, watch } = methods;
   const onlinePaymentWatch = watch(PaymentTypes[0].registerName);
@@ -24,6 +30,10 @@ const PaymentOptionCard = (props) => {
     const payu = PaymentTypes.find((item) => item?.name === "Payu");
     if (onlinePaymentWatch && payu?.value === onlinePaymentWatch) {
       getPayuDetails();
+    }
+    const ukheshe = PaymentTypes.find((item) => item?.name === "Ukheshe");
+    if (onlinePaymentWatch && ukheshe?.value === onlinePaymentWatch) {
+      getUkheshePaymentToken();
     }
   }, [onlinePaymentWatch]);
   return (
@@ -43,12 +53,17 @@ const PaymentOptionCard = (props) => {
                       {name === "Payu" ? (
                         <PayuInput value={value} payuDetails={payuDetails} />
                       ) : null}
+                      {name === "Ukheshe" ? (
+                        <UkhesheInput
+                          value={value}
+                          getPaymentRedirectURL={getPaymentRedirectURL}
+                        />
+                      ) : null}
                       <input
                         {...register(registerName)}
                         className="form-check-input "
                         type="radio"
                         value={value}
-                        style={{ position: "relative" }}
                       />
                       <Image
                         width={100}

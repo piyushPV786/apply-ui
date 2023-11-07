@@ -68,7 +68,6 @@ const PaymentSuccessFull = (props: any) => {
             </div>
           </div>
         </PaymentContainer>
-        <StyledButton onClick={() => {}} title={"Try Again"} />
       </>
     );
   };

@@ -3,10 +3,11 @@ import {
   useOfflinePaymentHook,
   usePaymentHook,
   usePayuHook,
+  useUkhesheHook,
 } from "../../components/Payments/customHook";
 import OrderSummary from "../../components/Payments/orderSummary";
 import StepperComponent from "../../components/stepper/stepper";
-import { Box, Button, Grid } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Grid } from "@mui/material";
 import { MainContainer } from "../../components/login/style";
 import { usePaymentDetailsHook } from "./customHook";
 import Header from "../common/header";
@@ -18,6 +19,8 @@ const PaymentPage = ({ applicationCode }) => {
   const { studyModes, fees, updateFeeMode } = usePaymentDetailsHook(masterData);
 
   const { getPayuDetails, payuDetails } = usePayuHook(masterData, fees);
+  const { getPaymentToken, getPaymentRedirectURL, loadingPayment } =
+    useUkhesheHook(masterData, fees);
 
   const { uploadPaymentProof } = useOfflinePaymentHook(masterData, fees);
   return (
@@ -49,6 +52,8 @@ const PaymentPage = ({ applicationCode }) => {
                 <PaymentOptionCard
                   getPayuDetails={getPayuDetails}
                   payuDetails={payuDetails}
+                  getUkheshePaymentToken={getPaymentToken}
+                  getPaymentRedirectURL={getPaymentRedirectURL}
                 />
               </Grid>
               <Grid
@@ -73,6 +78,13 @@ const PaymentPage = ({ applicationCode }) => {
           </Grid>
         </Grid>
       </Box>
+
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingPayment}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </MainContainer>
   );
 };

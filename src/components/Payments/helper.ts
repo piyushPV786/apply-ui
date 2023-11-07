@@ -59,7 +59,6 @@ export const getFeeDetails = (
 };
 
 export const uploadDocumentsToAws = async (uploadFileUrl, file) => {
-  console.log("upload", uploadFileUrl);
   try {
     const result = await Promise.all([axios.put(uploadFileUrl, file)]);
     if (result) {
@@ -69,4 +68,28 @@ export const uploadDocumentsToAws = async (uploadFileUrl, file) => {
     console.log(error.message);
     return error;
   }
+};
+
+export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
+  return {
+    transactionId: getPaymentResponse?.data?.externalUniqueId,
+    totalAmount: fees?.totalFee,
+    totalPaidAmount: getPaymentResponse?.data?.amount,
+    feeModeCode: fees?.feeMode,
+    currencyCode: masterData?.currencyData?.currencyCode,
+    paymentStatus: getPaymentResponse?.data?.status,
+    discountCode: fees?.discountCode,
+    discountAmount: fees.discountFee,
+    studentCode: masterData?.applicationData?.studentCode,
+    ukheshe: {
+      paymentId: getPaymentResponse?.data?.paymentId,
+      gatewayTransactionId: getPaymentResponse?.data?.externalUniqueId,
+      amount: getPaymentResponse?.data?.amount,
+      status: getPaymentResponse?.data?.status,
+      walletId: getPaymentResponse?.data?.walletId,
+      currency: getPaymentResponse?.data?.currency,
+      externalUniqueId: getPaymentResponse?.data?.externalUniqueId,
+      paymentType: getPaymentResponse?.data?.paymentType,
+    },
+  };
 };

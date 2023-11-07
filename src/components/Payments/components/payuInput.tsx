@@ -1,5 +1,4 @@
 const PayuInput = ({ payuDetails, value }) => {
-  console.log("payuDetails", payuDetails);
   return (
     <>
       <form method="post" id={value} action={payuDetails?.paymenturl}>

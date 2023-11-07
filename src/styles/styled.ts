@@ -32,7 +32,6 @@ export const PaymentCardDetail = styled<any>("div")(() => {
     display: "flex",
     justifyContent: "center",
     input: {
-      position: "absolute",
       marginTop: "8px",
     },
     "&:hover": {
