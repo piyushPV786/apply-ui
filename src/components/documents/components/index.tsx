@@ -95,7 +95,7 @@ export const ErrorHandling = ({ element, masterData }) => {
 
 export const HandleAction = ({ element, masterData }) => {
   const { watch, setValue } = useFormContext();
-  const fileWatch = watch(element?.code);
+  const fileWatch = watch(element?.code)?.file;
   const { getFileUrl } = UsePreviewFile();
   const handleRemoveFiles = () => {
     setValue(element?.code, undefined);
@@ -150,7 +150,7 @@ export const DocumentStatus = ({ masterData }) => {
         </Typography>
         <List>
           {masterData?.documentTypes?.map((item: any) => (
-            <DeclarationListitems text={item?.name} />
+            <DeclarationListitems text={item?.name} code={item?.code} />
           ))}
         </List>
       </Card>
