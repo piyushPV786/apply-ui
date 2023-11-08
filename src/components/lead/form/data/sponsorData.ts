@@ -75,7 +75,7 @@ export const sponsorInfoData = [
     hidden: false,
     disabled: false,
     placeholder: "",
-    numric: false,
+    numric: null,
   },
   {
     name: "country",
