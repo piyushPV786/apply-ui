@@ -49,6 +49,7 @@ export const DeclarationComponent = ({ element, masterData }) => {
 };
 
 export const BursaryFeilds = ({ element, masterData }) => {
+  const { register } = useFormContext();
   if (element?.code !== docType.BURSARYLETTER) {
     return <></>;
   }
@@ -65,6 +66,7 @@ export const BursaryFeilds = ({ element, masterData }) => {
       <Grid sm={4} md={4} item>
         <StyledLabel required>Bursary Name</StyledLabel>
         <input
+          {...register(`${element.code}bursaryName`)}
           className="form-control"
           type={"text"}
           placeholder={"e.g 10 church street"}
@@ -73,6 +75,7 @@ export const BursaryFeilds = ({ element, masterData }) => {
       <Grid sm={4} md={4} item>
         <StyledLabel required>Bursary Email Address</StyledLabel>
         <input
+          {...register(`${element.code}bursaryEmail`)}
           className="form-control"
           type={"text"}
           placeholder={"e.g 10 church street"}

@@ -46,8 +46,10 @@ const UseCardActionHook = (applicationDetail) => {
     status === CommonEnums.RESUB_APP_FEE_PROOF ||
     status === CommonEnums.APP_ENROLLED_ACCEPTED ||
     status === APPLICATION_STATUS.APPLICATION_FEE_PENDING;
+
   const payBtnTitle =
-    status === CommonEnums.APP_ENROLLED_STATUS
+    status === CommonEnums.APP_ENROLLED_STATUS ||
+    status === CommonEnums.APP_ENROLLED_ACCEPTED
       ? "Pay Program Fee"
       : "Pay Application Fee";
 
