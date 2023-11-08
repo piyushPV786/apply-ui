@@ -153,7 +153,7 @@ export const HandleAction = ({ element, masterData }) => {
   if (!fileWatch || fileWatch?.length === 0 || !fileWatch[0]?.name) {
     return <></>;
   }
-  console.log(`watch${element?.code}`, fileWatch);
+
   return (
     <Grid
       container
