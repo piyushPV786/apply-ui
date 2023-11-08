@@ -144,6 +144,7 @@ export const ActionButtons = ({ applicationDetail }) => {
     payBtnTitle,
     isUploadBTN,
     isBursaryBTN,
+    isUploadBTNTitle,
     isAdamiteBTN,
     openCredentialDialog,
     setOpenCredentialDialog,
@@ -215,7 +216,7 @@ export const ActionButtons = ({ applicationDetail }) => {
               router.push(`/uploads/${applicationDetail?.applicationCode}`);
             }}
             className="card-button"
-            title="Upload Documents"
+            title={isUploadBTNTitle}
             isUploadBtn
           />
         </Grid>

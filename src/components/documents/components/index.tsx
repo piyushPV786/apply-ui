@@ -1,5 +1,9 @@
 import { Box, Card, Grid, IconButton, List, Typography } from "@mui/material";
 import { FileUploadContainer, InnerContainer } from "../../login/style";
+import { MobileField } from "../../lead/form/components/MobileField";
+import { useState } from "react";
+import "react-phone-number-input/style.css";
+import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
 
 import StyledButton from "../../button/button";
 import { StyledLabel } from "../../common/common";
@@ -49,7 +53,15 @@ export const DeclarationComponent = ({ element, masterData }) => {
 };
 
 export const BursaryFeilds = ({ element, masterData }) => {
+  const [countryCodeRef, setCountryCode] = useState<any>("ZA");
   const { register } = useFormContext();
+
+  const onCountryChange = (value: string | any) => {
+    if (value) {
+      setCountryCode(value);
+    }
+  };
+
   if (element?.code !== docType.BURSARYLETTER) {
     return <></>;
   }
@@ -61,32 +73,50 @@ export const BursaryFeilds = ({ element, masterData }) => {
       mb={2}
       columnSpacing={2}
       rowSpacing={2}
-      mt={2}
+      mt={1}
     >
       <Grid sm={4} md={4} item>
-        <StyledLabel required>Bursary Name</StyledLabel>
+        <StyledLabel required={element?.required}>Bursary Name</StyledLabel>
         <input
-          {...register(`${element.code}bursaryName`)}
+          {...register(`${element.code}Name`, {
+            required: element?.required,
+          })}
           className="form-control"
           type={"text"}
           placeholder={"e.g 10 church street"}
         />
       </Grid>
       <Grid sm={4} md={4} item>
-        <StyledLabel required>Bursary Email Address</StyledLabel>
+        <StyledLabel required={element?.required}>
+          Bursary Email Address
+        </StyledLabel>
         <input
-          {...register(`${element.code}bursaryEmail`)}
+          {...register(`${element.code}Email`, {
+            required: element?.required,
+          })}
           className="form-control"
           type={"text"}
           placeholder={"e.g 10 church street"}
         />
       </Grid>
-      <Grid sm={4} md={4} item sx={{ height: 20, flexDirection: "row" }}>
-        <StyledLabel required>Bursary Name</StyledLabel>
-        <input
-          className="form-control"
-          type={"text"}
-          placeholder={"e.g 10 church street"}
+      <Grid sm={4} md={4} item>
+        <StyledLabel required={element?.required}>
+          Bursary Phone Number
+        </StyledLabel>
+        <PhoneInput
+          {...register(`${element.code}Phone`, {
+            required: element?.required,
+          })}
+          fullWidth
+          id="2"
+          international
+          countryCallingCodeEditable={false}
+          defaultCountry={countryCodeRef}
+          placeholder="Select Country Code*"
+          onCountryChange={(value: any) => {
+            onCountryChange(value);
+          }}
+          onChange={() => {}}
         />
       </Grid>
     </Grid>

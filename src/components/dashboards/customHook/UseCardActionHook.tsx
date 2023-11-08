@@ -55,6 +55,11 @@ const UseCardActionHook = (applicationDetail) => {
 
   const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
 
+  const isUploadBTNTitle =
+    status === APPLICATION_STATUS.UPLOAD_BURSARY_DOCUMENTS
+      ? "Upload Bursary Letter"
+      : "Upload Documents";
+
   const isBursaryBTN =
     status === CommonEnums.APP_ENROLLED_ACCEPTED &&
     educationDetail?.studentTypeCode === CommonEnums?.BURSARY &&
@@ -80,6 +85,7 @@ const UseCardActionHook = (applicationDetail) => {
   return {
     isEditBTN,
     isRmatBTN,
+    isUploadBTNTitle,
     isPayBTN,
     payBtnTitle,
     isUploadBTN,

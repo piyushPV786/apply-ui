@@ -80,6 +80,15 @@ class DocumentApplicationServices {
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
   }
+
+  async updateBursary(payload) {
+    const route = apiEndPoint?.bursary;
+    const url = `${apiUrls?.financeBaseUrl}${route}`;
+    const response = await apiServer.post(url, { ...payload });
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
+  }
+
   async uploadDocumentToAws(url, files) {
     const response = await axios.put(url, files);
     return response?.data ? response?.data : null;

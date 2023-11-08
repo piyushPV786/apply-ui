@@ -15,6 +15,12 @@ export const docType = {
   INTERVIEWNOTES: "INTERVIEWNOTES",
 };
 
+export const bursarryFeilds = {
+  Name: "BURSARYLETTERName",
+  Email: "BURSARYLETTEREmail",
+  Phone: "BURSARYLETTERPhone",
+};
+
 export const customStatus = {
   UPLOADPENDING: "UPLOADPENDING",
   UPLOADED: "UPLOADED",

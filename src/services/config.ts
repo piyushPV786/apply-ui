@@ -33,4 +33,5 @@ export const apiEndPoint = {
   rmat: "application/rmat/details/:studentCode",
   ukhesheToken: "payments/get-ukheshe-token",
   updatePayment: "payments/ukheshe-payment",
+  bursary: "bursary",
 };
