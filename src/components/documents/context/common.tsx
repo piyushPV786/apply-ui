@@ -1,11 +1,11 @@
 import { Typography, Box, ListItem, ListItemText } from "@mui/material";
 import styled from "styled-components";
+import { useFormContext } from "react-hook-form";
 
 // comon document page used constants //
 export const mbaDocs = ["MOTIVATIONLETTER", "INTERVIEWNOTES"];
 
 export const docType = {
-  IDPASSPORT: "IDPASSPORT",
   RESUMECV: "RESUMECV",
   MATRIC: "MATRIC",
   HIGHESTQUALIFICATION: "HIGHESTQUALIFICATION",
@@ -13,6 +13,29 @@ export const docType = {
   DECLARATIONFORM: "DECLARATIONFORM",
   MOTIVATIONLETTER: "MOTIVATIONLETTER",
   INTERVIEWNOTES: "INTERVIEWNOTES",
+};
+
+export const customStatus = {
+  UPLOADPENDING: "UPLOADPENDING",
+  UPLOADED: "UPLOADED",
+};
+
+export const status = {
+  PENDING: "Aproval Pending",
+  SALES_APPROVED: "Sales Approved",
+  ADMISSION_APPROVED: "Admission Approved",
+  REJECT: "Document Rejected",
+  UPLOADPENDING: "Upload Pending",
+  UPLOADED: "Uploaded",
+};
+
+export const statusColor = {
+  PENDING: { text: "#af7300", background: "#fcefd0" },
+  SALES_APPROVED: { text: "#008554", background: "#eefbe5" },
+  ADMISSION_APPROVED: { text: "#008554", background: "#eefbe5" },
+  REJECT: { text: "#af7300", background: "#fcefd0" },
+  UPLOADPENDING: { text: "#af7300", background: "#fcefd0" },
+  UPLOADED: { text: "#af7300", background: "#fcefd0" },
 };
 
 export const acceptedFileTypes = [
@@ -35,7 +58,11 @@ export const documentCriteria = [
 ];
 
 // comon document page used components //
-export const DeclarationListitems = ({ text }) => {
+export const DeclarationListitems = (props) => {
+  const { text, code } = props;
+
+  const { watch } = useFormContext();
+
   return (
     <ListItem
       key={text}
@@ -47,6 +74,25 @@ export const DeclarationListitems = ({ text }) => {
       }}
     >
       <ListItemText id={text} primary={<Typography>{text}</Typography>} />
+      {code && (
+        <Typography
+          sx={{
+            color: `${
+              watch(code)?.status
+                ? statusColor[watch(code).status].text
+                : watch(code)
+                ? statusColor[customStatus.UPLOADED].text
+                : statusColor[customStatus.UPLOADPENDING].text
+            }`,
+          }}
+        >
+          {watch(code)?.status
+            ? status[watch(code)?.status]
+            : watch(code)
+            ? status[customStatus.UPLOADED]
+            : status[customStatus.UPLOADPENDING]}
+        </Typography>
+      )}
     </ListItem>
   );
 };

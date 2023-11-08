@@ -20,6 +20,9 @@ const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
           if (!element.numric) {
             const alphabeticValue = e.target.value.replace(/[^A-Za-z]/g, "");
             e.target.value = alphabeticValue;
+          } else if (element.numric) {
+            const numericValue = e.target.value.replace(/[^0-9]/g, "");
+            e.target.value = numericValue;
           }
           e.target.value = capitalizeFirstLetter(e.target.value);
         }}

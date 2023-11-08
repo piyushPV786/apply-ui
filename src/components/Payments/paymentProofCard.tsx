@@ -36,6 +36,7 @@ const PaymentProofCard = (props) => {
           documentTypeCode: "PAYMENTPROOF",
           fileName: data?.file?.name,
           fileType: data?.file?.type,
+          files: data?.file,
         },
       ],
     };

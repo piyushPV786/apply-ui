@@ -30,7 +30,7 @@ export const UseDocumentHook = (applicationCode) => {
         return {
           name: element?.name,
           label: element?.name,
-          required: userInfo?.education?.programCode === "MBA", //To Do how to know this program code is MBA
+          required: userInfo?.education?.programCode === "MBA",
           code: element.code,
         };
       } else {

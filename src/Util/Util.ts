@@ -783,7 +783,8 @@ export const setDocumentValue = (documents, setValue) => {
       type: element?.fileExtension,
       lastModified: element?.updatedAt,
     });
-    console.log("element?.documentTypeCode", element?.documentTypeCode);
-    setValue(element?.documentTypeCode, [file]);
+    const value = { file: [file], status: element?.status };
+
+    setValue(element?.documentTypeCode, value);
   });
 };
