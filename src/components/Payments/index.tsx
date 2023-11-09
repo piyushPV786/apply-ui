@@ -13,7 +13,10 @@ import { usePaymentDetailsHook } from "./customHook";
 import Header from "../common/header";
 import PaymentOptionCard from "./paymentOptionCard";
 import PaymentProofCard from "./paymentProofCard";
+import { useRouter } from "next/router";
+
 const PaymentPage = ({ applicationCode }) => {
+  const router = useRouter();
   const { masterData } = usePaymentHook(applicationCode);
 
   const { studyModes, fees, updateFeeMode } = usePaymentDetailsHook(masterData);
@@ -73,7 +76,13 @@ const PaymentPage = ({ applicationCode }) => {
           </Grid>
           <Grid item xs={12} display="flex" justifyContent="center">
             <Grid item xs={6} display="flex" justifyContent="center">
-              <StyledButton isGreenWhiteCombination title="Back" />
+              <StyledButton
+                isGreenWhiteCombination
+                title="Back"
+                onClick={() => {
+                  router.push(`uploads/${applicationCode}`);
+                }}
+              />
             </Grid>
           </Grid>
         </Grid>
