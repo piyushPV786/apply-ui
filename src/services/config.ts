@@ -34,4 +34,5 @@ export const apiEndPoint = {
   ukhesheToken: "payments/get-ukheshe-token",
   updatePayment: "payments/ukheshe-payment",
   bursary: "bursary",
+  status: "set-status",
 };

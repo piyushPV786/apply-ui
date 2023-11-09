@@ -47,6 +47,13 @@ class PaymentServices {
     return result;
   }
 
+  async setStatus(payload) {
+    const url = `${apiUrls?.commonBaseUrl}${apiEndPoint.status}`;
+    const response = await apiServer.post(url, payload);
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
+  }
+
   async getProgramDetails(programCode: string) {
     const url = `${apiUrls?.academicBaseUrl}${apiEndPoint.program}`.replace(
       ":programCode",

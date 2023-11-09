@@ -8,6 +8,7 @@ import {
   uploadDocumentsToAws,
   getConvertedAmount,
   getUkheshePayload,
+  getStatusPayload,
 } from "./helper";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
@@ -329,11 +330,14 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
             masterData
           );
 
+          const statusPayload = getStatusPayload("online", masterData, fees);
+
           const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
             payload
           );
           if (sendPaymentInfo?.statusCode == 201) {
             setLoadingPayment(false);
+            PaymentServices.setStatus(statusPayload);
             router?.push("/payment/success");
           }
           clearInterval(interval);

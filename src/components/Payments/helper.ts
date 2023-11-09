@@ -82,6 +82,7 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
     discountCode: fees?.discountCode,
     discountAmount: fees.discountFee,
     studentCode: masterData?.applicationData?.studentCode,
+    applicationCode: masterData?.applicationData?.applicationCode,
     ukheshe: {
       paymentId: getPaymentResponse?.data?.paymentId,
       gatewayTransactionId: getPaymentResponse?.data?.externalUniqueId,
@@ -92,5 +93,17 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
       externalUniqueId: getPaymentResponse?.data?.externalUniqueId,
       paymentType: getPaymentResponse?.data?.paymentType,
     },
+  };
+};
+
+export const getStatusPayload = (paymentMode, masterData, fees) => {
+  return {
+    source: "apply,enrolment",
+    status:
+      fees?.feeMode === "APPLICATION"
+        ? "APP-FEE-ACCEPTED"
+        : "PROG-FEE-ACCEPTED",
+    aapCode: masterData.applicationData.applicationCode,
+    paymentMode: `${paymentMode}`,
   };
 };
