@@ -9,5 +9,5 @@ export enum nationalityStatusEnum {
 }
 
 export enum ErrorMessage {
-  discountErrorMessage = "Discount Code Not Aplicable",
+  discountErrorMessage = "Discount Code Not Applicable",
 }
