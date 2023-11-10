@@ -30,7 +30,7 @@ class DocumentApplicationServices {
       response?.status == apiStatus.success ||
       response?.status == apiStatus.success1
     ) {
-      return response?.data;
+      return response;
     } else {
       return null;
     }
