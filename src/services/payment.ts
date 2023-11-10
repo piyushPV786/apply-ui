@@ -10,10 +10,14 @@ class PaymentServices {
 
   async applicationDiscount(studentType, applicationCode, discountCode) {
     const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${applicationCode}/discount/${discountCode}?studentType=${studentType}`;
-    const response = await apiServer.get(url);
-    const result = response?.data?.data ? response?.data?.data : {};
-    return result;
+
+    try {
+      const response = await apiServer.get(url);
+      const result = response?.data?.data ? response?.data?.data : {};
+      return result;
+    } catch (e) {}
   }
+
   async applicationDocument(payload: any) {
     const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${payload.appCode}/document`;
     const response = await apiServer.post(url, payload);

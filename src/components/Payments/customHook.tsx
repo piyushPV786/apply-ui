@@ -12,7 +12,8 @@ import {
 } from "./helper";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
-
+import { toast } from "react-toastify";
+import { ErrorMessage } from "../../constants";
 export const usePaymentHook = (applicationCode: string) => {
   const [masterData, setMasterData] = useState({
     applicationData: null,
@@ -156,12 +157,15 @@ export const useDiscountHook = (masterData: any, fees: any) => {
       masterData?.applicationData?.applicationCode,
       data?.discountCode
     );
+
     if (res?.maxAmount) {
       setDiscount({
         percent: res?.percent,
         code: res?.discountCode,
         max: res?.maxAmount,
       });
+    } else {
+      toast.error(ErrorMessage.discountErrorMessage);
     }
   };
   const discountAmount = (fees?.fee * discount.percent) / 100;
