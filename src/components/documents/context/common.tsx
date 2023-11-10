@@ -86,7 +86,7 @@ export const DeclarationListitems = (props) => {
             color: `${
               watch(code)?.status
                 ? statusColor[watch(code).status].text
-                : statusColor[getStatus(watch(code))].text
+                : statusColor[getStatus(watch(code))]?.text
             }`,
           }}
         >
@@ -131,9 +131,13 @@ export const fileValidation = (value, isRequired) => {
 };
 
 export const getStatus = (value) => {
-  if (value.length > 0) {
-    return customStatus.UPLOADED;
+  if (value) {
+    if (value?.length > 0) {
+      return customStatus.UPLOADED;
+    } else {
+      return customStatus.UPLOADPENDING;
+    }
   } else {
-    return customStatus.UPLOADPENDING;
+    return "";
   }
 };
