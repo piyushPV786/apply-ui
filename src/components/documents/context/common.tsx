@@ -85,7 +85,7 @@ export const DeclarationListitems = (props) => {
           sx={{
             color: `${
               watch(code)?.status
-                ? statusColor[watch(code).status].text
+                ? statusColor[watch(code).status]?.text
                 : statusColor[getStatus(watch(code))]?.text
             }`,
           }}
