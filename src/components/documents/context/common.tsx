@@ -86,17 +86,13 @@ export const DeclarationListitems = (props) => {
             color: `${
               watch(code)?.status
                 ? statusColor[watch(code).status].text
-                : watch(code)
-                ? statusColor[customStatus.UPLOADED].text
-                : statusColor[customStatus.UPLOADPENDING].text
+                : statusColor[getStatus(watch(code))].text
             }`,
           }}
         >
           {watch(code)?.status
             ? status[watch(code)?.status]
-            : watch(code)
-            ? status[customStatus.UPLOADED]
-            : status[customStatus.UPLOADPENDING]}
+            : status[getStatus(watch(code))]}
         </Typography>
       )}
     </ListItem>
@@ -132,4 +128,12 @@ export const fileValidation = (value, isRequired) => {
   }
 
   return true;
+};
+
+export const getStatus = (value) => {
+  if (value.length > 0) {
+    return customStatus.UPLOADED;
+  } else {
+    return customStatus.UPLOADPENDING;
+  }
 };

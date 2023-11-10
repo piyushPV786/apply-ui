@@ -5,7 +5,8 @@ import styled from "styled-components";
 import React, { useEffect, useRef } from "react";
 import { VisibilityOutlined, CloseOutlined } from "@material-ui/icons";
 import { useFormContext } from "react-hook-form";
-import { MobileField } from "../lead/form/components/MobileField";
+import { getStatus } from "./context/common";
+
 import {
   docType,
   fileValidation,
@@ -223,16 +224,12 @@ const DocumentUploadContainer = ({ element, masterData }) => {
               status={
                 watch(element?.code)?.status
                   ? watch(element?.code)?.status
-                  : watch(element?.code)
-                  ? customStatus.UPLOADED
-                  : customStatus.UPLOADPENDING
+                  : getStatus(watch(element?.code))
               }
             >
               {watch(element?.code)?.status
                 ? status[watch(element?.code)?.status]
-                : watch(element?.code)
-                ? status[customStatus.UPLOADED]
-                : status[customStatus.UPLOADPENDING]}
+                : status[getStatus(watch(element?.code))]}
             </Status>
           </Typography>
         </Grid>
