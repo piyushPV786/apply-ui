@@ -22,7 +22,7 @@ export const UseDocumentHook = (applicationCode) => {
       if (element.code == "BURSARYLETTER") {
         return {
           name: element?.name,
-          label: element?.name,
+          label: `${element?.name} and Details`,
           required: userInfo?.status === "BURSARY-PEND",
           code: element.code,
         };
