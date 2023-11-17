@@ -96,7 +96,7 @@ const ProgramFees = (props) => {
                       <label className="form-check-label">
                         {item?.feeMode}
                         <br />
-                        <Typography>{item?.fee}</Typography>
+                        <Typography>R{item?.fee}</Typography>
                       </label>
                     </div>
                   );
@@ -205,7 +205,7 @@ const FinalFees = (props) => {
                 <FormProvider {...methods}>
                   <form>
                     <TextField
-                      placeholder="Enter Proper Code"
+                      placeholder="Enter Promo Code"
                       fullWidth
                       {...methods?.register("discountCode", {
                         required: {
