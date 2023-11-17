@@ -56,7 +56,7 @@ const Address = (props: any) => {
                       type="checkbox"
                     />
                     <label className="form-check-label m1-2 same-address">
-                      Select if same as Residential Address
+                      Select if same as Postal Address
                     </label>
                   </div>
                 )}

@@ -138,6 +138,6 @@ export const getStatus = (value) => {
       return customStatus.UPLOADPENDING;
     }
   } else {
-    return "";
+    return customStatus.UPLOADPENDING;
   }
 };

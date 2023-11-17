@@ -70,6 +70,7 @@ const CommonAutocomplete = (props: IProps) => {
           inputProps.value = optionValue?.name;
           return (
             <TextField
+              placeholder="Select"
               sx={{
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: "none !important",

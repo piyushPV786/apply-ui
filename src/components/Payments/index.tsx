@@ -80,7 +80,7 @@ const PaymentPage = ({ applicationCode }) => {
                 isGreenWhiteCombination
                 title="Back"
                 onClick={() => {
-                  router.push(`uploads/${applicationCode}`);
+                  router.replace(`/uploads/${applicationCode}`);
                 }}
               />
             </Grid>
