@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import DocumentServices from "../../../services/documentApi";
-import { mbaDocs, bursarryFeilds } from "../context/common";
+import {
+  mbaDocs,
+  bursarryFeilds,
+  dashboardRedirectStatus,
+} from "../context/common";
 import { useRouter } from "next/router";
 import { documentPayload, viewProofDetails } from "./helper";
 
@@ -97,7 +101,7 @@ export const ActionDocumentSubmit = () => {
     }
   };
   const submitDocument = (data, masterData) => {
-    console.log("mastercheck", data);
+    console.log("mastercheck", masterData);
 
     if (masterData?.userDetails?.status == "BURSARY-PEND") {
       const bursaryPayload = {
@@ -119,10 +123,14 @@ export const ActionDocumentSubmit = () => {
       };
       DocumentServices.updateBursary(bursaryPayload);
     }
+
     const payload = documentPayload(data, false, masterData);
     if (payload) {
       uploadFiles(payload, masterData);
-      router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
+
+      dashboardRedirectStatus.includes(masterData?.userDetails?.status)
+        ? router.push(`/dashboard`)
+        : router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
     }
   };
 

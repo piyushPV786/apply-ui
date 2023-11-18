@@ -21,13 +21,15 @@ export const bursarryFeilds = {
   Phone: "BURSARYLETTERPhone",
 };
 
+export const dashboardRedirectStatus = ["RESUB-APP-DOC", "BURSARRY-PEND"];
+
 export const customStatus = {
   UPLOADPENDING: "UPLOADPENDING",
   UPLOADED: "UPLOADED",
 };
 
 export const status = {
-  PENDING: "Aproval Pending",
+  PENDING: "Approval Pending",
   SALES_APPROVED: "Sales Approved",
   ADMISSION_APPROVED: "Admission Approved",
   REJECT: "Document Rejected",
