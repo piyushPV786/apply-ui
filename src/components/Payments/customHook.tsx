@@ -261,7 +261,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       feeModeCode:
         masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS
           ? feeMode.APPLICATION
-          : "",
+          : fees?.feeMode,
       isDraft: false,
       currencyCode: masterData?.currencyData?.currencyCode,
       studentCode: masterData?.applicationData?.studentCode,
