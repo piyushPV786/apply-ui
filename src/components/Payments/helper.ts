@@ -83,6 +83,7 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
     discountAmount: fees.discountFee,
     studentCode: masterData?.applicationData?.studentCode,
     applicationCode: masterData?.applicationData?.applicationCode,
+    paymentType: "ONLINE",
     ukheshe: {
       paymentId: getPaymentResponse?.data?.paymentId,
       gatewayTransactionId: getPaymentResponse?.data?.externalUniqueId,
@@ -93,6 +94,7 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
       externalUniqueId: getPaymentResponse?.data?.externalUniqueId,
       paymentType: getPaymentResponse?.data?.paymentType,
     },
+    programName: masterData?.programData?.name,
   };
 };
 

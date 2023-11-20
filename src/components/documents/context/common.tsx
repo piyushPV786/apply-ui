@@ -21,7 +21,7 @@ export const bursarryFeilds = {
   Phone: "BURSARYLETTERPhone",
 };
 
-export const dashboardRedirectStatus = ["RESUB-APP-DOC", "BURSARRY-PEND"];
+export const dashboardRedirectStatus = ["RESUB-APP-DOC", "BURSARY-PEND"];
 
 export const customStatus = {
   UPLOADPENDING: "UPLOADPENDING",
