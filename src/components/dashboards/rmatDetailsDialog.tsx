@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { GreenFormHeading } from "../common/common";
 
-import { RoutePaths } from "../common/constant";
 import StyledButton from "../button/button";
 import rmatimage from "../../../public/assets/images/rmatlogo.png";
 import infoicon from "../../../public/assets/images/info.png";
@@ -60,8 +59,8 @@ const RmatCredentialDialog = ({ rmatOpen, setRmatOpen }) => {
             </Grid>
             <Grid item md={12} className="text-center">
               <Image width="25" height="25" src={infoicon} alt={"PayIcon"} />{" "}
-              Team is waiting for your test result to proceed further admission
-              process
+              Team is waiting for your test result to proceed for further
+              admission process
             </Grid>
 
             <Grid
@@ -87,17 +86,7 @@ const RmatCredentialDialog = ({ rmatOpen, setRmatOpen }) => {
             </Grid>
             <Grid item>
               <Grid container md={12} sm={12} className="mt-5">
-                <Grid item md={6} sm={6} className="text-center">
-                  <StyledButton
-                    type="button"
-                    isGreenWhiteCombination={true}
-                    title={"Back to Dashboard"}
-                    onClick={() => {
-                      router.push(RoutePaths.Dashboard);
-                    }}
-                  />
-                </Grid>
-                <Grid item md={6} sm={6} className="text-center">
+                <Grid item md={12} sm={12} className="text-center">
                   <StyledButton
                     onClick={() =>
                       window.open("https://rmatuat.regenesys.net/")
