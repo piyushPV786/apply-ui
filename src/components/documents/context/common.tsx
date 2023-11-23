@@ -35,7 +35,11 @@ export const status = {
   REJECT: "Document Rejected",
   UPLOADPENDING: "Upload Pending",
   UPLOADED: "Uploaded",
+  SALES_REJECT: "Sales Rejected",
+  ADMISSION_REJECT: "Admission Rejected",
 };
+
+export const disableStatus = ["SALES_APPROVED", "ADMISSION_APPROVED"];
 
 export const statusColor = {
   PENDING: { text: "#af7300", background: "#fcefd0" },
@@ -44,6 +48,8 @@ export const statusColor = {
   REJECT: { text: "#af7300", background: "#fcefd0" },
   UPLOADPENDING: { text: "#af7300", background: "#fcefd0" },
   UPLOADED: { text: "#af7300", background: "#fcefd0" },
+  SALES_REJECT: { text: "#ff281b", background: "#ffe9e9" },
+  ADMISSION_REJECT: { text: "#ff281b", background: "#ffe9e9" },
 };
 
 export const acceptedFileTypes = [

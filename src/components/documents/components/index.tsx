@@ -9,6 +9,7 @@ import StyledButton from "../../button/button";
 import { StyledLabel } from "../../common/common";
 import {
   DeclarationListitems,
+  disableStatus,
   docType,
   documentCriteria,
   fileValidation,
@@ -206,15 +207,21 @@ export const HandleAction = ({ element, masterData }) => {
             getFileUrl(fileWatch[0], masterData);
           }}
         >
-          <VisibilityOutlined />
+          <Typography color={"green"}>
+            <VisibilityOutlined />
+          </Typography>
         </IconButton>
-        <IconButton
-          onClick={() => {
-            handleRemoveFiles();
-          }}
-        >
-          <CloseOutlined />
-        </IconButton>
+        {!disableStatus.includes(watch(element?.code)?.status) && (
+          <IconButton
+            onClick={() => {
+              handleRemoveFiles();
+            }}
+          >
+            <Typography color={"error"}>
+              <CloseOutlined />
+            </Typography>
+          </IconButton>
+        )}
       </Grid>
     </Grid>
   );
