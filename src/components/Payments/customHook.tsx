@@ -167,9 +167,9 @@ export const useDiscountHook = (masterData: any, fees: any) => {
       toast.success(
         `${SuccessMessage.discountSuccessMessage} ${
           res?.percent
-        } % and Max Amount ${
+        } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
           res?.maxAmount * masterData.currencyData?.forecastRate
-        } ${masterData.currencyData?.currencySymbol}`
+        } `
       );
     } else {
       toast.error(ErrorMessage.discountErrorMessage);
