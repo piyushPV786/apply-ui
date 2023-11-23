@@ -334,7 +334,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
             masterData
           );
 
-          const statusPayload = getStatusPayload("ONLINE", masterData, fees);
+          const statusPayload = getStatusPayload("online", masterData, fees);
 
           const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
             payload

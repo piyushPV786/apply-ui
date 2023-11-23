@@ -18,13 +18,13 @@ const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
         disabled={element?.disabled}
         onChange={(e) => {
           if (element.numric == false) {
-            const alphabeticValue = e.target.value.replace(/[^A-Za-z]/g, "");
+            const alphabeticValue = capitalizeFirstLetter(
+              e.target.value.replace(/[^A-Za-z]/g, "")
+            );
             e.target.value = alphabeticValue;
           } else if (element.numric == true) {
             const numericValue = e.target.value.replace(/[^0-9]/g, "");
             e.target.value = numericValue;
-          } else {
-            e.target.value = capitalizeFirstLetter(e.target.value);
           }
         }}
       />

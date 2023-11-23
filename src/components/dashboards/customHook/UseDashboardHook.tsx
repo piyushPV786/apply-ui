@@ -10,12 +10,16 @@ const UseDashboardHook = () => {
     const userDetails = window?.localStorage?.getItem(
       StorageName?.STUDENT_DETAIL
     );
-
-    const data = JSON?.parse(userDetails ? userDetails : "");
-    const applicationResponse =
-      await DashboardApplicationServices?.getApplicationData(data?.leadCode);
-    if (applicationResponse?.statusCode === 200 && applicationResponse?.data) {
-      setApplicationData(applicationResponse?.data);
+    if (userDetails) {
+      const data = JSON?.parse(userDetails ? userDetails : "");
+      const applicationResponse =
+        await DashboardApplicationServices?.getApplicationData(data?.leadCode);
+      if (
+        applicationResponse?.statusCode === 200 &&
+        applicationResponse?.data
+      ) {
+        setApplicationData(applicationResponse?.data);
+      }
     }
 
     const allProgramData = await DashboardApplicationServices?.getAllProgram();
