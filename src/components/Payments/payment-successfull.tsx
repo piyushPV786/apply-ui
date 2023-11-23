@@ -22,7 +22,7 @@ const PaymentSuccessFull = (props: any) => {
             </div>
             <div className="text-center w-100">
               <GreenFormHeading style={{ fontSize: "24px" }}>
-                Transaction Successful
+                Payment Successful
               </GreenFormHeading>
               <p>
                 We will verify and get back to you. You wil receive an order
@@ -54,7 +54,7 @@ const PaymentSuccessFull = (props: any) => {
                 <GreenFormHeading
                   style={{ fontSize: "28px", color: "#c42014" }}
                 >
-                  Transaction Failed
+                  Payment Failed
                 </GreenFormHeading>
                 <p>
                   Your payment was not successfully processed. Please try again,
