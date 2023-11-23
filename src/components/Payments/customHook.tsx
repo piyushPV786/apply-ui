@@ -86,7 +86,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
   if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
     fees = {
       ...feesStructure,
-      label: "Application Fees",
+      label: "Application Fee",
       helpText: "(Non-refundable)",
       amount: `${
         masterData?.currencyData?.currencySymbol
