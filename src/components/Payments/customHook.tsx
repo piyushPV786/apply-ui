@@ -159,21 +159,43 @@ export const useDiscountHook = (masterData: any, fees: any) => {
       data?.discountCode
     );
 
-    if (res?.maxAmount) {
-      setDiscount({
-        percent: res?.percent,
-        code: res?.discountCode,
-        max: res?.maxAmount,
-      });
-      toast.success(
-        `${SuccessMessage.discountSuccessMessage} ${
-          res?.percent
-        } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
-          res?.maxAmount * masterData.currencyData?.forecastRate
-        } `
-      );
+    if (res.managementCode) {
+      if (
+        res?.maxAmount &&
+        res.applicationCode === masterData?.applicationData?.applicationCode
+      ) {
+        setDiscount({
+          percent: res?.percent,
+          code: res?.managementCode,
+          max: res?.maxAmount,
+        });
+        toast.success(
+          `${SuccessMessage.discountSuccessMessage} ${
+            res?.percent
+          } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
+            res?.maxAmount * masterData.currencyData?.forecastRate
+          } `
+        );
+      } else {
+        toast.error(ErrorMessage.discountErrorMessage);
+      }
     } else {
-      toast.error(ErrorMessage.discountErrorMessage);
+      if (res?.maxAmount) {
+        setDiscount({
+          percent: res?.percent,
+          code: res?.discountCode,
+          max: res?.maxAmount,
+        });
+        toast.success(
+          `${SuccessMessage.discountSuccessMessage} ${
+            res?.percent
+          } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
+            res?.maxAmount * masterData.currencyData?.forecastRate
+          } `
+        );
+      } else {
+        toast.error(ErrorMessage.discountErrorMessage);
+      }
     }
   };
 
