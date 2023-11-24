@@ -1,10 +1,5 @@
 import { Box, Grid, Theme, Typography } from "@mui/material";
-import {
-  Close,
-  CloseOutlined,
-  CloudUpload,
-  Visibility,
-} from "@material-ui/icons";
+import { Close, CloudUpload, Visibility } from "@material-ui/icons";
 import Styles from "./uploadPaymentProof.module.css";
 import { useRef } from "react";
 import {

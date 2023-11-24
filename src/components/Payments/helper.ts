@@ -5,7 +5,7 @@ export const getConvertedAmount = (
   amount: string
 ) => {
   return conversionRate
-    ? Number(parseInt(amount) * parseInt(conversionRate)).toFixed(2)
+    ? Number(parseInt(amount) * parseFloat(conversionRate)).toFixed()
     : amount;
 };
 
