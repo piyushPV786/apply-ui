@@ -183,6 +183,13 @@ export const PaymentTypes = [
     registerName: "paymentType",
     name: "Ukheshe",
     value: "ukheshe",
+    label: "",
+  },
+  {
+    registerName: "paymentType",
+    name: "Offline",
+    value: "offline",
+    label: "Upload Payment Proof",
   },
   // {
   //   registerName: "paymentType",

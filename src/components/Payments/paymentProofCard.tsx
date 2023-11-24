@@ -1,16 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import {
-  Grid,
-  Button,
-  Card,
-  CardContent,
-  CardActions,
-  CardHeader,
-} from "@mui/material";
+import { Grid } from "@mui/material";
 import UploadPaymentProof from "../uploadDocument/uploadPaymentProof";
-import { usePaymentDetailsHook } from "./customHook";
+import StyledButton from "../button/button";
 
 export interface IFormValue {
   file: File | null;
@@ -46,43 +39,27 @@ const PaymentProofCard = (props) => {
   return (
     <>
       <form onSubmit={handleSubmit(submitFile)}>
-        <Card>
-          <CardHeader
-            title="Upload Payment Proof"
-            sx={{ borderBottom: " 2px solid green" }}
+        <Grid container display="flex" justifyContent="center" mt={5}>
+          <Grid item xs={10} md={10}>
+            <UploadPaymentProof
+              register={register}
+              setValue={setValue}
+              clearErrors={clearErrors}
+              watch={watch}
+              unregister={unregister}
+              errors={errors}
+              name="file"
+            />
+          </Grid>
+        </Grid>
+        <Grid container display="flex" justifyContent="center" sx={{ p: 1 }}>
+          <StyledButton
+            type="submit"
+            disabled={!watch("file" as any)}
+            title="Submit"
+            style={{ width: "120px" }}
           />
-          <CardContent>
-            <Grid container display="flex" justifyContent="center">
-              <Grid item xs={10} md={10}>
-                <UploadPaymentProof
-                  register={register}
-                  setValue={setValue}
-                  clearErrors={clearErrors}
-                  watch={watch}
-                  unregister={unregister}
-                  errors={errors}
-                  name="file"
-                />
-              </Grid>
-            </Grid>
-          </CardContent>
-          <CardActions>
-            <Grid
-              container
-              display="flex"
-              justifyContent="center"
-              sx={{ p: 1 }}
-            >
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={!watch("file" as any)}
-              >
-                Submit
-              </Button>
-            </Grid>
-          </CardActions>
-        </Card>
+        </Grid>
       </form>
     </>
   );

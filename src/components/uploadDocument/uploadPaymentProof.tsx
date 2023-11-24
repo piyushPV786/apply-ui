@@ -1,14 +1,20 @@
 import { Box, Grid, Theme, Typography } from "@mui/material";
-import { CloseOutlined, CloudUpload } from "@material-ui/icons";
+import {
+  Close,
+  CloseOutlined,
+  CloudUpload,
+  Visibility,
+} from "@material-ui/icons";
 import Styles from "./uploadPaymentProof.module.css";
 import { useRef } from "react";
 import {
   UseFormClearErrors,
   UseFormRegister,
-  UseFormReturn,
   UseFormSetValue,
   UseFormUnregister,
 } from "react-hook-form";
+import { Green } from "../common/common";
+import { IconButton } from "@material-ui/core";
 
 interface UploadPaymentProofTypes {
   setValue: UseFormSetValue<any>;
@@ -34,7 +40,6 @@ export const fileValidation = (value) => {
 
 const UploadPaymentProof = ({
   setValue,
-  clearErrors,
   watch,
   unregister,
   register,
@@ -51,11 +56,11 @@ const UploadPaymentProof = ({
   return (
     <Grid container>
       <Box
-        width="100%"
+        width="70%"
         className={Styles.UploadDocsContainer}
         onClick={() => onDocUploadClick()}
       >
-        <Box width="100%" className="text-center">
+        <Box width="70%" className="text-center">
           <CloudUpload color={"primary"} />
           <input
             {...register(name, {
@@ -93,7 +98,7 @@ const UploadPaymentProof = ({
               <Box className={Styles.Document}>
                 <Box display="flex">
                   <Box textAlign="start" sx={{ pl: 2 }}>
-                    <Typography variant="body1" color="primary">
+                    <Typography variant="body1" color={`${Green}`}>
                       {watch(name)?.name}
                     </Typography>
                     <Typography variant="body2"></Typography>
@@ -106,10 +111,12 @@ const UploadPaymentProof = ({
                     alignItems: "center",
                   }}
                 >
-                  <CloseOutlined
-                    color="error"
-                    onClick={() => unregister(name)}
-                  />
+                  <IconButton onClick={() => unregister(name)}>
+                    <Visibility style={{ color: `${Green}` }} />
+                  </IconButton>
+                  <IconButton onClick={() => unregister(name)}>
+                    <Close color="error" />
+                  </IconButton>
                 </Box>
               </Box>
             )}

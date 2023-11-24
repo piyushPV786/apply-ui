@@ -290,15 +290,10 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
 
 export const useUkhesheHook = (masterData: any, fees: any) => {
   const router = useRouter();
-  const [paymentToken, setPaymjentToken] = useState<any>();
   const [loadingPayment, setLoadingPayment] = useState(false);
 
-  const getPaymentToken = async () => {
-    const tokenResponse = await PaymentServices?.getUkhesheToken();
-    setPaymjentToken(tokenResponse);
-  };
-
   const getPaymentRedirectURL = async () => {
+    const tokenResponse = await PaymentServices?.getUkhesheToken();
     setLoadingPayment(true);
     const payload = {
       externalUniqueId: uuidv4(),
@@ -310,11 +305,11 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
     };
     const headers = {
       "Content-Type": "application/json",
-      Authorization: paymentToken?.headerValue,
+      Authorization: tokenResponse?.headerValue,
     };
 
     const paymentResponse = await PaymentServices?.getPaymentDetails(
-      paymentToken?.tenantId,
+      tokenResponse?.tenantId,
       payload,
       headers
     );
@@ -322,7 +317,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
       window.open(paymentResponse?.completionUrl, "_ blank");
       const interval = setInterval(async () => {
         const getPaymentResponse = await PaymentServices.getPaymentInfo(
-          paymentToken?.tenantId,
+          tokenResponse?.tenantId,
           paymentResponse?.paymentId,
           headers
         );
@@ -354,5 +349,5 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
     }
   };
 
-  return { getPaymentToken, getPaymentRedirectURL, loadingPayment };
+  return { getPaymentRedirectURL, loadingPayment };
 };

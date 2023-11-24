@@ -24,18 +24,10 @@ export const PaymentCardDetail = styled<any>("div")(() => {
   return {
     textAlign: "center",
     width: "100%",
-    height: "90px",
     cursor: "pointer",
-    border: "2px solid #008554",
-    margin: "0.2rem",
     borderRadius: "4px",
     display: "flex",
     justifyContent: "center",
-    input: {
-      marginTop: "8px",
-    },
-    "&:hover": {
-      backgroundColor: "#dbe7e3",
-    },
+    alignItems: "center",
   };
 });
