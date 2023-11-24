@@ -29,7 +29,7 @@ export const EducationDetails = ({ educationInfo, allProgram }) => {
       <div className="col-md-3">
         <div className="mt-2 w-100 app-card-block">
           <p className="mb-0" style={{ color: `#5a636a` }}>
-            Study Type
+            Student Type
           </p>
           <strong>{educationInfo?.studentTypeCode}</strong>
         </div>

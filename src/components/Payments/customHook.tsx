@@ -13,7 +13,7 @@ import {
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
-import { ErrorMessage } from "../../constants";
+import { ErrorMessage, SuccessMessage } from "../../constants";
 export const usePaymentHook = (applicationCode: string) => {
   const [masterData, setMasterData] = useState({
     applicationData: null,
@@ -86,7 +86,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
   if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
     fees = {
       ...feesStructure,
-      label: "Application Fees",
+      label: "Application Fee",
       helpText: "(Non-refundable)",
       amount: `${
         masterData?.currencyData?.currencySymbol
@@ -164,6 +164,13 @@ export const useDiscountHook = (masterData: any, fees: any) => {
         code: res?.discountCode,
         max: res?.maxAmount,
       });
+      toast.success(
+        `${SuccessMessage.discountSuccessMessage} ${
+          res?.percent
+        } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
+          res?.maxAmount * masterData.currencyData?.forecastRate
+        } `
+      );
     } else {
       toast.error(ErrorMessage.discountErrorMessage);
     }
