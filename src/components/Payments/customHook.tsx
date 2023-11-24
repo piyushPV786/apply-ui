@@ -151,6 +151,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
     code: "",
     max: 0,
   });
+
   const applyDiscount = async (data: any) => {
     const res = await PaymentServices.applicationDiscount(
       masterData?.applicationData?.education?.studentTypeCode,
@@ -175,6 +176,15 @@ export const useDiscountHook = (masterData: any, fees: any) => {
       toast.error(ErrorMessage.discountErrorMessage);
     }
   };
+
+  const resetDiscount = async () => {
+    setDiscount({
+      percent: 0,
+      code: "",
+      max: 0,
+    });
+  };
+
   const discountAmount = (fees?.fee * discount.percent) / 100;
   fees.discountFee =
     discountAmount > discount?.max ? discount?.max : discountAmount;
@@ -216,10 +226,12 @@ export const useDiscountHook = (masterData: any, fees: any) => {
     String(totalAmount)
   )}`;
   return {
+    resetDiscount,
     fees,
     showDiscount,
     toggleDiscount,
     applyDiscount,
+    discount,
   };
 };
 
