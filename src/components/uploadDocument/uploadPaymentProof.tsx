@@ -107,9 +107,6 @@ const UploadPaymentProof = ({
                   }}
                 >
                   <IconButton onClick={() => unregister(name)}>
-                    <Visibility style={{ color: `${Green}` }} />
-                  </IconButton>
-                  <IconButton onClick={() => unregister(name)}>
                     <Close color="error" />
                   </IconButton>
                 </Box>

@@ -230,13 +230,22 @@ export const HandleAction = ({ element, masterData }) => {
 export const DocumentStatus = ({ masterData }) => {
   return (
     <>
-      <Card className="mt-3 p-3">
-        <Typography textAlign="left" component="header" fontWeight="bold">
+      <Card className="mt-3 p-1">
+        <Typography
+          textAlign="left"
+          component="header"
+          fontWeight="bold"
+          className="m-2"
+        >
           Document Status
         </Typography>
         <List>
-          {masterData?.documentTypes?.map((item: any) => (
-            <DeclarationListitems text={item?.name} code={item?.code} />
+          {masterData?.documentFormData?.map((item: any) => (
+            <DeclarationListitems
+              text={item?.name}
+              code={item?.code}
+              isRequired={item?.required}
+            />
           ))}
         </List>
       </Card>
@@ -246,7 +255,7 @@ export const DocumentStatus = ({ masterData }) => {
         </Typography>
         <List>
           {documentCriteria.map(({ text }: any) => (
-            <DeclarationListitems text={text} />
+            <DeclarationListitems text={text} isRequired={true} />
           ))}
         </List>
       </Card>

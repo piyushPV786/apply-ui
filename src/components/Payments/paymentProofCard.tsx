@@ -38,7 +38,7 @@ const PaymentProofCard = (props) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(submitFile)}>
+      <form>
         <Grid container display="flex" justifyContent="center" mt={5}>
           <Grid item xs={10} md={10}>
             <UploadPaymentProof
@@ -54,7 +54,7 @@ const PaymentProofCard = (props) => {
         </Grid>
         <Grid container display="flex" justifyContent="center" sx={{ p: 1 }}>
           <StyledButton
-            type="submit"
+            onClick={handleSubmit(submitFile)}
             disabled={!watch("file" as any)}
             title="Submit"
             style={{ width: "120px" }}

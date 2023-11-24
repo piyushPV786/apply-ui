@@ -72,39 +72,52 @@ export const documentCriteria = [
 ];
 
 // comon document page used components //
+
+export const ShortTypography = styled(Typography)<any>(() => ({
+  fontSize: "9px !important",
+  fontWeight: "700px ! important",
+}));
+
 export const DeclarationListitems = (props) => {
-  const { text, code } = props;
+  const { text, code, isRequired } = props;
 
   const { watch } = useFormContext();
 
-  return (
-    <ListItem
-      key={text}
-      dense
-      sx={{
-        width: "100%",
-        bgcolor: "background.paper",
-        marginRight: "5px",
-      }}
-    >
-      <ListItemText id={text} primary={<Typography>{text}</Typography>} />
-      {code && (
-        <Typography
-          sx={{
-            color: `${
-              watch(code)?.status
-                ? statusColor[watch(code).status]?.text
-                : statusColor[getStatus(watch(code))]?.text
-            }`,
-          }}
-        >
-          {watch(code)?.status
-            ? status[watch(code)?.status]
-            : status[getStatus(watch(code))]}
-        </Typography>
-      )}
-    </ListItem>
-  );
+  if (isRequired) {
+    return (
+      <ListItem
+        key={text}
+        dense
+        sx={{
+          width: "100%",
+          bgcolor: "background.paper",
+          marginRight: "5px",
+        }}
+      >
+        <ListItemText
+          id={text}
+          primary={<ShortTypography className="h6">{text}</ShortTypography>}
+        />
+        {code && (
+          <ShortTypography
+            sx={{
+              color: `${
+                watch(code)?.status
+                  ? statusColor[watch(code).status]?.text
+                  : statusColor[getStatus(watch(code))]?.text
+              }`,
+            }}
+          >
+            {watch(code)?.status
+              ? status[watch(code)?.status]
+              : status[getStatus(watch(code))]}
+          </ShortTypography>
+        )}
+      </ListItem>
+    );
+  } else {
+    return null;
+  }
 };
 export const IconButton = styled(Box)<any>(({ color }) => ({
   height: "40px",

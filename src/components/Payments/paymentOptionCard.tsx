@@ -31,6 +31,7 @@ const PaymentOptionCard = (props) => {
       getPayuDetails();
     }
   }, [onlinePaymentWatch]);
+
   return (
     <>
       <Grid container display="flex" justifyContent="center">
@@ -38,7 +39,7 @@ const PaymentOptionCard = (props) => {
           <Box
             style={{
               display: "flex",
-              justifyContent: "flex-start",
+              justifyContent: "center",
               borderRadius: 1,
               alignItems: "center",
             }}
