@@ -13,6 +13,9 @@ import React, { useEffect, useState } from "react";
 import { CommonEnums, feeMode } from "../common/constant";
 import { useDiscountHook, usePaymentDetailsHook } from "./customHook";
 import { FormProvider, useForm } from "react-hook-form";
+import StyledButton from "../button/button";
+import { DeleteOutline, CheckCircle } from "@material-ui/icons";
+import { Green } from "../common/common";
 
 const OrderSummary = (props) => {
   const { studyModes, fees, masterData, updateFeeMode } = props;
@@ -125,16 +128,24 @@ const ProgramFees = (props) => {
 
 const FinalFees = (props) => {
   const { masterData, studyModes, fees } = props;
-  const { showDiscount, toggleDiscount, applyDiscount } = useDiscountHook(
-    masterData,
-    fees
-  );
+
+  const {
+    showDiscount,
+    toggleDiscount,
+    applyDiscount,
+    resetDiscount,
+    discount,
+  } = useDiscountHook(masterData, fees);
   const methods = useForm();
   const {
     handleSubmit,
     formState: { errors },
   } = methods;
-  console.log("errors", errors);
+
+  useEffect(() => {
+    methods.setValue("discountCode", "");
+  }, [fees.discountAmount]);
+
   return (
     <Grid container spacing={2} sx={{ p: 3 }}>
       <PaymentCard>
@@ -194,44 +205,98 @@ const FinalFees = (props) => {
               </Typography>
             </Grid>
           </Grid>
-          <Grid container spacing={2} sx={{ pb: 2, pt: 2 }}>
-            <Grid item xs={12} display="flex" justifyContent="center">
-              <StyledLink onClick={toggleDiscount}>
-                Have a promo code?
-              </StyledLink>
-            </Grid>
-            {showDiscount && (
-              <Grid item xs={12} display="flex">
+
+          {fees.feeMode != "" && (
+            <Grid
+              container
+              spacing={5}
+              className="pb-2 pt-2"
+              display="flex"
+              justifyContent="center"
+            >
+              <Grid
+                item
+                xs={12}
+                display="flex"
+                justifyContent="center"
+                className="cursor-pointer"
+              >
+                <StyledLink onClick={toggleDiscount}>
+                  Have a promo code?
+                </StyledLink>
+              </Grid>
+
+              {showDiscount && (
                 <FormProvider {...methods}>
                   <form>
-                    <TextField
-                      placeholder="Enter Promo Code"
-                      fullWidth
-                      {...methods?.register("discountCode", {
-                        required: {
-                          value: true,
-                          message: "This field is required",
-                        },
-                      })}
-                    />
-                    {/* {errors["discountCode"]?.message
-                      ? errors["discountCode"]?.message
-                      : ""} */}
-                    <Button
-                      variant="contained"
-                      size="small"
-                      type="submit"
-                      onClick={handleSubmit((d) => {
-                        applyDiscount(d);
-                      })}
-                    >
-                      Apply
-                    </Button>
+                    {fees?.discountAmount == 0 ? (
+                      <Grid xs={12} spacing={1} container>
+                        <Grid xs={9} item>
+                          <TextField
+                            placeholder="Enter Promo Code"
+                            fullWidth
+                            {...methods?.register("discountCode", {
+                              required: {
+                                value: true,
+                                message: "This field is required",
+                              },
+                            })}
+                          />
+                        </Grid>
+                        <Grid xs={3} item>
+                          <StyledButton
+                            onClick={handleSubmit((d) => {
+                              applyDiscount(d);
+                            })}
+                            title="Apply"
+                            className="p-3"
+                          />
+                        </Grid>
+                      </Grid>
+                    ) : (
+                      <Grid container spacing={2}>
+                        <Grid xs={12} item>
+                          <Grid
+                            item
+                            xs={12}
+                            display="flex"
+                            justifyContent="center"
+                          >
+                            <Typography>
+                              Promo Code : {`      `}
+                              <strong>{discount.code}</strong>
+                            </Typography>
+                            <Typography
+                              color={"red"}
+                              className="cursor-pointer"
+                              onClick={() => {
+                                resetDiscount();
+                              }}
+                            >
+                              <DeleteOutline />
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                        <Grid
+                          xs={12}
+                          item
+                          display="flex"
+                          justifyContent="center"
+                        >
+                          <Typography color={Green}>
+                            <CheckCircle />
+                            <strong>
+                              {`You have saved ${fees.discountAmount} on this application`}
+                            </strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    )}
                   </form>
                 </FormProvider>
-              </Grid>
-            )}
-          </Grid>
+              )}
+            </Grid>
+          )}
         </CardContent>
       </PaymentCard>
     </Grid>
