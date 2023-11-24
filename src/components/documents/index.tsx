@@ -45,12 +45,15 @@ const DocumentUploadPage = (props) => {
             </Grid>
             <Grid container sm={9}>
               <Grid item sm={9} sx={{ padding: 2 }}>
-                {masterData?.documentFormData?.map((element) => (
-                  <DocumentUploadContainer
-                    element={element}
-                    masterData={masterData}
-                  />
-                ))}
+                {masterData?.documentFormData?.map(
+                  (element) =>
+                    element.required && (
+                      <DocumentUploadContainer
+                        element={element}
+                        masterData={masterData}
+                      />
+                    )
+                )}
               </Grid>
               <Grid item sm={3} sx={{ padding: 2 }}>
                 <Box className="sticky-wrapper">
