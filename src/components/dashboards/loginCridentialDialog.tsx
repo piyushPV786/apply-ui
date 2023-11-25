@@ -12,7 +12,6 @@ const LoginCredentialDialog = ({
   setOpenCredentialDialog,
   applicationDetail,
 }) => {
-  console.log("openCredentialDialossg", openCredentialDialog);
   const url: any = process.env.Credential_Url + RoutePaths.StudentDashboard;
   return (
     <div>

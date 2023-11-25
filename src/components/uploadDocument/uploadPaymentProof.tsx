@@ -22,8 +22,6 @@ interface UploadPaymentProofTypes {
 }
 
 export const fileValidation = (value) => {
-  console.log(value);
-
   if (value) {
     if (value?.size > 2 * 1024 * 1024) {
       return "File size should be at most 2MB";
@@ -46,7 +44,6 @@ const UploadPaymentProof = ({
     const fileElement = fileUpload.current as HTMLInputElement;
     fileElement?.click() as any;
   };
-  console.log(errors);
 
   return (
     <Grid container>

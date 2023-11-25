@@ -101,8 +101,6 @@ export const ActionDocumentSubmit = () => {
     }
   };
   const submitDocument = (data, masterData) => {
-    console.log("mastercheck", masterData);
-
     if (masterData?.userDetails?.status == "BURSARY-PEND") {
       const bursaryPayload = {
         name: data[bursarryFeilds.Name],
