@@ -62,8 +62,14 @@ export const usePaymentHook = (applicationCode: string) => {
               );
               holder.push(element);
             });
-            payload.feeData = { studyModes: holder } as any;
+
+            payload.feeData = {
+              programCode: sortData?.programCode,
+              programName: sortData.programName,
+              studyModes: holder,
+            } as any;
           } else {
+            console.log(sortData);
             payload.feeData = sortData;
           }
         }
