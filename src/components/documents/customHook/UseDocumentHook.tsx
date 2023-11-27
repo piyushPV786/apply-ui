@@ -7,6 +7,7 @@ import {
 } from "../context/common";
 import { useRouter } from "next/router";
 import { documentPayload, viewProofDetails } from "./helper";
+import { CommonEnums } from "../../common/constant";
 
 interface documentTypeApiResponseType {
   code: string;
@@ -23,11 +24,11 @@ export const UseDocumentHook = (applicationCode) => {
 
   const convertDataToFormData = (documentTypes, userInfo) => {
     const result = documentTypes?.map((element) => {
-      if (element.code == "BURSARYLETTER") {
+      if (element.code === CommonEnums.BURSARY_LETTER_PEND) {
         return {
           name: element?.name,
           label: `${element?.name} and Details`,
-          required: userInfo?.status === "BURSARY-PEND",
+          required: userInfo?.status === CommonEnums.BURSARY_LETTER_PEND,
           code: element.code,
         };
       } else if (mbaDocs.includes(element.code)) {
@@ -101,7 +102,7 @@ export const ActionDocumentSubmit = () => {
     }
   };
   const submitDocument = (data, masterData) => {
-    if (masterData?.userDetails?.status == "BURSARY-PEND") {
+    if (masterData?.userDetails?.status == CommonEnums.BURSARY_LETTER_PEND) {
       const bursaryPayload = {
         name: data[bursarryFeilds.Name],
         mobile: [bursarryFeilds.Phone],

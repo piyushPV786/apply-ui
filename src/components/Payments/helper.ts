@@ -9,29 +9,6 @@ export const getConvertedAmount = (
     : amount;
 };
 
-export const getBursarryAmount = (feeData, programData, bursaryAmount) => {
-  const totalAmount =
-    feeData?.find((item: any) => item?.feeMode === "TOTAL")?.fee -
-    bursaryAmount;
-
-  const final = feeData?.map((item) => {
-    if (item.feeMode === feeMode.ANNUALLY) {
-      item.fee = String(Math.round(totalAmount / programData?.noOfYear));
-    } else if (item.feeMode == feeMode.MONTHLY) {
-      const duration = programData?.noOfYear * 12;
-      item.fee = String(Math.round(totalAmount / duration));
-    } else if (item.feeMode === feeMode.SEMESTER) {
-      item.fee = String(
-        Math.round(totalAmount / programData?.programSemester?.length)
-      );
-    } else if (item.feeMode === feeMode.TOTAL) {
-      item.fee = String(Math.round(totalAmount));
-    }
-    return item;
-  });
-  return final;
-};
-
 export const getFeeDetails = (
   feeStructure,
   feeLabel,

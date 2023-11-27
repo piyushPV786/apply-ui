@@ -4,8 +4,6 @@ import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
 import { CommonEnums } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
-import { getBursarryAmount } from "./helper";
-import { studentTypeCodes } from "../../components/common/constant";
 import {
   uploadDocumentsToAws,
   getConvertedAmount,
@@ -23,6 +21,7 @@ export const usePaymentHook = (applicationCode: string) => {
     feeData: null,
     studyModeData: null,
     programData: null,
+    bursaryData: null,
   });
 
   useEffect(() => {
@@ -37,6 +36,7 @@ export const usePaymentHook = (applicationCode: string) => {
       const response = result[0];
       payload.applicationData = response;
       payload.studyModeData = result[1];
+      payload.bursaryData = result[2];
 
       if (response?.lead?.nationality && response?.education?.programCode) {
         const data = await Promise.all([
@@ -48,27 +48,8 @@ export const usePaymentHook = (applicationCode: string) => {
         ]);
         payload.currencyData = data[0];
         payload.programData = data[2];
-        if (data[1]?.length) {
-          const sortData = data[1].find(
-            (item) => item?.programCode === response?.education?.programCode
-          );
-          if (response.education?.studentTypeCode == studentTypeCodes.BURSARY) {
-            const holder: any = [];
-            sortData?.studyModes?.forEach((element) => {
-              element.fees = getBursarryAmount(
-                element?.fees,
-                payload?.programData,
-                result[2].education[0]?.bursaryAmount
-              );
-              holder.push(element);
-            });
-            payload.feeData = { studyModes: holder } as any;
-          } else {
-            payload.feeData = sortData;
-          }
-        }
+        setMasterData(payload);
       }
-      setMasterData(payload);
     };
 
     if (applicationCode) {
@@ -83,7 +64,7 @@ export const usePaymentHook = (applicationCode: string) => {
 
 export const usePaymentDetailsHook = (masterData: any) => {
   const [feeModeCode, setFeeModeCode] = useState(feeMode.APPLICATION);
-  let studyModes: any = {};
+  let studyModes: any = { helpText: "" };
   if (masterData?.applicationData?.education?.studyModeCode) {
     const studyModeCode = masterData?.applicationData?.education?.studyModeCode;
     studyModes = masterData?.feeData?.studyModes?.find(
