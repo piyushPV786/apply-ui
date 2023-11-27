@@ -30,13 +30,11 @@ export const usePaymentHook = (applicationCode: string) => {
       const result = await Promise.all([
         PaymentServices?.getApplicationData(applicationCode),
         ApplicationFormService.getStudyModes(),
-        PaymentServices.getApplicationDataForBursary(applicationCode),
       ]);
 
       const response = result[0];
       payload.applicationData = response;
       payload.studyModeData = result[1];
-      payload.bursaryData = result[2];
 
       if (response?.lead?.nationality && response?.education?.programCode) {
         const data = await Promise.all([
@@ -46,9 +44,21 @@ export const usePaymentHook = (applicationCode: string) => {
           ),
           PaymentServices.getProgramDetails(response?.education?.programCode),
         ]);
+        payload.feeData = data[1].find(
+          (item) => item?.programCode === response?.education?.programCode
+        );
         payload.currencyData = data[0];
         payload.programData = data[2];
         setMasterData(payload);
+      }
+
+      console.log("feeData ======>", payload);
+
+      if (response?.education?.studentTypeCode === CommonEnums?.BURSARY) {
+        const response = await PaymentServices.getApplicationDataForBursary(
+          applicationCode
+        );
+        console.log("response application bursary ========>", response);
       }
     };
 

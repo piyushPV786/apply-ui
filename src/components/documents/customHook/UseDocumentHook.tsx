@@ -24,7 +24,7 @@ export const UseDocumentHook = (applicationCode) => {
 
   const convertDataToFormData = (documentTypes, userInfo) => {
     const result = documentTypes?.map((element) => {
-      if (element.code === CommonEnums.BURSARY_LETTER_PEND) {
+      if (element.code === "BURSARYLETTER") {
         return {
           name: element?.name,
           label: `${element?.name} and Details`,
@@ -47,6 +47,7 @@ export const UseDocumentHook = (applicationCode) => {
         };
       }
     });
+    console.log("result =======>", result);
     return result;
   };
 

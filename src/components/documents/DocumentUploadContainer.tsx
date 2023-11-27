@@ -1,23 +1,12 @@
-import { Typography, Card, Grid, Container, Box, Chip } from "@mui/material";
+import { Typography, Card, Grid } from "@mui/material";
 
 import { StyledLabel } from "../common/common";
 import styled from "styled-components";
-import React, { useEffect, useRef } from "react";
-import { VisibilityOutlined, CloseOutlined } from "@material-ui/icons";
+import React from "react";
 import { useFormContext } from "react-hook-form";
 import { getStatus } from "./context/common";
 
-import {
-  docType,
-  fileValidation,
-  IconButton,
-  statusColor,
-  status,
-  customStatus,
-  disableStatus,
-} from "./context/common";
-import StyledButton from "../button/button";
-import { FileUploadContainer, InnerContainer } from "../login/style";
+import { statusColor, status, disableStatus } from "./context/common";
 
 import {
   DeclarationComponent,
