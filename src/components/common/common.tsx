@@ -274,6 +274,7 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "RESUB-LOAN-DOC": "Resubmit Loan Documents",
   "LOAN-DOC-ACCEPTED": "Loan Documents Accepted",
   "INTAKE-ASSIGNMENT PENDING": "Intake Assignment Pending",
+  "BURSARY-LETTER-PEND": "Upload Bursary Documents",
 };
 export enum FileSize {
   maxSize = 2000 * 1024,
