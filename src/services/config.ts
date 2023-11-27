@@ -4,7 +4,7 @@ export const apiUrls = {
   financeBaseUrl: process.env.NEXT_PUBLIC_FINANCE_BACKEND_API,
   commonBaseUrl: process.env.NEXT_PUBLIC_COMMON_BACKEND_API,
   userManagementBaseUrl: process.env.NEXT_PUBLIC_USER_MANAGEMENT_BACKEND_API,
-  Enrolment_Url: process.env.NEXT_PUBLIC_ENROLMENT_BACKEND_API,
+  enrolmentBaseUrl: process.env.NEXT_PUBLIC_ENROLMENT_BACKEND_API,
 };
 
 export const apiEndPoint = {
