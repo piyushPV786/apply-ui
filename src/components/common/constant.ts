@@ -29,6 +29,7 @@ export enum CommonEnums {
   CONFIRMATION_LETTER = "CONFIRMATION-LETTER",
   WELCOME_LETTER = "WELCOME-LETTER",
   QUOTE = "QUOTE",
+  BURSARY_LETTER_PEND = "BURSARY-LETTER-PEND",
 }
 
 export enum GraduationType {

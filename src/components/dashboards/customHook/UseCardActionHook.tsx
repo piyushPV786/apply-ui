@@ -54,14 +54,14 @@ const UseCardActionHook = (applicationDetail) => {
   const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
 
   const isUploadBTNTitle =
-    status === APPLICATION_STATUS.UPLOAD_BURSARY_DOCUMENTS
+    status === CommonEnums.BURSARY_LETTER_PEND &&
+    educationDetail?.studentTypeCode === CommonEnums?.BURSARY
       ? "Upload Bursary Letter"
       : "Upload Documents";
 
   const isBursaryBTN =
-    status === CommonEnums.APP_ENROLLED_ACCEPTED &&
-    educationDetail?.studentTypeCode === CommonEnums?.BURSARY &&
-    sponsor?.sponsorModeType === CommonEnums?.EMPLOYEE_BURSARY;
+    status === CommonEnums.BURSARY_LETTER_PEND &&
+    educationDetail?.studentTypeCode === CommonEnums?.BURSARY;
   const isAdamiteBTN = status === CommonEnums.PROG_ADMITTED;
   const documentData = document?.filter((item) => {
     return (
