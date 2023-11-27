@@ -1,9 +1,10 @@
 export const apiUrls = {
-  applyBaseUrl: process.env.base_Url,
-  academicBaseUrl: process.env.Academic_Url,
-  financeBaseUrl: process.env.Finance_Url,
-  commonBaseUrl: process.env.Common_Url,
-  userManagementBaseUrl: process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI,
+  applyBaseUrl: process.env.NEXT_PUBLIC_APPLY_BACKEND_API,
+  academicBaseUrl: process.env.NEXT_PUBLIC_ACADEMIC_BACKEND_API,
+  financeBaseUrl: process.env.NEXT_PUBLIC_FINANCE_BACKEND_API,
+  commonBaseUrl: process.env.NEXT_PUBLIC_COMMON_BACKEND_API,
+  userManagementBaseUrl: process.env.NEXT_PUBLIC_USER_MANAGEMENT_BACKEND_API,
+  enrolmentBaseUrl: process.env.NEXT_PUBLIC_ENROLMENT_BACKEND_API,
 };
 
 export const apiEndPoint = {
@@ -17,6 +18,7 @@ export const apiEndPoint = {
   commonDocuments: "document-type",
   document: "document",
   applicationDetails: "lead/:leadCode/application/:applicationCode",
+  enrolmentApplicationDetails: "admissions/:applicationCode",
   studentProgram: "programs-fee/byProgramCode/:programCode",
   stateDetails: "state/:countryCode",
   nationalityStatus: "nationality-status",

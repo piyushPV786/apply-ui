@@ -36,6 +36,18 @@ class PaymentServices {
     return result;
   }
 
+  async getApplicationDataForBursary(applicationCode: string) {
+    const route = apiEndPoint?.enrolmentApplicationDetails.replace(
+      ":applicationCode",
+      applicationCode
+    );
+
+    const url = `${apiUrls?.enrolmentBaseUrl}${route}`;
+    const response = await apiServer.get(url);
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
+  }
+
   async getCurrencyConversion(selectedNationality) {
     const response = await apiServer.get(
       `${apiUrls.financeBaseUrl}${apiEndPoint.GETCURRENCYCONVERSION}${selectedNationality}`

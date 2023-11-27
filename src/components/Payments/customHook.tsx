@@ -4,6 +4,8 @@ import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
 import { CommonEnums } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
+import { getBursarryAmount } from "./helper";
+import { studentTypeCodes } from "../../components/common/constant";
 import {
   uploadDocumentsToAws,
   getConvertedAmount,
@@ -29,6 +31,7 @@ export const usePaymentHook = (applicationCode: string) => {
       const result = await Promise.all([
         PaymentServices?.getApplicationData(applicationCode),
         ApplicationFormService.getStudyModes(),
+        PaymentServices.getApplicationDataForBursary(applicationCode),
       ]);
 
       const response = result[0];
@@ -46,9 +49,23 @@ export const usePaymentHook = (applicationCode: string) => {
         payload.currencyData = data[0];
         payload.programData = data[2];
         if (data[1]?.length) {
-          payload.feeData = data[1].find(
+          const sortData = data[1].find(
             (item) => item?.programCode === response?.education?.programCode
           );
+          if (response.education?.studentTypeCode == studentTypeCodes.BURSARY) {
+            const holder: any = [];
+            sortData?.studyModes?.forEach((element) => {
+              element.fees = getBursarryAmount(
+                element?.fees,
+                payload?.programData,
+                result[2].education[0]?.bursaryAmount
+              );
+              holder.push(element);
+            });
+            payload.feeData = { studyModes: holder } as any;
+          } else {
+            payload.feeData = sortData;
+          }
         }
       }
       setMasterData(payload);
@@ -69,7 +86,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
   let studyModes: any = {};
   if (masterData?.applicationData?.education?.studyModeCode) {
     const studyModeCode = masterData?.applicationData?.education?.studyModeCode;
-    studyModes = masterData?.feeData?.studyModes.find(
+    studyModes = masterData?.feeData?.studyModes?.find(
       (item: any) => item?.studyModeCode === studyModeCode
     );
 
