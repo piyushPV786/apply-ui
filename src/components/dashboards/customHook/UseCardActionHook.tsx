@@ -22,7 +22,7 @@ const UseCardActionHook = (applicationDetail) => {
 
   const getRmatDetails = async () => {
     const response = await DashboardApplicationServices.getRmatDetails(
-      applicationDetail?.studentCode
+      applicationDetail?.applicationCode
     );
 
     setRmatOpen({
