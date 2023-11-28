@@ -228,7 +228,7 @@ export const ActionButtons = ({ applicationDetail }) => {
               router.push(`/uploads/${applicationDetail?.applicationCode}`);
             }}
             className="card-button"
-            title="Upload Employee Bursary Letter"
+            title="Upload Bursary Letter"
           />
         </Grid>
       )}

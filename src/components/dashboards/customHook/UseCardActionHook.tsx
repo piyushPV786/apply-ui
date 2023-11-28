@@ -8,7 +8,7 @@ import { downloadDocument } from "../../../Util/Util";
 import { useState } from "react";
 
 const UseCardActionHook = (applicationDetail) => {
-  const { status, educationDetail, sponsor, document, studentCode } =
+  const { status, education, sponsor, document, studentCode } =
     applicationDetail;
 
   const [openCredentialDialog, setOpenCredentialDialog] = useState(false);
@@ -55,13 +55,13 @@ const UseCardActionHook = (applicationDetail) => {
 
   const isUploadBTNTitle =
     status === CommonEnums.BURSARY_LETTER_PEND &&
-    educationDetail?.studentTypeCode === CommonEnums?.BURSARY
+    education?.studentTypeCode === CommonEnums?.BURSARY
       ? "Upload Bursary Letter"
       : "Upload Documents";
 
   const isBursaryBTN =
     status === CommonEnums.BURSARY_LETTER_PEND &&
-    educationDetail?.studentTypeCode === CommonEnums?.BURSARY;
+    education?.studentTypeCode === CommonEnums?.BURSARY;
   const isAdamiteBTN = status === CommonEnums.PROG_ADMITTED;
   const documentData = document?.filter((item) => {
     return (

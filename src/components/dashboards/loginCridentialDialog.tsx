@@ -12,7 +12,8 @@ const LoginCredentialDialog = ({
   setOpenCredentialDialog,
   applicationDetail,
 }) => {
-  const url: any = process.env.Credential_Url + RoutePaths.StudentDashboard;
+  const url: any =
+    process.env.NEXT_PUBLIC_CREDENTIAL_URL + RoutePaths.StudentDashboard;
   return (
     <div>
       <Dialog
@@ -72,7 +73,8 @@ const LoginCredentialDialog = ({
               <Grid item md={6} sm={6} className="text-center">
                 <h6>Student Management System URL (SMS)</h6>
                 <Link href={url} target="blank">
-                  {process.env.Credential_Url + RoutePaths.StudentDashboard}
+                  {process.env.NEXT_PUBLIC_CREDENTIAL_URL +
+                    RoutePaths.StudentDashboard}
                 </Link>
               </Grid>
             </Grid>

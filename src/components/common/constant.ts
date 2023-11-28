@@ -6,6 +6,7 @@ export enum StorageName {
 
 export enum CommonEnums {
   TRUE = "true",
+  TOTAL = "TOTAL",
   NEW_STATUS = "New-Application",
   DRAFT_STATUS = "APP-DRAFT",
   FEES_PENDING_STATUS = "APP-FEE-PEND",
@@ -117,15 +118,6 @@ export enum studyMode {
 
 export enum feeMode {
   APPLICATION = "APPLICATION",
-  ANNUALLY = "ANNUALLY",
-  SEMESTER = "SEMESTER",
-  MONTHLY = "MONTHLY",
-  TOTAL = "TOTAL",
-}
-
-export enum studentTypeCodes {
-  RETAIL = "RETAIL",
-  BURSARY = "BURSARY",
 }
 
 export const ErrorMessage = "Something went wrong please try again later";

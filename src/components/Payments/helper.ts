@@ -1,5 +1,5 @@
 import axios from "axios";
-import { feeMode } from "../common/constant";
+import { CommonEnums, FeemodeCode, feeMode } from "../common/constant";
 export const getConvertedAmount = (
   conversionRate: string | null,
   amount: string
@@ -7,29 +7,6 @@ export const getConvertedAmount = (
   return conversionRate
     ? Number(parseInt(amount) * parseFloat(conversionRate)).toFixed()
     : amount;
-};
-
-export const getBursarryAmount = (feeData, programData, bursaryAmount) => {
-  const totalAmount =
-    feeData?.find((item: any) => item?.feeMode === "TOTAL")?.fee -
-    bursaryAmount;
-
-  const final = feeData?.map((item) => {
-    if (item.feeMode === feeMode.ANNUALLY) {
-      item.fee = String(Math.round(totalAmount / programData?.noOfYear));
-    } else if (item.feeMode == feeMode.MONTHLY) {
-      const duration = programData?.noOfYear * 12;
-      item.fee = String(Math.round(totalAmount / duration));
-    } else if (item.feeMode === feeMode.SEMESTER) {
-      item.fee = String(
-        Math.round(totalAmount / programData?.programSemester?.length)
-      );
-    } else if (item.feeMode === feeMode.TOTAL) {
-      item.fee = String(Math.round(totalAmount));
-    }
-    return item;
-  });
-  return final;
 };
 
 export const getFeeDetails = (
@@ -131,4 +108,68 @@ export const getStatusPayload = (paymentMode, masterData, fees) => {
     aapCode: masterData.applicationData.applicationCode,
     paymentMode: `${paymentMode}`,
   };
+};
+
+export const bursaryFeeCalculation = (bursaryDetails, payload) => {
+  if (
+    bursaryDetails?.education &&
+    bursaryDetails?.education[0]?.bursaryAmount &&
+    payload?.feeData &&
+    payload?.programData &&
+    payload?.applicationData &&
+    payload?.applicationData?.education
+  ) {
+    const feeDetails = payload?.feeData?.studyModes?.find(
+      (item) =>
+        item?.studyModeCode ===
+        payload?.applicationData?.education?.studyModeCode
+    );
+    if (feeDetails?.fees) {
+      const totalFeeAmount = getTotalFeeAmount(feeDetails?.fees);
+      if (totalFeeAmount > 0) {
+        const feeCalculationResult = feeCalculate(
+          totalFeeAmount - bursaryDetails?.education[0]?.bursaryAmount,
+          payload?.programData?.noOfYear
+        );
+
+        const feeChange = feeDetails?.fees?.map((item: any) => {
+          return item?.feeMode !== FeemodeCode?.APPLICATION
+            ? { ...item, fee: feeCalculationResult[item?.feeMode] }
+            : item;
+        });
+
+        return {
+          ...payload?.feeData,
+          studyModes: payload?.feeData?.studyModes?.map((element) => {
+            return { ...element, fees: feeChange };
+          }),
+        };
+      }
+    }
+  }
+};
+
+const feeCalculate = (TOTAL, noOfYears) => {
+  const numberOfMonths = noOfYears * 12;
+  const numberOfSemesters = (noOfYears * 12) / 6;
+  const numberOfYears = noOfYears;
+  const MONTHLY = checkGreaterThanZero(Math.round(TOTAL / numberOfMonths));
+  const SEMESTER = checkGreaterThanZero(Math.round(TOTAL / numberOfSemesters));
+  const ANNUALLY = checkGreaterThanZero(Math.round(TOTAL / numberOfYears));
+  return { MONTHLY, SEMESTER, ANNUALLY, TOTAL };
+};
+
+const checkGreaterThanZero = (NumberOfEMi: number) => {
+  return NumberOfEMi > 0 ? NumberOfEMi : 0;
+};
+
+const getTotalFeeAmount = (feesList) => {
+  let result = 0;
+  const totalFee = feesList?.find(
+    (item) => item?.feeMode === CommonEnums?.TOTAL
+  );
+  if (totalFee?.fee) {
+    result = totalFee?.fee;
+  }
+  return result;
 };

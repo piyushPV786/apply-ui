@@ -62,7 +62,6 @@ export const BursaryFeilds = ({ element, masterData }) => {
       setCountryCode(value);
     }
   };
-
   if (element?.code !== docType.BURSARYLETTER) {
     return <></>;
   }
