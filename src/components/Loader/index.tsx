@@ -2,7 +2,7 @@ import { updateInterceptors } from "../../services";
 import { useLoader } from "../LoaderContext";
 import { useEffect } from "react";
 
-const Spinner = () => {
+export const Spinner = () => {
   return (
     <div className="loader-wrapper">
       <div className="loader"></div>

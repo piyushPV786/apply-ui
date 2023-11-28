@@ -10,13 +10,15 @@ import Kin from "../../components/lead/form/Kin";
 import { useFormHook } from "./customHooks/formHooks";
 import StepperComponent from "../../components/stepper/stepper";
 import styled from "styled-components";
-import { Container } from "@material-ui/core";
+import { CircularProgress, Container } from "@material-ui/core";
 import { useHelperHook } from "./customHooks/helperHook";
 import TermsAndCondition from "./form/TermsAndCondition";
 import StyledButton from "../button/button";
 import { FormContainer, MainContainer } from "../login/style";
 import { mapFormDefaultValue } from "../../Util/Util";
 import "react-phone-number-input/style.css";
+import { Stack } from "@mui/material";
+import { Spinner } from "../Loader";
 
 interface IProps {
   applicationCode: string;
@@ -41,7 +43,13 @@ const LeadForm = (props: IProps) => {
   }, [applicationData?.applicationCode]);
   //form code  ends
   if (!masterData?.masterData) {
-    return <>Loading</>;
+    return (
+      <>
+        <Stack alignItems="center">
+          <Spinner />
+        </Stack>
+      </>
+    );
   }
 
   return (
