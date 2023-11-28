@@ -29,7 +29,7 @@ const PaymentPage = ({ applicationCode }) => {
 
   const { uploadPaymentProof } = useOfflinePaymentHook(masterData, fees);
 
-  if (!masterData && !studyModes && fees) {
+  if (!masterData && !studyModes && !fees) {
     return (
       <>
         <Stack alignItems="center">
