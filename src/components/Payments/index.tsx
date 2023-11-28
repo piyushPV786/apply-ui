@@ -7,12 +7,13 @@ import {
 } from "../../components/Payments/customHook";
 import OrderSummary from "../../components/Payments/orderSummary";
 import StepperComponent from "../../components/stepper/stepper";
-import { Backdrop, Box, CircularProgress, Grid } from "@mui/material";
+import { Backdrop, Box, CircularProgress, Grid, Stack } from "@mui/material";
 import { MainContainer } from "../../components/login/style";
 import { usePaymentDetailsHook } from "./customHook";
 import Header from "../common/header";
 import { useRouter } from "next/router";
 import PaymentOptions from "./components/paymentOptions";
+import { Spinner } from "../Loader";
 
 const PaymentPage = ({ applicationCode }) => {
   const router = useRouter();
@@ -27,6 +28,17 @@ const PaymentPage = ({ applicationCode }) => {
   );
 
   const { uploadPaymentProof } = useOfflinePaymentHook(masterData, fees);
+
+  if (!masterData && !studyModes && fees) {
+    return (
+      <>
+        <Stack alignItems="center">
+          <Spinner />
+        </Stack>
+      </>
+    );
+  }
+
   return (
     <MainContainer>
       <Header />
