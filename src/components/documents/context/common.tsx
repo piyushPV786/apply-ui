@@ -1,6 +1,7 @@
 import { Typography, Box, ListItem, ListItemText } from "@mui/material";
 import styled from "styled-components";
 import { useFormContext } from "react-hook-form";
+import { CommonEnums } from "../../common/constant";
 
 // comon document page used constants //
 export const mbaDocs = ["MOTIVATIONLETTER", "INTERVIEWNOTES"];
@@ -21,7 +22,10 @@ export const bursarryFeilds = {
   Phone: "BURSARYLETTERPhone",
 };
 
-export const dashboardRedirectStatus = ["RESUB-APP-DOC", "BURSARY-PEND"];
+export const dashboardRedirectStatus = [
+  CommonEnums?.RESUB_APP_DOC,
+  CommonEnums?.BURSARY_LETTER_PEND,
+];
 
 export const customStatus = {
   UPLOADPENDING: "UPLOADPENDING",
