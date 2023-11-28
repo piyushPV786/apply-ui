@@ -11,7 +11,8 @@ import { MainContainer, PaymentContainer } from "../login/style";
 
 export const LoginCredentials = () => {
   const router = useRouter();
-  const url: any = process.env.Credential_Url + RoutePaths.StudentDashboard;
+  const url: any =
+    process.env.NEXT_PUBLIC_CREDENTIAL_URL + RoutePaths.StudentDashboard;
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
@@ -43,7 +44,8 @@ export const LoginCredentials = () => {
                 <div className="text-center w-100">
                   <h6>Student Management System URL (SMS)</h6>
                   <Link href={url} target="blank">
-                    {process.env.Credential_Url + RoutePaths.StudentDashboard}
+                    {process.env.NEXT_PUBLIC_CREDENTIAL_URL +
+                      RoutePaths.StudentDashboard}
                   </Link>
                 </div>
               </div>

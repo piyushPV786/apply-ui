@@ -9,6 +9,7 @@ import {
   getConvertedAmount,
   getUkheshePayload,
   getStatusPayload,
+  bursaryFeeCalculation,
 } from "./helper";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
@@ -49,16 +50,17 @@ export const usePaymentHook = (applicationCode: string) => {
         );
         payload.currencyData = data[0];
         payload.programData = data[2];
+
+        if (response?.education?.studentTypeCode === CommonEnums?.BURSARY) {
+          const response = await PaymentServices.getApplicationDataForBursary(
+            applicationCode
+          );
+          const bursaryAmountFee = bursaryFeeCalculation(response, payload);
+          if (bursaryAmountFee) {
+            payload.feeData = bursaryAmountFee;
+          }
+        }
         setMasterData(payload);
-      }
-
-      console.log("feeData ======>", payload);
-
-      if (response?.education?.studentTypeCode === CommonEnums?.BURSARY) {
-        const response = await PaymentServices.getApplicationDataForBursary(
-          applicationCode
-        );
-        console.log("response application bursary ========>", response);
       }
     };
 

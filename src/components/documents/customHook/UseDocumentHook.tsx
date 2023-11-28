@@ -47,7 +47,6 @@ export const UseDocumentHook = (applicationCode) => {
         };
       }
     });
-    console.log("result =======>", result);
     return result;
   };
 

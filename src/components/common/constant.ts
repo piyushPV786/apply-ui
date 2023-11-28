@@ -6,6 +6,7 @@ export enum StorageName {
 
 export enum CommonEnums {
   TRUE = "true",
+  TOTAL = "TOTAL",
   NEW_STATUS = "New-Application",
   DRAFT_STATUS = "APP-DRAFT",
   FEES_PENDING_STATUS = "APP-FEE-PEND",
