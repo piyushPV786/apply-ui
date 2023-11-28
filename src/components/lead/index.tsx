@@ -41,7 +41,7 @@ const LeadForm = (props: IProps) => {
   }, [applicationData?.applicationCode]);
   //form code  ends
   if (!masterData?.masterData) {
-    return <>Loading</>;
+    return <></>;
   }
 
   return (
