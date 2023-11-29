@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import DocumentServices from "../../../services/documentApi";
+import { BURSARY_BUTTON_STATUS } from "../../common/constant";
 import {
   mbaDocs,
   bursarryFeilds,
@@ -28,7 +29,7 @@ export const UseDocumentHook = (applicationCode) => {
         return {
           name: element?.name,
           label: `${element?.name} and Details`,
-          required: userInfo?.status === CommonEnums.BURSARY_LETTER_PEND,
+          required: BURSARY_BUTTON_STATUS.includes(userInfo?.status),
           code: element.code,
         };
       } else if (mbaDocs.includes(element.code)) {
