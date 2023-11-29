@@ -374,6 +374,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
         );
 
         if (getPaymentResponse?.data?.status == "SUCCESSFUL") {
+          clearInterval(interval);
           const payload = getUkheshePayload(
             getPaymentResponse,
             fees,
