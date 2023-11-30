@@ -667,6 +667,13 @@ export const transformFormData = (formData: any) => {
   return formData;
 };
 
+export const onlyAlphabetsWithSpaceOnChange = (e) => {
+  const alphabeticValue = capitalizeFirstLetter(
+    e.target.value.replace(/[^A-Za-z\s]/g, "")
+  );
+  return alphabeticValue;
+};
+
 export const emailValidation = async (e) => {
   let returnVal = { message: "" };
   if (

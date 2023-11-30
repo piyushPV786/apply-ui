@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../../common/common";
-import { capitalizeFirstLetter } from "../../../../Util/Util";
+import { onlyAlphabetsWithSpaceOnChange } from "../../../../Util/Util";
 
 const SponsorField = ({
   element,
@@ -22,15 +22,7 @@ const SponsorField = ({
         type={"text"}
         disabled={element?.disabled}
         onChange={(e) => {
-          if (element.numric == false) {
-            const alphabeticValue = capitalizeFirstLetter(
-              e.target.value.replace(/[^A-Za-z\s]/g, "")
-            );
-            e.target.value = alphabeticValue;
-          } else if (element.numric == true) {
-            const numericValue = e.target.value.replace(/[^0-9]/g, "");
-            e.target.value = numericValue;
-          }
+          e.target.value = onlyAlphabetsWithSpaceOnChange(e);
         }}
       />
       {Errors && Errors[element?.name] && (
