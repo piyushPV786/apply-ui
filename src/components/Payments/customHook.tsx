@@ -169,7 +169,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
       data?.discountCode
     );
 
-    if (res.managementCode) {
+    if (res?.managementCode) {
       if (
         res?.maxAmount &&
         res.applicationCode === masterData?.applicationData?.applicationCode
