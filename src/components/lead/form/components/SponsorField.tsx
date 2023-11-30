@@ -2,7 +2,12 @@ import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../../common/common";
 import { capitalizeFirstLetter } from "../../../../Util/Util";
 
-const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
+const SponsorField = ({
+  element,
+  Errors,
+  registerName,
+  isAlphabetsOnly,
+}: any) => {
   const { register } = useFormContext();
 
   return (
@@ -19,7 +24,7 @@ const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
         onChange={(e) => {
           if (element.numric == false) {
             const alphabeticValue = capitalizeFirstLetter(
-              e.target.value.replace(/[^A-Za-z]/g, "")
+              e.target.value.replace(/[^A-Za-z\s]/g, "")
             );
             e.target.value = alphabeticValue;
           } else if (element.numric == true) {
@@ -37,4 +42,4 @@ const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
   );
 };
 
-export default TextField;
+export default SponsorField;
