@@ -14,7 +14,7 @@ import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { useAddressHook } from "../customHooks/addressHooks";
 import RadioField from "./components/RadioField";
 import { sponsorInfoData } from "./data/sponsorData";
-import TextField from "./components/TextField";
+import SponsorField from "./components/SponsorField";
 import { isValidEmail } from "../../../Util/Util";
 import { MobileField } from "./components/MobileField";
 import { useEffect, useState } from "react";
@@ -109,7 +109,7 @@ const Sponsor = (props: any) => {
                   {sponsorType && (
                     <>
                       {element?.type === "text" && (
-                        <TextField
+                        <SponsorField
                           element={element}
                           Errors={Errors}
                           registerName={`sponsor.${element?.name}`}
