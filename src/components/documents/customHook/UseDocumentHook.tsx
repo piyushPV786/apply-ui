@@ -147,7 +147,7 @@ export const UseDownloadDeclarationLatter = () => {
     });
     const downloadLink = document.createElement("a");
     downloadLink.href = URL.createObjectURL(blob);
-    const filename = "declaration-letter.pdf";
+    const filename = "declaration-letter.docx";
     downloadLink.download = filename;
     document.body.appendChild(downloadLink);
     downloadLink.click();
