@@ -25,6 +25,7 @@ export const bursarryFeilds = {
 export const dashboardRedirectStatus = [
   CommonEnums?.RESUB_APP_DOC,
   CommonEnums?.BURSARY_LETTER_PEND,
+  CommonEnums?.RESUB_BURSARY_DOC,
 ];
 
 export const customStatus = {

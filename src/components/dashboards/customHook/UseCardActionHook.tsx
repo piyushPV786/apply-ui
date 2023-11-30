@@ -2,6 +2,7 @@ import {
   APPLICATION_STATUS,
   CommonEnums,
   UPLOAD_DOCUMENT_BUTTON_STATUS,
+  BURSARY_BUTTON_STATUS,
 } from "../../common/constant";
 import DashboardApplicationServices from "../../../services/dashboardApplication";
 import { downloadDocument } from "../../../Util/Util";
@@ -60,7 +61,7 @@ const UseCardActionHook = (applicationDetail) => {
       : "Upload Documents";
 
   const isBursaryBTN =
-    status === CommonEnums.BURSARY_LETTER_PEND &&
+    BURSARY_BUTTON_STATUS.includes(status) &&
     education?.studentTypeCode === CommonEnums?.BURSARY;
   const isAdamiteBTN = status === CommonEnums.PROG_ADMITTED;
   const documentData = document?.filter((item) => {
