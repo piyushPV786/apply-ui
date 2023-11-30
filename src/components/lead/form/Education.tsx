@@ -166,7 +166,10 @@ const Education = (props: any) => {
             <div className="mb-4">
               <CommonAutocomplete
                 defaultValue={
-                  applicationData?.education?.agentCode
+                  !applicationData?.education?.agentCode &&
+                  !applicationData?.education?.socialMediaCode
+                    ? null
+                    : applicationData?.education?.agentCode
                     ? refferedById.agent
                     : refferedById.social
                 }
@@ -186,7 +189,8 @@ const Education = (props: any) => {
             </div>
 
             {(refferedBy === refferedById.agent ||
-              applicationData?.education?.agentCode) && (
+              (applicationData?.education?.agentCode &&
+                refferedBy === refferedById.agent)) && (
               <div className="mb-4 others">
                 {!!salesAgentData?.length && (
                   <CommonAutocomplete
@@ -205,7 +209,8 @@ const Education = (props: any) => {
               </div>
             )}
             {(refferedBy === refferedById.social ||
-              applicationData?.education?.socialMediaCode) && (
+              (applicationData?.education?.socialMediaCode &&
+                refferedBy === refferedById.social)) && (
               <div className="mb-4 others">
                 {!!masterData?.socialMediaData?.length && (
                   <CommonAutocomplete
