@@ -190,19 +190,23 @@ export const useDiscountHook = (masterData: any, fees: any) => {
         toast.error(ErrorMessage.discountErrorMessage);
       }
     } else {
-      if (res?.maxAmount) {
-        setDiscount({
-          percent: res?.percent,
-          code: res?.discountCode,
-          max: res?.maxAmount,
-        });
-        toast.success(
-          `${SuccessMessage.discountSuccessMessage} ${
-            res?.percent
-          } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
-            res?.maxAmount * masterData.currencyData?.forecastRate
-          } `
-        );
+      if (res) {
+        if (parseInt(res?.maxAmount) > parseInt(fees?.fee)) {
+          toast.error(ErrorMessage.discountErrorMessage);
+        } else {
+          setDiscount({
+            percent: res?.percent,
+            code: res?.discountCode,
+            max: res?.maxAmount,
+          });
+          toast.success(
+            `${SuccessMessage.discountSuccessMessage} ${
+              res?.percent
+            } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
+              res?.maxAmount * masterData.currencyData?.forecastRate
+            } `
+          );
+        }
       } else {
         toast.error(ErrorMessage.discountErrorMessage);
       }
@@ -217,9 +221,12 @@ export const useDiscountHook = (masterData: any, fees: any) => {
     });
   };
 
-  const discountAmount = (fees?.fee * discount.percent) / 100;
-  fees.discountFee =
-    discountAmount > discount?.max ? discount?.max : discountAmount;
+  const discountAmount =
+    discount?.percent > 0
+      ? (fees?.fee * discount.percent) / 100
+      : discount?.max;
+
+  fees.discountFee = discountAmount;
   fees.discountAmount = `${
     masterData?.currencyData?.currencySymbol
       ? masterData?.currencyData?.currencySymbol
