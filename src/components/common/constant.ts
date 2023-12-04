@@ -1,5 +1,12 @@
+export enum StorageName {
+  STUDENT_DETAIL = "studentDetails",
+  ACCESS_TOKEN = "access_token",
+  REFRESH_TOKEN = "refresh_token",
+}
+
 export enum CommonEnums {
   TRUE = "true",
+  TOTAL = "TOTAL",
   NEW_STATUS = "New-Application",
   DRAFT_STATUS = "APP-DRAFT",
   FEES_PENDING_STATUS = "APP-FEE-PEND",
@@ -12,8 +19,8 @@ export enum CommonEnums {
   APP_FEE_ACCEPTED = "APP-FEE-ACCEPTED",
   RMAT_PENDING = "RMAT-PENDING",
   MANAGEMENT = "management",
-  BURSARY = "bursary",
-  EMPLOYEE_BURSARY = "empbursary",
+  BURSARY = "BURSARY",
+  EMPLOYEE_BURSARY = "EMPBURSARY",
   REGULAR = "regular",
   GUARDIAN = "guardian",
   SOUTH_AFRICA_CURRENCY = "RAND",
@@ -23,6 +30,8 @@ export enum CommonEnums {
   CONFIRMATION_LETTER = "CONFIRMATION-LETTER",
   WELCOME_LETTER = "WELCOME-LETTER",
   QUOTE = "QUOTE",
+  BURSARY_LETTER_PEND = "BURSARY-LETTER-PEND",
+  RESUB_BURSARY_DOC = "RESUB-BURSARY-DOC",
 }
 
 export enum GraduationType {
@@ -59,7 +68,7 @@ export const APPLICATION_STATUS = {
   INTAKE_ASSIGNMENT_PENDING: "INTAKE-ASSIGNMENT-PEND",
   PROGRAM_FEES_PENDING: "PROG-FEE-PEND",
   REQUEST_FOR_BURSARY: "BURSARY-REQUESTED",
-  UPLOAD_BURSARY_DOCUMENTS: "UPLD-BURSARY-DOC",
+  UPLOAD_BURSARY_DOCUMENTS: "BURSARY-PEND",
   BURSARY_DOCUMENTS_UPLOADED: "BURSARY-DOC-UPLOADED",
   RESUBMIT_BURSARY_DOCUMENTS: "RESUB-BURSARY-DOC",
   BURSARY_DOCUMENTS_ACCEPTED: "BURSARY-DOC-ACCEPTED",
@@ -81,12 +90,39 @@ export const APPLICATION_STATUS = {
   INTAKE_ASSIGNED: "INTAKE-ASSIGNED",
   ENROLLED_BY_ADMISSION: "PROG-ADMITTED/ENROLLED",
 };
+export const PRORAM_FEE_BUTTON_STATUS = [
+  APPLICATION_STATUS.APPLICATION_FEE_VERIFICATION_PENDING,
+  APPLICATION_STATUS.RESUBMIT_APPLICATION_FEE_PROOF,
+  APPLICATION_STATUS.APPLICATION_FEE_PENDING,
+];
+export const UPLOAD_DOCUMENT_BUTTON_STATUS = [
+  APPLICATION_STATUS.APPLICATION_FEE_VERIFICATION_PENDING,
+  APPLICATION_STATUS.RESUBMIT_APPLICATION_FEE_PROOF,
+  APPLICATION_STATUS.ENROLLED_TO_APPLICATION,
+  APPLICATION_STATUS.APPLICATION_FEE_PENDING,
+  APPLICATION_STATUS.UPLOAD_BURSARY_DOCUMENTS,
+  APPLICATION_STATUS.RESUBMIT_APPLICATION_DOCUMENTS,
+];
+export const BURSARY_BUTTON_STATUS = [
+  CommonEnums.BURSARY_LETTER_PEND,
+  CommonEnums.RESUB_BURSARY_DOC,
+];
 
 export enum DocumentStatus {
   UploadPending = "upload pending",
   Approved = "approved",
   Submitted = "submitted",
   Rejected = "rejected",
+}
+export enum studyMode {
+  DAY = "DAY",
+  ONLINE = "ONLINE",
+  Weekend = "WEEKEND",
+  Fulltime = "FULLTIME",
+}
+
+export enum feeMode {
+  APPLICATION = "APPLICATION",
 }
 
 export const ErrorMessage = "Something went wrong please try again later";
@@ -140,7 +176,7 @@ export const RoutePaths = {
   Document_Success: "/payment/document-upload-success",
   Document_Save_Success: "/payment/document-save-success",
   APPLICATION_ENROLLED_SUCCESS: "/payment/application-enrolled-success",
-  Dashboard: "/student-registration-form/dashboard",
+  Dashboard: "/dashboard",
   StudentDashboard: "/dashboard",
   RMATView: "/rmat",
 };
@@ -151,11 +187,22 @@ export const FeemodeCode = {
 
 export const PaymentTypes = [
   {
-    name: "Payu",
-    value: "payu",
+    registerName: "paymentType",
+    name: "Ukheshe",
+    value: "ukheshe",
+    label: "",
   },
-  { name: "RazorPay", value: "razorpay" },
-  { name: "Stripe", value: "stripe" },
+  {
+    registerName: "paymentType",
+    name: "Offline",
+    value: "offline",
+    label: "Upload Payment Proof",
+  },
+  // {
+  //   registerName: "paymentType",
+  //   name: "Payu",
+  //   value: "payuForm",
+  // },
 ];
 
 export const AgentandSocialMedia = [

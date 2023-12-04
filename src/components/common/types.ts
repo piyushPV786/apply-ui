@@ -129,6 +129,8 @@ interface Lead {
 }
 
 export interface IMasterData {
+  name: string;
+  code: string | number | readonly string[] | undefined;
   languageData: IOption[];
   relationData: IOption[];
   nationalityData: IOption[];

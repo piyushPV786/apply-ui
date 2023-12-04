@@ -1,18 +1,12 @@
 import * as React from "react";
-import {
-  Step,
-  StepLabel,
-  Stepper,
-} from "@material-ui/core";
+import { Step, StepLabel, Stepper } from "@material-ui/core";
 import styled from "styled-components";
-const steps = ["Information", "Payment", "Upload Document"];
+const steps = ["Information", "Upload Document", "Payment"];
 interface IStepperProps {
   active: number;
-  isFormSubmitted: boolean;
-  isPaymentDone: boolean;
 }
 function StepperComponent(props: IStepperProps) {
-  const { active, isFormSubmitted, isPaymentDone } = props;
+  const { active } = props;
 
   return (
     <StyledStepper
@@ -23,10 +17,7 @@ function StepperComponent(props: IStepperProps) {
       <Step key={"12"}>
         <StepLabel
           icon={
-            <CircleIcon
-              isFormSubmitted={isFormSubmitted}
-              active={!isFormSubmitted || active > 0}
-            />
+            <CircleIcon isFormSubmitted={active === 0} active={active === 0} />
           }
         >
           {steps[0]}
@@ -35,10 +26,7 @@ function StepperComponent(props: IStepperProps) {
       <Step key={"23"}>
         <StepLabel
           icon={
-            <CircleIcon
-              isFormSubmitted={isFormSubmitted}
-              active={isFormSubmitted || active >= 1}
-            />
+            <CircleIcon isFormSubmitted={active === 1} active={active === 1} />
           }
         >
           {steps[1]}
@@ -47,7 +35,7 @@ function StepperComponent(props: IStepperProps) {
       <Step key={"34"}>
         <StepLabel
           icon={
-            <CircleIcon isFormSubmitted={isFormSubmitted} active={active > 1} />
+            <CircleIcon isFormSubmitted={active === 2} active={active === 2} />
           }
         >
           {steps[2]}
@@ -84,5 +72,5 @@ const CircleIcon = styled.span<any>`
   width: 20px;
   height: 20px;
   border: ${({ active }) =>
-    active ? "2.5px solid #008554" : "2.5px solid #707070"}; ;
+    active ? "2.5px solid #008554" : "2.5px solid #707070"};
 `;

@@ -4,7 +4,7 @@ import {
   StyledLink,
   SuccessMsgContainer,
   ToasterContainer,
-} from "../student/style";
+} from "../login/style";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import { Snackbar } from "@material-ui/core";
 import { CommonEnums } from "./constant";
@@ -17,6 +17,7 @@ export const GreenFormHeading = styled.p`
   font-weight: 500;
   color: #008554;
   margin: 0 0 2px;
+  margin-right: 20px;
 
   @media (max-width: 510px) {
     img {
@@ -54,12 +55,10 @@ export const StyledAccordion = styled(Accordion)`
   }
 `;
 export const GreyStyledAccordion = styled(Accordion)`
-  .MuiAccordionDetails-root {
-    background: #f5f5f5 !important;
-  }
+
 
   .MuiAccordionSummary-root {
-    background: #f5f5f5 !important;
+
     height: 60px;
     border-bottom: none !important;
     display: flex;
@@ -68,7 +67,7 @@ export const GreyStyledAccordion = styled(Accordion)`
 
   @media (max-width: 510px) {
     .MuiAccordionSummary-root {
-      background: #f5f5f5 !important;
+
       height: 60px;
     }
   }
@@ -275,4 +274,8 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "RESUB-LOAN-DOC": "Resubmit Loan Documents",
   "LOAN-DOC-ACCEPTED": "Loan Documents Accepted",
   "INTAKE-ASSIGNMENT PENDING": "Intake Assignment Pending",
+  "BURSARY-LETTER-PEND": "Upload Bursary Documents",
 };
+export enum FileSize {
+  maxSize = 2000 * 1024,
+}

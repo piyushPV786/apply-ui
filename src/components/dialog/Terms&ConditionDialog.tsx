@@ -2,7 +2,7 @@
 
 // ** React Imports
 
-import { Ref, useState, forwardRef, ReactElement, useEffect } from "react";
+import { useState } from "react";
 
 //**  API Services
 
@@ -18,28 +18,35 @@ import {
 } from "@mui/material";
 
 import StyledButton from "../../components/button/button";
+import ApplicationFormServices from "../../services/applicationForm";
 // ** Third Party Library
 
 import { useFormContext } from "react-hook-form";
 import useAxiosInterceptor from "../../service/Axios";
 
 export const EditGroup = ({
+  showTerms,
+  onClickShowTerms,
   updateTermsConditions,
-  termsOpen,
-  termsHandelClose,
-  termsHandelOpen,
-  watch,
-  trigger,
+  name,
+  email,
 }) => {
   // ** States
-  const [dialogShow, setDialogShow] = useState(false);
-  const { AuthApi } = useAxiosInterceptor();
-  const parentKey = "lead";
 
-  const firstNameKey = `${parentKey}.firstName`;
+  const acceptTermAndCondition = async () => {
+    const response = await ApplicationFormServices?.getTermsAndConditionFile(
+      name,
+      email
+    );
+    const blobFile = new Blob([response], {
+      type: "application/pdf",
+    });
 
-  const lastNameKey = `${parentKey}.lastName`;
-  const emailKey = `${parentKey}.email`;
+    const fileURL = URL.createObjectURL(blobFile);
+    updateTermsConditions(true);
+    onClickShowTerms();
+    window.open(fileURL);
+  };
 
   return (
     <Grid>
@@ -49,7 +56,7 @@ export const EditGroup = ({
           style={{ color: "Green", fontFamily: "roboto-medium" }}
           href="#"
           onClick={() => {
-            termsHandelOpen();
+            onClickShowTerms();
           }}
         >
           {" "}
@@ -57,11 +64,7 @@ export const EditGroup = ({
         </a>
       </label>
 
-      <Dialog
-        open={dialogShow || termsOpen}
-        scroll="body"
-        onClose={() => termsHandelClose}
-      >
+      <Dialog open={showTerms} scroll="body" onClose={() => onClickShowTerms}>
         <Box sx={{ mt: 5, textAlign: "center" }}>
           <Typography
             className="popup-title"
@@ -1942,42 +1945,15 @@ export const EditGroup = ({
             isGreenWhiteCombination={true}
             onClick={() => {
               updateTermsConditions(false);
+              onClickShowTerms();
             }}
             title={"Decline"}
           />
           <StyledButton
-            disabled={
-              !watch(firstNameKey) || !watch(lastNameKey) || !watch(emailKey)
-            }
+            disabled={!name || !email}
             title={"Accept"}
-            onClick={async () => {
-              if (
-                (await trigger(firstNameKey)) &&
-                (await trigger(lastNameKey)) &&
-                (await trigger(emailKey))
-              ) {
-                AuthApi.get(
-                  `application/terms-condition/${watch(firstNameKey)}${watch(
-                    lastNameKey
-                  )}/${watch(emailKey)}`,
-                  {
-                    responseType: "blob",
-                  }
-                ).then((data) => {
-                  console.log(data);
-                  const blobFile = new Blob([data?.data], {
-                    type: "application/pdf",
-                  });
-
-                  const fileURL = URL.createObjectURL(blobFile);
-                  window.open(fileURL);
-                });
-                updateTermsConditions(true);
-              } else {
-                trigger(firstNameKey);
-                trigger(lastNameKey);
-                trigger(emailKey);
-              }
+            onClick={() => {
+              acceptTermAndCondition();
             }}
           />
         </DialogActions>

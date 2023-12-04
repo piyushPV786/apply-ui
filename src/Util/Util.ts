@@ -11,11 +11,13 @@ import {
   NAVY_BLUE,
   ORANGE,
   removedKeysToMap,
+  StorageName,
 } from "../components/common/constant";
-import { ILeadFormValues } from "../components/common/types";
 import { AuthApi, CommonAPI, FinanceApi, baseAuth } from "../service/Axios";
 import { parsePhoneNumber } from "react-phone-number-input";
 import { toast } from "react-toastify";
+import { refferedById } from "../constants";
+import ApplicationFormServices from "../services/applicationForm";
 const ignorKeys = {
   createdAt: "",
   deletedAt: "",
@@ -176,7 +178,7 @@ export const getStatusColor = (status) => {
  */
 export const isValidDate = (value) => {
   const currentYear = new Date().getFullYear();
-  const year = value.split("-")[0];
+  const year = value?.split("-")[0];
   const age = currentYear - +year;
 
   if (age < 16) return false;
@@ -191,9 +193,7 @@ export const isValidDate = (value) => {
  * @param {any} passValidator - A password validator.
  * @returns {boolean} - Whether the email is valid or not.
  */
-export const isValidEmail = async (email, passValidator?) => {
-  if (passValidator) return true;
-
+export const isValidEmail = async (email) => {
   return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
     email
   );
@@ -291,19 +291,23 @@ export const onlyAlphabetsOrNumbersDash = (value) =>
  * @param {string} type - The payment type.
  * @returns {string} - The image URL for the payment type.
  */
+
 export const GetPaymentImage = (type) => {
   const imgUrl = "/assets/images";
 
-  if (type === "Payu") {
+  if (type === "payuForm") {
     return `${imgUrl}/payu.png`;
   }
 
-  if (type === "RazorPay") {
+  if (type === "razorpay") {
     return `${imgUrl}/razorpay.png`;
   }
 
-  if (type === "Stripe") {
+  if (type === "stripe") {
     return `${imgUrl}/stripe.png`;
+  }
+  if (type === "ukheshe") {
+    return `${imgUrl}/ukheshy.png`;
   }
 };
 
@@ -657,12 +661,17 @@ export const transformFormData = (formData: any) => {
   return formData;
 };
 
+export const onlyAlphabetsWithSpaceOnChange = (e) => {
+  const alphabeticValue = capitalizeFirstLetter(
+    e.target.value.replace(/[^A-Za-z\s]/g, "")
+  );
+  return alphabeticValue;
+};
+
 export const emailValidation = async (e) => {
   let returnVal = { message: "" };
   if (
-    !/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-      e?.target?.value
-    )
+    !/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(e?.target?.value)
   ) {
     returnVal = {
       message: "you have entered an invalid email address. Please try again",
@@ -672,20 +681,15 @@ export const emailValidation = async (e) => {
       message: "clear",
     };
   }
-  await AuthApi.get(
-    `${CommonApi.EMAILCHECK}/${e?.target?.value}/leadCode/${
-      JSON.parse(sessionStorage?.getItem("studentId") as any)?.leadCode
-    }`
-  ).then((data) => {
-    if (
-      data &&
-      data?.data?.data?.message == "Provided email address alredy exists"
-    ) {
-      returnVal = {
-        message: "Provided email address alredy exists",
-      };
-    }
-  });
+  const response = await ApplicationFormServices?.checkDuplicateEmail(
+    e?.target?.value
+  );
+  if (response?.message) {
+    returnVal = {
+      message: "Provided email address already exists",
+    };
+  }
+
   return returnVal;
 };
 
@@ -696,24 +700,29 @@ export const downloadDocument = (url, fileName: string) => {
   alink.click();
 };
 
-export const mapFormDefaultValue = (
-  studentData: object,
-  setValue: UseFormSetValue<ILeadFormValues>
-) => {
-  let valueCode;
+const setEducationValue = (studentData: object, setValue: any, key: string) => {
+  if (studentData[key]?.socialMediaCode) {
+    setValue("education.referredById", refferedById.social);
+  }
+  if (studentData[key]?.agentCode) {
+    setValue("education.referredById", refferedById.agent);
+  }
+  if (studentData[key]?.isInternationDegree) {
+    setValue("education.isInternationDegree", "yes");
+  }
+  if (!studentData[key]?.isInternationDegree) {
+    setValue("education.isInternationDegree", "no");
+  }
+};
+
+export const mapFormDefaultValue = (studentData: object, setValue: any) => {
   for (let [key, value] of Object.entries(studentData)) {
     if (acceptedKeysToMap.includes(key)) {
-      if (key === "education" && studentData[key]) {
-        valueCode = studentData[key]?.socialMediaCode
-          ? "SOCIALMEDIA"
-          : studentData[key]?.agentCode
-          ? "AGENT"
-          : "";
-        setValue(key, value);
-      }
       setValue(key, value);
+      if (key === "education" && studentData[key]) {
+        setEducationValue(studentData, setValue, key);
+      }
     }
-    setValue("education.referredById", valueCode, formOptions);
   }
 };
 
@@ -741,4 +750,44 @@ export const formateInPascalCase = (value: string) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
   return formattedString;
+};
+
+export const calculateFileSize = (size: number) => {
+  return size / 1024 > 1024
+    ? `${(size / 1024 / 1024).toFixed(2)} MB`
+    : `${Math.round(size / 1024)} KB`;
+};
+
+export const getLocalStorageData = (key: StorageName) => {
+  const localData = window.localStorage.getItem(key);
+  if (localData) {
+    return JSON.parse(localData);
+  }
+  return null;
+};
+
+export const convertCodeToName = (list, code) => {
+  let result = code;
+  if (list?.length) {
+    const element = list?.find((item) => item?.code === code);
+    if (element) {
+      result = element?.name;
+    } else {
+      result = code;
+    }
+  }
+  return result;
+};
+
+export const setDocumentValue = (documents, setValue) => {
+  documents?.forEach((element) => {
+    const extension = element?.name?.split(".").pop();
+    const file: File = new File([""], `${element?.code}.${extension}`, {
+      type: element?.fileExtension,
+      lastModified: element?.updatedAt,
+    });
+    const value = { file: [file], status: element?.status };
+
+    setValue(element?.documentTypeCode, value);
+  });
 };
