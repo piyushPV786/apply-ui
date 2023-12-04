@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import DashboardApplicationServices from "../../../services/dashboardApplication";
 import { StorageName } from "../../common/constant";
+import { IApplication } from "../../common/types";
 
 const UseDashboardHook = () => {
-  const [applicationData, setApplicationData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [applicationData, setApplicationData] =
+    useState<Array<IApplication> | null>(null);
+
   const [allProgram, setAllProgram] = useState([]);
 
   const getApplicationData = async () => {
-    setIsLoading(true);
     const userDetails = window?.localStorage?.getItem(
       StorageName?.STUDENT_DETAIL
     );
@@ -26,14 +27,13 @@ const UseDashboardHook = () => {
 
     const allProgramData = await DashboardApplicationServices?.getAllProgram();
     setAllProgram(allProgramData);
-    setIsLoading(false);
   };
 
   useEffect(() => {
     getApplicationData();
   }, []);
 
-  return { applicationData, getApplicationData, allProgram, isLoading };
+  return { applicationData, getApplicationData, allProgram };
 };
 
 export default UseDashboardHook;

@@ -8,7 +8,7 @@ import UseDashboardHook from "./customHook/UseDashboardHook";
 
 const ApplicationDashboard = () => {
   const router = useRouter();
-  const { applicationData, getApplicationData, allProgram, isLoading } =
+  const { applicationData, getApplicationData, allProgram } =
     UseDashboardHook();
   return (
     <>
@@ -17,8 +17,8 @@ const ApplicationDashboard = () => {
         <div className="container-fluid application-page mt-4">
           <div style={{ paddingBottom: "1rem" }}>
             <PaymentContainer>
-              {applicationData?.length === 0 && !isLoading && <NoApplication />}
-              {applicationData?.length > 0 && (
+              {applicationData?.length === 0 && <NoApplication />}
+              {applicationData && applicationData?.length > 0 && (
                 <div className="row">
                   <div className="col-md-8">
                     <h2 className="app-header">My Applications</h2>
@@ -40,7 +40,7 @@ const ApplicationDashboard = () => {
                   </div> */}
                 </div>
               )}
-              {applicationData?.length > 0 && (
+              {applicationData && applicationData?.length > 0 && (
                 <div className="row">
                   {applicationData?.map((applicationDetail) => (
                     <div className="col-md-6 mb-2">
