@@ -122,7 +122,7 @@ const Kin = (props: any) => {
                           required: element.required,
                           validate: (value) => {
                             if (element.required) {
-                              return isValidEmail(value, element.required);
+                              return isValidEmail(value);
                             }
                           },
                         })}

@@ -179,8 +179,7 @@ const Sponsor = (props: any) => {
                             placeholder=""
                             {...register(`sponsor.${element?.name}`, {
                               required: element.required,
-                              validate: (value) =>
-                                isValidEmail(value, !element.required),
+                              validate: (value) => isValidEmail(value),
                             })}
                           />
                           {Errors && Errors?.email && (
