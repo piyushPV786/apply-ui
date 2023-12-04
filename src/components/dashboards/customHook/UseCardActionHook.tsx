@@ -66,7 +66,8 @@ const UseCardActionHook = (applicationDetail) => {
   const isAdamiteBTN = status === CommonEnums.PROG_ADMITTED;
   const documentData = document?.filter((item) => {
     return (
-      item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER ||
+      (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
+        status === CommonEnums?.PROG_ADMITTED) ||
       item?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER ||
       item?.documentTypeCode === CommonEnums.WELCOME_LETTER
     );

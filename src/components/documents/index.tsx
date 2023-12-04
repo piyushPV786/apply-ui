@@ -3,6 +3,7 @@ import { MainContainer } from "../../components/login/style";
 import DocumentUploadContainer from "../../components/documents/DocumentUploadContainer";
 import StepperComponent from "../../components/stepper/stepper";
 import StyledButton from "../button/button";
+import { StyledMessage } from "../common/common";
 import Header from "../common/header";
 
 import { FormProvider, useForm } from "react-hook-form";
@@ -45,6 +46,7 @@ const DocumentUploadPage = (props) => {
             </Grid>
             <Grid container sm={9}>
               <Grid item sm={9} sx={{ padding: 2 }}>
+                <StyledMessage />
                 {masterData?.documentFormData?.map(
                   (element) =>
                     element.required && (
@@ -57,7 +59,7 @@ const DocumentUploadPage = (props) => {
               </Grid>
               <Grid item sm={3} sx={{ padding: 2 }}>
                 <Box className="sticky-wrapper">
-                  <Card sx={{ padding: 2, marginTop: 5 }}>
+                  <Card className="p-2 mt-5">
                     <Box className="d-flex justify-content-center flex-column">
                       <StyledButton
                         type="button"

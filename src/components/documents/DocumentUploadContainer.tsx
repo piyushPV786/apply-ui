@@ -27,7 +27,7 @@ const DocumentUploadContainer = ({ element, masterData }) => {
   const { watch } = useFormContext();
 
   return (
-    <Card sx={{ padding: 3, marginTop: 5 }}>
+    <Card className="p-4 mt-3">
       <Grid container spacing={1}>
         <Grid item sm={12} xs={12}>
           <Typography
