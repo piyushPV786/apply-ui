@@ -27,7 +27,7 @@ const ApplicationDashboard = () => {
                       Regenesys
                     </p>
                   </div>
-                  <div className="col-md-4 d-flex align-items-start justify-content-end">
+                  {/* <div className="col-md-4 d-flex align-items-start justify-content-end">
                     <div className="d-flex justify-content-end">
                       <StyledButton
                         onClick={() => {
@@ -37,7 +37,7 @@ const ApplicationDashboard = () => {
                         title="Apply a New Application"
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               )}
               {applicationData?.length > 0 && (
