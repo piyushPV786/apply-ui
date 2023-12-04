@@ -11,6 +11,7 @@ import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-c
 import { IMasterData } from "../../common/types";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import TextField from "./components/TextField";
 import { useAddressHook } from "../customHooks/addressHooks";
 import RadioField from "./components/RadioField";
 import { sponsorInfoData } from "./data/sponsorData";
@@ -108,12 +109,20 @@ const Sponsor = (props: any) => {
                   )}
                   {sponsorType && (
                     <>
-                      {element?.type === "text" && (
-                        <SponsorField
+                      {element?.type === "text" ? (
+                        <TextField
                           element={element}
                           Errors={Errors}
                           registerName={`sponsor.${element?.name}`}
                         />
+                      ) : (
+                        element?.type === "textWithSpace" && (
+                          <SponsorField
+                            element={element}
+                            Errors={Errors}
+                            registerName={`sponsor.${element?.name}`}
+                          />
+                        )
                       )}
                       {element?.type === "select" &&
                         element?.key !== "state" && (

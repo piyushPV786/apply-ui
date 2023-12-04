@@ -29,7 +29,7 @@ export const sponsorInfoData = [
     name: "name",
     key: "name",
     label: "Sponsor Name",
-    type: "text",
+    type: "textWithSpace",
     required: false,
     errorMessage: "Please enter sponsor name",
     hidden: false,
