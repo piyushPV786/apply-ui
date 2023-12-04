@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import DashboardApplicationServices from "../../../services/dashboardApplication";
 import { StorageName } from "../../common/constant";
+import { IApplication } from "../../common/types";
 
 const UseDashboardHook = () => {
-  const [applicationData, setApplicationData] = useState([]);
+  const [applicationData, setApplicationData] =
+    useState<Array<IApplication> | null>(null);
+
   const [allProgram, setAllProgram] = useState([]);
 
   const getApplicationData = async () => {
