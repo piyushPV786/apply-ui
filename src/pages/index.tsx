@@ -1,5 +1,6 @@
 import Head from "next/head";
-import StudentLogin from "../components/student/login";
+import StudentLogin from "../components/login/Login";
+
 export default function Home() {
   return (
     <div>

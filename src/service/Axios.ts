@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { useState } from "react";
 import { CommonApi, tokenName } from "../components/common/constant";
+import mem from "mem";
 
 export const refreshBaseAuth = axios.create({
   baseURL: `${process.env.base_Url}`,
@@ -25,6 +26,32 @@ export const UserManagementAPI = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_USER_MANAGEMENT_REDIRECT_URI}`,
 });
 
+const refreshTokenFunction = async () => {
+  try {
+    const response = await refreshBaseAuth.get("/auth/refresh-token");
+    const { data } = response?.data;
+    if (response?.status === 200 && data?.access_token && data?.refresh_token) {
+      await window.sessionStorage.setItem(
+        tokenName?.accessToken,
+        data?.access_token
+      );
+      await window.sessionStorage.setItem(
+        tokenName.refreshToken,
+        data?.refresh_token
+      );
+    }
+    return data;
+  } catch (error) {
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+    window.location.href = `/`;
+  }
+};
+const maxAge = 10000;
+const memoizedRefreshToken = mem(refreshTokenFunction, {
+  maxAge,
+});
+
 refreshBaseAuth.interceptors.request.use(
   (config) => {
     if (config.headers) {
@@ -47,7 +74,11 @@ const useAxiosInterceptor = () => {
     if (
       !config.url.includes(CommonApi.GETSTUDYMODEPROGRAMS) &&
       !config.url.includes(CommonApi.GETCURRENCYCONVERSION) &&
-      !config.url.includes("/payment/payu")
+      !config.url.includes("/payment/payu") &&
+      !config.url.includes(CommonApi.EMAILCHECK) &&
+      !config.url.includes("/download/declarationForm") &&
+      !config.url.includes(CommonApi.STATE) &&
+      !config.url.includes("/study-mode")
     ) {
       setLoading(true);
     }
@@ -75,41 +106,21 @@ const useAxiosInterceptor = () => {
     // Update loading state for request end
     setLoading(false);
 
-    // Handle error
-    console.log(error);
+    const config = error?.config;
 
-    if (error?.response?.status === 401) {
-      try {
-        const response = await refreshBaseAuth.get("/auth/refresh-token");
-        const config = error.config;
-        if (
-          response?.status === 200 &&
-          response?.data?.data?.access_token &&
-          response?.data?.data?.refresh_token
-        ) {
-          await window.sessionStorage.setItem(
-            tokenName?.accessToken,
-            response?.data?.data?.access_token
-          );
-          await window.sessionStorage.setItem(
-            tokenName.refreshToken,
-            response?.data?.data?.refresh_token
-          );
-          config.headers[
-            "Authorization"
-          ] = `Bearer ${response.data.data.access_token}`;
-
-          return baseAuth(config);
-        }
-        await window.localStorage.clear();
-        window.location.href = `/`;
-      } catch (err: any) {
-        if (err?.response?.status === 401) {
-          window.localStorage.clear();
-          window.location.href = `/`;
-        }
+    if (error?.response?.status === 401 && !config?.sent) {
+      config.sent = true;
+      const response = await memoizedRefreshToken();
+      if (
+        response?.status === 200 &&
+        response?.access_token &&
+        response?.refresh_token
+      ) {
+        config.headers["Authorization"] = `Bearer ${response?.access_token}`;
       }
+      return baseAuth(config);
     }
+    return Promise.reject(error);
   };
 
   const addInterceptorToAxiosInstances = (axiosInstance: AxiosInstance) => {
@@ -135,6 +146,7 @@ const useAxiosInterceptor = () => {
     CommonAPI,
     loading,
     UserManagementAPI,
+    setLoading,
   };
 };
 

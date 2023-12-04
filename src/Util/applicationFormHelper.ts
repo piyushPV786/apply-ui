@@ -42,6 +42,15 @@ export const getUserDetailHelper = (
   )
     .then(({ data: response }) => {
       const formData = { ...response?.data };
+      formData.address = formData.address.sort(function (a, b) {
+        if (a.addressType < b.addressType) {
+          return -1;
+        }
+        if (a.addressType > b.addressType) {
+          return 1;
+        }
+        return 0;
+      });
       transformFormData(formData);
       mapFormDefaultValue(formData, setValue);
       if (leadDetail?.isPaymentPending && routeTo !== CommonEnums.DOCUMENT) {

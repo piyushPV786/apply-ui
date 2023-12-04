@@ -1,5 +1,12 @@
+export enum StorageName {
+  STUDENT_DETAIL = "studentDetails",
+  ACCESS_TOKEN = "access_token",
+  REFRESH_TOKEN = "refresh_token",
+}
+
 export enum CommonEnums {
   TRUE = "true",
+  TOTAL = "TOTAL",
   NEW_STATUS = "New-Application",
   DRAFT_STATUS = "APP-DRAFT",
   FEES_PENDING_STATUS = "APP-FEE-PEND",
@@ -12,8 +19,8 @@ export enum CommonEnums {
   APP_FEE_ACCEPTED = "APP-FEE-ACCEPTED",
   RMAT_PENDING = "RMAT-PENDING",
   MANAGEMENT = "management",
-  BURSARY = "bursary",
-  EMPLOYEE_BURSARY = "empbursary",
+  BURSARY = "BURSARY",
+  EMPLOYEE_BURSARY = "EMPBURSARY",
   REGULAR = "regular",
   GUARDIAN = "guardian",
   SOUTH_AFRICA_CURRENCY = "RAND",
@@ -21,13 +28,101 @@ export enum CommonEnums {
   PROG_ADMITTED = "PROG-ADMITTED",
   ACCEPTANCE_LETTER = "ACCEPTANCE-LETTER",
   CONFIRMATION_LETTER = "CONFIRMATION-LETTER",
+  WELCOME_LETTER = "WELCOME-LETTER",
+  QUOTE = "QUOTE",
+  BURSARY_LETTER_PEND = "BURSARY-LETTER-PEND",
+  RESUB_BURSARY_DOC = "RESUB-BURSARY-DOC",
 }
+
+export enum GraduationType {
+  PG = "postgraduate",
+  UG = "undergraduate",
+}
+
+export const DARK_GRAY = "#4f4f4f";
+export const ORANGE = "#dd6d0b";
+export const BLUE = "#0070c0";
+export const OLIVE_GREEN = "#548235";
+export const DARK_YELLOW = "#7a6e00";
+export const RED = "#ff0000";
+export const NAVY_BLUE = "#203764";
+export const STEEL_TEAL = "#4F958E";
+export const GREEN = "#548235";
+
+export const APPLICATION_STATUS = {
+  SAVED_AS_DRAFT: "APP-DRAFT",
+  APPLICATION_FEE_PENDING: "APP-FEE-PEND",
+  APPLICATION_FEE_VERIFICATION_PENDING: "APP-FEE-VER-PEND",
+  RESUBMIT_APPLICATION_FEE_PROOF: "RESUB-APP-FEE-PROOF",
+  APPLICATION_FEE_ACCEPTED: "APP-FEE-ACCEPTED",
+  ENROLLED_TO_APPLICATION: "APP-ENROLLED",
+  UPLOAD_APPLICATION_DOCUMENTS: "UPLD-APP-DOC",
+  APPLICATION_DOCUMENTS_UPLOADED: "APP-DOC-UPLOADED",
+  APPLICATION_DOCUMENT_VERIFICATION_PENDING: "APP-DOC-VER-PEND",
+  RESUBMIT_APPLICATION_DOCUMENTS: "RESUB-APP-DOC",
+  APPLICATION_DOCUMENTS_ACCEPTED: "APP-DOC-ACCEPTED",
+  RMAT_PENDING: "RMAT-PEND",
+  RMAT_PASS: "RMAT-PASS",
+  RMAT_FAIL: "RMAT-FAIL",
+  ENROLMENT_ACCEPTED: "ENRL-ACCEPTED",
+  INTAKE_ASSIGNMENT_PENDING: "INTAKE-ASSIGNMENT-PEND",
+  PROGRAM_FEES_PENDING: "PROG-FEE-PEND",
+  REQUEST_FOR_BURSARY: "BURSARY-REQUESTED",
+  UPLOAD_BURSARY_DOCUMENTS: "BURSARY-PEND",
+  BURSARY_DOCUMENTS_UPLOADED: "BURSARY-DOC-UPLOADED",
+  RESUBMIT_BURSARY_DOCUMENTS: "RESUB-BURSARY-DOC",
+  BURSARY_DOCUMENTS_ACCEPTED: "BURSARY-DOC-ACCEPTED",
+  BURSARY_CONFIRMATION_PENDING: "BURSARY-PEND",
+  BURSARY_APPROVED: "BURSARY-APPROVED",
+  BURSARY_REJECTED: "BURSARY-REJECTED",
+  REQUEST_FOR_LOAN: "LOAN-REQUESTED",
+  UPLOAD_LOAN_DOCUMENTS: "UPLD-LOAN-DOC",
+  LOAN_DOCUMENTS_UPLOADED: "LOAN-DOC-UPLOADED",
+  RESUBMIT_LOAN_DOCUMENTS: "RESUB-LOAN-DOC",
+  LOAN_DOCUMENTS_ACCEPTED: "LOAN-DOC-ACCEPTED",
+  LOAN_CONFIRMATION_PENDING: "LOAN-PEND",
+  LOAN_APPROVED: "LOAN-APPROVED",
+  LOAN_REJECTED: "LOAN-REJECTED",
+  PROGRAM_FEES_VERIFICATION_PENDING: "PROG-FEE-VER-PEND",
+  RESUBMIT_PROGRAM_FEE_PROOF: "RESUB-PROG-FEE-PROOF",
+  PROGRAM_FEE_ACCEPTED: "PROG-FEE-ACCEPTED",
+  ADMITTED_TO_PROGRAM: "INTAKE-ASSIGNMENT PENDING",
+  INTAKE_ASSIGNED: "INTAKE-ASSIGNED",
+  ENROLLED_BY_ADMISSION: "PROG-ADMITTED/ENROLLED",
+};
+export const PRORAM_FEE_BUTTON_STATUS = [
+  APPLICATION_STATUS.APPLICATION_FEE_VERIFICATION_PENDING,
+  APPLICATION_STATUS.RESUBMIT_APPLICATION_FEE_PROOF,
+  APPLICATION_STATUS.APPLICATION_FEE_PENDING,
+];
+export const UPLOAD_DOCUMENT_BUTTON_STATUS = [
+  APPLICATION_STATUS.APPLICATION_FEE_VERIFICATION_PENDING,
+  APPLICATION_STATUS.RESUBMIT_APPLICATION_FEE_PROOF,
+  APPLICATION_STATUS.ENROLLED_TO_APPLICATION,
+  APPLICATION_STATUS.APPLICATION_FEE_PENDING,
+  APPLICATION_STATUS.UPLOAD_BURSARY_DOCUMENTS,
+  APPLICATION_STATUS.RESUBMIT_APPLICATION_DOCUMENTS,
+];
+export const BURSARY_BUTTON_STATUS = [
+  CommonEnums.BURSARY_LETTER_PEND,
+  CommonEnums.RESUB_BURSARY_DOC,
+];
 
 export enum DocumentStatus {
   UploadPending = "upload pending",
   Approved = "approved",
   Submitted = "submitted",
   Rejected = "rejected",
+}
+export enum studyMode {
+  DAY = "DAY",
+  ONLINE = "ONLINE",
+  Weekend = "WEEKEND",
+  Fulltime = "FULLTIME",
+}
+
+export enum feeMode {
+  APPLICATION = "APPLICATION",
 }
 
 export const ErrorMessage = "Something went wrong please try again later";
@@ -71,25 +166,43 @@ export const CommonApi = {
   NATIONALITYSTATUS: "/nationality-status",
   AGENT_LIST: "/user/role/Sales",
   IDENTIFICATIONDOCUMENT: "/identification-Type",
+  EMAILCHECK: "/lead/check-duplicate-email",
+  STATE: "state",
 };
 
 export const RoutePaths = {
   Application_Form: "/student-registration-form/application-form",
-  Payment_Success: "/student-registration-form/student-payment-docs-success",
+  Payment_Success: "/payment/document-success",
   Document_Success: "/payment/document-upload-success",
+  Document_Save_Success: "/payment/document-save-success",
   APPLICATION_ENROLLED_SUCCESS: "/payment/application-enrolled-success",
-  Dashboard: "/student-registration-form/dashboard",
+  Dashboard: "/dashboard",
   StudentDashboard: "/dashboard",
   RMATView: "/rmat",
 };
 
+export const FeemodeCode = {
+  APPLICATION: "APPLICATION",
+};
+
 export const PaymentTypes = [
   {
-    name: "Payu",
-    value: "payu",
+    registerName: "paymentType",
+    name: "Ukheshe",
+    value: "ukheshe",
+    label: "",
   },
-  { name: "RazorPay", value: "razorpay" },
-  { name: "Stripe", value: "stripe" },
+  {
+    registerName: "paymentType",
+    name: "Offline",
+    value: "offline",
+    label: "Upload Payment Proof",
+  },
+  // {
+  //   registerName: "paymentType",
+  //   name: "Payu",
+  //   value: "payuForm",
+  // },
 ];
 
 export const AgentandSocialMedia = [

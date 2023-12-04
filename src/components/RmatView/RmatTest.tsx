@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { MainContainer, PaymentContainer } from "../payment/payment";
 import { GreenFormHeading } from "../common/common";
 import Header from "../common/header";
-import { AlertEnums, CommonApi, RoutePaths } from "../common/constant";
-import AlertBox from "../alert/Alert";
-import { GreenText } from "../student/style";
+import { CommonApi, RoutePaths } from "../common/constant";
+import rmatimage from "../../../public/assets/images/rmatlogo.png";
+import infoicon from "../../../public/assets/images/info.png";
+import Image from "next/image";
+
 import StyledButton from "../button/button";
 import { useRouter } from "next/router";
-import { MainContainer as ParentContainer } from "../../pages/student-registration-form/application-form";
 import { AuthApi } from "../../service/Axios";
-import DocumentUploadContainer from "../document/DocumentUploadContainer";
+import { MainContainer } from "../login/style";
 
 const RmatTest: React.FC = () => {
   const [userDetail, setUserDetail] = useState<any>(null);
@@ -49,75 +49,73 @@ const RmatTest: React.FC = () => {
   }, []);
 
   return (
-    <ParentContainer className="text-center">
+    <MainContainer className="text-center">
       <Header />
-      <div className="container-fluid w-75 mt-5">
-        <MainContainer style={{ paddingBottom: "1rem" }}>
-          <PaymentContainer>
-            <div className="row">
-              <div className="col-sm-12">
-                <div className="text-center mb-2">
-                  {/* <Image width="190" height="170" src={PayIcon} alt="payIcon" /> */}
-                </div>
-                <div className="text-center w-100">
-                  <GreenFormHeading style={{ fontSize: "24px" }}>
-                    RMAT Test Details
-                  </GreenFormHeading>
-                  <p>Your login credentials for the RMAT Test</p>
-                  <div className="mb-4 mt-2">
-                    <AlertBox
-                      style={{ width: "100%", maxWidth: "unset" }}
-                      severity={AlertEnums.INFO}
-                    >
-                      Team is waiting for your test result to proceed further
-                      admission process
-                    </AlertBox>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-4">
-                    <p>RMAT Test URL</p>
-                    <a href={userDetail?.url}>
-                      <GreenText>{userDetail?.url}</GreenText>
-                    </a>
-                  </div>
-                  <div className="col-4">
-                    <p>Username</p>
-                    <a href="#">
-                      <GreenText>{userDetail?.username}</GreenText>
-                    </a>
-                  </div>
-                  <div className="col-4">
-                    <p>Password</p>
-                    <strong>{userDetail?.password}</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </PaymentContainer>
-          <div className="mt-4 text-center">
-            <>
-              <StyledButton
-                className="mb-1"
-                type="button"
-                isGreenWhiteCombination={true}
-                title={"Back to Dashboard"}
-                onClick={() => {
-                  localStorage.setItem("leadData", "");
-                  sessionStorage.setItem("activeLeadDetail", "");
-                  router.push(RoutePaths.Dashboard);
-                }}
-              />
-              &nbsp;&nbsp;&nbsp;
-              <StyledButton
-                // onClick={onUploadDocument}
-                title={"Take RMAT Test"}
-              />
-            </>
+      <div
+        className="container-fluid w-50 mt-5 p-2"
+        style={{ background: "white" }}
+      >
+        <div className="text-center mb-2">
+          <Image width="100" height="100" src={rmatimage} alt={"PayIcon"} />
+        </div>
+        <div className="d-flex justify-content-center mb-3">
+          <div>
+            <GreenFormHeading style={{ fontSize: "24px" }}>
+              RMAT Test Details
+            </GreenFormHeading>
+            <strong>Your login credentials for the RMAT Test </strong>
           </div>
-        </MainContainer>
+        </div>
+        <div className="d-flex justify-content-center">
+          <div
+            className="mb-5  d-flex justify-content-center align-items-center w-75 rounded"
+            style={{
+              backgroundColor: "#dff1f6",
+              height: 55,
+            }}
+          >
+            <Image width="25" height="25" src={infoicon} alt={"PayIcon"} /> Team
+            is waiting for your test result to proceed further admission process
+          </div>
+        </div>
+        <div className="container">
+          <div className="row">
+            <div className="col-sm">
+              <div> RMAT Test URL</div>
+              <a href={userDetail?.url}>{userDetail?.url}</a>
+            </div>
+            <div className="col-sm">
+              <div>Username</div>
+              <strong>{userDetail?.username}</strong>
+            </div>
+            <div className="col-sm">
+              <div>Password</div>
+              <strong>{userDetail?.password}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-5 mb-3 text-center">
+          <>
+            <StyledButton
+              type="button"
+              isGreenWhiteCombination={true}
+              title={"Back to Dashboard"}
+              onClick={() => {
+                localStorage.setItem("leadData", "");
+                sessionStorage.setItem("activeLeadDetail", "");
+                router.push(RoutePaths.Dashboard);
+              }}
+            />
+            &nbsp;&nbsp;&nbsp;
+            <StyledButton
+              onClick={() => window.open("https://rmatuat.regenesys.net/")}
+              title={"Take RMAT Test"}
+            />
+          </>
+        </div>
       </div>
-    </ParentContainer>
+    </MainContainer>
   );
 };
 

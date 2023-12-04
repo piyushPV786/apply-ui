@@ -57,6 +57,7 @@ export interface IStudyModeQualification {
 export interface IStudyMode {
   studyModeCode: string;
   fees: IFee[];
+  description: string;
 }
 
 export interface IFee {
@@ -88,10 +89,11 @@ interface Education {
   socialMediaCode: string;
   agentCode: string;
   studyModeDetail?: any;
+  programName?: string;
   internationDegreeVal: string;
 }
 export interface Payment {
-  paymentProof: File[];
+  paymentProof: File & { typeCode: string }[];
   paymentType: null;
   selectedCurrency: string;
   managementDiscountCode: string;
@@ -127,6 +129,8 @@ interface Lead {
 }
 
 export interface IMasterData {
+  name: string;
+  code: string | number | readonly string[] | undefined;
   languageData: IOption[];
   relationData: IOption[];
   nationalityData: IOption[];
@@ -160,6 +164,7 @@ export interface IOption {
   deletedAt?: any;
   name: string;
   code: string;
+  category?: string;
 }
 
 export interface Mode {
@@ -179,6 +184,8 @@ export interface IApplication {
   lead: ILead;
   document: IDocument;
   studentCode: string;
+  username: string;
+  password: string;
 }
 
 export interface IDocument {
@@ -210,4 +217,8 @@ export interface ILead {
   language: string;
   race: null;
   enrollmentCode?: string;
+}
+
+export interface IDynamicObject {
+  [key: string]: any;
 }

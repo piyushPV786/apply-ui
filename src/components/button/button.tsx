@@ -6,9 +6,7 @@ import Image from "next/image";
 import EditIcon from "../../../public/assets/images/edit-icon.svg";
 import UploadIcon from "../../../public/assets/images/upload.svg";
 import PayIcon from "../../../public/assets/images/pay-pay.svg";
-import DownloadIcon from "../../../public/assets/images/download-white-icon.svg";
 import RmatImg from "../../../public/assets/images/rmat.png";
-import { useIsRouting } from "../../pages/_app";
 import { ArrowDownwardOutlined } from "@material-ui/icons";
 
 interface IButoonProps {
@@ -45,17 +43,16 @@ const StyledButton = ({
   form = "",
   ...rest
 }: IButoonProps) => {
-  const isRouting = useIsRouting();
   return (
     <MyButton
       {...rest}
-      disabled={isRouting || disabled}
+      disabled={disabled}
       roundBtn={roundBtn}
       isGreenWhiteCombination={isGreenWhiteCombination}
       style={style}
       className={className}
       type={type}
-      onClick={!isRouting && onClick}
+      onClick={onClick}
       form={form}
     >
       <>
@@ -80,12 +77,12 @@ const StyledButton = ({
           </span>
         )}
         {isDownloadBtn && (
-          <StyledDownloadIcon className="me-3 icon-additinal">
+          <StyledDownloadIcon className="me-1 icon-additinal">
             <ArrowDownwardOutlined />
             {/* <Image alt="download" src={DownloadIcon} width={18} height={18} /> */}
           </StyledDownloadIcon>
         )}
-        {isRouting ? "Loading..." : title}
+        {title}
       </>
     </MyButton>
   );

@@ -1,6 +1,5 @@
 import React from "react";
 import { GreenFormHeading } from "../common/common";
-import { PaymentContainer, MainContainer } from "../payment/payment";
 import Image from "next/image";
 import PayIcon from "../../../public/assets/images/pay.png";
 import Link from "next/link";
@@ -8,10 +7,12 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import StyledButton from "../button/button";
 import { RoutePaths } from "../common/constant";
+import { MainContainer, PaymentContainer } from "../login/style";
 
-export const LoginCredentials = (props: any) => {
+export const LoginCredentials = () => {
   const router = useRouter();
-  const url: any = process.env.Credential_Url + RoutePaths.StudentDashboard;
+  const url: any =
+    process.env.NEXT_PUBLIC_CREDENTIAL_URL + RoutePaths.StudentDashboard;
   return (
     <>
       <MainContainer style={{ paddingBottom: "1rem" }}>
@@ -43,18 +44,30 @@ export const LoginCredentials = (props: any) => {
                 <div className="text-center w-100">
                   <h6>Student Management System URL (SMS)</h6>
                   <Link href={url} target="blank">
-                    {process.env.Credential_Url + RoutePaths.StudentDashboard}
+                    {process.env.NEXT_PUBLIC_CREDENTIAL_URL +
+                      RoutePaths.StudentDashboard}
                   </Link>
                 </div>
               </div>
               <CredentialContainer>
                 <div className="text-center w-100">
                   <p>Username</p>
-                  <h5>Karn.Sharma@gmail.com</h5>
+                  <h5>
+                    {typeof window !== "undefined" &&
+                      JSON.parse(
+                        sessionStorage.getItem("activeLeadDetail") as any
+                      ).username}
+                  </h5>
                 </div>
                 <div className="text-center w-100">
                   <p>Password</p>
-                  <h5>wp9dh%sKgK</h5>
+                  <h5>
+                    {" "}
+                    {typeof window !== "undefined" &&
+                      JSON.parse(
+                        sessionStorage.getItem("activeLeadDetail") as any
+                      ).password}
+                  </h5>
                 </div>
               </CredentialContainer>
               <ButtonContainer>

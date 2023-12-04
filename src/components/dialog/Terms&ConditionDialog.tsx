@@ -2,7 +2,7 @@
 
 // ** React Imports
 
-import { Ref, useState, forwardRef, ReactElement, useEffect } from "react";
+import { useState } from "react";
 
 //**  API Services
 
@@ -18,42 +18,58 @@ import {
 } from "@mui/material";
 
 import StyledButton from "../../components/button/button";
+import ApplicationFormServices from "../../services/applicationForm";
 // ** Third Party Library
 
+import { useFormContext } from "react-hook-form";
+import useAxiosInterceptor from "../../service/Axios";
+
 export const EditGroup = ({
+  showTerms,
+  onClickShowTerms,
   updateTermsConditions,
-  termsOpen,
-  termsHandelClose,
-  termsHandelOpen,
+  name,
+  email,
 }) => {
   // ** States
-  const [dialogShow, setDialogShow] = useState(false);
+
+  const acceptTermAndCondition = async () => {
+    const response = await ApplicationFormServices?.getTermsAndConditionFile(
+      name,
+      email
+    );
+    const blobFile = new Blob([response], {
+      type: "application/pdf",
+    });
+
+    const fileURL = URL.createObjectURL(blobFile);
+    updateTermsConditions(true);
+    onClickShowTerms();
+    window.open(fileURL);
+  };
 
   return (
     <Grid>
-      <label className="form-check-label">
+      <label className="form-check-label terms-conditions">
         I have read and agreed to
         <a
-          style={{ color: "Green", fontWeight: "bold" }}
+          style={{ color: "Green", fontFamily: "roboto-medium" }}
           href="#"
           onClick={() => {
-            termsHandelOpen();
+            onClickShowTerms();
           }}
         >
           {" "}
-          Terms and Conditions
+          terms and conditions
         </a>
       </label>
 
-      <Dialog
-        fullWidth
-        open={dialogShow || termsOpen}
-        maxWidth="xl"
-        scroll="body"
-        onClose={() => termsHandelClose}
-      >
+      <Dialog open={showTerms} scroll="body" onClose={() => onClickShowTerms}>
         <Box sx={{ mt: 5, textAlign: "center" }}>
-          <Typography variant="h5" sx={{ mb: 3, lineHeight: "2rem" }}>
+          <Typography
+            className="popup-title"
+            sx={{ mb: 3, lineHeight: "2rem" }}
+          >
             Terms and Conditions
           </Typography>
         </Box>
@@ -1914,23 +1930,30 @@ export const EditGroup = ({
               </div>
             </div>
           </Box>
+
+          <div className="mt-5">
+            <Typography>
+              Note (Please Enter Firstname Lastname and Emailaddress to accept
+              terms and conditions)
+            </Typography>
+          </div>
         </Grid>
 
-        <DialogActions
-          sx={{ pb: { xs: 8, sm: 12.5 }, justifyContent: "center" }}
-        >
+        <DialogActions sx={{ pb: { xs: 2, sm: 2 }, justifyContent: "center" }}>
           <StyledButton
             type="button"
             isGreenWhiteCombination={true}
             onClick={() => {
               updateTermsConditions(false);
+              onClickShowTerms();
             }}
             title={"Decline"}
           />
           <StyledButton
+            disabled={!name || !email}
             title={"Accept"}
             onClick={() => {
-              updateTermsConditions(true);
+              acceptTermAndCondition();
             }}
           />
         </DialogActions>

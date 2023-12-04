@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Grid } from "@material-ui/core";
-import { StyledLink } from "../student/login";
+import { StyledLink } from "../login/style";
 import { useRouter } from "next/router";
 import RbsLogo from "../../../public/assets/images/RBS_logo_2_white.png";
 import Image from "next/image";
-import { RoutePaths } from "./constant";
+import { RoutePaths, StorageName } from "./constant";
+import { getLocalStorageData } from "../../Util/Util";
 
 const Header = (props: any) => {
   const [studentMob, setStudentMob] = useState<string>("");
@@ -13,20 +14,17 @@ const Header = (props: any) => {
 
   useEffect(() => {
     if (window) {
-      const studentMobileNumber =
-        window &&
-        window !== undefined &&
-        JSON.parse(sessionStorage?.getItem("studentMobile") as any)
-          ?.mobileNumber;
-      setStudentMob(studentMobileNumber);
+      const studentDetail: any = getLocalStorageData(
+        StorageName?.STUDENT_DETAIL
+      );
+      if (studentDetail?.mobileNumber) {
+        setStudentMob(`+${studentDetail?.mobileNumber}`);
+      }
     }
   }, [props]);
   const exitApp = () => {
-    sessionStorage.clear();
-    localStorage.clear();
-    setTimeout(() => {
-      router.push("/");
-    }, 1000);
+    window.localStorage.clear();
+    router.push("/");
   };
   return (
     <>
@@ -35,19 +33,17 @@ const Header = (props: any) => {
           <>
             <div className="row align-items-center">
               <div className="col-md-6">
-                <LogoContainer
-                  onClick={() => router.push(RoutePaths.Dashboard)}
-                >
+                <LogoContainer onClick={() => router.push("/dashboard")}>
                   <div
                     style={{
-                      borderRight: "3px solid white",
+                      borderRight: "2px solid white",
                       color: "white",
                       paddingRight: "0.5rem",
                     }}
                   >
                     <Image src={RbsLogo} width="180" alt={"RbsLogo"} />
                   </div>
-                  <div>
+                  <div className="d-flex align-items-center">
                     <CustomStyledLink>
                       Regenesys Application Form
                     </CustomStyledLink>
@@ -57,7 +53,7 @@ const Header = (props: any) => {
               <div className="col-md-6">
                 <UserInfoConatiner>
                   <div className="mobNum" style={{ color: "white" }}>
-                    Hi {studentMob}
+                    Hi, <span>{studentMob}</span>
                   </div>
                   <div onClick={exitApp}>
                     <CustomStyledLink className="logout-text">
@@ -97,17 +93,12 @@ const LogoContainer = styled.div`
 const UserInfoConatiner = styled.div`
   text-align: right;
   .mobNum {
-    font-size: 16px;
-  }
-  @media (max-width: 510px) {
-    .mobNum {
-      font-size: 14px;
-    }
+    font-size: 13px;
   }
 `;
 
 const CustomStyledLink = styled(StyledLink)`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   font-family: Roboto;
   color: #ffd600 !important;
