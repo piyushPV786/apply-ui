@@ -31,6 +31,7 @@ export const GreenFormHeading = styled.p`
 export const StyledSpan = styled.span`
   --bs-text-opacity: 1;
   color: rgba(var(--bs-danger-rgb), var(--bs-text-opacity)) !important;
+  position: unset !important ;
 `;
 
 export const StyledMessage = (props: any) => {
