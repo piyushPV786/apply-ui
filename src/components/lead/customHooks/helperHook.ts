@@ -100,6 +100,15 @@ export const useHelperHook = (masterData, watch, setError) => {
         isInternationDegree:
           data.education.isInternationDegree === "yes" ? true : false,
       },
+      sponsor:
+        data.sponsor.isSponsor === "yes"
+          ? {
+              ...data.sponsor,
+              zipCode: null,
+            }
+          : {
+              ...data.sponsor,
+            },
     };
 
     if (
