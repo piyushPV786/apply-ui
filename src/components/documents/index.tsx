@@ -44,7 +44,7 @@ const DocumentUploadPage = (props) => {
             <Grid sm={9}>
               <StepperComponent active={1} />
             </Grid>
-            <Grid container sm={9}>
+            <Grid container sm={10}>
               <Grid item sm={9} sx={{ padding: 2 }}>
                 <StyledMessage />
                 {masterData?.documentFormData?.map(
@@ -57,7 +57,7 @@ const DocumentUploadPage = (props) => {
                     )
                 )}
               </Grid>
-              <Grid item sm={3} sx={{ padding: 2 }}>
+              <Grid item sm={3} className="pt-3">
                 <Box className="sticky-wrapper">
                   <Card className="p-2 mt-5">
                     <Box className="d-flex justify-content-center flex-column">
