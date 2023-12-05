@@ -81,7 +81,10 @@ const ProgramFees = (props) => {
             <label>Fee Mode</label>
             <Grid>
               {studyModes?.fees?.map((item, index) => {
-                if (item?.feeMode !== feeMode.APPLICATION) {
+                if (
+                  item?.feeMode !== feeMode.APPLICATION &&
+                  item?.feeMode !== feeMode.TOTAL
+                ) {
                   return (
                     <div className="form-check form-check-inline">
                       <input
