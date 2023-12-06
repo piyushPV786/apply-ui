@@ -5,6 +5,7 @@ import StepperComponent from "../../components/stepper/stepper";
 import StyledButton from "../button/button";
 import { StyledMessage } from "../common/common";
 import Header from "../common/header";
+import { docType } from "./context/common";
 
 import { FormProvider, useForm } from "react-hook-form";
 import React, { useEffect } from "react";
