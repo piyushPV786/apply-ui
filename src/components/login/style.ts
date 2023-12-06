@@ -53,10 +53,9 @@ export const StyleFooter = styled.div`
 export const ApplicationFormContainer = styled.div<any>`
   text-align: center;
   background: #ffffff;
-  padding: 30px;
+  padding: 18px;
   max-width: 420px;
   border-radius: 5px;
-  margin-top: 16px;
   @media (max-width: 480px) {
     top: ${({ isProceed }) => (isProceed ? "62%" : "55%")};
     margin: 15px;
