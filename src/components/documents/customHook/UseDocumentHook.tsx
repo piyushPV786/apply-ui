@@ -8,7 +8,7 @@ import {
   docType,
 } from "../context/common";
 import { useRouter } from "next/router";
-import { documentPayload, viewProofDetails } from "./helper";
+import { documentPayload, signedUrlPayload, viewProofDetails } from "./helper";
 import { CommonEnums } from "../../common/constant";
 
 interface documentTypeApiResponseType {
@@ -99,12 +99,26 @@ export const ActionDocumentSubmit = () => {
       masterData?.userDetails?.applicationCode
     );
 
-    const result = await response?.map(async (url, index) => {
-      return await DocumentServices.uploadDocumentToAws(
-        url,
-        payload?.files[index].file
+    const changePayload = signedUrlPayload(response, payload);
+    if (changePayload) {
+      const result = await Promise.all(
+        changePayload?.map(async (item) => {
+          const response = await DocumentServices?.getFileSignUrl(
+            item?.fileName,
+            item?.filetype,
+            item?.studentCode
+          );
+          return await DocumentServices.uploadDocumentToAws(
+            response,
+            item.file
+          );
+        })
       );
-    });
+
+      dashboardRedirectStatus.includes(masterData?.userDetails?.status)
+        ? router.push(`/dashboard`)
+        : router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
+    }
   };
 
   const saveAsDraft = (data, masterData) => {
@@ -139,10 +153,6 @@ export const ActionDocumentSubmit = () => {
     const payload = documentPayload(data, false, masterData);
     if (payload) {
       uploadFiles(payload, masterData);
-
-      dashboardRedirectStatus.includes(masterData?.userDetails?.status)
-        ? router.push(`/dashboard`)
-        : router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
     }
   };
 

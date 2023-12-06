@@ -1,3 +1,4 @@
+import React from "react";
 import { Grid } from "@mui/material";
 import { ContentCard, StudentIdCard } from "../login/style";
 import { Green } from "../common/common";

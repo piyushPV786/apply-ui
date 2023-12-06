@@ -57,6 +57,12 @@ class DocumentApplicationServices {
     return response?.data?.data ? response?.data?.data : null;
   }
 
+  async getFileSignUrl(fileName, filetype, studentCode) {
+    const url = `${this.commonBaseUrl}document/upload?filename=${fileName}&filetype=${filetype}&&studentCode=${studentCode}`;
+    const response = await apiServer.get(url);
+    return response?.data?.data ? response?.data?.data : null;
+  }
+
   async DocumentType() {
     const url = `${this.commonBaseUrl}${apiEndPoint?.commonDocuments}?projectDocument=false`;
     const response = await apiServer.get(url);
