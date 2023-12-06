@@ -47,15 +47,16 @@ const DocumentUploadPage = (props) => {
             <Grid container sm={10}>
               <Grid item sm={9} sx={{ padding: 2 }}>
                 <StyledMessage />
-                {masterData?.documentFormData?.map(
-                  (element) =>
-                    element.required && (
+                {masterData?.documentFormData?.map((element) => {
+                  if (element?.required || element?.code == docType.MATRIC) {
+                    return (
                       <DocumentUploadContainer
                         element={element}
                         masterData={masterData}
                       />
-                    )
-                )}
+                    );
+                  }
+                })}
               </Grid>
               <Grid item sm={3} className="pt-3">
                 <Box className="sticky-wrapper">

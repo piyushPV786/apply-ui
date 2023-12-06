@@ -5,6 +5,7 @@ import {
   mbaDocs,
   bursarryFeilds,
   dashboardRedirectStatus,
+  docType,
 } from "../context/common";
 import { useRouter } from "next/router";
 import { documentPayload, viewProofDetails } from "./helper";
@@ -25,7 +26,7 @@ export const UseDocumentHook = (applicationCode) => {
 
   const convertDataToFormData = (documentTypes, userInfo) => {
     const result = documentTypes?.map((element) => {
-      if (element.code === "BURSARYLETTER") {
+      if (element.code === docType?.BURSARYLETTER) {
         return {
           name: element?.name,
           label: `${element?.name} and Details`,
@@ -37,6 +38,13 @@ export const UseDocumentHook = (applicationCode) => {
           name: element?.name,
           label: element?.name,
           required: userInfo?.education?.programCode === "MBA",
+          code: element.code,
+        };
+      } else if (element.code === docType.MATRIC) {
+        return {
+          name: element?.name,
+          label: element?.name,
+          required: false,
           code: element.code,
         };
       } else {
