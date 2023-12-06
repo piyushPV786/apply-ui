@@ -5,6 +5,7 @@ import {
   mbaDocs,
   bursarryFeilds,
   dashboardRedirectStatus,
+  docType,
 } from "../context/common";
 import { useRouter } from "next/router";
 import { documentPayload, viewProofDetails } from "./helper";
@@ -25,12 +26,13 @@ export const UseDocumentHook = (applicationCode) => {
 
   const convertDataToFormData = (documentTypes, userInfo) => {
     const result = documentTypes?.map((element) => {
-      if (element.code === "BURSARYLETTER") {
+      if (element.code === docType?.BURSARYLETTER) {
         return {
           name: element?.name,
           label: `${element?.name} and Details`,
           required: BURSARY_BUTTON_STATUS.includes(userInfo?.status),
           code: element.code,
+          show: BURSARY_BUTTON_STATUS.includes(userInfo?.status),
         };
       } else if (mbaDocs.includes(element.code)) {
         return {
@@ -38,6 +40,15 @@ export const UseDocumentHook = (applicationCode) => {
           label: element?.name,
           required: userInfo?.education?.programCode === "MBA",
           code: element.code,
+          show: userInfo?.education?.programCode === "MBA",
+        };
+      } else if (element.code === docType.MATRIC) {
+        return {
+          name: element?.name,
+          label: element?.name,
+          required: false,
+          code: element.code,
+          show: true,
         };
       } else {
         return {
@@ -45,6 +56,7 @@ export const UseDocumentHook = (applicationCode) => {
           label: element?.name,
           required: true,
           code: element.code,
+          show: true,
         };
       }
     });

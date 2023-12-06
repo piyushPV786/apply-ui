@@ -5,6 +5,7 @@ import StepperComponent from "../../components/stepper/stepper";
 import StyledButton from "../button/button";
 import { StyledMessage } from "../common/common";
 import Header from "../common/header";
+import { docType } from "./context/common";
 
 import { FormProvider, useForm } from "react-hook-form";
 import React, { useEffect } from "react";
@@ -47,15 +48,16 @@ const DocumentUploadPage = (props) => {
             <Grid container sm={10}>
               <Grid item sm={9} sx={{ padding: 2 }}>
                 <StyledMessage />
-                {masterData?.documentFormData?.map(
-                  (element) =>
-                    element.required && (
+                {masterData?.documentFormData?.map((element) => {
+                  if (element?.show) {
+                    return (
                       <DocumentUploadContainer
                         element={element}
                         masterData={masterData}
                       />
-                    )
-                )}
+                    );
+                  }
+                })}
               </Grid>
               <Grid item sm={3} className="pt-3">
                 <Box className="sticky-wrapper">

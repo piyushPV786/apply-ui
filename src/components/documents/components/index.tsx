@@ -243,7 +243,7 @@ export const DocumentStatus = ({ masterData }) => {
             <DeclarationListitems
               text={item?.name}
               code={item?.code}
-              isRequired={item?.required}
+              isShow={item?.show}
             />
           ))}
         </List>
@@ -254,7 +254,7 @@ export const DocumentStatus = ({ masterData }) => {
         </Typography>
         <List>
           {documentCriteria.map(({ text }: any) => (
-            <DeclarationListitems text={text} isRequired={true} />
+            <DeclarationListitems text={text} isShow={true} />
           ))}
         </List>
       </Card>
