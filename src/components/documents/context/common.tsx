@@ -85,11 +85,11 @@ export const ShortTypography = styled(Typography)<any>(() => ({
 }));
 
 export const DeclarationListitems = (props) => {
-  const { text, code, isRequired } = props;
+  const { text, code, isShow } = props;
 
   const { watch } = useFormContext();
 
-  if (isRequired) {
+  if (isShow) {
     return (
       <ListItem
         key={text}

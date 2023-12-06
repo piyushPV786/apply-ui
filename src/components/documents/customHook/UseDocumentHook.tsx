@@ -32,6 +32,7 @@ export const UseDocumentHook = (applicationCode) => {
           label: `${element?.name} and Details`,
           required: BURSARY_BUTTON_STATUS.includes(userInfo?.status),
           code: element.code,
+          show: BURSARY_BUTTON_STATUS.includes(userInfo?.status),
         };
       } else if (mbaDocs.includes(element.code)) {
         return {
@@ -39,6 +40,7 @@ export const UseDocumentHook = (applicationCode) => {
           label: element?.name,
           required: userInfo?.education?.programCode === "MBA",
           code: element.code,
+          show: userInfo?.education?.programCode === "MBA",
         };
       } else if (element.code === docType.MATRIC) {
         return {
@@ -54,6 +56,7 @@ export const UseDocumentHook = (applicationCode) => {
           label: element?.name,
           required: true,
           code: element.code,
+          show: true,
         };
       }
     });
