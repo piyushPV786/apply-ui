@@ -229,7 +229,7 @@ export const HandleAction = ({ element, masterData }) => {
 export const DocumentStatus = ({ masterData }) => {
   return (
     <>
-      <Card className="mt-3 p-1">
+      <Card className="mt-3 ">
         <Typography
           textAlign="left"
           component="header"

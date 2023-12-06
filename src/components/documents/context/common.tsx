@@ -79,8 +79,9 @@ export const documentCriteria = [
 // comon document page used components //
 
 export const ShortTypography = styled(Typography)<any>(() => ({
-  fontSize: "9px !important",
+  fontSize: "13px !important",
   fontWeight: "700px ! important",
+  maxWidth: "122px",
 }));
 
 export const DeclarationListitems = (props) => {
@@ -101,7 +102,13 @@ export const DeclarationListitems = (props) => {
       >
         <ListItemText
           id={text}
-          primary={<ShortTypography className="h6">{text}</ShortTypography>}
+          primary={
+            code ? (
+              <ShortTypography className="h6">{text}</ShortTypography>
+            ) : (
+              <Typography className="h6">{text}</Typography>
+            )
+          }
         />
         {code && (
           <ShortTypography
