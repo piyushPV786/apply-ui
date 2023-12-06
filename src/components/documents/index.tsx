@@ -49,7 +49,7 @@ const DocumentUploadPage = (props) => {
               <Grid item sm={9} sx={{ padding: 2 }}>
                 <StyledMessage />
                 {masterData?.documentFormData?.map((element) => {
-                  if (element?.required || element?.code == docType.MATRIC) {
+                  if (element?.required || element?.show) {
                     return (
                       <DocumentUploadContainer
                         element={element}

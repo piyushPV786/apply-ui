@@ -46,6 +46,7 @@ export const UseDocumentHook = (applicationCode) => {
           label: element?.name,
           required: false,
           code: element.code,
+          show: true,
         };
       } else {
         return {
