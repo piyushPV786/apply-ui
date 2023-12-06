@@ -173,3 +173,24 @@ const getTotalFeeAmount = (feesList) => {
   }
   return result;
 };
+
+export const signedUrlPayload = (response, payload, studentCode) => {
+  const signPayload: any = [];
+  if (payload?.files) {
+    payload?.files?.forEach((element, index) => {
+      const ext = element?.fileName?.split(".").pop();
+      const document = response?.find(
+        (item) => item?.documenttypeCode === element?.documentTypeCode
+      );
+      if (document) {
+        signPayload?.push({
+          fileName: `${document?.documentCode}.${ext}`,
+          filetype: `${ext}`,
+          studentCode: studentCode,
+          file: element?.files,
+        });
+      }
+    });
+  }
+  return signPayload;
+};

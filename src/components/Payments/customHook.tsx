@@ -10,6 +10,7 @@ import {
   getUkheshePayload,
   getStatusPayload,
   bursaryFeeCalculation,
+  signedUrlPayload,
 } from "./helper";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
@@ -329,16 +330,26 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       masterData?.applicationData?.applicationCode
     );
 
-    if (response) {
-      const res = [];
-      response?.forEach((element, index) => {
-        res.push(
-          uploadDocumentsToAws(element, payload?.files[index]?.files) as never
-        );
-      });
-
-      const uploadDone = await Promise?.all(res);
-      uploadDone && router.push("/payment/success");
+    const changePayload = signedUrlPayload(
+      response,
+      payload,
+      masterData?.applicationData?.studentCode
+    );
+    if (changePayload) {
+      const result = await Promise.all(
+        changePayload?.map(async (item) => {
+          const response = await DocumentServices?.getFileSignUrl(
+            item?.fileName,
+            item?.filetype,
+            item?.studentCode
+          );
+          return await DocumentServices.uploadDocumentToAws(
+            response,
+            item.file
+          );
+        })
+      );
+      router.push("/payment/success");
     }
   };
   return {
