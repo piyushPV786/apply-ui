@@ -44,6 +44,8 @@ export const status = {
   ADMISSION_REJECT: "Admission Rejected",
 };
 
+export const docRejectStatus = ["SALES_REJECT", "ADMISSION_REJECT"];
+
 export const disableStatus = ["SALES_APPROVED", "ADMISSION_APPROVED"];
 
 export const statusColor = {
