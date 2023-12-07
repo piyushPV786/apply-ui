@@ -57,6 +57,12 @@ class DocumentApplicationServices {
     return response?.data?.data ? response?.data?.data : null;
   }
 
+  async getFileSignUrl(fileName, filetype, studentCode) {
+    const url = `${this.commonBaseUrl}document/upload?filename=${fileName}&filetype=${filetype}&&studentCode=${studentCode}`;
+    const response = await apiServer.get(url);
+    return response?.data?.data ? response?.data?.data : null;
+  }
+
   async DocumentType() {
     const url = `${this.commonBaseUrl}${apiEndPoint?.commonDocuments}?projectDocument=false`;
     const response = await apiServer.get(url);
@@ -90,7 +96,11 @@ class DocumentApplicationServices {
   }
 
   async uploadDocumentToAws(url, files) {
-    const response = await axios.put(url, files);
+    const response = await apiServer.put(url, files, {
+      headers: {
+        "X-AWS-Skip-Token": true,
+      },
+    });
     return response?.data ? response?.data : null;
   }
 }

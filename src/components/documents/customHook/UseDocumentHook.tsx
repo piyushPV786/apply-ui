@@ -5,9 +5,10 @@ import {
   mbaDocs,
   bursarryFeilds,
   dashboardRedirectStatus,
+  docType,
 } from "../context/common";
 import { useRouter } from "next/router";
-import { documentPayload, viewProofDetails } from "./helper";
+import { documentPayload, signedUrlPayload, viewProofDetails } from "./helper";
 import { CommonEnums } from "../../common/constant";
 
 interface documentTypeApiResponseType {
@@ -25,12 +26,13 @@ export const UseDocumentHook = (applicationCode) => {
 
   const convertDataToFormData = (documentTypes, userInfo) => {
     const result = documentTypes?.map((element) => {
-      if (element.code === "BURSARYLETTER") {
+      if (element.code === docType?.BURSARYLETTER) {
         return {
           name: element?.name,
           label: `${element?.name} and Details`,
           required: BURSARY_BUTTON_STATUS.includes(userInfo?.status),
           code: element.code,
+          show: BURSARY_BUTTON_STATUS.includes(userInfo?.status),
         };
       } else if (mbaDocs.includes(element.code)) {
         return {
@@ -38,6 +40,15 @@ export const UseDocumentHook = (applicationCode) => {
           label: element?.name,
           required: userInfo?.education?.programCode === "MBA",
           code: element.code,
+          show: userInfo?.education?.programCode === "MBA",
+        };
+      } else if (element.code === docType.MATRIC) {
+        return {
+          name: element?.name,
+          label: element?.name,
+          required: false,
+          code: element.code,
+          show: true,
         };
       } else {
         return {
@@ -45,6 +56,7 @@ export const UseDocumentHook = (applicationCode) => {
           label: element?.name,
           required: true,
           code: element.code,
+          show: true,
         };
       }
     });
@@ -87,12 +99,26 @@ export const ActionDocumentSubmit = () => {
       masterData?.userDetails?.applicationCode
     );
 
-    const result = await response?.map(async (url, index) => {
-      return await DocumentServices.uploadDocumentToAws(
-        url,
-        payload?.files[index].file
+    const changePayload = signedUrlPayload(response, payload);
+    if (changePayload) {
+      const result = await Promise.all(
+        changePayload?.map(async (item) => {
+          const response = await DocumentServices?.getFileSignUrl(
+            item?.fileName,
+            item?.filetype,
+            item?.studentCode
+          );
+          return await DocumentServices.uploadDocumentToAws(
+            response,
+            item.file
+          );
+        })
       );
-    });
+
+      dashboardRedirectStatus.includes(masterData?.userDetails?.status)
+        ? router.push(`/dashboard`)
+        : router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
+    }
   };
 
   const saveAsDraft = (data, masterData) => {
@@ -127,10 +153,6 @@ export const ActionDocumentSubmit = () => {
     const payload = documentPayload(data, false, masterData);
     if (payload) {
       uploadFiles(payload, masterData);
-
-      dashboardRedirectStatus.includes(masterData?.userDetails?.status)
-        ? router.push(`/dashboard`)
-        : router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
     }
   };
 

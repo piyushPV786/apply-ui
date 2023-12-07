@@ -5,6 +5,7 @@ import {
   SuccessMsgContainer,
   ToasterContainer,
 } from "../login/style";
+
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import { Snackbar } from "@material-ui/core";
 import { CommonEnums } from "./constant";
@@ -26,6 +27,22 @@ export const GreenFormHeading = styled.p`
     }
   }
 `;
+
+export const StyledSpan = styled.span`
+  --bs-text-opacity: 1;
+  color: rgba(var(--bs-danger-rgb), var(--bs-text-opacity)) !important;
+  position: unset !important ;
+`;
+
+export const StyledMessage = (props: any) => {
+  return (
+    <label className="form-label">
+      All the documents with
+      <StyledSpan className="text-danger"> * </StyledSpan>
+      are Required.
+    </label>
+  );
+};
 
 export const Green = "#008554";
 export const DefaultGrey = "#dde1e3";

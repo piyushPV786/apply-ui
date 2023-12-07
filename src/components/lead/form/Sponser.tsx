@@ -19,6 +19,7 @@ import SponsorField from "./components/SponsorField";
 import { isValidEmail } from "../../../Util/Util";
 import { MobileField } from "./components/MobileField";
 import { useEffect, useState } from "react";
+import NumberField from "./components/NumberField";
 
 const Sponsor = (props: any) => {
   const {
@@ -109,21 +110,30 @@ const Sponsor = (props: any) => {
                   )}
                   {sponsorType && (
                     <>
-                      {element?.type === "text" ? (
+                      {element?.type === "text" && (
                         <TextField
                           element={element}
                           Errors={Errors}
                           registerName={`sponsor.${element?.name}`}
                         />
-                      ) : (
-                        element?.type === "textWithSpace" && (
-                          <SponsorField
-                            element={element}
-                            Errors={Errors}
-                            registerName={`sponsor.${element?.name}`}
-                          />
-                        )
                       )}
+
+                      {element?.type === "textWithSpace" && (
+                        <SponsorField
+                          element={element}
+                          Errors={Errors}
+                          registerName={`sponsor.${element?.name}`}
+                        />
+                      )}
+
+                      {element?.type === "number" && (
+                        <NumberField
+                          element={element}
+                          Errors={Errors}
+                          registerName={`sponsor.${element?.name}`}
+                        />
+                      )}
+
                       {element?.type === "select" &&
                         element?.key !== "state" && (
                           <div className="col-lg-4 mb-4">

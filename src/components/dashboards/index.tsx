@@ -18,7 +18,7 @@ const ApplicationDashboard = () => {
           <div style={{ paddingBottom: "1rem" }}>
             <PaymentContainer>
               {applicationData?.length === 0 && <NoApplication />}
-              {applicationData?.length > 0 && (
+              {applicationData && applicationData?.length > 0 && (
                 <div className="row">
                   <div className="col-md-8">
                     <h2 className="app-header">My Applications</h2>
@@ -27,7 +27,7 @@ const ApplicationDashboard = () => {
                       Regenesys
                     </p>
                   </div>
-                  <div className="col-md-4 d-flex align-items-start justify-content-end">
+                  {/* <div className="col-md-4 d-flex align-items-start justify-content-end">
                     <div className="d-flex justify-content-end">
                       <StyledButton
                         onClick={() => {
@@ -37,10 +37,10 @@ const ApplicationDashboard = () => {
                         title="Apply a New Application"
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               )}
-              {applicationData?.length > 0 && (
+              {applicationData && applicationData?.length > 0 && (
                 <div className="row">
                   {applicationData?.map((applicationDetail) => (
                     <div className="col-md-6 mb-2">

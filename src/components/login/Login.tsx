@@ -115,7 +115,7 @@ const StudentLogin = () => {
   const EnterMobNumber = () => {
     return (
       <div>
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           <Grid item xs={12}>
             <Item>
               <Title className="login-title">Login with mobile number</Title>
@@ -123,7 +123,6 @@ const StudentLogin = () => {
           </Grid>
           <Grid item xs={12}>
             <Item>
-              {" "}
               <span className="login-text">
                 Enter your mobile number and we will send you an OTP to verify
               </span>
@@ -131,7 +130,6 @@ const StudentLogin = () => {
           </Grid>
           <Grid item xs={12}>
             <Item>
-              {" "}
               <PhoneInput
                 id="login1"
                 international
@@ -151,7 +149,6 @@ const StudentLogin = () => {
           </Grid>
           <Grid item xs={12}>
             <Item>
-              {" "}
               <StyledButton
                 disabled={!isNumberValid}
                 onClick={(e) => {
@@ -185,7 +182,6 @@ const StudentLogin = () => {
           </Grid>
           <Grid item xs={12}>
             <Item>
-              {" "}
               <OtpInput
                 value={otp}
                 valueLength={4}
@@ -232,6 +228,7 @@ const StudentLogin = () => {
                 onClick={() => {
                   setOtp("");
                   setIsOtp(false);
+                  setErrorMsg(null);
                 }}
               >
                 Change Mobile Number
@@ -247,7 +244,7 @@ const StudentLogin = () => {
     <>
       <ImageContainer>
         <>
-          <div className="login-spacing">
+          <div className="mt-3">
             <Heading>
               <div>
                 <Image className="login-logo" src={RBSLogo} alt="rbsLogo" />

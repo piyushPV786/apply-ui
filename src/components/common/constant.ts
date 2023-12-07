@@ -123,6 +123,7 @@ export enum studyMode {
 
 export enum feeMode {
   APPLICATION = "APPLICATION",
+  TOTAL = "TOTAL",
 }
 
 export const ErrorMessage = "Something went wrong please try again later";

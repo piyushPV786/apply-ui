@@ -15,6 +15,7 @@ import { FeeCard } from "./components/CommonComponents";
 import RadioField from "./components/RadioField";
 import { useEducationHook } from "../customHooks/educationHooks";
 import { useEffect } from "react";
+import { feeMode } from "../../common/constant";
 
 const Education = (props: any) => {
   const {
@@ -98,9 +99,10 @@ const Education = (props: any) => {
                 <StyleContainer className="fee-cards">
                   {feesDetails && feesDetails?.fees && (
                     <div className="row">
-                      {feesDetails?.fees?.map((item) => (
-                        <FeeCard item={item} />
-                      ))}
+                      {feesDetails?.fees?.map((item) => {
+                        if (item?.feeMode != feeMode?.TOTAL)
+                          return <FeeCard item={item} />;
+                      })}
                     </div>
                   )}
                 </StyleContainer>

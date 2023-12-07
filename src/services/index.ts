@@ -77,6 +77,7 @@ export const updateInterceptors = (callback) => {
 
       if (
         config.headers &&
+        !config.headers["X-AWS-Skip-Token"] &&
         window.localStorage.getItem(StorageName?.ACCESS_TOKEN)
       ) {
         config.headers["Authorization"] = `Bearer ${window.localStorage.getItem(

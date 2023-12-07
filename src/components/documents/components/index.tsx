@@ -1,12 +1,14 @@
 import { Box, Card, Grid, IconButton, List, Typography } from "@mui/material";
+import Alert from "@mui/material/Alert";
 import { FileUploadContainer, InnerContainer } from "../../login/style";
 import { MobileField } from "../../lead/form/components/MobileField";
 import { useState } from "react";
 import "react-phone-number-input/style.css";
 import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
-
+import { docRejectStatus } from "../context/common";
 import StyledButton from "../../button/button";
 import { StyledLabel } from "../../common/common";
+import AlertTitle from "@mui/material/AlertTitle";
 import {
   DeclarationListitems,
   disableStatus,
@@ -154,6 +156,23 @@ export const FileRegister = ({ element }) => {
   );
 };
 
+export const Reject = ({ element }) => {
+  const { watch } = useFormContext();
+  return (
+    docRejectStatus?.includes(watch(element?.code)?.status) &&
+    watch(element?.code)?.comment && (
+      <Grid item sm={12} xs={12}>
+        <Alert severity="error" variant="standard" className="errorColor">
+          <AlertTitle>Reason for Rejection </AlertTitle>
+          <Typography className="mr-2">
+            {watch(element?.code)?.comment}
+          </Typography>
+        </Alert>
+      </Grid>
+    )
+  );
+};
+
 export const ErrorHandling = ({ element, masterData }) => {
   const {
     formState: { errors },
@@ -229,7 +248,7 @@ export const HandleAction = ({ element, masterData }) => {
 export const DocumentStatus = ({ masterData }) => {
   return (
     <>
-      <Card className="mt-3 p-1">
+      <Card className="mt-3 ">
         <Typography
           textAlign="left"
           component="header"
@@ -243,7 +262,7 @@ export const DocumentStatus = ({ masterData }) => {
             <DeclarationListitems
               text={item?.name}
               code={item?.code}
-              isRequired={item?.required}
+              isShow={item?.show}
             />
           ))}
         </List>
@@ -254,7 +273,7 @@ export const DocumentStatus = ({ masterData }) => {
         </Typography>
         <List>
           {documentCriteria.map(({ text }: any) => (
-            <DeclarationListitems text={text} isRequired={true} />
+            <DeclarationListitems text={text} isShow={true} />
           ))}
         </List>
       </Card>

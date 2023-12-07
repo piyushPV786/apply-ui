@@ -44,6 +44,8 @@ export const status = {
   ADMISSION_REJECT: "Admission Rejected",
 };
 
+export const docRejectStatus = ["SALES_REJECT", "ADMISSION_REJECT"];
+
 export const disableStatus = ["SALES_APPROVED", "ADMISSION_APPROVED"];
 
 export const statusColor = {
@@ -79,16 +81,17 @@ export const documentCriteria = [
 // comon document page used components //
 
 export const ShortTypography = styled(Typography)<any>(() => ({
-  fontSize: "9px !important",
+  fontSize: "13px !important",
   fontWeight: "700px ! important",
+  maxWidth: "122px",
 }));
 
 export const DeclarationListitems = (props) => {
-  const { text, code, isRequired } = props;
+  const { text, code, isShow } = props;
 
   const { watch } = useFormContext();
 
-  if (isRequired) {
+  if (isShow) {
     return (
       <ListItem
         key={text}
@@ -101,7 +104,13 @@ export const DeclarationListitems = (props) => {
       >
         <ListItemText
           id={text}
-          primary={<ShortTypography className="h6">{text}</ShortTypography>}
+          primary={
+            code ? (
+              <ShortTypography className="h6">{text}</ShortTypography>
+            ) : (
+              <Typography className="h6">{text}</Typography>
+            )
+          }
         />
         {code && (
           <ShortTypography

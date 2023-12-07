@@ -13,6 +13,7 @@ import {
   ErrorHandling,
   FileRegister,
   BursaryFeilds,
+  Reject,
 } from "./components";
 
 interface propsType {
@@ -27,7 +28,7 @@ const DocumentUploadContainer = ({ element, masterData }) => {
   const { watch } = useFormContext();
 
   return (
-    <Card sx={{ padding: 3, marginTop: 5 }}>
+    <Card className="p-4 mt-3">
       <Grid container spacing={1}>
         <Grid item sm={12} xs={12}>
           <Typography
@@ -54,6 +55,7 @@ const DocumentUploadContainer = ({ element, masterData }) => {
         </Grid>
         <BursaryFeilds element={element} masterData={masterData} />
         <DeclarationComponent element={element} masterData={masterData} />
+        <Reject element={element} />
         {!disableStatus.includes(watch(element?.code)?.status) && (
           <FileRegister element={element} />
         )}
