@@ -13,6 +13,7 @@ import {
   ErrorHandling,
   FileRegister,
   BursaryFeilds,
+  Reject,
 } from "./components";
 
 interface propsType {
@@ -54,6 +55,7 @@ const DocumentUploadContainer = ({ element, masterData }) => {
         </Grid>
         <BursaryFeilds element={element} masterData={masterData} />
         <DeclarationComponent element={element} masterData={masterData} />
+        <Reject element={element} />
         {!disableStatus.includes(watch(element?.code)?.status) && (
           <FileRegister element={element} />
         )}
