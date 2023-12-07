@@ -96,7 +96,11 @@ class DocumentApplicationServices {
   }
 
   async uploadDocumentToAws(url, files) {
-    const response = await axios.put(url, files);
+    const response = await apiServer.put(url, files, {
+      headers: {
+        "X-AWS-Skip-Token": true,
+      },
+    });
     return response?.data ? response?.data : null;
   }
 }
