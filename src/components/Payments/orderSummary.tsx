@@ -18,10 +18,6 @@ import { DeleteOutline, CheckCircle } from "@material-ui/icons";
 import { Green } from "../common/common";
 import styled from "styled-components";
 
-export const ShortTypography = styled(Typography)<any>(() => ({
-  fontSize: "12px !important",
-}));
-
 const OrderSummary = (props) => {
   const { studyModes, fees, masterData, updateFeeMode } = props;
   return (
@@ -291,12 +287,12 @@ const FinalFees = (props) => {
                           display="flex"
                           justifyContent="center"
                         >
-                          <ShortTypography color={Green}>
+                          <Typography color={Green} className="shortTypography">
                             <CheckCircle />
                             <strong>
                               {`You have saved ${fees.discountAmount} on this application`}
                             </strong>
-                          </ShortTypography>
+                          </Typography>
                         </Grid>
                       </Grid>
                     )}
