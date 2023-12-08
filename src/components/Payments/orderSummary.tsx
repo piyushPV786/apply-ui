@@ -16,6 +16,11 @@ import { FormProvider, useForm } from "react-hook-form";
 import StyledButton from "../button/button";
 import { DeleteOutline, CheckCircle } from "@material-ui/icons";
 import { Green } from "../common/common";
+import styled from "styled-components";
+
+export const ShortTypography = styled(Typography)<any>(() => ({
+  fontSize: "12px !important",
+}));
 
 const OrderSummary = (props) => {
   const { studyModes, fees, masterData, updateFeeMode } = props;
@@ -212,17 +217,16 @@ const FinalFees = (props) => {
           {fees.feeMode != "" && (
             <Grid
               container
-              spacing={5}
-              className="pb-2 pt-2"
               display="flex"
               justifyContent="center"
+              className="mt-2"
             >
               <Grid
                 item
                 xs={12}
                 display="flex"
                 justifyContent="center"
-                className="cursor-pointer"
+                className="cursor-pointer mb-3"
               >
                 <StyledLink onClick={toggleDiscount}>
                   Have a promo code?
@@ -237,6 +241,7 @@ const FinalFees = (props) => {
                         <Grid xs={9} item>
                           <TextField
                             placeholder="Enter Promo Code"
+                            size="small"
                             fullWidth
                             {...methods?.register("discountCode", {
                               required: {
@@ -252,7 +257,7 @@ const FinalFees = (props) => {
                               applyDiscount(d);
                             })}
                             title="Apply"
-                            className="p-3"
+                            className="py-2 "
                           />
                         </Grid>
                       </Grid>
@@ -286,12 +291,12 @@ const FinalFees = (props) => {
                           display="flex"
                           justifyContent="center"
                         >
-                          <Typography color={Green}>
+                          <ShortTypography color={Green}>
                             <CheckCircle />
                             <strong>
                               {`You have saved ${fees.discountAmount} on this application`}
                             </strong>
-                          </Typography>
+                          </ShortTypography>
                         </Grid>
                       </Grid>
                     )}
