@@ -1,12 +1,15 @@
+import { useState } from "react";
 import ApplicationServices from "../../../services/applicationForm";
 import { useRouter } from "next/router";
 
 export const useHelperHook = (masterData, watch, setError) => {
+  const [disable, setDisable] = useState(false);
   const { applicationData, programsData } = masterData;
   const router = useRouter();
   const { applicationCode } = router?.query;
 
   const saveApplication = async (data: any) => {
+    setDisable(true);
     const programName = programsData?.find(
       (item) => item?.code === data?.education?.programCode
     );
@@ -65,6 +68,7 @@ export const useHelperHook = (masterData, watch, setError) => {
   };
 
   const saveApplicationAsDraft = async () => {
+    setDisable(true);
     const data = watch();
     const { lead } = data;
     if (
@@ -120,5 +124,5 @@ export const useHelperHook = (masterData, watch, setError) => {
       }
     }
   };
-  return { saveApplication, saveApplicationAsDraft };
+  return { saveApplication, saveApplicationAsDraft, disable };
 };
