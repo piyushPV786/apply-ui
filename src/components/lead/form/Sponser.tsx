@@ -15,7 +15,7 @@ import TextField from "./components/TextField";
 import { useAddressHook } from "../customHooks/addressHooks";
 import RadioField from "./components/RadioField";
 import { sponsorInfoData } from "./data/sponsorData";
-import SponsorField from "./components/SponsorField";
+import TextFieldWithSpace from "./components/TextFieldWithSpace";
 import { isValidEmail } from "../../../Util/Util";
 import { MobileField } from "./components/MobileField";
 import { useEffect, useState } from "react";
@@ -119,7 +119,7 @@ const Sponsor = (props: any) => {
                       )}
 
                       {element?.type === "textWithSpace" && (
-                        <SponsorField
+                        <TextFieldWithSpace
                           element={element}
                           Errors={Errors}
                           registerName={`sponsor.${element?.name}`}
