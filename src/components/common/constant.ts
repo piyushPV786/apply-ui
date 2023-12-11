@@ -251,3 +251,14 @@ export const tokenName = {
   accessToken: "accessToken",
   refreshToken: "refreshToken",
 };
+
+export const rhfErrorMessage = {
+  maxLength: "Max length exceeded",
+  minLength: "Minimum length should be 4",
+  min: "Please enter positive number",
+};
+export enum RhfErrorTypes {
+  MaxLength = "maxLength",
+  MinLength = "minLength",
+  Min = "min",
+}
