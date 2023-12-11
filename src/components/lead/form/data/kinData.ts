@@ -5,7 +5,7 @@ export const kinInfoData = [
     name: "fullName",
     key: "fullName",
     label: "Full Name",
-    type: "text",
+    type: "textWithSpace",
     required: false,
     errorMessage: "Please enter your name",
     hidden: false,

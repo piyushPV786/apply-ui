@@ -2,7 +2,7 @@ import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../../common/common";
 import { onlyAlphabetsWithSpaceOnChange } from "../../../../Util/Util";
 
-const SponsorField = ({
+const TextFieldWithSpace = ({
   element,
   Errors,
   registerName,
@@ -34,4 +34,4 @@ const SponsorField = ({
   );
 };
 
-export default SponsorField;
+export default TextFieldWithSpace;

@@ -16,6 +16,7 @@ import RadioField from "./components/RadioField";
 import { kinInfoData } from "./data/kinData";
 import TextField from "./components/TextField";
 import { MobileField } from "./components/MobileField";
+import TextFieldWithSpace from "./components/TextFieldWithSpace";
 
 const Kin = (props: any) => {
   const { masterData, applicationData } = props?.masterData;
@@ -87,6 +88,15 @@ const Kin = (props: any) => {
                       registerName={`kin.${element?.name}`}
                     />
                   )}
+
+                  {element?.type === "textWithSpace" && (
+                    <TextFieldWithSpace
+                      element={element}
+                      Errors={Errors}
+                      registerName={`kin.${element?.name}`}
+                    />
+                  )}
+
                   {element?.type === "select" && (
                     <div className="col-lg-4 mb-4">
                       <CommonAutocomplete
@@ -111,6 +121,7 @@ const Kin = (props: any) => {
                       )}
                     </div>
                   )}
+
                   {element?.type === "email" && (
                     <div className="col-lg-4 mb-4">
                       <StyledLabel required>{element?.label}</StyledLabel>

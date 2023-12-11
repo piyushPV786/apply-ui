@@ -86,7 +86,7 @@ const AddressType = (props) => {
             required: true,
           })}
           onChange={(e) => {
-            const alphabeticValue = e.target.value.replace(/[^A-Za-z]/g, "");
+            const alphabeticValue = e.target.value.replace(/[^A-Za-z\s]/g, "");
             e.target.value = alphabeticValue;
             e.target.value = capitalizeFirstLetter(e.target.value);
           }}
