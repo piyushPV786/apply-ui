@@ -1,6 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../../common/common";
 import { capitalizeFirstLetter } from "../../../../Util/Util";
+import { RhfErrorTypes, rhfErrorMessage } from "../../../common/constant";
 
 const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
   const { register } = useFormContext();
@@ -11,6 +12,7 @@ const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
       <input
         {...register(registerName, {
           required: element?.required,
+          ...(!!element?.rhfOptions ? element?.rhfOptions : {}),
         })}
         className="form-control"
         placeholder={element?.placeholder}
@@ -30,7 +32,15 @@ const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
       />
       {Errors && Errors[element?.name] && (
         <>
-          <div className="invalid-feedback">{element?.errorMessage}</div>
+          <div className="invalid-feedback">
+            {Errors[element?.name].type === RhfErrorTypes.MaxLength
+              ? rhfErrorMessage.maxLength
+              : Errors[element?.name].type === RhfErrorTypes.MinLength
+              ? rhfErrorMessage.minLength
+              : Errors[element?.name].type === RhfErrorTypes.Min
+              ? rhfErrorMessage.min
+              : element?.errorMessage}
+          </div>
         </>
       )}
     </div>
