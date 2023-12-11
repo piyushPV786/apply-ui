@@ -399,14 +399,11 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
             masterData
           );
 
-          const statusPayload = getStatusPayload("online", masterData, fees);
-
           const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
             payload
           );
           if (sendPaymentInfo?.statusCode == 201) {
             setLoadingPayment(false);
-            PaymentServices.setStatus(statusPayload);
             router?.push("/payment/success");
           }
           clearInterval(interval);
