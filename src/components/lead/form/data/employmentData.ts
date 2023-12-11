@@ -122,6 +122,11 @@ export const employmentData = [
     disabled: false,
     placeholder: "",
     numric: true,
+    rhfOptions: {
+      maxLength: 10,
+      minLength: 4,
+      min: 1,
+    },
   },
 ];
 

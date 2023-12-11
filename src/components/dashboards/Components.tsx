@@ -72,7 +72,7 @@ export const UserInformation = ({ userInfo }) => {
 
 export const UserNumberInformation = ({ applicationDetail }) => {
   return (
-    <div className="row px-6">
+    <div className="row px-4">
       <div className="d-flex flex-row ">
         {applicationDetail?.applicationCode && (
           <StudentIdCard bgColor="#235290">

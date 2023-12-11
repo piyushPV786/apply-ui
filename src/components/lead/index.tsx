@@ -25,7 +25,7 @@ interface IProps {
 }
 
 const LeadForm = (props: IProps) => {
-  const methods = useForm();
+  const methods = useForm({ mode: "all" });
   const { watch, handleSubmit, setError } = methods;
   const masterData = useFormHook(props?.applicationCode);
   const { saveApplication, saveApplicationAsDraft, disable } = useHelperHook(
