@@ -67,7 +67,7 @@ export const MobileField = ({
         {error && error[element?.name] && (
           <>
             <div className="invalid-feedback">
-              {error?.mobileNumber.type === "validate"
+              {error?.mobileNumber?.type === "validate"
                 ? element?.validateErrorMessage
                 : element?.errorMessage}
             </div>
