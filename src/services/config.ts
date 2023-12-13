@@ -32,6 +32,7 @@ export const apiEndPoint = {
   GETCURRENCYCONVERSION: "programs-fee/fee-conversion-rate/",
   studyModes: "study-mode",
   program: "programs/:programCode",
+  programRmat: "rmat/byProgramCode/:programCode",
   rmat: "application/rmat/details/:studentCode",
   ukhesheToken: "payments/get-ukheshe-token",
   updatePayment: "payments/ukheshe-payment",

@@ -24,6 +24,7 @@ export const usePaymentHook = (applicationCode: string) => {
     studyModeData: null,
     programData: null,
     bursaryData: null,
+    rmatDetails: null,
   });
 
   useEffect(() => {
@@ -45,12 +46,16 @@ export const usePaymentHook = (applicationCode: string) => {
             response?.education?.programCode
           ),
           PaymentServices.getProgramDetails(response?.education?.programCode),
+          PaymentServices.getProgramRmatDetails(
+            response?.education?.programCode
+          ),
         ]);
         payload.feeData = data[1].find(
           (item) => item?.programCode === response?.education?.programCode
         );
         payload.currencyData = data[0];
         payload.programData = data[2];
+        payload.rmatDetails = data[3];
 
         if (response?.education?.studentTypeCode === CommonEnums?.BURSARY) {
           const response = await PaymentServices.getApplicationDataForBursary(
@@ -241,7 +246,8 @@ export const useDiscountHook = (masterData: any, fees: any) => {
   //Apply RMAT Fee
 
   let rmatFees = "0";
-  if (masterData?.programData?.isRmat) {
+
+  if (masterData?.programData?.isRmat && !masterData?.rmatDetails?.isOptional) {
     rmatFees = masterData?.feeData?.rmatFee;
   }
   fees.rmatFees = rmatFees;
