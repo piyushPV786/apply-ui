@@ -185,7 +185,7 @@ export const signedUrlPayload = (response, payload, studentCode) => {
       if (document) {
         signPayload?.push({
           fileName: `${document?.documentCode}.${ext}`,
-          filetype: `${ext}`,
+          filetype: `.${ext}`,
           studentCode: studentCode,
           file: element?.files,
         });
@@ -193,4 +193,18 @@ export const signedUrlPayload = (response, payload, studentCode) => {
     });
   }
   return signPayload;
+};
+
+export const changeFileExactions = (files: any) => {
+  const paymentProofPayload: any = [];
+  files?.forEach((element) => {
+    const ext = element?.fileName?.split(".").pop();
+    paymentProofPayload.push({
+      documentTypeCode: element?.documentTypeCode,
+      fileName: element?.fileName,
+      fileType: `.${ext}`,
+      files: element?.file,
+    });
+  });
+  return paymentProofPayload;
 };
