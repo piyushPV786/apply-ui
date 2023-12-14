@@ -11,6 +11,7 @@ import {
   getStatusPayload,
   bursaryFeeCalculation,
   signedUrlPayload,
+  changeFileExactions,
 } from "./helper";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
@@ -318,7 +319,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
   const router = useRouter();
   const uploadPaymentProof = async (payload) => {
     const apiPayload = {
-      files: payload?.files,
+      files: changeFileExactions(payload?.files),
       amount: fees?.totalFee,
       paymentModeCode: "OFFLINE",
       discountCode: fees?.discountCode,
@@ -341,6 +342,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       payload,
       masterData?.applicationData?.studentCode
     );
+
     if (changePayload) {
       const result = await Promise.all(
         changePayload?.map(async (item) => {
