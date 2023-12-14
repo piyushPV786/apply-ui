@@ -18,6 +18,7 @@ const PaymentOptionCard = (props) => {
     payuDetails,
     getPaymentRedirectURL,
     uploadPaymentProof,
+    fees,
   } = props;
   const methods = useForm();
   const { register, watch, setValue } = methods;
@@ -103,7 +104,7 @@ const PaymentOptionCard = (props) => {
           <StyledButton
             form={onlinePaymentWatch}
             type="submit"
-            disabled={!onlinePaymentWatch}
+            disabled={!onlinePaymentWatch || fees?.feeMode == ""}
             title="Pay Now"
             style={{ width: "120px" }}
           />

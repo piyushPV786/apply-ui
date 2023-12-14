@@ -9,6 +9,7 @@ const PaymentOptions = ({
   payuDetails,
   getPaymentRedirectURL,
   uploadPaymentProof,
+  fees,
 }) => {
   return (
     <FullWidthCard>
@@ -18,6 +19,7 @@ const PaymentOptions = ({
           <Grid container>
             <Grid item xs={12}>
               <PaymentOptionCard
+                fees={fees}
                 getPayuDetails={getPayuDetails}
                 payuDetails={payuDetails}
                 getPaymentRedirectURL={getPaymentRedirectURL}

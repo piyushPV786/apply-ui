@@ -66,6 +66,7 @@ const PaymentPage = ({ applicationCode }) => {
             <PaymentOptions
               getPayuDetails={getPayuDetails}
               payuDetails={payuDetails}
+              fees={fees}
               getPaymentRedirectURL={getPaymentRedirectURL}
               uploadPaymentProof={uploadPaymentProof}
             />
