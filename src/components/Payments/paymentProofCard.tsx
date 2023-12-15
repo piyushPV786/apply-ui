@@ -37,16 +37,8 @@ const PaymentProofCard = (props) => {
   };
 
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="center"
-      alignItems="center"
-      mt={5}
-      rowGap={5}
-      component="form"
-    >
-      <Grid item xs={8}>
+    <Grid container mt={5} rowGap={5} component="form" justifyContent="center">
+      <Grid item xs={12} lg={6}>
         <UploadPaymentProof
           register={register}
           setValue={setValue}
@@ -57,7 +49,7 @@ const PaymentProofCard = (props) => {
           name="file"
         />
       </Grid>
-      <Grid item display="flex" justifyContent="center">
+      <Grid item xs={12} display="flex" justifyContent="center">
         <StyledButton
           onClick={handleSubmit(submitFile)}
           disabled={!watch("file" as any)}
