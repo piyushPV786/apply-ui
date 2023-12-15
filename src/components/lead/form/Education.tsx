@@ -48,7 +48,7 @@ const Education = (props: any) => {
           <span className="me-2">
             <Image src={EducationImg} alt="user" />
           </span>
-          Education and Course details
+          Education and Module details
         </GreenFormHeading>
       </AccordionSummary>
       <AccordionDetails>

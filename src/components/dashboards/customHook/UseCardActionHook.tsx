@@ -49,7 +49,7 @@ const UseCardActionHook = (applicationDetail) => {
 
   const payBtnTitle =
     status === CommonEnums.APP_ENROLLED_ACCEPTED
-      ? "Pay Program Fee"
+      ? "Pay Qualification Fee"
       : "Pay Application Fee";
 
   const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
