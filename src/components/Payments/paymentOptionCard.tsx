@@ -91,11 +91,7 @@ const PaymentOptionCard = (props) => {
             ))}
           </Box>
           {onlinePaymentWatch === "offline" && (
-            <Grid container display="flex" justifyContent="center">
-              <Grid item xs={12}>
-                <PaymentProofCard uploadPaymentProof={uploadPaymentProof} />
-              </Grid>
-            </Grid>
+            <PaymentProofCard uploadPaymentProof={uploadPaymentProof} />
           )}
         </Grid>
       </Grid>
