@@ -118,7 +118,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
     fees = {
       fee: "0.0",
       feeMode: "",
-      label: "Program Fees",
+      label: "Qualification Fees",
       helpText: "",
       amount: `${
         masterData?.currencyData?.currencySymbol

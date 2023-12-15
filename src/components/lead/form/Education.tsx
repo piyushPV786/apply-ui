@@ -64,14 +64,14 @@ const Education = (props: any) => {
               <CommonAutocomplete
                 defaultValue={applicationData?.education?.programCode}
                 options={programsData}
-                label="Interested Program"
+                label="Interested Qualification"
                 registerName={`education.programCode`}
                 required={true}
               />
             )}
             {Errors?.programCode && (
               <div className="invalid-feedback">
-                select your interested program
+                select your interested Qualification
               </div>
             )}
           </div>

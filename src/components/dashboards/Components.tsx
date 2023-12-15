@@ -20,7 +20,7 @@ export const EducationDetails = ({ educationInfo, allProgram }) => {
       <div className="col-md-6">
         <div className="mt-2 w-100 app-card-block">
           <p className="mb-0" style={{ color: `#5a636a` }}>
-            Interested Program
+            Interested Qualification
           </p>
           <strong>
             {convertCodeToName(allProgram, educationInfo?.programCode)}
