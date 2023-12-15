@@ -747,7 +747,7 @@ export const showWarningToast = (message: string) => {
 export const formateInPascalCase = (value: string) => {
   const words = value.split("-");
   const formattedString = words
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .map((word) => word.charAt(0)?.toUpperCase() + word.slice(1)?.toLowerCase())
     .join(" ");
   return formattedString;
 };

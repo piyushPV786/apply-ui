@@ -124,10 +124,10 @@ export const DocumentInformation = ({ applicationDetail }) => {
               <Dropdown.Item
                 onClick={() => getDownloadDocument(item)}
               >{`${capitalizeFirstLetter(
-                item?.documentTypeCode.split("-")[0].toLowerCase()
+                item?.documentTypeCode.split("-")[0]?.toLowerCase()
               )} ${item?.documentTypeCode
-                .split("-")[1]
-                .toLowerCase()}`}</Dropdown.Item>
+                ?.split("-")[1]
+                ?.toLowerCase()}`}</Dropdown.Item>
             ))}
           </Dropdown.Menu>
         </Dropdown>
