@@ -64,14 +64,17 @@ const UseCardActionHook = (applicationDetail) => {
     BURSARY_BUTTON_STATUS.includes(status) &&
     education?.studentTypeCode === CommonEnums?.BURSARY;
   const isAdamiteBTN = status === CommonEnums.PROG_ADMITTED;
-  const documentData = document?.filter((item) => {
-    return (
+  const documentDataTypes = [
+    CommonEnums.ACCEPTANCE_LETTER,
+    CommonEnums.WELCOME_LETTER,
+    CommonEnums.QUOTE,
+  ];
+  const documentData = document?.filter(
+    (item) =>
       (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
         status === CommonEnums?.PROG_ADMITTED) ||
-      item?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER ||
-      item?.documentTypeCode === CommonEnums.WELCOME_LETTER
-    );
-  });
+      documentDataTypes.includes(item?.documentTypeCode)
+  );
 
   const getDownloadDocument = async (documentDetail) => {
     const { name } = documentDetail;
