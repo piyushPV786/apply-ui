@@ -14,6 +14,7 @@ import Header from "../common/header";
 import { useRouter } from "next/router";
 import PaymentOptions from "./components/paymentOptions";
 import { Spinner } from "../Loader";
+import PaymentTimer from "../dialog/PaymentTimer";
 
 const PaymentPage = ({ applicationCode }) => {
   const router = useRouter();
@@ -22,10 +23,8 @@ const PaymentPage = ({ applicationCode }) => {
   const { studyModes, fees, updateFeeMode } = usePaymentDetailsHook(masterData);
 
   const { getPayuDetails, payuDetails } = usePayuHook(masterData, fees);
-  const { getPaymentRedirectURL, loadingPayment } = useUkhesheHook(
-    masterData,
-    fees
-  );
+  const { getPaymentRedirectURL, loadingPayment, closePaymentDialog, counter } =
+    useUkhesheHook(masterData, fees);
 
   const { uploadPaymentProof } = useOfflinePaymentHook(masterData, fees);
 
@@ -86,12 +85,11 @@ const PaymentPage = ({ applicationCode }) => {
         </Grid>
       </Box>
 
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      <PaymentTimer
         open={loadingPayment}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+        closePaymentDialog={closePaymentDialog}
+        counter={counter}
+      />
     </MainContainer>
   );
 };
