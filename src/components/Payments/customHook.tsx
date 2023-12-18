@@ -369,8 +369,6 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   const router = useRouter();
   const [loadingPayment, setLoadingPayment] = useState(false);
 
-  console.log("masterData", masterData);
-
   const getPaymentRedirectURL = async () => {
     const tokenResponse = await PaymentServices?.getUkhesheToken();
     setLoadingPayment(true);
