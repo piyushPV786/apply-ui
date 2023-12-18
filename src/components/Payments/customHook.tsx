@@ -369,6 +369,8 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   const router = useRouter();
   const [loadingPayment, setLoadingPayment] = useState(false);
 
+  console.log("masterData", masterData);
+
   const getPaymentRedirectURL = async () => {
     const tokenResponse = await PaymentServices?.getUkhesheToken();
     setLoadingPayment(true);
@@ -418,7 +420,9 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
         } else if (getPaymentResponse?.data?.status == "ERROR_PERM") {
           clearInterval(interval);
           setLoadingPayment(false);
-          router?.push("/payment/failure");
+          router?.push(
+            `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+          );
         }
       }, 10000);
     }

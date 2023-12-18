@@ -81,6 +81,14 @@ const PaymentSuccessFull = (props: any) => {
           {props?.pageType === "success" && <OnlinePaymentSuccess />}
 
           <div>
+            {props?.pageType === "failure" && (
+              <StyledButton
+                onClick={() => router.push(`/payments/${props.appCode}`)}
+                title="Retry Payment"
+                isGreenWhiteCombination
+                className="me-2"
+              />
+            )}
             <StyledButton
               onClick={() => {
                 localStorage.setItem("leadData", "");
@@ -89,7 +97,6 @@ const PaymentSuccessFull = (props: any) => {
               }}
               title="Back to Dashboard"
               isGreenWhiteCombination
-              className="me-2"
             />
           </div>
         </PaymentContainer>
