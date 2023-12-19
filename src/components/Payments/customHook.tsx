@@ -419,7 +419,9 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
         } else if (getPaymentResponse?.data?.status == "ERROR_PERM") {
           clearInterval(intervalId);
           setLoadingPayment(false);
-          router?.push("/payment/failure");
+          router?.push(
+            `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+          );
         }
       }, 10000);
       setIntervalId(intervalId);
@@ -427,14 +429,16 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   };
   const closePaymentDialog = () => {
     clearInterval(intervalId);
-    router?.push("/payment/failure");
+    router?.push(
+      `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+    );
   };
 
   return { getPaymentRedirectURL, loadingPayment, closePaymentDialog };
 };
 
 export const useCustomizeHook = (open, closePaymentDialog) => {
-  const [counter, setCounter] = useState(30);
+  const [counter, setCounter] = useState(300);
   const [timer, setTimer] = useState(0);
   useEffect(() => {
     if (open) {
