@@ -429,7 +429,9 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   };
   const closePaymentDialog = () => {
     clearInterval(intervalId);
-    router?.push("/payment/failure");
+    router?.push(
+      `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+    );
   };
 
   return { getPaymentRedirectURL, loadingPayment, closePaymentDialog };
