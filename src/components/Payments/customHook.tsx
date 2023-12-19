@@ -436,7 +436,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
 };
 
 export const useCustomizeHook = (open, closePaymentDialog) => {
-  const [counter, setCounter] = useState(30);
+  const [counter, setCounter] = useState(300);
   const [timer, setTimer] = useState(0);
   useEffect(() => {
     if (open) {
