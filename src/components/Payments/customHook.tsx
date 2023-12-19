@@ -368,6 +368,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
 export const useUkhesheHook = (masterData: any, fees: any) => {
   const router = useRouter();
   const [loadingPayment, setLoadingPayment] = useState(false);
+  const [intervalId, setIntervalId] = useState(0);
 
   const getPaymentRedirectURL = async () => {
     const tokenResponse = await PaymentServices?.getUkhesheToken();
@@ -392,7 +393,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
     );
     if (paymentResponse) {
       window.open(paymentResponse?.completionUrl, "_ blank");
-      const interval = setInterval(async () => {
+      const intervalId: any = setInterval(async () => {
         const getPaymentResponse = await PaymentServices.getPaymentInfo(
           tokenResponse?.tenantId,
           paymentResponse?.paymentId,
@@ -400,7 +401,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
         );
 
         if (getPaymentResponse?.data?.status == "SUCCESSFUL") {
-          clearInterval(interval);
+          clearInterval(intervalId);
           const payload = getUkheshePayload(
             getPaymentResponse,
             fees,
@@ -414,15 +415,46 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
             setLoadingPayment(false);
             router?.push("/payment/success");
           }
-          clearInterval(interval);
+          clearInterval(intervalId);
         } else if (getPaymentResponse?.data?.status == "ERROR_PERM") {
-          clearInterval(interval);
+          clearInterval(intervalId);
           setLoadingPayment(false);
           router?.push("/payment/failure");
         }
       }, 10000);
+      setIntervalId(intervalId);
     }
   };
+  const closePaymentDialog = () => {
+    clearInterval(intervalId);
+    router?.push("/payment/failure");
+  };
 
-  return { getPaymentRedirectURL, loadingPayment };
+  return { getPaymentRedirectURL, loadingPayment, closePaymentDialog };
+};
+
+export const useCustomizeHook = (open, closePaymentDialog) => {
+  const [counter, setCounter] = useState(30);
+  const [timer, setTimer] = useState(0);
+  useEffect(() => {
+    if (open) {
+      const timer: any = setInterval(() => {
+        setCounter((prev) => prev - 1);
+      }, 1000);
+      setTimer(timer);
+      return () => {
+        clearInterval(timer);
+        setCounter(300);
+      };
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (counter === 0) {
+      closePaymentDialog();
+      clearInterval(timer);
+    }
+  }, [counter]);
+
+  return { counter };
 };

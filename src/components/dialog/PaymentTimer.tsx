@@ -1,0 +1,90 @@
+import {
+  Box,
+  CircularProgress,
+  CircularProgressProps,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  Typography,
+} from "@mui/material";
+import React, { Fragment } from "react";
+import { Green } from "../common/common";
+import StyledButton from "../button/button";
+import { useCustomizeHook } from "../Payments/customHook";
+
+const CircularProgressWithLabel = (
+  props: CircularProgressProps & { label: string }
+) => {
+  return (
+    <Box sx={{ position: "relative", display: "inline-flex" }}>
+      <CircularProgress variant="determinate" {...props} />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: "absolute",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography variant="h4" color="text.primary">
+          {props.label}
+        </Typography>
+      </Box>
+    </Box>
+  );
+};
+interface IPaymentTimerPropTypes {
+  open: boolean;
+  closePaymentDialog: () => void;
+}
+
+const PaymentTimer = ({ open, closePaymentDialog }: IPaymentTimerPropTypes) => {
+  const { counter } = useCustomizeHook(open, closePaymentDialog);
+  const timer = new Date(counter * 1000).toISOString().slice(14, 19);
+  const percentage = counter / 3;
+
+  return (
+    <Fragment>
+      <Dialog open={open} maxWidth="sm">
+        <DialogContent sx={{ px: 10, py: 5, textAlign: "center" }}>
+          <DialogContentText>
+            Open next tab to approve the payment request on Ukheshe from
+            Regenesys
+          </DialogContentText>
+          <Box display="flex" justifyContent="center" py={5}>
+            <CircularProgressWithLabel
+              variant="determinate"
+              value={percentage}
+              label={timer}
+              size="10em"
+              sx={{
+                boxShadow: `inset 0 0 0 14px lightgray`,
+                borderRadius: "50%",
+                "& .MuiCircularProgress-circle": {
+                  strokeLinecap: "round",
+                  color: Green,
+                },
+              }}
+            />
+          </Box>
+          <DialogContentText>
+            Please approve the payment request before times out
+          </DialogContentText>
+          <DialogContentText variant="caption" color="GrayText">
+            Do not hit back button until the transaction is complete
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center" }}>
+          <StyledButton isError title="Cancel" onClick={closePaymentDialog} />
+        </DialogActions>
+      </Dialog>
+    </Fragment>
+  );
+};
+
+export default PaymentTimer;
