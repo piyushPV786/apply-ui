@@ -11,6 +11,7 @@ import {
 import React, { Fragment } from "react";
 import { Green } from "../common/common";
 import StyledButton from "../button/button";
+import { useCustomizeHook } from "../Payments/customHook";
 
 const CircularProgressWithLabel = (
   props: CircularProgressProps & { label: string }
@@ -40,14 +41,10 @@ const CircularProgressWithLabel = (
 interface IPaymentTimerPropTypes {
   open: boolean;
   closePaymentDialog: () => void;
-  counter: number;
 }
 
-const PaymentTimer = ({
-  open,
-  counter,
-  closePaymentDialog,
-}: IPaymentTimerPropTypes) => {
+const PaymentTimer = ({ open, closePaymentDialog }: IPaymentTimerPropTypes) => {
+  const { counter } = useCustomizeHook(open, closePaymentDialog);
   const timer = new Date(counter * 1000).toISOString().slice(14, 19);
   const percentage = counter / 3;
 

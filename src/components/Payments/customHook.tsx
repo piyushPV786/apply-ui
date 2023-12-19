@@ -368,23 +368,10 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
 export const useUkhesheHook = (masterData: any, fees: any) => {
   const router = useRouter();
   const [loadingPayment, setLoadingPayment] = useState(false);
-  const [counter, setCounter] = useState(0);
-  let intervalId;
-
-  useEffect(() => {
-    if (counter > 0) {
-      const timer = setInterval(() => {
-        setCounter((prev) => prev - 1);
-      }, 1000);
-      return () => {
-        clearInterval(timer);
-      };
-    }
-  }, [counter]);
+  const [intervalId, setIntervalId] = useState(0);
 
   const getPaymentRedirectURL = async () => {
     const tokenResponse = await PaymentServices?.getUkhesheToken();
-    setCounter(300);
     setLoadingPayment(true);
     const payload = {
       externalUniqueId: uuidv4(),
@@ -406,18 +393,12 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
     );
     if (paymentResponse) {
       window.open(paymentResponse?.completionUrl, "_ blank");
-      intervalId = setInterval(async () => {
+      const intervalId: any = setInterval(async () => {
         const getPaymentResponse = await PaymentServices.getPaymentInfo(
           tokenResponse?.tenantId,
           paymentResponse?.paymentId,
           headers
         );
-
-        if (counter === 1) {
-          clearInterval(intervalId);
-          setLoadingPayment(false);
-          router?.push("/payment/failure");
-        }
 
         if (getPaymentResponse?.data?.status == "SUCCESSFUL") {
           clearInterval(intervalId);
@@ -441,12 +422,39 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
           router?.push("/payment/failure");
         }
       }, 10000);
+      setIntervalId(intervalId);
     }
   };
   const closePaymentDialog = () => {
-    setLoadingPayment(false);
     clearInterval(intervalId);
+    router?.push("/payment/failure");
   };
 
-  return { getPaymentRedirectURL, loadingPayment, closePaymentDialog, counter };
+  return { getPaymentRedirectURL, loadingPayment, closePaymentDialog };
+};
+
+export const useCustomizeHook = (open, closePaymentDialog) => {
+  const [counter, setCounter] = useState(30);
+  const [timer, setTimer] = useState(0);
+  useEffect(() => {
+    if (open) {
+      const timer: any = setInterval(() => {
+        setCounter((prev) => prev - 1);
+      }, 1000);
+      setTimer(timer);
+      return () => {
+        clearInterval(timer);
+        setCounter(300);
+      };
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (counter === 0) {
+      closePaymentDialog();
+      clearInterval(timer);
+    }
+  }, [counter]);
+
+  return { counter };
 };
