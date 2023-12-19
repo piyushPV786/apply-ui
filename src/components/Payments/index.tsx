@@ -7,7 +7,7 @@ import {
 } from "../../components/Payments/customHook";
 import OrderSummary from "../../components/Payments/orderSummary";
 import StepperComponent from "../../components/stepper/stepper";
-import { Backdrop, Box, CircularProgress, Grid, Stack } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import { MainContainer } from "../../components/login/style";
 import { usePaymentDetailsHook } from "./customHook";
 import Header from "../common/header";
@@ -23,7 +23,7 @@ const PaymentPage = ({ applicationCode }) => {
   const { studyModes, fees, updateFeeMode } = usePaymentDetailsHook(masterData);
 
   const { getPayuDetails, payuDetails } = usePayuHook(masterData, fees);
-  const { getPaymentRedirectURL, loadingPayment, closePaymentDialog, counter } =
+  const { getPaymentRedirectURL, loadingPayment, closePaymentDialog } =
     useUkhesheHook(masterData, fees);
 
   const { uploadPaymentProof } = useOfflinePaymentHook(masterData, fees);
@@ -88,7 +88,6 @@ const PaymentPage = ({ applicationCode }) => {
       <PaymentTimer
         open={loadingPayment}
         closePaymentDialog={closePaymentDialog}
-        counter={counter}
       />
     </MainContainer>
   );
