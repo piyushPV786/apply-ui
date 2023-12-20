@@ -370,7 +370,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
       currency: "ZAR",
       type: "GLOBAL_PAYMENT_LINK",
       paymentMechanism: "CARD",
-      paymentData: "198462",
+      paymentData: "3534394",
     };
     const headers = {
       "Content-Type": "application/json",
