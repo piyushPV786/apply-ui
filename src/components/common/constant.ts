@@ -4,6 +4,11 @@ export enum StorageName {
   REFRESH_TOKEN = "refresh_token",
 }
 
+export const documentType = {
+  "WELCOME-LETTER": "Welcome Letter",
+  "ACCEPTANCE-LETTER": "Acceptance Letter",
+  QUOTE: "Quote",
+};
 export enum CommonEnums {
   TRUE = "true",
   TOTAL = "TOTAL",
@@ -90,6 +95,9 @@ export const APPLICATION_STATUS = {
   INTAKE_ASSIGNED: "INTAKE-ASSIGNED",
   ENROLLED_BY_ADMISSION: "PROG-ADMITTED/ENROLLED",
 };
+
+// export const docTypes={WELCOME-LETTER=}
+
 export const PRORAM_FEE_BUTTON_STATUS = [
   APPLICATION_STATUS.APPLICATION_FEE_VERIFICATION_PENDING,
   APPLICATION_STATUS.RESUBMIT_APPLICATION_FEE_PROOF,

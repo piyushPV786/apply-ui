@@ -5,6 +5,7 @@ import { Green } from "../common/common";
 import Dropdown from "react-bootstrap/Dropdown";
 import LoginCredentialDialog from "./loginCridentialDialog";
 import RmatCredentialDialog from "./rmatDetailsDialog";
+import { documentType } from "../common/constant";
 import {
   capitalizeFirstLetter,
   convertCodeToName,
@@ -121,13 +122,9 @@ export const DocumentInformation = ({ applicationDetail }) => {
           </ContentCard>
           <Dropdown.Menu>
             {documentData?.map((item) => (
-              <Dropdown.Item
-                onClick={() => getDownloadDocument(item)}
-              >{`${capitalizeFirstLetter(
-                item?.documentTypeCode.split("-")[0]?.toLowerCase()
-              )} ${item?.documentTypeCode
-                ?.split("-")[1]
-                ?.toLowerCase()}`}</Dropdown.Item>
+              <Dropdown.Item onClick={() => getDownloadDocument(item)}>
+                {documentType[item?.documentTypeCode]}
+              </Dropdown.Item>
             ))}
           </Dropdown.Menu>
         </Dropdown>
