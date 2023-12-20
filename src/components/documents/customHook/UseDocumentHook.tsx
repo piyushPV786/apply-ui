@@ -92,6 +92,7 @@ export const UseDocumentHook = (applicationCode) => {
 };
 
 export const ActionDocumentSubmit = () => {
+  const [disable, setDisable] = useState(false);
   const router = useRouter();
   const uploadFiles = async (payload, masterData) => {
     const response = await DocumentServices.uploadDocuments(
@@ -122,6 +123,7 @@ export const ActionDocumentSubmit = () => {
   };
 
   const saveAsDraft = (data, masterData) => {
+    setDisable(true);
     const payload = documentPayload(data, true, masterData);
     if (payload) {
       uploadFiles(payload, masterData);
@@ -129,6 +131,7 @@ export const ActionDocumentSubmit = () => {
     }
   };
   const submitDocument = (data, masterData) => {
+    setDisable(true);
     if (masterData?.userDetails?.status == CommonEnums.BURSARY_LETTER_PEND) {
       const bursaryPayload = {
         name: data[bursarryFeilds.Name],
@@ -156,7 +159,7 @@ export const ActionDocumentSubmit = () => {
     }
   };
 
-  return { saveAsDraft, submitDocument };
+  return { saveAsDraft, submitDocument, disable };
 };
 
 export const UseDownloadDeclarationLatter = () => {
