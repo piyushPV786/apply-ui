@@ -369,6 +369,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   const router = useRouter();
   const [loadingPayment, setLoadingPayment] = useState(false);
   const [intervalId, setIntervalId] = useState(0);
+  const [newTab, setNewTab] = useState<Window | null>();
 
   const getPaymentRedirectURL = async () => {
     const tokenResponse = await PaymentServices?.getUkhesheToken();
@@ -392,7 +393,8 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
       headers
     );
     if (paymentResponse) {
-      window.open(paymentResponse?.completionUrl, "_ blank");
+      const tabId = window.open(paymentResponse?.completionUrl, "_ blank");
+      setNewTab(tabId);
       const intervalId: any = setInterval(async () => {
         const getPaymentResponse = await PaymentServices.getPaymentInfo(
           tokenResponse?.tenantId,
@@ -427,11 +429,15 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
       setIntervalId(intervalId);
     }
   };
-  const closePaymentDialog = () => {
+
+  const closePaymentDialog = (isCounter?: boolean) => {
     clearInterval(intervalId);
-    router?.push(
-      `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
-    );
+    isCounter
+      ? router?.push(
+          `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+        )
+      : setLoadingPayment(false);
+    newTab?.close();
   };
 
   return { getPaymentRedirectURL, loadingPayment, closePaymentDialog };
@@ -455,7 +461,7 @@ export const useCustomizeHook = (open, closePaymentDialog) => {
 
   useEffect(() => {
     if (counter === 0) {
-      closePaymentDialog();
+      closePaymentDialog(true);
       clearInterval(timer);
     }
   }, [counter]);
