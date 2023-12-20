@@ -53,7 +53,7 @@ const PaymentTimer = ({ open, closePaymentDialog }: IPaymentTimerPropTypes) => {
       <Dialog open={open} maxWidth="sm">
         <DialogContent sx={{ px: 10, py: 5, textAlign: "center" }}>
           <DialogContentText>
-            Open next tab to approve the payment request on Ukheshe from
+            Open the next tab to approve the payment request on Ukheshe from
             Regenesys
           </DialogContentText>
           <Box display="flex" justifyContent="center" py={5}>
@@ -73,10 +73,10 @@ const PaymentTimer = ({ open, closePaymentDialog }: IPaymentTimerPropTypes) => {
             />
           </Box>
           <DialogContentText>
-            Please approve the payment request before times out
+            Please approve the payment request before it times out
           </DialogContentText>
           <DialogContentText variant="caption" color="GrayText">
-            Do not hit back button until the transaction is complete
+            Do not hit the back button until the transaction is completed
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
