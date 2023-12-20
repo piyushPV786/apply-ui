@@ -21,7 +21,7 @@ const DocumentUploadPage = (props) => {
   const methods = useForm();
   const { applicationCode } = props;
   const { masterData } = UseDocumentHook(applicationCode);
-  const { saveAsDraft, submitDocument } = ActionDocumentSubmit();
+  const { saveAsDraft, submitDocument, disable } = ActionDocumentSubmit();
   const { handleSubmit } = methods;
 
   useEffect(() => {
@@ -64,6 +64,7 @@ const DocumentUploadPage = (props) => {
                   <Card className="p-2 mt-5">
                     <Box className="d-flex justify-content-center flex-column">
                       <StyledButton
+                        disabled={disable}
                         type="button"
                         isGreenWhiteCombination
                         title="Save As Draft"
@@ -76,6 +77,7 @@ const DocumentUploadPage = (props) => {
                       />
 
                       <StyledButton
+                        disabled={disable}
                         type="button"
                         title="Submit Documents"
                         onClick={handleSubmit((d) =>
