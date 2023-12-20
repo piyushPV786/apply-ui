@@ -58,10 +58,11 @@ const PaymentSuccessFull = (props: any) => {
                 </GreenFormHeading>
                 <p>
                   Your payment was not successfully processed. Please try again,
-                  if still <br />
-                  encounter the same error, try with another payment method.
+                  if you still <br />
+                  encounter the same error, try again with another payment
+                  method.
                   <br />
-                  In case of any query please free to contact{" "}
+                  In case of any query please feel free to contact{" "}
                   <span style={{ color: `${Green}` }}>1800 212 9950</span>
                 </p>
               </div>
