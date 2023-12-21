@@ -40,7 +40,7 @@ const CircularProgressWithLabel = (
 };
 interface IPaymentTimerPropTypes {
   open: boolean;
-  closePaymentDialog: () => void;
+  closePaymentDialog: (isCounter?: boolean) => void;
 }
 
 const PaymentTimer = ({ open, closePaymentDialog }: IPaymentTimerPropTypes) => {
@@ -80,7 +80,11 @@ const PaymentTimer = ({ open, closePaymentDialog }: IPaymentTimerPropTypes) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
-          <StyledButton isError title="Cancel" onClick={closePaymentDialog} />
+          <StyledButton
+            isError
+            title="Cancel"
+            onClick={() => closePaymentDialog()}
+          />
         </DialogActions>
       </Dialog>
     </Fragment>
