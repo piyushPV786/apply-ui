@@ -7,6 +7,7 @@ export enum StorageName {
 export const documentType = {
   "WELCOME-LETTER": "Welcome Letter",
   "ACCEPTANCE-LETTER": "Acceptance Letter",
+  "CONFIRMATION-LETTER": "Confirmation Letter",
   QUOTE: "Quote",
 };
 export enum CommonEnums {
