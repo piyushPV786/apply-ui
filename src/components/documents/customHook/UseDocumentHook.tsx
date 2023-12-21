@@ -8,7 +8,12 @@ import {
   docType,
 } from "../context/common";
 import { useRouter } from "next/router";
-import { documentPayload, signedUrlPayload, viewProofDetails } from "./helper";
+import {
+  documentPayload,
+  signedUrlPayload,
+  studentBursaryPayload,
+  viewProofDetails,
+} from "./helper";
 import { CommonEnums } from "../../common/constant";
 
 interface documentTypeApiResponseType {
@@ -130,7 +135,7 @@ export const ActionDocumentSubmit = () => {
       router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
     }
   };
-  const submitDocument = (data, masterData) => {
+  const submitDocument = async (data, masterData) => {
     setDisable(true);
     if (masterData?.userDetails?.status == CommonEnums.BURSARY_LETTER_PEND) {
       const bursaryPayload = {
@@ -150,7 +155,11 @@ export const ActionDocumentSubmit = () => {
           branchCode: "",
         },
       };
-      DocumentServices.updateBursary(bursaryPayload);
+      const res = await DocumentServices.updateBursary(bursaryPayload);
+      if (res) {
+        const payload = studentBursaryPayload(res, masterData);
+        DocumentServices.updateStudentBursary(payload);
+      }
     }
 
     const payload = documentPayload(data, false, masterData);

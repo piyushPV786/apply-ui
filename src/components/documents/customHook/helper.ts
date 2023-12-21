@@ -28,6 +28,20 @@ export const documentPayload = (data, isDraft, masterData) => {
   return result;
 };
 
+export const studentBursaryPayload = (res, masterData) => {
+  let result = {
+    bursaryId: res?.id,
+    sanctionedAmount: 0,
+    financialYear: new Date().getFullYear(),
+    enrolmentCode: masterData?.userDetails?.applicationCode,
+    studentCode: masterData?.userDetails?.studentCode,
+    status: "BURSARY-REQUESTED",
+    isActive: true,
+  };
+
+  return result;
+};
+
 export const signedUrlPayload = (response, payload) => {
   const signPayload: any = [];
   if (payload?.files) {
