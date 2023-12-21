@@ -95,6 +95,13 @@ class DocumentApplicationServices {
     return result;
   }
 
+  async updateStudentBursary(payload) {
+    const route = `${apiEndPoint?.bursary}/${apiEndPoint.student}`;
+    const url = `${apiUrls?.financeBaseUrl}${route}`;
+    const response = await apiServer.post(url, { ...payload });
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
+  }
   async uploadDocumentToAws(url, files) {
     const response = await apiServer.put(url, files, {
       headers: {
