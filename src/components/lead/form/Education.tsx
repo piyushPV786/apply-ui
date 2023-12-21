@@ -23,6 +23,7 @@ const Education = (props: any) => {
     watch,
     formState: { errors },
     setValue,
+    setError,
     control,
   } = useFormContext();
 
@@ -32,10 +33,20 @@ const Education = (props: any) => {
   const studyModeCodeWatch = watch("education.studyModeCode");
   const studentProgram: any = useEducationHook(programCode);
   const refferedBy = watch("education.referredById");
+
   const Errors = errors["education"] as any;
   const feesDetails = studentProgram?.studyModes?.find(
     (item) => item?.studyModeCode === studyModeCodeWatch
   );
+
+  useEffect(() => {
+    if (studentProgram == null) {
+      setError("education.studyModeCode", {
+        type: "manual",
+        message: "",
+      });
+    }
+  }, [programCode]);
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
@@ -79,7 +90,7 @@ const Education = (props: any) => {
           <div className="col-lg-4 mb-4">
             <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
             <br />
-            {!!studentProgram?.studyModes?.length && (
+            {studentProgram?.studyModes?.length ? (
               <>
                 {studentProgram?.studyModes?.map((item: any) => {
                   {
@@ -107,6 +118,10 @@ const Education = (props: any) => {
                   )}
                 </StyleContainer>
               </>
+            ) : (
+              <div className="invalid-feedback">
+                Fees not configured for selected qualification
+              </div>
             )}
           </div>
 
