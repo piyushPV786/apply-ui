@@ -140,7 +140,7 @@ export const ActionDocumentSubmit = () => {
     if (masterData?.userDetails?.status == CommonEnums.BURSARY_LETTER_PEND) {
       const bursaryPayload = {
         name: data[bursarryFeilds.Name],
-        mobile: [bursarryFeilds.Phone],
+        mobile: data[bursarryFeilds.Phone],
         address: "",
         email: data[bursarryFeilds.Email],
         occupation: "",
