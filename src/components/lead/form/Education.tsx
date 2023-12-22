@@ -40,7 +40,7 @@ const Education = (props: any) => {
   );
 
   useEffect(() => {
-    if (studentProgram == null) {
+    if (studentProgram == null && programCode) {
       setError("education.studyModeCode", {
         type: "manual",
         message: "",
@@ -90,35 +90,34 @@ const Education = (props: any) => {
           <div className="col-lg-4 mb-4">
             <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
             <br />
-            {studentProgram?.studyModes?.length ? (
-              <>
-                {studentProgram?.studyModes?.map((item: any) => {
-                  {
-                    return (
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input me-2"
-                          type={"radio"}
-                          {...register("education.studyModeCode")}
-                          value={item?.studyModeCode}
-                        />
-                        {item?.studyModeCode}
-                      </div>
-                    );
-                  }
-                })}
-                <StyleContainer className="fee-cards">
-                  {feesDetails && feesDetails?.fees && (
-                    <div className="row">
-                      {feesDetails?.fees?.map((item) => {
-                        if (item?.feeMode != feeMode?.TOTAL)
-                          return <FeeCard item={item} />;
-                      })}
+            <>
+              {studentProgram?.studyModes?.map((item: any) => {
+                {
+                  return (
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input me-2"
+                        type={"radio"}
+                        {...register("education.studyModeCode")}
+                        value={item?.studyModeCode}
+                      />
+                      {item?.studyModeCode}
                     </div>
-                  )}
-                </StyleContainer>
-              </>
-            ) : (
+                  );
+                }
+              })}
+              <StyleContainer className="fee-cards">
+                {feesDetails && feesDetails?.fees && (
+                  <div className="row">
+                    {feesDetails?.fees?.map((item) => {
+                      if (item?.feeMode != feeMode?.TOTAL)
+                        return <FeeCard item={item} />;
+                    })}
+                  </div>
+                )}
+              </StyleContainer>
+            </>
+            {Errors?.studyModeCode && studentProgram == null && (
               <div className="invalid-feedback">
                 Fees not configured for selected qualification
               </div>
