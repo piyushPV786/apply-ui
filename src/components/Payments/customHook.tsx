@@ -370,6 +370,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   const [loadingPayment, setLoadingPayment] = useState(false);
   const [intervalId, setIntervalId] = useState(0);
   const [newTab, setNewTab] = useState<Window | null>();
+  const [openPopup, setOpenPopup] = useState(false);
 
   const getPaymentRedirectURL = async () => {
     const tokenResponse = await PaymentServices?.getUkhesheToken();
@@ -436,11 +437,17 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
       ? router?.push(
           `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
         )
-      : setLoadingPayment(false);
+      : setOpenPopup(false);
     newTab?.close();
   };
 
-  return { getPaymentRedirectURL, loadingPayment, closePaymentDialog };
+  return {
+    getPaymentRedirectURL,
+    loadingPayment,
+    closePaymentDialog,
+    setOpenPopup,
+    openPopup,
+  };
 };
 
 export const useCustomizeHook = (open, closePaymentDialog) => {

@@ -1,7 +1,7 @@
-const UkhesheInput = ({ value, getPaymentRedirectURL }) => {
+const UkhesheInput = ({ value, setOpenPopup }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    getPaymentRedirectURL();
+    setOpenPopup(true);
   };
   return (
     <>

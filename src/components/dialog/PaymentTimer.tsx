@@ -8,7 +8,7 @@ import {
   DialogContentText,
   Typography,
 } from "@mui/material";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Green } from "../common/common";
 import StyledButton from "../button/button";
 import { useCustomizeHook } from "../Payments/customHook";
@@ -41,49 +41,68 @@ const CircularProgressWithLabel = (
 interface IPaymentTimerPropTypes {
   open: boolean;
   closePaymentDialog: (isCounter?: boolean) => void;
+  getPaymentRedirectURL;
 }
 
-const PaymentTimer = ({ open, closePaymentDialog }: IPaymentTimerPropTypes) => {
+const PaymentTimer = ({
+  open,
+  closePaymentDialog,
+  getPaymentRedirectURL,
+}: IPaymentTimerPropTypes) => {
   const { counter } = useCustomizeHook(open, closePaymentDialog);
   const timer = new Date(counter * 1000).toISOString().slice(14, 19);
   const percentage = counter / 3;
+  const [proceed, setProceed] = useState(false);
+
+  const onProceed = () => {
+    setProceed(true);
+    getPaymentRedirectURL();
+  };
 
   return (
     <Fragment>
       <Dialog open={open} maxWidth="sm">
-        <DialogContent sx={{ px: 10, py: 5, textAlign: "center" }}>
-          <DialogContentText>
-            Open the next tab to approve the payment request on Ukheshe from
-            Regenesys
-          </DialogContentText>
-          <Box display="flex" justifyContent="center" py={5}>
-            <CircularProgressWithLabel
-              variant="determinate"
-              value={percentage}
-              label={timer}
-              size="10em"
-              sx={{
-                boxShadow: `inset 0 0 0 14px lightgray`,
-                borderRadius: "50%",
-                "& .MuiCircularProgress-circle": {
-                  strokeLinecap: "round",
-                  color: Green,
-                },
-              }}
-            />
-          </Box>
-          <DialogContentText>
-            Please approve the payment request before it times out
-          </DialogContentText>
-          <DialogContentText variant="caption" color="GrayText">
-            Do not hit the back button until the transaction is completed
-          </DialogContentText>
-        </DialogContent>
+        {proceed ? (
+          <DialogContent sx={{ px: 10, py: 5, textAlign: "center" }}>
+            <DialogContentText>
+              Open the next tab to approve the payment request on Ukheshe from
+              Regenesys
+            </DialogContentText>
+            <Box display="flex" justifyContent="center" py={5}>
+              <CircularProgressWithLabel
+                variant="determinate"
+                value={percentage}
+                label={timer}
+                size="10em"
+                sx={{
+                  boxShadow: `inset 0 0 0 14px lightgray`,
+                  borderRadius: "50%",
+                  "& .MuiCircularProgress-circle": {
+                    strokeLinecap: "round",
+                    color: Green,
+                  },
+                }}
+              />
+            </Box>
+            <DialogContentText>
+              Please approve the payment request before it times out
+            </DialogContentText>
+            <DialogContentText variant="caption" color="GrayText">
+              Do not hit the back button until the transaction is completed
+            </DialogContentText>
+          </DialogContent>
+        ) : (
+          <DialogContent sx={{ px: 10, py: 5, textAlign: "center" }}>
+            <DialogContentText>
+              You will be redirected to payment gateway Click OK to proceed
+            </DialogContentText>
+          </DialogContent>
+        )}
         <DialogActions sx={{ justifyContent: "center" }}>
           <StyledButton
-            isError
-            title="Cancel"
-            onClick={() => closePaymentDialog()}
+            isError={proceed}
+            title={proceed ? "Cancle" : "Ok"}
+            onClick={() => (proceed ? closePaymentDialog() : onProceed())}
           />
         </DialogActions>
       </Dialog>
