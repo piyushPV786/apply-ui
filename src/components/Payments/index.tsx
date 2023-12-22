@@ -23,7 +23,7 @@ const PaymentPage = ({ applicationCode }) => {
   const { studyModes, fees, updateFeeMode } = usePaymentDetailsHook(masterData);
 
   const { getPayuDetails, payuDetails } = usePayuHook(masterData, fees);
-  const { getPaymentRedirectURL, loadingPayment, closePaymentDialog } =
+  const { getPaymentRedirectURL, closePaymentDialog, setOpenPopup, openPopup } =
     useUkhesheHook(masterData, fees);
 
   const { uploadPaymentProof } = useOfflinePaymentHook(masterData, fees);
@@ -68,6 +68,7 @@ const PaymentPage = ({ applicationCode }) => {
               fees={fees}
               getPaymentRedirectURL={getPaymentRedirectURL}
               uploadPaymentProof={uploadPaymentProof}
+              setOpenPopup={setOpenPopup}
             />
           </Grid>
 
@@ -86,8 +87,9 @@ const PaymentPage = ({ applicationCode }) => {
       </Box>
 
       <PaymentTimer
-        open={loadingPayment}
+        open={openPopup}
         closePaymentDialog={closePaymentDialog}
+        getPaymentRedirectURL={getPaymentRedirectURL}
       />
     </MainContainer>
   );

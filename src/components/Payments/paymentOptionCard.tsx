@@ -19,6 +19,7 @@ const PaymentOptionCard = (props) => {
     getPaymentRedirectURL,
     uploadPaymentProof,
     fees,
+    setOpenPopup,
   } = props;
   const methods = useForm();
   const { register, watch, setValue } = methods;
@@ -52,10 +53,7 @@ const PaymentOptionCard = (props) => {
                     <PayuInput value={value} payuDetails={payuDetails} />
                   ) : null}
                   {name === "Ukheshe" ? (
-                    <UkhesheInput
-                      value={value}
-                      getPaymentRedirectURL={getPaymentRedirectURL}
-                    />
+                    <UkhesheInput value={value} setOpenPopup={setOpenPopup} />
                   ) : null}
                   <input
                     {...register(registerName)}
