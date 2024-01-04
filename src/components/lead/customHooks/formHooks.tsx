@@ -25,7 +25,9 @@ export const useFormHook = (applicationCode: string) => {
     const payload = {
       ...masterData,
       masterData: data[0],
-      salesAgentData: data[1],
+      salesAgentData: data[1]?.filter((item) => {
+        return !!item.code;
+      }),
       programsData: data[2],
       applicationData: data[3],
       nationalityStatus: data[4],

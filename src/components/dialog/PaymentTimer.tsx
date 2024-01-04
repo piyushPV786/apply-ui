@@ -101,7 +101,7 @@ const PaymentTimer = ({
         <DialogActions sx={{ justifyContent: "center" }}>
           <StyledButton
             isError={proceed}
-            title={proceed ? "Cancle" : "Ok"}
+            title={proceed ? "Cancel" : "Ok"}
             onClick={() => (proceed ? closePaymentDialog() : onProceed())}
           />
         </DialogActions>
