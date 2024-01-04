@@ -26,16 +26,18 @@ const CommonAutocomplete = (props: IProps) => {
   } = props;
   const { register, setValue, watch } = useFormContext();
   const optionList: any = [];
-  const dropDownOptions = options?.map((item) => {
-    if (item?.code) {
-      optionList.push(item);
-      return item.code;
-    } else if (item?.isoCode) {
-      const { isoCode, ...rest } = item;
-      optionList.push({ ...rest, code: isoCode });
-      return isoCode;
-    }
-  });
+  const dropDownOptions = options
+    ?.sort((a, b) => a.name.localeCompare(b.name))
+    .map((item) => {
+      if (item?.code) {
+        optionList.push(item);
+        return item.code;
+      } else if (item?.isoCode) {
+        const { isoCode, ...rest } = item;
+        optionList.push({ ...rest, code: isoCode });
+        return isoCode;
+      }
+    });
 
   return (
     <>
