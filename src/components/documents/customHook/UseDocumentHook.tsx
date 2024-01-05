@@ -6,6 +6,7 @@ import {
   bursarryFeilds,
   dashboardRedirectStatus,
   docType,
+  MBACode,
 } from "../context/common";
 import { useRouter } from "next/router";
 import {
@@ -43,9 +44,9 @@ export const UseDocumentHook = (applicationCode) => {
         return {
           name: element?.name,
           label: element?.name,
-          required: userInfo?.education?.programCode === "MBA",
+          required: userInfo?.education?.programCode === MBACode,
           code: element.code,
-          show: userInfo?.education?.programCode === "MBA",
+          show: userInfo?.education?.programCode === MBACode,
         };
       } else if (element.code === docType.MATRIC) {
         return {
