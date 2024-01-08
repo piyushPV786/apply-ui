@@ -191,6 +191,8 @@ export const useDiscountHook = (masterData: any, fees: any) => {
             res?.percent
           } % or Max Amount ${
             masterData.currencyData?.currencySymbol
+              ? masterData.currencyData?.currencySymbol
+              : ""
           } ${getConvertedAmount(
             masterData?.currencyData?.forecastRate,
             String(res?.maxAmount)
@@ -214,6 +216,8 @@ export const useDiscountHook = (masterData: any, fees: any) => {
               res?.percent
             } % or Max Amount ${
               masterData.currencyData?.currencySymbol
+                ? masterData.currencyData?.currencySymbol
+                : ""
             } ${getConvertedAmount(
               masterData?.currencyData?.forecastRate,
               String(res?.maxAmount)
