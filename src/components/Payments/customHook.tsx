@@ -433,12 +433,12 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
 
   const closePaymentDialog = (isCounter?: boolean) => {
     clearInterval(intervalId);
-    isCounter
-      ? router?.push(
-          `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
-        )
-      : setOpenPopup(false);
     newTab?.close();
+    setLoadingPayment(false);
+    setOpenPopup(false);
+    router?.push(
+      `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+    );
   };
 
   return {
@@ -450,11 +450,11 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   };
 };
 
-export const useCustomizeHook = (open, closePaymentDialog) => {
+export const useCustomizeHook = (open, closePaymentDialog, proceed) => {
   const [counter, setCounter] = useState(300);
   const [timer, setTimer] = useState(0);
   useEffect(() => {
-    if (open) {
+    if (open && proceed) {
       const timer: any = setInterval(() => {
         setCounter((prev) => prev - 1);
       }, 1000);
@@ -464,7 +464,7 @@ export const useCustomizeHook = (open, closePaymentDialog) => {
         setCounter(300);
       };
     }
-  }, [open]);
+  }, [open, proceed]);
 
   useEffect(() => {
     if (counter === 0) {
