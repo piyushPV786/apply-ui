@@ -189,9 +189,14 @@ export const useDiscountHook = (masterData: any, fees: any) => {
         toast.success(
           `${SuccessMessage.discountSuccessMessage} ${
             res?.percent
-          } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
-            res?.maxAmount * masterData.currencyData?.forecastRate
-          } `
+          } % or Max Amount ${
+            masterData.currencyData?.currencySymbol
+              ? masterData.currencyData?.currencySymbol
+              : ""
+          } ${getConvertedAmount(
+            masterData?.currencyData?.forecastRate,
+            String(res?.maxAmount)
+          )} `
         );
       } else {
         toast.error(ErrorMessage.discountErrorMessage);
@@ -209,9 +214,14 @@ export const useDiscountHook = (masterData: any, fees: any) => {
           toast.success(
             `${SuccessMessage.discountSuccessMessage} ${
               res?.percent
-            } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
-              res?.maxAmount * masterData.currencyData?.forecastRate
-            } `
+            } % or Max Amount ${
+              masterData.currencyData?.currencySymbol
+                ? masterData.currencyData?.currencySymbol
+                : ""
+            } ${getConvertedAmount(
+              masterData?.currencyData?.forecastRate,
+              String(res?.maxAmount)
+            )} `
           );
         }
       } else {
