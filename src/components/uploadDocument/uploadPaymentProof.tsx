@@ -63,7 +63,7 @@ const UploadPaymentProof = ({
           name={name}
           className="d-none"
           ref={fileUpload}
-          accept="image/pdf, image/jpeg, image/png"
+          accept="application/pdf, image/jpeg, image/png"
           type="file"
           onChange={(e) =>
             e?.target?.files &&
