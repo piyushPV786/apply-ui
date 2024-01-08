@@ -66,6 +66,8 @@ export const acceptedFileTypes = [
   "application/pdf",
 ];
 
+export const MBACode = "MBA-Prog";
+
 export const documentCriteria = [
   {
     text: `File accepted: JPEG/JPG/PNG, PDF (Max size: 2MB)`,
