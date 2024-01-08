@@ -149,7 +149,7 @@ const FinalFees = (props) => {
   useEffect(() => {
     methods.setValue("discountCode", "");
   }, [fees.discountAmount]);
-  console.log(discount);
+
   return (
     <Grid container spacing={2} sx={{ p: 3 }}>
       <PaymentCard>
