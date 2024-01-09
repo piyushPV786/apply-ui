@@ -91,6 +91,14 @@ const CommonAutocomplete = (props: IProps) => {
             />
           );
         }}
+        renderOption={(props, option, { selected }) => {
+          const optionValue = optionList?.find((item) => item?.code === option);
+          return (
+            <li {...props} key={option.code}>
+              {optionValue?.name}
+            </li>
+          );
+        }}
       />
     </>
   );
