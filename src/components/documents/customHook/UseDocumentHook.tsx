@@ -7,6 +7,7 @@ import {
   dashboardRedirectStatus,
   docType,
   MBACode,
+  nonMandatoryDocuments,
 } from "../context/common";
 import { useRouter } from "next/router";
 import {
@@ -48,7 +49,7 @@ export const UseDocumentHook = (applicationCode) => {
           code: element.code,
           show: userInfo?.education?.programCode === MBACode,
         };
-      } else if (element.code === docType.MATRIC) {
+      } else if (nonMandatoryDocuments.includes(element.code)) {
         return {
           name: element?.name,
           label: element?.name,
