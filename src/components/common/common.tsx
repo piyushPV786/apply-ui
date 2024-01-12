@@ -231,6 +231,8 @@ const LoadinContainer = styled.div`
   align-items: center;
 `;
 
+export const nonMandatorySponsorFeilds = ["email", "mobileNumber"];
+
 export const studentApplicationAllStatus: IDynamicObject = {
   "APP-FEE-DOC-VER-PEND": "Application Fee Verification Pending",
   "RESUB-APP-FEE-PROOF": "Resubmit application Fee POP",
