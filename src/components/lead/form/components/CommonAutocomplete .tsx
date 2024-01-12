@@ -24,7 +24,7 @@ const CommonAutocomplete = (props: IProps) => {
     disabled = false,
     onChange,
   } = props;
-  const { register, setValue, watch } = useFormContext();
+  const { register, setValue, watch, trigger } = useFormContext();
   const optionList: any = [];
 
   const dropDownOptions = options
@@ -64,6 +64,9 @@ const CommonAutocomplete = (props: IProps) => {
         onChange={(e, value) => {
           setValue(registerName, value);
           onChange && onChange();
+        }}
+        onBlur={() => {
+          trigger(registerName);
         }}
         renderInput={(params) => {
           const { inputProps, ...rest } = params;
