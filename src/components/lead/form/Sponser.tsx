@@ -3,6 +3,7 @@ import {
   GreenFormHeading,
   StyledAccordion,
   StyledLabel,
+  nonMandatorySponsorFeilds,
 } from "../../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
@@ -41,7 +42,11 @@ const Sponsor = (props: any) => {
     const sponsorData: any = [];
     sponsorInfoData?.forEach((item) => {
       if (activeSponsor === "yes") {
-        sponsorData.push({ ...item, required: true });
+        if (nonMandatorySponsorFeilds.includes(item?.key)) {
+          sponsorData.push({ ...item, required: false });
+        } else {
+          sponsorData.push({ ...item, required: true });
+        }
       } else {
         sponsorData.push({ ...item, required: false });
       }
