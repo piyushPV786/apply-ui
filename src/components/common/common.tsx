@@ -232,6 +232,7 @@ const LoadinContainer = styled.div`
 `;
 
 export const nonMandatorySponsorFeilds = ["email", "mobileNumber"];
+export const mandatorySponsorModeFeilds = ["GUARDIAN", "BURSARY"];
 
 export const studentApplicationAllStatus: IDynamicObject = {
   "APP-FEE-DOC-VER-PEND": "Application Fee Verification Pending",
