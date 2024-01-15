@@ -392,6 +392,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
       type: "GLOBAL_PAYMENT_LINK",
       paymentMechanism: "CARD",
       paymentData: process.env.NEXT_PUBLIC_UKHESHE_WALLET_ID,
+      callbackUrl: process.env.NEXT_PUBLIC_UKHESHE_CALLBACK_URL,
     };
     const headers = {
       "Content-Type": "application/json",
