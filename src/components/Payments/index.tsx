@@ -73,7 +73,15 @@ const PaymentPage = ({ applicationCode }) => {
           </Grid>
 
           <Grid item xs={12} display="flex" justifyContent="center">
-            <Grid item xs={6} display="flex" justifyContent="center">
+            <Grid item xs={2} display="flex" justifyContent="center">
+              <StyledButton
+                title="Back To Dashboard"
+                onClick={() => {
+                  router.replace(`/dashboard`);
+                }}
+              />
+            </Grid>
+            <Grid item xs={1} display="flex" justifyContent="center">
               <StyledButton
                 isGreenWhiteCombination
                 title="Back"
