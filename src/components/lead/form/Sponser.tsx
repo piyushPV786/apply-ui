@@ -4,6 +4,7 @@ import {
   StyledAccordion,
   StyledLabel,
   nonMandatorySponsorFeilds,
+  mandatorySponsorModeFeilds,
 } from "../../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
@@ -92,8 +93,8 @@ const Sponsor = (props: any) => {
                       <CommonAutocomplete
                         options={
                           masterData[element?.key]
-                            ? masterData[element?.key]?.filter(
-                                (item) => item?.code === "GUARDIAN"
+                            ? masterData[element?.key]?.filter((item) =>
+                                mandatorySponsorModeFeilds.includes(item?.code)
                               )
                             : element.option
                         }
