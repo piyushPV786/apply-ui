@@ -188,7 +188,7 @@ const Sponsor = (props: any) => {
                         )}
                       {element?.type === "email" && (
                         <div className="col-lg-4 mb-4">
-                          <StyledLabel required>{element?.label}</StyledLabel>
+                          <StyledLabel>{element?.label}</StyledLabel>
                           <input
                             className="form-control"
                             type={element.type}
