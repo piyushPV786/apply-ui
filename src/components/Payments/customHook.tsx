@@ -110,7 +110,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
           ? masterData?.currencyData?.currencySymbol
           : ""
       } ${getConvertedAmount(
-        masterData?.currencyData?.forecastRate,
+        masterData?.currencyData,
         String(feesStructure?.fee)
       )}`,
     };
@@ -124,10 +124,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
         masterData?.currencyData?.currencySymbol
           ? masterData?.currencyData?.currencySymbol
           : ""
-      } ${getConvertedAmount(
-        masterData?.currencyData?.forecastRate,
-        String(0)
-      )}`,
+      } ${getConvertedAmount(masterData?.currencyData, String(0))}`,
       ...(feeModeCode !== feeMode.APPLICATION && { ...feesStructure }),
       ...(feeModeCode !== feeMode.APPLICATION && {
         amount: `${
@@ -135,7 +132,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
             ? masterData?.currencyData?.currencySymbol
             : ""
         } ${getConvertedAmount(
-          masterData?.currencyData?.forecastRate,
+          masterData?.currencyData,
           String(feesStructure?.fee)
         )}`,
       }),
@@ -194,7 +191,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
               ? masterData.currencyData?.currencySymbol
               : ""
           } ${getConvertedAmount(
-            masterData?.currencyData?.forecastRate,
+            masterData?.currencyData,
             String(res?.maxAmount)
           )} `
         );
@@ -219,7 +216,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
                 ? masterData.currencyData?.currencySymbol
                 : ""
             } ${getConvertedAmount(
-              masterData?.currencyData?.forecastRate,
+              masterData?.currencyData,
               String(res?.maxAmount)
             )} `
           );
@@ -248,10 +245,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
     masterData?.currencyData?.currencySymbol
       ? masterData?.currencyData?.currencySymbol
       : ""
-  } ${getConvertedAmount(
-    masterData?.currencyData?.forecastRate,
-    String(fees.discountFee)
-  )}`;
+  } ${getConvertedAmount(masterData?.currencyData, String(fees.discountFee))}`;
   fees.discountCode = discount?.code;
 
   //Apply RMAT Fee
@@ -267,7 +261,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
       masterData?.currencyData?.currencySymbol
         ? masterData?.currencyData?.currencySymbol
         : ""
-    } ${getConvertedAmount(masterData?.currencyData?.forecastRate, rmatFees)}`;
+    } ${getConvertedAmount(masterData?.currencyData, rmatFees)}`;
   }
 
   //Total Amount
@@ -278,10 +272,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
     masterData?.currencyData?.currencySymbol
       ? masterData?.currencyData?.currencySymbol
       : ""
-  } ${getConvertedAmount(
-    masterData?.currencyData?.forecastRate,
-    String(totalAmount)
-  )}`;
+  } ${getConvertedAmount(masterData?.currencyData, String(totalAmount))}`;
   return {
     resetDiscount,
     fees,
