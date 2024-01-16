@@ -10,16 +10,18 @@ class DocumentApplicationServices {
   applyBaseUrl: string | undefined = apiUrls?.applyBaseUrl;
 
   async uploadDocuments(payload, applicationCode) {
-    const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${applicationCode}/document`;
-    const response = await apiServer.post(url, payload);
-    if (
-      response?.status == apiStatus.success ||
-      response?.status == apiStatus.success1
-    ) {
-      return response?.data?.data;
-    } else {
-      return null;
-    }
+    try {
+      const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${applicationCode}/document`;
+      const response = await apiServer.post(url, payload);
+      if (
+        response?.status == apiStatus.success ||
+        response?.status == apiStatus.success1
+      ) {
+        return response?.data?.data;
+      } else {
+        return null;
+      }
+    } catch (e) {}
   }
 
   async downloadDeclarationLetter(applicationCode) {

@@ -317,8 +317,11 @@ export const usePayuHook = (masterData: any, fees: any) => {
 };
 
 export const useOfflinePaymentHook = (masterData: any, fees: any) => {
+  const [disabled, setDisabled] = useState(false);
   const router = useRouter();
   const uploadPaymentProof = async (payload) => {
+    setDisabled(true);
+
     const apiPayload = {
       files: changeFileExactions(payload?.files),
       amount: fees?.totalFee,
@@ -333,36 +336,45 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       currencyCode: masterData?.currencyData?.currencyCode,
       studentCode: masterData?.applicationData?.studentCode,
     };
+
     const response = await DocumentServices?.uploadDocuments(
       apiPayload,
       masterData?.applicationData?.applicationCode
     );
 
-    const changePayload = signedUrlPayload(
-      response,
-      payload,
-      masterData?.applicationData?.studentCode
-    );
-
-    if (changePayload) {
-      const result = await Promise.all(
-        changePayload?.map(async (item) => {
-          const response = await DocumentServices?.getFileSignUrl(
-            item?.fileName,
-            item?.filetype,
-            item?.studentCode
-          );
-          return await DocumentServices.uploadDocumentToAws(
-            response,
-            item.file
-          );
-        })
+    if (response) {
+      const changePayload = signedUrlPayload(
+        response,
+        payload,
+        masterData?.applicationData?.studentCode
       );
-      router.push("/payment/success");
+
+      if (changePayload) {
+        const result = await Promise.all(
+          changePayload?.map(async (item) => {
+            const response = await DocumentServices?.getFileSignUrl(
+              item?.fileName,
+              item?.filetype,
+              item?.studentCode
+            );
+            return await DocumentServices.uploadDocumentToAws(
+              response,
+              item.file
+            );
+          })
+        );
+
+        router.push("/payment/success");
+      } else {
+        router.push("/payment/failure");
+      }
+    } else {
+      router.push("/payment/failure");
     }
   };
   return {
     uploadPaymentProof,
+    disabled,
   };
 };
 

@@ -11,6 +11,7 @@ const PaymentOptions = ({
   uploadPaymentProof,
   fees,
   setOpenPopup,
+  disabled,
 }) => {
   return (
     <FullWidthCard>
@@ -26,6 +27,7 @@ const PaymentOptions = ({
                 payuDetails={payuDetails}
                 getPaymentRedirectURL={getPaymentRedirectURL}
                 uploadPaymentProof={uploadPaymentProof}
+                disabled={disabled}
               />
             </Grid>
           </Grid>
