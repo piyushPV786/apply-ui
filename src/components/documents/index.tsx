@@ -5,7 +5,6 @@ import StepperComponent from "../../components/stepper/stepper";
 import StyledButton from "../button/button";
 import { StyledMessage } from "../common/common";
 import Header from "../common/header";
-import { docType } from "./context/common";
 
 import { FormProvider, useForm } from "react-hook-form";
 import React, { useEffect } from "react";
@@ -16,12 +15,14 @@ import {
 } from "./customHook/UseDocumentHook";
 import { DocumentStatus } from "./components";
 import { setDocumentValue } from "../../Util/Util";
+import { Spinner } from "../Loader";
 
 const DocumentUploadPage = (props) => {
   const methods = useForm();
   const { applicationCode } = props;
   const { masterData } = UseDocumentHook(applicationCode);
-  const { saveAsDraft, submitDocument, disable } = ActionDocumentSubmit();
+  const { saveAsDraft, submitDocument, disable, loader } =
+    ActionDocumentSubmit();
   const { handleSubmit } = methods;
 
   useEffect(() => {
@@ -32,6 +33,7 @@ const DocumentUploadPage = (props) => {
 
   return (
     <MainContainer>
+      {loader && <Spinner />}
       <Header />
       <FormProvider {...methods}>
         <form>

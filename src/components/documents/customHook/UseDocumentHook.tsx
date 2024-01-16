@@ -100,6 +100,7 @@ export const UseDocumentHook = (applicationCode) => {
 
 export const ActionDocumentSubmit = () => {
   const [disable, setDisable] = useState(false);
+  const [loader, setLoader] = useState(false);
   const router = useRouter();
   const uploadFiles = async (payload, masterData) => {
     const response = await DocumentServices.uploadDocuments(
@@ -109,6 +110,7 @@ export const ActionDocumentSubmit = () => {
 
     const changePayload = signedUrlPayload(response, payload);
     if (changePayload) {
+      setLoader(true);
       const result = await Promise.all(
         changePayload?.map(async (item) => {
           const response = await DocumentServices?.getFileSignUrl(
@@ -122,6 +124,7 @@ export const ActionDocumentSubmit = () => {
           );
         })
       );
+      setLoader(false);
 
       dashboardRedirectStatus.includes(masterData?.userDetails?.status)
         ? router.push(`/dashboard`)
@@ -170,7 +173,7 @@ export const ActionDocumentSubmit = () => {
     }
   };
 
-  return { saveAsDraft, submitDocument, disable };
+  return { saveAsDraft, submitDocument, disable, loader };
 };
 
 export const UseDownloadDeclarationLatter = () => {

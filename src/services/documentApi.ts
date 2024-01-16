@@ -1,9 +1,8 @@
 import { apiEndPoint, apiUrls } from "./config";
-import { apiServer, refreshApiServer } from "./index";
+import { apiServer } from "./index";
 import { apiStatus } from "../context/common";
 import { getLocalStorageData } from "../Util/Util";
 import { StorageName } from "../components/common/constant";
-import axios from "axios";
 
 class DocumentApplicationServices {
   commonBaseUrl: string | undefined = apiUrls?.commonBaseUrl;
