@@ -262,8 +262,8 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "LOAN-APPROVED": "Loan Approved",
   "LOAN-REJECTED": "Loan Rejected",
   "PROG-FEE-DOC-VER-PEND": "Qualification Fees Document Verification Pending",
-  "RESUB-PROG-FEE-PROOF": "Resubmit Qualification Fee  POP",
-  "PROG-FEE-VER-PEND": "Qualification Fees POP Verification Pending",
+  "RESUB-PROG-FEE-PROOF": "Resubmit Program Fee POP",
+  "PROG-FEE-VER-PEND": "Program Fees Verification Pending",
   "DEBIT-ORDER-FORM-PEND": "Debit Order Form Pending",
   "DEBIT-ORDER-FORM-DOC-VER-PEND":
     "Debit Order Form Document Verification Pending",
@@ -278,8 +278,8 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "PROG-FEE-ACCEPTED": "Qualification Fee Accepted",
   "INTAKE-ASSIGNMENT-PEND": "Intake Assignment Pending",
   "INTAKE-ASSIGNED": "Intake Assigned",
-  "PROG-ADMITTED": "Enrolled to the Qualification",
-  ENROLLED: "Enrolled to the Qualification",
+  "PROG-ADMITTED": "Enrolled to the Program",
+  ENROLLED: "Enrolled to the Program",
   "APP-DRAFT": "In Draft",
   "APP-FEE-PEND": "Application  Fee Pending",
   "UPLD-APP-DOC": "Upload Application documents",
@@ -295,6 +295,8 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "LOAN-DOC-ACCEPTED": "Loan Documents Accepted",
   "INTAKE-ASSIGNMENT PENDING": "Intake Assignment Pending",
   "BURSARY-LETTER-PEND": "Upload Bursary Documents",
+  "RMAT-PENDING": "RMAT Exam is Pending",
+  "INTAKE-ASSIGNMENT-PENDING": "Intake Assignment Pending",
 };
 export enum FileSize {
   maxSize = 2000 * 1024,
