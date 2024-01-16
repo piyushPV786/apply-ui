@@ -28,7 +28,7 @@ export const sponsorInfoData = [
   {
     name: "name",
     key: "name",
-    label: "Sponsor Name",
+    label: "Sponsor/company Name",
     type: "textWithSpace",
     required: false,
     errorMessage: "Please enter sponsor name",

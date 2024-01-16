@@ -3,6 +3,8 @@ import {
   GreenFormHeading,
   StyledAccordion,
   StyledLabel,
+  nonMandatorySponsorFeilds,
+  mandatorySponsorModeFeilds,
 } from "../../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
@@ -41,7 +43,11 @@ const Sponsor = (props: any) => {
     const sponsorData: any = [];
     sponsorInfoData?.forEach((item) => {
       if (activeSponsor === "yes") {
-        sponsorData.push({ ...item, required: true });
+        if (nonMandatorySponsorFeilds.includes(item?.key)) {
+          sponsorData.push({ ...item, required: false });
+        } else {
+          sponsorData.push({ ...item, required: true });
+        }
       } else {
         sponsorData.push({ ...item, required: false });
       }
@@ -87,8 +93,8 @@ const Sponsor = (props: any) => {
                       <CommonAutocomplete
                         options={
                           masterData[element?.key]
-                            ? masterData[element?.key]?.filter(
-                                (item) => item?.code === "GUARDIAN"
+                            ? masterData[element?.key]?.filter((item) =>
+                                mandatorySponsorModeFeilds.includes(item?.code)
                               )
                             : element.option
                         }
@@ -182,7 +188,7 @@ const Sponsor = (props: any) => {
                         )}
                       {element?.type === "email" && (
                         <div className="col-lg-4 mb-4">
-                          <StyledLabel required>{element?.label}</StyledLabel>
+                          <StyledLabel>{element?.label}</StyledLabel>
                           <input
                             className="form-control"
                             type={element.type}

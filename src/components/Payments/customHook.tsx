@@ -110,7 +110,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
           ? masterData?.currencyData?.currencySymbol
           : ""
       } ${getConvertedAmount(
-        masterData?.currencyData?.forecastRate,
+        masterData?.currencyData,
         String(feesStructure?.fee)
       )}`,
     };
@@ -124,10 +124,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
         masterData?.currencyData?.currencySymbol
           ? masterData?.currencyData?.currencySymbol
           : ""
-      } ${getConvertedAmount(
-        masterData?.currencyData?.forecastRate,
-        String(0)
-      )}`,
+      } ${getConvertedAmount(masterData?.currencyData, String(0))}`,
       ...(feeModeCode !== feeMode.APPLICATION && { ...feesStructure }),
       ...(feeModeCode !== feeMode.APPLICATION && {
         amount: `${
@@ -135,7 +132,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
             ? masterData?.currencyData?.currencySymbol
             : ""
         } ${getConvertedAmount(
-          masterData?.currencyData?.forecastRate,
+          masterData?.currencyData,
           String(feesStructure?.fee)
         )}`,
       }),
@@ -189,9 +186,14 @@ export const useDiscountHook = (masterData: any, fees: any) => {
         toast.success(
           `${SuccessMessage.discountSuccessMessage} ${
             res?.percent
-          } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
-            res?.maxAmount * masterData.currencyData?.forecastRate
-          } `
+          } % or Max Amount ${
+            masterData.currencyData?.currencySymbol
+              ? masterData.currencyData?.currencySymbol
+              : ""
+          } ${getConvertedAmount(
+            masterData?.currencyData,
+            String(res?.maxAmount)
+          )} `
         );
       } else {
         toast.error(ErrorMessage.discountErrorMessage);
@@ -209,9 +211,14 @@ export const useDiscountHook = (masterData: any, fees: any) => {
           toast.success(
             `${SuccessMessage.discountSuccessMessage} ${
               res?.percent
-            } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
-              res?.maxAmount * masterData.currencyData?.forecastRate
-            } `
+            } % or Max Amount ${
+              masterData.currencyData?.currencySymbol
+                ? masterData.currencyData?.currencySymbol
+                : ""
+            } ${getConvertedAmount(
+              masterData?.currencyData,
+              String(res?.maxAmount)
+            )} `
           );
         }
       } else {
@@ -238,10 +245,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
     masterData?.currencyData?.currencySymbol
       ? masterData?.currencyData?.currencySymbol
       : ""
-  } ${getConvertedAmount(
-    masterData?.currencyData?.forecastRate,
-    String(fees.discountFee)
-  )}`;
+  } ${getConvertedAmount(masterData?.currencyData, String(fees.discountFee))}`;
   fees.discountCode = discount?.code;
 
   //Apply RMAT Fee
@@ -257,7 +261,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
       masterData?.currencyData?.currencySymbol
         ? masterData?.currencyData?.currencySymbol
         : ""
-    } ${getConvertedAmount(masterData?.currencyData?.forecastRate, rmatFees)}`;
+    } ${getConvertedAmount(masterData?.currencyData, rmatFees)}`;
   }
 
   //Total Amount
@@ -268,10 +272,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
     masterData?.currencyData?.currencySymbol
       ? masterData?.currencyData?.currencySymbol
       : ""
-  } ${getConvertedAmount(
-    masterData?.currencyData?.forecastRate,
-    String(totalAmount)
-  )}`;
+  } ${getConvertedAmount(masterData?.currencyData, String(totalAmount))}`;
   return {
     resetDiscount,
     fees,
@@ -381,7 +382,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
       currency: "ZAR",
       type: "GLOBAL_PAYMENT_LINK",
       paymentMechanism: "CARD",
-      paymentData: "198462",
+      paymentData: process.env.NEXT_PUBLIC_UKHESHE_WALLET_ID,
     };
     const headers = {
       "Content-Type": "application/json",
@@ -433,12 +434,12 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
 
   const closePaymentDialog = (isCounter?: boolean) => {
     clearInterval(intervalId);
-    isCounter
-      ? router?.push(
-          `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
-        )
-      : setOpenPopup(false);
     newTab?.close();
+    setLoadingPayment(false);
+    setOpenPopup(false);
+    router?.push(
+      `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+    );
   };
 
   return {
@@ -450,11 +451,11 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   };
 };
 
-export const useCustomizeHook = (open, closePaymentDialog) => {
+export const useCustomizeHook = (open, closePaymentDialog, proceed) => {
   const [counter, setCounter] = useState(300);
   const [timer, setTimer] = useState(0);
   useEffect(() => {
-    if (open) {
+    if (open && proceed) {
       const timer: any = setInterval(() => {
         setCounter((prev) => prev - 1);
       }, 1000);
@@ -464,7 +465,7 @@ export const useCustomizeHook = (open, closePaymentDialog) => {
         setCounter(300);
       };
     }
-  }, [open]);
+  }, [open, proceed]);
 
   useEffect(() => {
     if (counter === 0) {

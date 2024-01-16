@@ -33,7 +33,7 @@ const AddressType = (props) => {
         />
         {Errors && Errors[index]?.street && (
           <div className="invalid-feedback">
-            Please enter Residential Address
+            Please enter {`${data?.name}`} Address
           </div>
         )}
       </div>
@@ -54,7 +54,7 @@ const AddressType = (props) => {
         )}
         {Errors && Errors[index]?.country && (
           <div className="invalid-feedback">
-            Please enter Residential Country
+            Please enter {`${data?.name}`} Country
           </div>
         )}
       </div>
@@ -72,7 +72,9 @@ const AddressType = (props) => {
           required={true}
         />
         {Errors && Errors[index]?.state && (
-          <div className="invalid-feedback">Please enter Residential State</div>
+          <div className="invalid-feedback">
+            Please enter {`${data?.name}`} State
+          </div>
         )}
       </div>
 
@@ -92,7 +94,9 @@ const AddressType = (props) => {
           }}
         />
         {Errors && Errors[index]?.city && (
-          <div className="invalid-feedback">Please enter Residential City</div>
+          <div className="invalid-feedback">
+            Please enter {`${data?.name}`} City
+          </div>
         )}
       </div>
       <div className="col-lg-4 mb-4">

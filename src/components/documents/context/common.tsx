@@ -5,6 +5,11 @@ import { CommonEnums } from "../../common/constant";
 
 // comon document page used constants //
 export const mbaDocs = ["MOTIVATIONLETTER", "INTERVIEWNOTES"];
+export const nonMandatoryDocuments = [
+  "TERMS&CONDITION",
+  "APPLICATIONLETTER",
+  "MATRIC",
+];
 
 export const docType = {
   RESUMECV: "RESUMECV",
@@ -65,6 +70,8 @@ export const acceptedFileTypes = [
   "image/png",
   "application/pdf",
 ];
+
+export const MBACode = "MBA-Prog";
 
 export const documentCriteria = [
   {

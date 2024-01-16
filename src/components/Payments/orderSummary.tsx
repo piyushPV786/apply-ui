@@ -232,7 +232,7 @@ const FinalFees = (props) => {
               {showDiscount && (
                 <FormProvider {...methods}>
                   <form>
-                    {discount?.max == 0 ? (
+                    {discount?.max == 0 && discount?.percent == 0 ? (
                       <Grid xs={12} spacing={1} container>
                         <Grid xs={9} item>
                           <TextField
