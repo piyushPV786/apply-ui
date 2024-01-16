@@ -20,6 +20,7 @@ const PaymentOptionCard = (props) => {
     uploadPaymentProof,
     fees,
     setOpenPopup,
+    disabled,
   } = props;
   const methods = useForm();
   const { register, watch, setValue } = methods;
@@ -89,7 +90,10 @@ const PaymentOptionCard = (props) => {
             ))}
           </Box>
           {onlinePaymentWatch === "offline" && (
-            <PaymentProofCard uploadPaymentProof={uploadPaymentProof} />
+            <PaymentProofCard
+              uploadPaymentProof={uploadPaymentProof}
+              disabled={disabled}
+            />
           )}
         </Grid>
       </Grid>

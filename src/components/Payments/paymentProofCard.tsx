@@ -10,7 +10,7 @@ export interface IFormValue {
 }
 
 const PaymentProofCard = (props) => {
-  const { uploadPaymentProof } = props;
+  const { uploadPaymentProof, disabled } = props;
 
   const {
     watch,
@@ -52,7 +52,7 @@ const PaymentProofCard = (props) => {
       <Grid item xs={12} display="flex" justifyContent="center">
         <StyledButton
           onClick={handleSubmit(submitFile)}
-          disabled={!watch("file" as any)}
+          disabled={!watch("file" as any) || disabled}
           title="Submit"
           style={{ width: "120px" }}
         />
