@@ -185,6 +185,7 @@ export const signedUrlPayload = (response, payload, studentCode) => {
           filetype: `.${ext}`,
           studentCode: studentCode,
           file: element?.files,
+          documentCode: document?.documentCode,
         });
       }
     });
