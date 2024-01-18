@@ -118,17 +118,33 @@ export const ActionDocumentSubmit = () => {
             item?.filetype,
             item?.studentCode
           );
-          return await DocumentServices.uploadDocumentToAws(
+          const responseAWS = await DocumentServices.uploadDocumentToAws(
             response,
             item.file
           );
+          if (responseAWS?.status === 200) {
+            await DocumentServices.updateDocumentStatus(item?.documentCode);
+
+            return { ...item, uploadStatus: true };
+          } else {
+            return { ...item, uploadStatus: false };
+          }
         })
       );
       setLoader(false);
+      const uploadedFile = result?.filter(
+        (item) => item?.uploadStatus === false
+      );
 
-      dashboardRedirectStatus.includes(masterData?.userDetails?.status)
-        ? router.push(`/dashboard`)
-        : router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
+      if (uploadedFile?.length) {
+        router.reload();
+      } else {
+        dashboardRedirectStatus.includes(masterData?.userDetails?.status)
+          ? router.push(`/dashboard`)
+          : router.push(
+              `/payments/${masterData?.userDetails?.applicationCode}`
+            );
+      }
     }
   };
 
@@ -137,12 +153,12 @@ export const ActionDocumentSubmit = () => {
     const payload = documentPayload(data, true, masterData);
     if (payload) {
       uploadFiles(payload, masterData);
-      router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
+      router.push(`/payments/${masterData?.userDetails}`);
     }
   };
   const submitDocument = async (data, masterData) => {
-    setDisable(true);
     if (masterData?.userDetails?.status == CommonEnums.BURSARY_LETTER_PEND) {
+      setDisable(true);
       const bursaryPayload = {
         name: data[bursarryFeilds.Name],
         mobile: data[bursarryFeilds.Phone],
@@ -165,6 +181,7 @@ export const ActionDocumentSubmit = () => {
         const payload = studentBursaryPayload(res, masterData);
         DocumentServices.updateStudentBursary(payload);
       }
+      setDisable(true);
     }
 
     const payload = documentPayload(data, false, masterData);
