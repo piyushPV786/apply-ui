@@ -7,6 +7,7 @@ import CommonAutocomplete from "./CommonAutocomplete ";
 import { useFormContext } from "react-hook-form";
 import { useNationalityHook } from "../../customHooks/nationalityHooks";
 import { nationalityStatusEnum } from "../../../../constants";
+import { idNumberValidation } from "../../../../Util/Util";
 
 const NationalityStatus = (props: any) => {
   const { masterData, nationalityStatus, identificationType, applicationData } =
@@ -16,6 +17,8 @@ const NationalityStatus = (props: any) => {
     formState: { errors, touchedFields },
     watch,
     setValue,
+    setError,
+    clearErrors,
   } = useFormContext();
 
   const [nationalityStatusValue, setNationalityStatus] = useState("");
@@ -138,10 +141,25 @@ const NationalityStatus = (props: any) => {
                 {...register("lead.identificationNumber", {
                   required: true,
                 })}
+                onBlur={async (e) => {
+                  if (e.target.value) {
+                    const res: any = await idNumberValidation(e);
+                    console.log("res", res);
+                    if (res?.message !== "clear") {
+                      setError("lead.identificationNumber", {
+                        type: "custom",
+                        message: res?.message,
+                      });
+                    } else if (res?.message === "clear") {
+                      clearErrors("lead.identificationNumber");
+                    }
+                  }
+                }}
               />
               {Errors?.identificationNumber && (
                 <div className="invalid-feedback">
-                  Please enter Identification Number
+                  {Errors?.identificationNumber?.type === "custom" &&
+                    Errors?.identificationNumber?.message}
                 </div>
               )}
             </div>

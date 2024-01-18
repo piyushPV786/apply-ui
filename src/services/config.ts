@@ -39,4 +39,6 @@ export const apiEndPoint = {
   bursary: "bursary",
   student: "student",
   status: "set-status",
+  checkDuplicateIdNumber:
+    "lead/check-duplicate-id-number/:idNumber/leadCode/:leadCode",
 };
