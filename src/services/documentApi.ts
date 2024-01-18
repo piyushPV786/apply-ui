@@ -109,7 +109,17 @@ class DocumentApplicationServices {
         "X-AWS-Skip-Token": true,
       },
     });
-    return response?.data ? response?.data : null;
+    return response ? response : null;
+  }
+  async updateDocumentStatus(documentCode: string) {
+    const route = apiEndPoint?.updateDocumentStatus.replace(
+      ":documentCode",
+      documentCode
+    );
+    const url = `${apiUrls?.documentBaseURl}${route}`;
+    const response = await apiServer.patch(url);
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
   }
 }
 

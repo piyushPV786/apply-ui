@@ -5,6 +5,7 @@ export const apiUrls = {
   commonBaseUrl: process.env.NEXT_PUBLIC_COMMON_BACKEND_API,
   userManagementBaseUrl: process.env.NEXT_PUBLIC_USER_MANAGEMENT_BACKEND_API,
   enrolmentBaseUrl: process.env.NEXT_PUBLIC_ENROLMENT_BACKEND_API,
+  documentBaseURl: process.env.NEXT_PUBLIC_DOCUMENT_BACKEND_API,
 };
 
 export const apiEndPoint = {
@@ -41,4 +42,5 @@ export const apiEndPoint = {
   status: "set-status",
   checkDuplicateIdNumber:
     "lead/check-duplicate-id-number/:idNumber/leadCode/:leadCode",
+  updateDocumentStatus: "document/:documentCode/active",
 };

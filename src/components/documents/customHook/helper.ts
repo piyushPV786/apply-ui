@@ -56,6 +56,7 @@ export const signedUrlPayload = (response, payload) => {
           filetype: `${ext}`,
           studentCode: payload?.studentCode,
           file: element?.file[0],
+          documentCode: document?.documentCode,
         });
       }
     });
