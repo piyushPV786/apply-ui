@@ -697,28 +697,18 @@ export const emailValidation = async (e) => {
   return returnVal;
 };
 
-export const idNumberValidation = async (e) => {
-  let returnVal = { message: "" };
-  if (e?.target?.value.length === 0) {
-    returnVal = {
-      message: "Please Enter you Id Number",
-    };
-  } else if (e?.target?.value.length > 0) {
+export const idNumberValidation = async (value) => {
+  let result: any = true;
+  if (value.length > 0) {
     const response = await ApplicationFormServices?.checkDuplicateIdNumber(
-      e?.target?.value
+      value
     );
 
     if (response?.message) {
-      returnVal = {
-        message: "Provided Id number already exists",
-      };
+      result = "Provided Identification number already exists";
     }
-  } else {
-    returnVal = {
-      message: "clear",
-    };
   }
-  return returnVal;
+  return result;
 };
 
 export const downloadDocument = (url, fileName: string) => {
