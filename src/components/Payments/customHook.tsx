@@ -357,14 +357,31 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
               item?.filetype,
               item?.studentCode
             );
-            return await DocumentServices.uploadDocumentToAws(
+            const responseAWS = await DocumentServices.uploadDocumentToAws(
               response,
               item.file
             );
+            if (responseAWS?.status === 200) {
+              await DocumentServices.updateDocumentStatus(item?.documentCode);
+
+              return { ...item, uploadStatus: true };
+            } else {
+              return { ...item, uploadStatus: false };
+            }
           })
         );
 
-        router.push("/payment/success");
+        const uploadedFile = result?.filter(
+          (item) => item?.uploadStatus === false
+        );
+
+        if (uploadedFile?.length) {
+          toast(
+            "Your payment proof not uploaded please reupload your payment proof"
+          );
+        } else {
+          router.push("/payment/success");
+        }
       } else {
         router.push("/payment/failure");
       }
