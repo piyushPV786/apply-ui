@@ -239,7 +239,6 @@ export const identityDocuments = [
 
 export const acceptedKeysToMap = [
   "kin",
-  "address",
   "lead",
   "education",
   "employment",
