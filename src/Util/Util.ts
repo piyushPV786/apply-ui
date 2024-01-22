@@ -537,6 +537,8 @@ export const validateNumber = (number, countryCodeRef) =>
   parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! >= 6 &&
   parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! <= 15;
 
+export const validateAddress = (address) => address?.length <= 40;
+
 /**
  * Transforms a date into a specific format.
  * @param {Date} date - The date to be transformed.

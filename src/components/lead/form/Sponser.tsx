@@ -18,7 +18,7 @@ import { useAddressHook } from "../customHooks/addressHooks";
 import RadioField from "./components/RadioField";
 import { sponsorInfoData } from "./data/sponsorData";
 import TextFieldWithSpace from "./components/TextFieldWithSpace";
-import { isValidEmail } from "../../../Util/Util";
+import { isValidEmail, validateAddress } from "../../../Util/Util";
 import { MobileField } from "./components/MobileField";
 import { useEffect, useState } from "react";
 import NumberField from "./components/NumberField";
@@ -214,6 +214,27 @@ const Sponsor = (props: any) => {
                           countryCodeRegisterName={`sponsor.${element?.countryCodeRegisterName}`}
                           error={Errors}
                         />
+                      )}
+                      {element?.type === "address" && (
+                        <div className="col-lg-4 mb-4">
+                          <StyledLabel>{element?.label}</StyledLabel>
+                          <input
+                            className="form-control"
+                            type={element.type}
+                            placeholder=""
+                            {...register(`sponsor.${element?.name}`, {
+                              required: element.required,
+                              validate: (value) => validateAddress(value),
+                            })}
+                          />
+                          {Errors && Errors?.address && (
+                            <div className="invalid-feedback">
+                              {Errors?.address?.type == "validate"
+                                ? element?.validateErrorMessage
+                                : element?.errorMessage}
+                            </div>
+                          )}
+                        </div>
                       )}
                     </>
                   )}
