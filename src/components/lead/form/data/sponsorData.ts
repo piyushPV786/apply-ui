@@ -1,4 +1,8 @@
-import { isValidEmail, validateNumber } from "../../../../Util/Util";
+import {
+  isValidEmail,
+  validateAddress,
+  validateNumber,
+} from "../../../../Util/Util";
 
 export const sponsorInfoData = [
   {
@@ -69,9 +73,11 @@ export const sponsorInfoData = [
     name: "address",
     key: "address",
     label: "Address",
-    type: "text",
+    type: "address",
     required: false,
     errorMessage: "Please enter Address",
+    validate: validateAddress,
+    validateErrorMessage: "Maximum 40 characters allowed",
     hidden: false,
     disabled: false,
     placeholder: "",
