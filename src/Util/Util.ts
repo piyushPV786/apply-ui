@@ -744,7 +744,7 @@ export const mapFormDefaultValue = (studentData: object, setValue: any) => {
       }
     }
     if (key === "address" && studentData[key]?.length > 0) {
-      setValue(studentData, setValue, key);
+      setValue(key, value);
     }
   }
 };
