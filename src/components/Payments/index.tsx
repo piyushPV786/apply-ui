@@ -52,7 +52,7 @@ const PaymentPage = ({ applicationCode }) => {
           alignItems: "center",
         }}
       >
-        <Grid container spacing={2} xs={10}>
+        <Grid container spacing={2} xs={10} sm={10} md={10}>
           <Grid item xs={12}>
             <StepperComponent active={2} />
           </Grid>
