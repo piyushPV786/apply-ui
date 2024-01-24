@@ -28,7 +28,7 @@ const OrderSummary = (props) => {
             Order Summary
           </Typography>
         </Grid>
-        <Grid item md={8} xs={8}>
+        <Grid item md={8} xs={12} sm={8}>
           <ProgramFees
             masterData={masterData}
             studyModes={studyModes}
@@ -36,7 +36,7 @@ const OrderSummary = (props) => {
             updateFeeMode={updateFeeMode}
           />
         </Grid>
-        <Grid item md={4} xs={4}>
+        <Grid item md={4} xs={12} sm={4}>
           <FinalFees
             masterData={masterData}
             studyModes={studyModes}
