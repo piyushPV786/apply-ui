@@ -1,4 +1,13 @@
-import { Box, Card, Grid, IconButton, List, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  Grid,
+  IconButton,
+  LinearProgress,
+  LinearProgressProps,
+  List,
+  Typography,
+} from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { FileUploadContainer, InnerContainer } from "../../login/style";
 import { MobileField } from "../../lead/form/components/MobileField";
@@ -182,12 +191,30 @@ export const Reject = ({ element }) => {
   );
 };
 
-export const ErrorHandling = ({ element, masterData }) => {
+function LinearProgressWithLabel(
+  props: LinearProgressProps & { value: number }
+) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ width: "100%", mr: 1 }}>
+        <LinearProgress variant="determinate" {...props} color="success" />
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" color="text.primary">{`${Math.round(
+          props.value
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
+}
+
+export const ErrorHandling = ({ element, masterData, uploadProgress }) => {
   const {
     formState: { errors },
   } = useFormContext();
   return (
     <Grid item sm={12} xs={12}>
+      {!!uploadProgress && <LinearProgressWithLabel value={uploadProgress} />}
       {errors[element.code] && (
         <Typography color={"error"}>
           {errors[element.code]?.message as any}
@@ -255,7 +282,6 @@ export const HandleAction = ({ element, masterData }) => {
 };
 
 export const DocumentStatus = ({ masterData }) => {
-  console.log("master data ============>", masterData);
   return (
     <>
       <Card className="mt-3 ">

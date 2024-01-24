@@ -15,6 +15,7 @@ import {
   BursaryFeilds,
   Reject,
 } from "./components";
+import { UseUploadDocumentHook } from "./customHook/UseUploadDocumentHook";
 
 interface propsType {
   documentName: string;
@@ -24,8 +25,19 @@ interface propsType {
   documetDiclarationLeter: any;
 }
 
-const DocumentUploadContainer = ({ element, masterData, uploadDocument }) => {
+const DocumentUploadContainer = ({
+  element,
+  masterData,
+  setDocumentProgress,
+}) => {
   const { watch } = useFormContext();
+  const { uploadDocument, uploadProgress, documentCode } =
+    UseUploadDocumentHook(masterData);
+  useEffect(() => {
+    if (uploadProgress > 0) {
+      setDocumentProgress(element, uploadProgress, documentCode);
+    }
+  }, [uploadProgress]);
 
   return (
     <Card className="p-4 mt-3">
@@ -59,7 +71,11 @@ const DocumentUploadContainer = ({ element, masterData, uploadDocument }) => {
         {!disableStatus.includes(watch(element?.code)?.status) && (
           <FileRegister element={element} uploadDocument={uploadDocument} />
         )}
-        <ErrorHandling element={element} masterData={masterData} />
+        <ErrorHandling
+          element={element}
+          masterData={masterData}
+          uploadProgress={uploadProgress}
+        />
       </Grid>
     </Card>
   );

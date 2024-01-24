@@ -98,10 +98,14 @@ export const UseDocumentHook = (applicationCode) => {
   return { masterData };
 };
 
-export const ActionDocumentSubmit = () => {
-  const [disable, setDisable] = useState(false);
-  const [loader, setLoader] = useState(false);
+export const UseDocumentAction = () => {
+  const [progress, setProgress] = useState({});
   const router = useRouter();
+
+  const setDocumentProgress = (element, percent, documentCode) => {
+    setProgress({ ...progress, [element?.code]: { percent, documentCode } });
+  };
+
   const uploadFiles = async (payload, masterData) => {
     const response = await DocumentServices.uploadDocuments(
       payload,
@@ -110,7 +114,6 @@ export const ActionDocumentSubmit = () => {
 
     const changePayload = signedUrlPayload(response, payload);
     if (changePayload) {
-      setLoader(true);
       const result = await Promise.all(
         changePayload?.map(async (item) => {
           const response = await DocumentServices?.getFileSignUrl(
@@ -131,7 +134,6 @@ export const ActionDocumentSubmit = () => {
           }
         })
       );
-      setLoader(false);
       const uploadedFile = result?.filter(
         (item) => item?.uploadStatus === false
       );
@@ -149,7 +151,6 @@ export const ActionDocumentSubmit = () => {
   };
 
   const saveAsDraft = (data, masterData) => {
-    setDisable(true);
     const payload = documentPayload(data, true, masterData);
     if (payload) {
       uploadFiles(payload, masterData);
@@ -158,7 +159,6 @@ export const ActionDocumentSubmit = () => {
   };
   const submitDocument = async (data, masterData) => {
     if (masterData?.userDetails?.status == CommonEnums.BURSARY_LETTER_PEND) {
-      setDisable(true);
       const bursaryPayload = {
         name: data[bursarryFeilds.Name],
         mobile: data[bursarryFeilds.Phone],
@@ -181,7 +181,6 @@ export const ActionDocumentSubmit = () => {
         const payload = studentBursaryPayload(res, masterData);
         DocumentServices.updateStudentBursary(payload);
       }
-      setDisable(true);
     }
 
     const payload = documentPayload(data, false, masterData);
@@ -190,7 +189,7 @@ export const ActionDocumentSubmit = () => {
     }
   };
 
-  return { saveAsDraft, submitDocument, disable, loader };
+  return { saveAsDraft, submitDocument, progress, setDocumentProgress };
 };
 
 export const UseDownloadDeclarationLatter = () => {

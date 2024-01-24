@@ -10,34 +10,33 @@ import { FormProvider, useForm } from "react-hook-form";
 import React, { useEffect } from "react";
 
 import {
-  ActionDocumentSubmit,
+  UseDocumentAction,
   UseDocumentHook,
 } from "./customHook/UseDocumentHook";
 import { DocumentStatus } from "./components";
 import { setDocumentValue } from "../../Util/Util";
 import { Spinner } from "../Loader";
-import UseUploadDocumentHook from "./customHook/UseUploadDocumentHook";
 
 const DocumentUploadPage = (props) => {
   const methods = useForm();
   const { applicationCode } = props;
   const { masterData } = UseDocumentHook(applicationCode);
-  const { saveAsDraft, submitDocument, disable, loader } =
-    ActionDocumentSubmit();
+  const { saveAsDraft, submitDocument, progress, setDocumentProgress } =
+    UseDocumentAction();
   const { handleSubmit } = methods;
-
-  const { uploadDocument, uploadProgress } = UseUploadDocumentHook(masterData);
-  console.log("upload progress =============>", uploadProgress);
 
   useEffect(() => {
     if (masterData?.documents) {
       setDocumentValue(masterData?.documents, methods.setValue);
     }
   }, [masterData?.documents]);
+  let uploadValue: any = Object.values(progress);
+  const disable = uploadValue?.length
+    ? uploadValue?.every((val, i, arr) => val?.percent === 100)
+    : false;
 
   return (
     <MainContainer>
-      {loader && <Spinner />}
       <Header />
       <FormProvider {...methods}>
         <form>
@@ -60,7 +59,7 @@ const DocumentUploadPage = (props) => {
                       <DocumentUploadContainer
                         element={element}
                         masterData={masterData}
-                        uploadDocument={uploadDocument}
+                        setDocumentProgress={setDocumentProgress}
                       />
                     );
                   }
@@ -71,7 +70,7 @@ const DocumentUploadPage = (props) => {
                   <Card className="p-2 mt-5">
                     <Box className="d-flex justify-content-center flex-column">
                       <StyledButton
-                        disabled={disable}
+                        disabled={!disable}
                         type="button"
                         isGreenWhiteCombination
                         title="Save As Draft"
@@ -84,7 +83,7 @@ const DocumentUploadPage = (props) => {
                       />
 
                       <StyledButton
-                        disabled={disable}
+                        disabled={!disable}
                         type="button"
                         title="Submit Documents"
                         onClick={handleSubmit((d) =>
