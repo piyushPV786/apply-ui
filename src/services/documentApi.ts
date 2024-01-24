@@ -104,9 +104,9 @@ class DocumentApplicationServices {
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
   }
-  async uploadDocumentToAws(url, files, config?) {
+  async uploadDocumentToAws(url, files, setUploadPercent?) {
     const response = await axios.put(url, files, {
-      ...config,
+      onUploadProgress: setUploadPercent,
     });
     return response ? response : null;
   }

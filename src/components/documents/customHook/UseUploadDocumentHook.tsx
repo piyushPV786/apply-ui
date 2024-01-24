@@ -2,22 +2,22 @@ import { useState } from "react";
 import DocumentServices from "../../../services/documentApi";
 const UseUploadDocumentHook = (masterData) => {
   const [uploadProgress, setUploadProgress] = useState({});
-  const config = {
-    onUploadProgress: (progressEvent) => {
-      console.log("progressEvent ======>", progressEvent);
-      const uploadPercent = Math.ceil(
-        (progressEvent.loaded / progressEvent.total) * 100
-      );
-      updateProgress(uploadPercent, "");
-    },
-  };
+
   const updateProgress = (percent, code) => {
     const newProgress = { ...uploadProgress };
     newProgress[code] = percent;
     setUploadProgress(newProgress);
   };
+
   const uploadDocument = async (file, element) => {
     const { studentCode } = masterData?.userDetails;
+
+    const setUploadPercent = (progressEvent) => {
+      const uploadPercent = Math.ceil(
+        (progressEvent.loaded / progressEvent.total) * 100
+      );
+      updateProgress(uploadPercent, element?.code);
+    };
 
     if (file?.length && studentCode) {
       const fileName = file[0].name;
@@ -32,8 +32,7 @@ const UseUploadDocumentHook = (masterData) => {
       const responseAWS = await DocumentServices.uploadDocumentToAws(
         signedUrl,
         file[0],
-        config,
-        element?.code
+        setUploadPercent
       );
     }
   };
