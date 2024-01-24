@@ -125,8 +125,17 @@ export const BursaryFeilds = ({ element, masterData }) => {
   );
 };
 
-export const FileRegister = ({ element }) => {
+export const FileRegister = ({ element, uploadDocument }) => {
   const { register } = useFormContext();
+  const productImageField = register(`${element.code}`, {
+    validate: (value) => {
+      return fileValidation(value, element?.required);
+    },
+  });
+  const fileOnChange = (event) => {
+    uploadDocument(event?.target?.files, element);
+    return event;
+  };
 
   return (
     <Grid item sm={12} xs={12}>
@@ -136,11 +145,11 @@ export const FileRegister = ({ element }) => {
             <span className="labelTitle">Browse</span>
             <input
               multiple={false}
-              {...register(`${element.code}`, {
-                validate: (value) => {
-                  return fileValidation(value, element?.required);
-                },
-              })}
+              {...productImageField}
+              onChange={(e) => {
+                productImageField?.onChange(e);
+                fileOnChange(e);
+              }}
               id={`${element?.code}`}
               className="d-none"
               accept="image/jpeg, application/pdf"
@@ -246,6 +255,7 @@ export const HandleAction = ({ element, masterData }) => {
 };
 
 export const DocumentStatus = ({ masterData }) => {
+  console.log("master data ============>", masterData);
   return (
     <>
       <Card className="mt-3 ">

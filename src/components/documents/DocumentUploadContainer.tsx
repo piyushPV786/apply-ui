@@ -2,7 +2,7 @@ import { Typography, Card, Grid } from "@mui/material";
 
 import { StyledLabel } from "../common/common";
 import styled from "styled-components";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { getStatus } from "./context/common";
 
@@ -24,7 +24,7 @@ interface propsType {
   documetDiclarationLeter: any;
 }
 
-const DocumentUploadContainer = ({ element, masterData }) => {
+const DocumentUploadContainer = ({ element, masterData, uploadDocument }) => {
   const { watch } = useFormContext();
 
   return (
@@ -57,7 +57,7 @@ const DocumentUploadContainer = ({ element, masterData }) => {
         <DeclarationComponent element={element} masterData={masterData} />
         <Reject element={element} />
         {!disableStatus.includes(watch(element?.code)?.status) && (
-          <FileRegister element={element} />
+          <FileRegister element={element} uploadDocument={uploadDocument} />
         )}
         <ErrorHandling element={element} masterData={masterData} />
       </Grid>

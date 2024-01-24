@@ -16,6 +16,7 @@ import {
 import { DocumentStatus } from "./components";
 import { setDocumentValue } from "../../Util/Util";
 import { Spinner } from "../Loader";
+import UseUploadDocumentHook from "./customHook/UseUploadDocumentHook";
 
 const DocumentUploadPage = (props) => {
   const methods = useForm();
@@ -24,6 +25,9 @@ const DocumentUploadPage = (props) => {
   const { saveAsDraft, submitDocument, disable, loader } =
     ActionDocumentSubmit();
   const { handleSubmit } = methods;
+
+  const { uploadDocument, uploadProgress } = UseUploadDocumentHook(masterData);
+  console.log("upload progress =============>", uploadProgress);
 
   useEffect(() => {
     if (masterData?.documents) {
@@ -56,6 +60,7 @@ const DocumentUploadPage = (props) => {
                       <DocumentUploadContainer
                         element={element}
                         masterData={masterData}
+                        uploadDocument={uploadDocument}
                       />
                     );
                   }

@@ -3,6 +3,7 @@ import { apiServer } from "./index";
 import { apiStatus } from "../context/common";
 import { getLocalStorageData } from "../Util/Util";
 import { StorageName } from "../components/common/constant";
+import axios from "axios";
 
 class DocumentApplicationServices {
   commonBaseUrl: string | undefined = apiUrls?.commonBaseUrl;
@@ -103,11 +104,9 @@ class DocumentApplicationServices {
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
   }
-  async uploadDocumentToAws(url, files) {
-    const response = await apiServer.put(url, files, {
-      headers: {
-        "X-AWS-Skip-Token": true,
-      },
+  async uploadDocumentToAws(url, files, config?) {
+    const response = await axios.put(url, files, {
+      ...config,
     });
     return response ? response : null;
   }
@@ -120,6 +119,19 @@ class DocumentApplicationServices {
     const response = await apiServer.patch(url);
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
+  }
+
+  async DocumentCode() {
+    const url = `${this.commonBaseUrl}${apiEndPoint?.documentCode}`;
+    const response = await apiServer.get(url);
+    if (
+      response?.status == apiStatus.success ||
+      response?.status == apiStatus.success1
+    ) {
+      return response?.data?.data;
+    } else {
+      return null;
+    }
   }
 }
 
