@@ -9,6 +9,7 @@ export const nonMandatoryDocuments = [
   "TERMS&CONDITION",
   "APPLICATIONLETTER",
   "MATRIC",
+  "OTHERS",
 ];
 
 export const docType = {
