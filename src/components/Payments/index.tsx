@@ -26,10 +26,8 @@ const PaymentPage = ({ applicationCode }) => {
   const { getPaymentRedirectURL, closePaymentDialog, setOpenPopup, openPopup } =
     useUkhesheHook(masterData, fees);
 
-  const { uploadPaymentProof, disabled } = useOfflinePaymentHook(
-    masterData,
-    fees
-  );
+  const { uploadPaymentProof, disabled, updatePayment, uploadProgress } =
+    useOfflinePaymentHook(masterData, fees);
 
   if (!masterData && !studyModes && !fees) {
     return (
@@ -73,6 +71,8 @@ const PaymentPage = ({ applicationCode }) => {
               uploadPaymentProof={uploadPaymentProof}
               setOpenPopup={setOpenPopup}
               disabled={disabled}
+              updatePayment={updatePayment}
+              uploadProgress={uploadProgress}
             />
           </Grid>
 

@@ -19,6 +19,7 @@ interface UploadPaymentProofTypes {
   name: string;
   register: UseFormRegister<any>;
   errors: any;
+  uploadPaymentProof: any;
 }
 
 export const fileValidation = (value) => {
@@ -38,6 +39,7 @@ const UploadPaymentProof = ({
   register,
   name,
   errors,
+  uploadPaymentProof,
 }: UploadPaymentProofTypes) => {
   const fileUpload = useRef<any>(null);
   const onDocUploadClick = () => {
@@ -65,14 +67,16 @@ const UploadPaymentProof = ({
           ref={fileUpload}
           accept="application/pdf, image/jpeg, image/png"
           type="file"
-          onChange={(e) =>
-            e?.target?.files &&
-            setValue(name, e?.target?.files[0], {
-              shouldDirty: true,
-              shouldTouch: true,
-              shouldValidate: true,
-            })
-          }
+          onChange={(e) => {
+            if (e?.target?.files) {
+              uploadPaymentProof(e?.target?.files);
+              setValue(name, e?.target?.files[0], {
+                shouldDirty: true,
+                shouldTouch: true,
+                shouldValidate: true,
+              });
+            }
+          }}
         />
         <Box className={Styles.GreenFormHeading}>
           Drag and drop, or <span className={Styles.Text}>browse</span> your

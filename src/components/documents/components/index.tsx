@@ -1,13 +1,12 @@
 import { Box, Card, Grid, IconButton, List, Typography } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { FileUploadContainer, InnerContainer } from "../../login/style";
-import { MobileField } from "../../lead/form/components/MobileField";
 import { useState } from "react";
 import "react-phone-number-input/style.css";
-import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
+import PhoneInput from "react-phone-number-input";
 import { docRejectStatus } from "../context/common";
 import StyledButton from "../../button/button";
-import { StyledLabel } from "../../common/common";
+import { LinearProgressWithLabel, StyledLabel } from "../../common/common";
 import AlertTitle from "@mui/material/AlertTitle";
 import {
   DeclarationListitems,
@@ -125,8 +124,17 @@ export const BursaryFeilds = ({ element, masterData }) => {
   );
 };
 
-export const FileRegister = ({ element }) => {
+export const FileRegister = ({ element, uploadDocument }) => {
   const { register } = useFormContext();
+  const productImageField = register(`${element.code}`, {
+    validate: (value) => {
+      return fileValidation(value, element?.required);
+    },
+  });
+  const fileOnChange = (event) => {
+    uploadDocument(event?.target?.files, element);
+    return event;
+  };
 
   return (
     <Grid item sm={12} xs={12}>
@@ -136,11 +144,11 @@ export const FileRegister = ({ element }) => {
             <span className="labelTitle">Browse</span>
             <input
               multiple={false}
-              {...register(`${element.code}`, {
-                validate: (value) => {
-                  return fileValidation(value, element?.required);
-                },
-              })}
+              {...productImageField}
+              onChange={(e) => {
+                productImageField?.onChange(e);
+                fileOnChange(e);
+              }}
               id={`${element?.code}`}
               className="d-none"
               accept="image/jpeg, application/pdf"
@@ -173,12 +181,13 @@ export const Reject = ({ element }) => {
   );
 };
 
-export const ErrorHandling = ({ element, masterData }) => {
+export const ErrorHandling = ({ element, masterData, uploadProgress }) => {
   const {
     formState: { errors },
   } = useFormContext();
   return (
     <Grid item sm={12} xs={12}>
+      {!!uploadProgress && <LinearProgressWithLabel value={uploadProgress} />}
       {errors[element.code] && (
         <Typography color={"error"}>
           {errors[element.code]?.message as any}

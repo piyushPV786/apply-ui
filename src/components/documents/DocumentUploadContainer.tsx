@@ -2,7 +2,7 @@ import { Typography, Card, Grid } from "@mui/material";
 
 import { StyledLabel } from "../common/common";
 import styled from "styled-components";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { getStatus } from "./context/common";
 
@@ -15,6 +15,7 @@ import {
   BursaryFeilds,
   Reject,
 } from "./components";
+import { UseUploadDocumentHook } from "./customHook/UseUploadDocumentHook";
 
 interface propsType {
   documentName: string;
@@ -24,8 +25,19 @@ interface propsType {
   documetDiclarationLeter: any;
 }
 
-const DocumentUploadContainer = ({ element, masterData }) => {
+const DocumentUploadContainer = ({
+  element,
+  masterData,
+  setDocumentProgress,
+}) => {
   const { watch } = useFormContext();
+  const { uploadDocument, uploadProgress, documentCode } =
+    UseUploadDocumentHook(masterData);
+  useEffect(() => {
+    if (uploadProgress > 0) {
+      setDocumentProgress(element, uploadProgress, documentCode);
+    }
+  }, [uploadProgress]);
 
   return (
     <Card className="p-4 mt-3">
@@ -57,9 +69,13 @@ const DocumentUploadContainer = ({ element, masterData }) => {
         <DeclarationComponent element={element} masterData={masterData} />
         <Reject element={element} />
         {!disableStatus.includes(watch(element?.code)?.status) && (
-          <FileRegister element={element} />
+          <FileRegister element={element} uploadDocument={uploadDocument} />
         )}
-        <ErrorHandling element={element} masterData={masterData} />
+        <ErrorHandling
+          element={element}
+          masterData={masterData}
+          uploadProgress={uploadProgress}
+        />
       </Grid>
     </Card>
   );
