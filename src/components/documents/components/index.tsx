@@ -1,22 +1,12 @@
-import {
-  Box,
-  Card,
-  Grid,
-  IconButton,
-  LinearProgress,
-  LinearProgressProps,
-  List,
-  Typography,
-} from "@mui/material";
+import { Box, Card, Grid, IconButton, List, Typography } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { FileUploadContainer, InnerContainer } from "../../login/style";
-import { MobileField } from "../../lead/form/components/MobileField";
 import { useState } from "react";
 import "react-phone-number-input/style.css";
-import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
+import PhoneInput from "react-phone-number-input";
 import { docRejectStatus } from "../context/common";
 import StyledButton from "../../button/button";
-import { StyledLabel } from "../../common/common";
+import { LinearProgressWithLabel, StyledLabel } from "../../common/common";
 import AlertTitle from "@mui/material/AlertTitle";
 import {
   DeclarationListitems,
@@ -190,23 +180,6 @@ export const Reject = ({ element }) => {
     )
   );
 };
-
-function LinearProgressWithLabel(
-  props: LinearProgressProps & { value: number }
-) {
-  return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ width: "100%", mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} color="success" />
-      </Box>
-      <Box sx={{ minWidth: 35 }}>
-        <Typography variant="body2" color="text.primary">{`${Math.round(
-          props.value
-        )}%`}</Typography>
-      </Box>
-    </Box>
-  );
-}
 
 export const ErrorHandling = ({ element, masterData, uploadProgress }) => {
   const {

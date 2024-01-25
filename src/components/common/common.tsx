@@ -1,4 +1,4 @@
-import { Accordion } from "@material-ui/core";
+import { Accordion, Box, LinearProgressProps } from "@material-ui/core";
 import styled from "styled-components";
 import {
   StyledLink,
@@ -12,6 +12,7 @@ import { CommonEnums } from "./constant";
 import Image from "next/image";
 import Spinner from "../../../public/assets/images/spinner.svg";
 import { IDynamicObject } from "./types";
+import { LinearProgress, Typography } from "@mui/material";
 
 export const GreenFormHeading = styled.p`
   font-size: 16px;
@@ -300,4 +301,21 @@ export const studentApplicationAllStatus: IDynamicObject = {
 };
 export enum FileSize {
   maxSize = 2000 * 1024,
+}
+
+export function LinearProgressWithLabel(
+  props: LinearProgressProps & { value: number }
+) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ width: "100%", mr: 1 }}>
+        <LinearProgress variant="determinate" {...props} color="success" />
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" color="text.primary">{`${Math.round(
+          props.value
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
 }

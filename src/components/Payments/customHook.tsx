@@ -5,12 +5,9 @@ import ApplicationFormService from "../../services/applicationForm";
 import { CommonEnums } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
 import {
-  uploadDocumentsToAws,
   getConvertedAmount,
   getUkheshePayload,
-  getStatusPayload,
   bursaryFeeCalculation,
-  signedUrlPayload,
   changeFileExactions,
 } from "./helper";
 import { useRouter } from "next/router";
@@ -318,12 +315,42 @@ export const usePayuHook = (masterData: any, fees: any) => {
 
 export const useOfflinePaymentHook = (masterData: any, fees: any) => {
   const [disabled, setDisabled] = useState(false);
+  const [documentCode, setDocumentCode] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const studentCode = masterData?.applicationData?.studentCode;
   const router = useRouter();
-  const uploadPaymentProof = async (payload) => {
-    setDisabled(true);
 
+  const setUploadPercent = (progressEvent) => {
+    const uploadPercent = Math.ceil(
+      (progressEvent.loaded / progressEvent.total) * 100
+    );
+    setUploadProgress(uploadPercent);
+  };
+  const uploadPaymentProof = async (file) => {
+    setDisabled(true);
+    const fileName = file[0].name;
+    const ext = fileName?.split(".").pop();
+    const documentCode = await DocumentServices?.DocumentCode();
+    setDocumentCode(documentCode);
+    const name = `${documentCode}.${ext}`;
+    const signedUrl = await DocumentServices?.getFileSignUrl(
+      name,
+      `.${ext}`,
+      studentCode
+    );
+    await DocumentServices.uploadDocumentToAws(
+      signedUrl,
+      file[0],
+      setUploadPercent
+    );
+    toast.success(
+      `Your document is uploaded successfully. Please submit document`
+    );
+    setDisabled(false);
+  };
+  const updatePayment = async (payload) => {
     const apiPayload = {
-      files: changeFileExactions(payload?.files),
+      files: changeFileExactions(payload?.files, documentCode),
       amount: fees?.totalFee,
       paymentModeCode: "OFFLINE",
       discountCode: fees?.discountCode,
@@ -341,50 +368,8 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       apiPayload,
       masterData?.applicationData?.applicationCode
     );
-
     if (response) {
-      const changePayload = signedUrlPayload(
-        response,
-        payload,
-        masterData?.applicationData?.studentCode
-      );
-
-      if (changePayload) {
-        const result = await Promise.all(
-          changePayload?.map(async (item) => {
-            const response = await DocumentServices?.getFileSignUrl(
-              item?.fileName,
-              item?.filetype,
-              item?.studentCode
-            );
-            const responseAWS = await DocumentServices.uploadDocumentToAws(
-              response,
-              item.file
-            );
-            if (responseAWS?.status === 200) {
-              await DocumentServices.updateDocumentStatus(item?.documentCode);
-
-              return { ...item, uploadStatus: true };
-            } else {
-              return { ...item, uploadStatus: false };
-            }
-          })
-        );
-
-        const uploadedFile = result?.filter(
-          (item) => item?.uploadStatus === false
-        );
-
-        if (uploadedFile?.length) {
-          toast(
-            "Your payment proof not uploaded please reupload your payment proof"
-          );
-        } else {
-          router.push("/payment/success");
-        }
-      } else {
-        router.push("/payment/failure");
-      }
+      router.push("/payment/success");
     } else {
       router.push("/payment/failure");
     }
@@ -392,6 +377,8 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
   return {
     uploadPaymentProof,
     disabled,
+    updatePayment,
+    uploadProgress,
   };
 };
 
@@ -452,11 +439,21 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
           }
           clearInterval(intervalId);
         } else if (getPaymentResponse?.data?.status == "ERROR_PERM") {
-          clearInterval(intervalId);
-          setLoadingPayment(false);
-          router?.push(
-            `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+          const payload = getUkheshePayload(
+            getPaymentResponse,
+            fees,
+            masterData
           );
+          const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
+            payload
+          );
+          if (sendPaymentInfo?.statusCode == 201) {
+            clearInterval(intervalId);
+            setLoadingPayment(false);
+            router?.push(
+              `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+            );
+          }
         }
       }, 10000);
       setIntervalId(intervalId);

@@ -92,6 +92,8 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
       paymentType: getPaymentResponse?.data?.paymentType,
     },
     programName: masterData?.programData?.name,
+    paymentStatusCode: getPaymentResponse?.data?.status,
+    PaymentStatusMessage: "payment transaction failed",
   };
 };
 
@@ -193,7 +195,7 @@ export const signedUrlPayload = (response, payload, studentCode) => {
   return signPayload;
 };
 
-export const changeFileExactions = (files: any) => {
+export const changeFileExactions = (files: any, documentCode: string) => {
   const paymentProofPayload: any = [];
   files?.forEach((element) => {
     const ext = element?.fileName?.split(".").pop();
@@ -201,7 +203,7 @@ export const changeFileExactions = (files: any) => {
       documentTypeCode: element?.documentTypeCode,
       fileName: element?.fileName,
       fileType: `.${ext}`,
-      files: element?.file,
+      documentCode: documentCode,
     });
   });
   return paymentProofPayload;

@@ -21,6 +21,7 @@ const PaymentOptionCard = (props) => {
     fees,
     setOpenPopup,
     disabled,
+    updatePayment,
   } = props;
   const methods = useForm();
   const { register, watch, setValue } = methods;
@@ -93,6 +94,7 @@ const PaymentOptionCard = (props) => {
             <PaymentProofCard
               uploadPaymentProof={uploadPaymentProof}
               disabled={disabled}
+              updatePayment={updatePayment}
             />
           )}
         </Grid>
