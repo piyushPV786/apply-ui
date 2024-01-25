@@ -17,6 +17,7 @@ import {
   viewProofDetails,
 } from "./helper";
 import { CommonEnums } from "../../common/constant";
+import { toast } from "react-toastify";
 
 interface documentTypeApiResponseType {
   code: string;
@@ -111,50 +112,19 @@ export const UseDocumentAction = () => {
       payload,
       masterData?.userDetails?.applicationCode
     );
-
-    const changePayload = signedUrlPayload(response, payload);
-    if (changePayload) {
-      const result = await Promise.all(
-        changePayload?.map(async (item) => {
-          const response = await DocumentServices?.getFileSignUrl(
-            item?.fileName,
-            item?.filetype,
-            item?.studentCode
-          );
-          const responseAWS = await DocumentServices.uploadDocumentToAws(
-            response,
-            item.file
-          );
-          if (responseAWS?.status === 200) {
-            await DocumentServices.updateDocumentStatus(item?.documentCode);
-
-            return { ...item, uploadStatus: true };
-          } else {
-            return { ...item, uploadStatus: false };
-          }
-        })
-      );
-      const uploadedFile = result?.filter(
-        (item) => item?.uploadStatus === false
-      );
-
-      if (uploadedFile?.length) {
-        router.reload();
-      } else {
-        dashboardRedirectStatus.includes(masterData?.userDetails?.status)
-          ? router.push(`/dashboard`)
-          : router.push(
-              `/payments/${masterData?.userDetails?.applicationCode}`
-            );
-      }
+    if (response) {
+      dashboardRedirectStatus.includes(masterData?.userDetails?.status)
+        ? router.push(`/dashboard`)
+        : router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
+    } else {
+      toast.success(`Your document is not uploaded`);
     }
   };
 
   const saveAsDraft = (data, masterData) => {
-    const payload = documentPayload(data, true, masterData);
+    const payload = documentPayload(data, true, masterData, progress);
     if (payload) {
       uploadFiles(payload, masterData);
-      router.push(`/payments/${masterData?.userDetails}`);
     }
   };
   const submitDocument = async (data, masterData) => {
@@ -182,8 +152,8 @@ export const UseDocumentAction = () => {
         DocumentServices.updateStudentBursary(payload);
       }
     }
+    const payload = documentPayload(data, false, masterData, progress);
 
-    const payload = documentPayload(data, false, masterData);
     if (payload) {
       uploadFiles(payload, masterData);
     }
