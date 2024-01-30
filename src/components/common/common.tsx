@@ -302,7 +302,12 @@ export const studentApplicationAllStatus: IDynamicObject = {
 export enum FileSize {
   maxSize = 2000 * 1024,
 }
-
+export const CertifiedDocumentQualification = ["Skills-NDPA-Prog", "DBM-Prog"];
+export const CertifiedDocument = [
+  "MATRIC",
+  "IDPASSPORT",
+  "HIGHESTQUALIFICATION",
+];
 export function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
 ) {

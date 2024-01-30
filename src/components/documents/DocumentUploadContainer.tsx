@@ -1,6 +1,6 @@
 import { Typography, Card, Grid } from "@mui/material";
 
-import { StyledLabel } from "../common/common";
+import { StyledLabel, CertifiedDocument } from "../common/common";
 import styled from "styled-components";
 import React, { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
@@ -14,6 +14,7 @@ import {
   FileRegister,
   BursaryFeilds,
   Reject,
+  Info,
 } from "./components";
 import { UseUploadDocumentHook } from "./customHook/UseUploadDocumentHook";
 
@@ -68,6 +69,7 @@ const DocumentUploadContainer = ({
         <BursaryFeilds element={element} masterData={masterData} />
         <DeclarationComponent element={element} masterData={masterData} />
         <Reject element={element} />
+        {CertifiedDocument.includes(element?.code) && <Info />}
         {!disableStatus.includes(watch(element?.code)?.status) && (
           <FileRegister element={element} uploadDocument={uploadDocument} />
         )}
