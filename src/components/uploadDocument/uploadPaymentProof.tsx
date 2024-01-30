@@ -69,7 +69,9 @@ const UploadPaymentProof = ({
           type="file"
           onChange={(e) => {
             if (e?.target?.files) {
-              uploadPaymentProof(e?.target?.files);
+              if (fileValidation(e?.target?.files[0]) === true) {
+                uploadPaymentProof(e?.target?.files);
+              }
               setValue(name, e?.target?.files[0], {
                 shouldDirty: true,
                 shouldTouch: true,

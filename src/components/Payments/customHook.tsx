@@ -328,7 +328,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
   };
   const uploadPaymentProof = async (file) => {
     setDisabled(true);
-    const fileName = file[0].name;
+    const fileName = file[0]?.name;
     const ext = fileName?.split(".").pop();
     const documentCode = await DocumentServices?.DocumentCode();
     setDocumentCode(documentCode);
