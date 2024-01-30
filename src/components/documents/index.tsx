@@ -18,7 +18,7 @@ import { setDocumentValue } from "../../Util/Util";
 import { Spinner } from "../Loader";
 
 const DocumentUploadPage = (props) => {
-  const methods = useForm();
+  const methods = useForm({ mode: "all" });
   const { applicationCode } = props;
   const { masterData } = UseDocumentHook(applicationCode);
   const { saveAsDraft, submitDocument, progress, setDocumentProgress } =

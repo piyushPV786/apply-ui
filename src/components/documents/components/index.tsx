@@ -132,6 +132,9 @@ export const FileRegister = ({ element, uploadDocument }) => {
     },
   });
   const fileOnChange = (event) => {
+    if (fileValidation(event?.target?.files, element?.required) !== true) {
+      return;
+    }
     uploadDocument(event?.target?.files, element);
     return event;
   };
