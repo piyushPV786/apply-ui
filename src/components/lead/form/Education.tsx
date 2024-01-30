@@ -3,6 +3,7 @@ import {
   GreenFormHeading,
   StyledAccordion,
   StyledLabel,
+  CertifiedDocumentQualification,
 } from "../../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
@@ -16,6 +17,7 @@ import RadioField from "./components/RadioField";
 import { useEducationHook } from "../customHooks/educationHooks";
 import { useEffect } from "react";
 import { feeMode } from "../../common/constant";
+import { Alert } from "@mui/material";
 
 const Education = (props: any) => {
   const {
@@ -84,6 +86,12 @@ const Education = (props: any) => {
               <div className="invalid-feedback">
                 select your interested Qualification
               </div>
+            )}
+
+            {CertifiedDocumentQualification.includes(programCode) && (
+              <Alert severity="warning" className="infoColor">
+                Certified documents are required for this qualification.
+              </Alert>
             )}
           </div>
 

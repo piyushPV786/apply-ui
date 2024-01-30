@@ -33,6 +33,15 @@ body {
   color: #e54541 !important;
   word-wrap: break-word !important;
 }
+.infoColor {
+  margin-top: 5px;
+  background-color: #fff4e5 !important;
+  color: #79521c !important;
+  word-wrap: break-word !important;
+  display: flex;
+
+  align-items: center;
+}
 
 .loader {
   border: 6px solid rgba(255, 255, 255, 0.3);

@@ -180,6 +180,16 @@ export const Reject = ({ element }) => {
     )
   );
 };
+export const Info = () => {
+  return (
+    <Grid item sm={12} xs={12}>
+      <Alert severity="warning" variant="standard" className="infoColor">
+        <AlertTitle>Certified document required </AlertTitle>
+        <Typography className="mr-2"></Typography>
+      </Alert>
+    </Grid>
+  );
+};
 
 export const ErrorHandling = ({ element, masterData, uploadProgress }) => {
   const {
