@@ -32,13 +32,17 @@ const DocumentUploadContainer = ({
   setDocumentProgress,
 }) => {
   const { watch } = useFormContext();
-  const { uploadDocument, uploadProgress, documentCode } =
+  const { uploadDocument, uploadProgress, documentCode, setUploadProgress } =
     UseUploadDocumentHook(masterData);
   useEffect(() => {
     if (uploadProgress > 0) {
       setDocumentProgress(element, uploadProgress, documentCode);
     }
   }, [uploadProgress]);
+
+  const onRemoveFile = () => {
+    setUploadProgress(0);
+  };
 
   return (
     <Card className="p-4 mt-3">
@@ -77,6 +81,7 @@ const DocumentUploadContainer = ({
           element={element}
           masterData={masterData}
           uploadProgress={uploadProgress}
+          onRemoveFile={onRemoveFile}
         />
       </Grid>
     </Card>

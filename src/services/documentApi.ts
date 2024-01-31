@@ -8,6 +8,7 @@ import axios from "axios";
 class DocumentApplicationServices {
   commonBaseUrl: string | undefined = apiUrls?.commonBaseUrl;
   applyBaseUrl: string | undefined = apiUrls?.applyBaseUrl;
+  documentBaseURl: string | undefined = apiUrls?.documentBaseURl;
 
   async uploadDocuments(payload, applicationCode) {
     try {
@@ -132,6 +133,13 @@ class DocumentApplicationServices {
     } else {
       return null;
     }
+  }
+
+  async documentUpdate(payload) {
+    const url = `${this.documentBaseURl}${apiEndPoint?.document}`;
+    const response = await apiServer.post(url, { ...payload });
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
   }
 }
 

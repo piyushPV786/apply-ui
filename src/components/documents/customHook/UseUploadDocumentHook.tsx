@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import DocumentServices from "../../../services/documentApi";
+import { DocumentStatus } from "../../common/constant";
+import { toast } from "react-toastify";
 export const UseUploadDocumentHook = (masterData) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [documentCode, setDocumentCode] = useState("");
@@ -9,7 +11,10 @@ export const UseUploadDocumentHook = (masterData) => {
   };
 
   const uploadDocument = async (file, element) => {
-    const { studentCode } = masterData?.userDetails;
+    console.log("element ========>", element);
+    console.log("master data ======>", masterData);
+
+    const { studentCode, applicationCode } = masterData?.userDetails;
     const setUploadPercent = (progressEvent) => {
       const uploadPercent = Math.ceil(
         (progressEvent.loaded / progressEvent.total) * 100
@@ -35,13 +40,30 @@ export const UseUploadDocumentHook = (masterData) => {
         `.${ext}`,
         studentCode
       );
-      await DocumentServices.uploadDocumentToAws(
+      const response = await DocumentServices.uploadDocumentToAws(
         signedUrl,
         file[0],
         setUploadPercent
       );
+
+      if (response?.status === 200 && !documentDetails?.code) {
+        const documentUpdatePayload = {
+          name: name,
+          fileExtension: `.${ext}`,
+          status: DocumentStatus.Pending,
+          documentTypeCode: element?.code,
+          applicationCode: applicationCode,
+          code: documentCode,
+        };
+        const updateDocumentResponse = await DocumentServices?.documentUpdate(
+          documentUpdatePayload
+        );
+        if (updateDocumentResponse?.status === 200) {
+          toast.success(`Your document is uploaded successfully.`);
+        }
+      }
     }
   };
 
-  return { uploadDocument, uploadProgress, documentCode };
+  return { uploadDocument, uploadProgress, documentCode, setUploadProgress };
 };

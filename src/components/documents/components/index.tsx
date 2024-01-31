@@ -194,7 +194,12 @@ export const Info = () => {
   );
 };
 
-export const ErrorHandling = ({ element, masterData, uploadProgress }) => {
+export const ErrorHandling = ({
+  element,
+  masterData,
+  uploadProgress,
+  onRemoveFile,
+}) => {
   const {
     formState: { errors },
   } = useFormContext();
@@ -206,12 +211,16 @@ export const ErrorHandling = ({ element, masterData, uploadProgress }) => {
           {errors[element.code]?.message as any}
         </Typography>
       )}
-      <HandleAction element={element} masterData={masterData} />
+      <HandleAction
+        element={element}
+        masterData={masterData}
+        onRemoveFile={onRemoveFile}
+      />
     </Grid>
   );
 };
 
-export const HandleAction = ({ element, masterData }) => {
+export const HandleAction = ({ element, masterData, onRemoveFile }) => {
   const { watch, setValue } = useFormContext();
   const fileWatch = watch(element?.code)?.file
     ? watch(element?.code)?.file
@@ -219,6 +228,7 @@ export const HandleAction = ({ element, masterData }) => {
   const { getFileUrl } = UsePreviewFile();
   const handleRemoveFiles = () => {
     setValue(element?.code, undefined);
+    onRemoveFile();
   };
 
   if (!fileWatch || fileWatch?.length === 0 || !fileWatch[0]?.name) {
