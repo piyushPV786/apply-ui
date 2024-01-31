@@ -8,7 +8,7 @@ import {
   UseFormSetValue,
   UseFormUnregister,
 } from "react-hook-form";
-import { Green } from "../common/common";
+import { Green, acceptedFileType } from "../common/common";
 import { IconButton } from "@material-ui/core";
 
 interface UploadPaymentProofTypes {
@@ -26,6 +26,9 @@ export const fileValidation = (value) => {
   if (value) {
     if (value?.size > 2 * 1024 * 1024) {
       return "File size should be at most 2MB";
+    }
+    if (!acceptedFileType.includes(value?.type)) {
+      return "Invalid file type please upload file with accepted file types ";
     }
   }
 
