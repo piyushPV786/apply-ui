@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DocumentServices from "../../../services/documentApi";
-import { DocumentStatus } from "../../common/constant";
+import { DocumentStatus, status } from "../../common/constant";
 import { toast } from "react-toastify";
 export const UseUploadDocumentHook = (masterData) => {
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -43,7 +43,7 @@ export const UseUploadDocumentHook = (masterData) => {
         setUploadPercent
       );
 
-      if (response?.status === 200 && !documentDetails?.code) {
+      if (response?.status === status?.successCode && !documentDetails?.code) {
         const documentUpdatePayload = {
           name: name,
           fileExtension: `.${ext}`,
