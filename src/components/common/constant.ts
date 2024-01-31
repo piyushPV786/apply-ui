@@ -122,6 +122,7 @@ export enum DocumentStatus {
   Approved = "approved",
   Submitted = "submitted",
   Rejected = "rejected",
+  Pending = "PENDING",
 }
 export enum studyMode {
   DAY = "DAY",

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
-import { CommonEnums } from "../../components/common/constant";
+import { CommonEnums, DocumentStatus } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
 import {
   getConvertedAmount,
@@ -320,6 +320,8 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
   const studentCode = masterData?.applicationData?.studentCode;
   const router = useRouter();
 
+  console.log("master data ========>", masterData);
+
   const setUploadPercent = (progressEvent) => {
     const uploadPercent = Math.ceil(
       (progressEvent.loaded / progressEvent.total) * 100
@@ -338,14 +340,30 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       `.${ext}`,
       studentCode
     );
-    await DocumentServices.uploadDocumentToAws(
+    const response = await DocumentServices.uploadDocumentToAws(
       signedUrl,
       file[0],
       setUploadPercent
     );
-    toast.success(
-      `Your document is uploaded successfully. Please submit document`
-    );
+    if (response?.status === 200) {
+      const documentUpdatePayload = {
+        name: name,
+        fileExtension: `.${ext}`,
+        status: DocumentStatus.Pending,
+        documentTypeCode: "PAYMENTPROOF",
+        applicationCode: masterData?.applicationData?.applicationCode,
+        code: documentCode,
+      };
+      const updateDocumentResponse = await DocumentServices?.documentUpdate(
+        documentUpdatePayload
+      );
+      if (updateDocumentResponse?.status === 200) {
+        toast.success(
+          `Your document is uploaded successfully. Please submit document`
+        );
+      }
+    }
+
     setDisabled(false);
   };
   const updatePayment = async (payload) => {

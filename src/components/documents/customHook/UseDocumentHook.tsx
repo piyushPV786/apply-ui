@@ -104,6 +104,7 @@ export const UseDocumentAction = () => {
   const router = useRouter();
 
   const setDocumentProgress = (element, percent, documentCode) => {
+    console.log("percent =========>", percent);
     setProgress({ ...progress, [element?.code]: { percent, documentCode } });
   };
 
