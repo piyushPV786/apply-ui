@@ -4,6 +4,12 @@ export enum StorageName {
   REFRESH_TOKEN = "refresh_token",
 }
 
+export const status = {
+  successCode: 200,
+  successCodeOne: 201,
+  unauthorizedStatus: 401,
+};
+
 export const documentType = {
   "WELCOME-LETTER": "Welcome Letter",
   "ACCEPTANCE-LETTER": "Acceptance Letter",
