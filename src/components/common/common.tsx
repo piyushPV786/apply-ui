@@ -46,6 +46,7 @@ export const StyledMessage = (props: any) => {
 };
 
 export const Green = "#008554";
+export const acceptedFileType = ["application/pdf", "image/png", "image/jpeg"];
 export const DefaultGrey = "#dde1e3";
 export const StyledLabel = (props: any) => {
   const {
