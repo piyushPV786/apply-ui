@@ -253,6 +253,7 @@ export const useDiscountHook = (masterData: any, fees: any) => {
     rmatFees = masterData?.feeData?.rmatFee;
   }
   fees.rmatFees = rmatFees;
+
   if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
     fees.rmatAmount = `${
       masterData?.currencyData?.currencySymbol
@@ -263,7 +264,12 @@ export const useDiscountHook = (masterData: any, fees: any) => {
 
   //Total Amount
   const totalAmount =
-    parseInt(fees?.fee) - parseInt(fees.discountFee) + parseInt(fees.rmatFees);
+    masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS
+      ? parseInt(fees?.fee) -
+        parseInt(fees.discountFee) +
+        parseInt(fees.rmatFees)
+      : parseInt(fees?.fee) - parseInt(fees.discountFee);
+
   fees.totalFee = totalAmount;
   fees.totalAmount = `${
     masterData?.currencyData?.currencySymbol
