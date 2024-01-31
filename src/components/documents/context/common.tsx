@@ -156,7 +156,6 @@ export const IconButton = styled(Box)<any>(({ color }) => ({
 
 //common functions//
 export const fileValidation = (value, isRequired) => {
-  console.log("value[0]?.type =====>", value);
   if (
     (!value || value?.length === 0 || value[0]?.name?.length === 0) &&
     isRequired == true

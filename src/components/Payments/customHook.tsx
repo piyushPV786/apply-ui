@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
-import { CommonEnums, DocumentStatus } from "../../components/common/constant";
+import {
+  CommonEnums,
+  DocumentStatus,
+  status,
+} from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
 import {
   getConvertedAmount,
@@ -320,8 +324,6 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
   const studentCode = masterData?.applicationData?.studentCode;
   const router = useRouter();
 
-  console.log("master data ========>", masterData);
-
   const setUploadPercent = (progressEvent) => {
     const uploadPercent = Math.ceil(
       (progressEvent.loaded / progressEvent.total) * 100
@@ -345,7 +347,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       file[0],
       setUploadPercent
     );
-    if (response?.status === 200) {
+    if (response?.status === status?.successCode) {
       const documentUpdatePayload = {
         name: name,
         fileExtension: `.${ext}`,
@@ -357,7 +359,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       const updateDocumentResponse = await DocumentServices?.documentUpdate(
         documentUpdatePayload
       );
-      if (updateDocumentResponse?.status === 200) {
+      if (updateDocumentResponse?.status === status?.successCode) {
         toast.success(
           `Your document is uploaded successfully. Please submit document`
         );
@@ -451,7 +453,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
           const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
             payload
           );
-          if (sendPaymentInfo?.statusCode == 201) {
+          if (sendPaymentInfo?.statusCode === status?.successCodeOne) {
             setLoadingPayment(false);
             router?.push("/payment/success");
           }
@@ -465,7 +467,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
           const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
             payload
           );
-          if (sendPaymentInfo?.statusCode == 201) {
+          if (sendPaymentInfo?.statusCode == status?.successCodeOne) {
             clearInterval(intervalId);
             setLoadingPayment(false);
             router?.push(
