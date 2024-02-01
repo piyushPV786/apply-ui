@@ -17,6 +17,7 @@ const NationalityStatus = (props: any) => {
     formState: { errors },
     watch,
     setValue,
+    setError,
     control,
   } = useFormContext();
 
@@ -139,12 +140,25 @@ const NationalityStatus = (props: any) => {
                 control={control}
                 rules={{
                   required: "Identification number is required",
-                  validate: async (value: any) =>
-                    await idNumberValidation(value),
                 }}
                 render={({ field }) => (
                   <>
-                    <input className="form-control" type="text" {...field} />
+                    <input
+                      className="form-control"
+                      type="text"
+                      {...field}
+                      onBlur={async (e) => {
+                        const result = await idNumberValidation(
+                          e?.target?.value
+                        );
+                        if (result != true) {
+                          setError("lead.identificationNumber", {
+                            type: "custom",
+                            message: result,
+                          });
+                        }
+                      }}
+                    />
                     <div className="invalid-feedback">
                       {Errors?.identificationNumber &&
                         Errors?.identificationNumber?.message}
@@ -152,12 +166,6 @@ const NationalityStatus = (props: any) => {
                   </>
                 )}
               />
-              {Errors?.identificationNumber && (
-                <div className="invalid-feedback">
-                  {Errors?.identificationNumber?.type === "custom" &&
-                    Errors?.identificationNumber?.message}
-                </div>
-              )}
             </div>
           </div>
         </div>
