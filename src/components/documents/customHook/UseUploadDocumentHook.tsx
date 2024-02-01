@@ -26,10 +26,8 @@ export const UseUploadDocumentHook = (masterData) => {
     if (file?.length && studentCode) {
       const fileName = file[0].name;
       const ext = fileName?.split(".").pop();
-      let documentCode = documentDetails?.code;
-      if (!documentDetails?.code) {
-        documentCode = await DocumentServices?.DocumentCode();
-      }
+      const documentCode = await DocumentServices?.DocumentCode();
+
       setDocumentCode(documentCode);
       const name = `${documentCode}.${ext}`;
       const signedUrl = await DocumentServices?.getFileSignUrl(
@@ -42,8 +40,7 @@ export const UseUploadDocumentHook = (masterData) => {
         file[0],
         setUploadPercent
       );
-
-      if (response?.status === status?.successCode && !documentDetails?.code) {
+      if (response?.status === status?.successCode) {
         const documentUpdatePayload = {
           name: name,
           fileExtension: `.${ext}`,
