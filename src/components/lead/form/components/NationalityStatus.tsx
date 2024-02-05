@@ -149,7 +149,7 @@ const NationalityStatus = (props: any) => {
                       {...field}
                       onBlur={async (e) => {
                         const result = await idNumberValidation(
-                          e?.target?.value
+                          e?.target?.value.trim()
                         );
                         if (result != true) {
                           setError("lead.identificationNumber", {
