@@ -153,7 +153,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
   };
 };
 
-export const useDiscountHook = (masterData: any, fees: any) => {
+export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
   //Hide and Show promo code
   const [showDiscount, setShowDiscount] = useState(false);
   const toggleDiscount = () => {
@@ -272,6 +272,14 @@ export const useDiscountHook = (masterData: any, fees: any) => {
       ? parseInt(fees?.fee) -
         parseInt(fees.discountFee) +
         parseInt(fees.rmatFees)
+      : masterData?.applicationData?.status ==
+        CommonEnums.MONTHLY_PAYMENT_REJECT
+      ? parseInt(fees?.fee) -
+        parseInt(fees.discountFee) -
+        parseInt(
+          studyModes?.fees?.find((item) => item?.feeMode == feeMode?.MONTHLY)
+            .fee
+        )
       : parseInt(fees?.fee) - parseInt(fees.discountFee);
 
   fees.totalFee = totalAmount;

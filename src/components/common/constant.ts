@@ -44,6 +44,7 @@ export enum CommonEnums {
   QUOTE = "QUOTE",
   BURSARY_LETTER_PEND = "BURSARY-LETTER-PEND",
   RESUB_BURSARY_DOC = "RESUB-BURSARY-DOC",
+  MONTHLY_PAYMENT_REJECT = "MONTHLY_PAYMENT_REJECTED",
 }
 
 export enum GraduationType {
@@ -101,6 +102,7 @@ export const APPLICATION_STATUS = {
   ADMITTED_TO_PROGRAM: "INTAKE-ASSIGNMENT PENDING",
   INTAKE_ASSIGNED: "INTAKE-ASSIGNED",
   ENROLLED_BY_ADMISSION: "PROG-ADMITTED/ENROLLED",
+  MONTHLY_PAYMENT_REJECT: "MONTHLY_PAYMENT_REJECTED",
 };
 
 // export const docTypes={WELCOME-LETTER=}
@@ -140,6 +142,7 @@ export enum studyMode {
 export enum feeMode {
   APPLICATION = "APPLICATION",
   TOTAL = "TOTAL",
+  MONTHLY = "MONTHLY",
 }
 
 export const ErrorMessage = "Something went wrong please try again later";
