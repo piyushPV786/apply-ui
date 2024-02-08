@@ -99,6 +99,11 @@ const ProgramFees = (props) => {
                         className="form-check-input me-2"
                         type="radio"
                         value={item?.feeMode}
+                        disabled={
+                          item?.feeMode == feeMode?.MONTHLY &&
+                          masterData?.applicationData?.status ==
+                            CommonEnums?.MONTHLY_PAYMENT_REJECT
+                        }
                       />
                       <label className="form-check-label">
                         {item?.feeMode}
@@ -139,7 +144,7 @@ const FinalFees = (props) => {
     applyDiscount,
     resetDiscount,
     discount,
-  } = useDiscountHook(masterData, fees);
+  } = useDiscountHook(masterData, fees, studyModes);
   const methods = useForm();
   const {
     handleSubmit,
@@ -178,6 +183,28 @@ const FinalFees = (props) => {
                 <label>RMAT Fee</label>
                 <Typography variant="body1">
                   <strong> {fees?.rmatAmount}</strong>
+                </Typography>
+              </Grid>
+            )}
+            {masterData?.applicationData?.status ==
+              CommonEnums.MONTHLY_PAYMENT_REJECT && (
+              <Grid
+                item
+                md={12}
+                xs={12}
+                display="flex"
+                justifyContent="space-between"
+              >
+                <label>Previously Paid Amount</label>
+                <Typography variant="body1">
+                  <strong>
+                    -{" "}
+                    {parseInt(
+                      studyModes?.fees?.find(
+                        (item) => item?.feeMode == feeMode?.MONTHLY
+                      ).fee
+                    )}
+                  </strong>
                 </Typography>
               </Grid>
             )}
