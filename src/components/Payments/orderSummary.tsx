@@ -187,27 +187,28 @@ const FinalFees = (props) => {
               </Grid>
             )}
             {masterData?.applicationData?.status ==
-              CommonEnums.MONTHLY_PAYMENT_REJECT && (
-              <Grid
-                item
-                md={12}
-                xs={12}
-                display="flex"
-                justifyContent="space-between"
-              >
-                <label>Previously Paid Amount</label>
-                <Typography variant="body1">
-                  <strong>
-                    -{" "}
-                    {parseInt(
-                      studyModes?.fees?.find(
-                        (item) => item?.feeMode == feeMode?.MONTHLY
-                      ).fee
-                    )}
-                  </strong>
-                </Typography>
-              </Grid>
-            )}
+              CommonEnums.MONTHLY_PAYMENT_REJECT &&
+              fees.amount != " 0" && (
+                <Grid
+                  item
+                  md={12}
+                  xs={12}
+                  display="flex"
+                  justifyContent="space-between"
+                >
+                  <label>Previously Paid Amount</label>
+                  <Typography variant="body1">
+                    <strong>
+                      -{" "}
+                      {parseInt(
+                        studyModes?.fees?.find(
+                          (item) => item?.feeMode == feeMode?.MONTHLY
+                        ).fee
+                      )}
+                    </strong>
+                  </Typography>
+                </Grid>
+              )}
             <Grid
               item
               md={12}
