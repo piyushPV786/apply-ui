@@ -4,13 +4,14 @@ import { useForm } from "react-hook-form";
 import { Grid } from "@mui/material";
 import UploadPaymentProof from "../uploadDocument/uploadPaymentProof";
 import StyledButton from "../button/button";
+import PaymentDetails from "./components/paymentDetails";
 
 export interface IFormValue {
   file: File | null;
 }
 
 const PaymentProofCard = (props) => {
-  const { uploadPaymentProof, disabled, updatePayment } = props;
+  const { uploadPaymentProof, disabled, updatePayment, masterData } = props;
 
   const {
     watch,
@@ -37,6 +38,7 @@ const PaymentProofCard = (props) => {
 
   return (
     <Grid container mt={5} rowGap={5} component="form" justifyContent="center">
+      <PaymentDetails masterData={masterData} />
       <Grid item xs={12} lg={6}>
         <UploadPaymentProof
           register={register}

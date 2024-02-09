@@ -469,7 +469,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
           );
           if (sendPaymentInfo?.statusCode === status?.successCodeOne) {
             setLoadingPayment(false);
-            router?.push("/payment/success");
+            router?.push("/payment/onlinesuccess");
           }
           clearInterval(intervalId);
         } else if (getPaymentResponse?.data?.status == "ERROR_PERM") {
