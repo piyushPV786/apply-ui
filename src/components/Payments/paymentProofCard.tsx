@@ -11,7 +11,7 @@ export interface IFormValue {
 }
 
 const PaymentProofCard = (props) => {
-  const { uploadPaymentProof, disabled, updatePayment } = props;
+  const { uploadPaymentProof, disabled, updatePayment, masterData } = props;
 
   const {
     watch,
@@ -38,7 +38,7 @@ const PaymentProofCard = (props) => {
 
   return (
     <Grid container mt={5} rowGap={5} component="form" justifyContent="center">
-      <PaymentDetails />
+      <PaymentDetails masterData={masterData} />
       <Grid item xs={12} lg={6}>
         <UploadPaymentProof
           register={register}
