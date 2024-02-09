@@ -69,9 +69,13 @@ const PaymentOptionCard = (props) => {
                     </span>
                   ) : (
                     <Image
-                      width={100}
-                      height={40}
-                      style={{ position: "relative", top: "2px" }}
+                      width={150}
+                      height={50}
+                      style={{
+                        position: "relative",
+                        bottom: "4px",
+                        marginLeft: "2px",
+                      }}
                       src={GetPaymentImage(value) as any}
                       alt={GetPaymentImage(value) as string}
                     />
