@@ -311,7 +311,7 @@ export const GetPaymentImage = (type) => {
     return `${imgUrl}/stripe.png`;
   }
   if (type === "ukheshe") {
-    return `${imgUrl}/ukheshy.png`;
+    return `${imgUrl}/finEDTech.png`;
   }
 };
 
