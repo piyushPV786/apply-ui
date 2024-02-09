@@ -236,6 +236,14 @@ const LoadinContainer = styled.div`
 export const nonMandatorySponsorFeilds = ["email", "mobileNumber"];
 export const mandatorySponsorModeFeilds = ["GUARDIAN", "BURSARY"];
 
+export const accountDetails = {
+  AccountName: "Regenesys Business School",
+  AccountNumber: "1172349479",
+  BranchCode: "198765",
+  BankName: "Nedbank",
+  AccountType: "Cheque Account",
+};
+
 export const studentApplicationAllStatus: IDynamicObject = {
   "APP-FEE-DOC-VER-PEND": "Application Fee Verification Pending",
   "RESUB-APP-FEE-PROOF": "Resubmit Application Fee POP",

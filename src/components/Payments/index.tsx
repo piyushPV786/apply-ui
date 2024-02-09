@@ -64,6 +64,7 @@ const PaymentPage = ({ applicationCode }) => {
           </Grid>
           <Grid item xs={12}>
             <PaymentOptions
+              masterData={masterData}
               getPayuDetails={getPayuDetails}
               payuDetails={payuDetails}
               fees={fees}
