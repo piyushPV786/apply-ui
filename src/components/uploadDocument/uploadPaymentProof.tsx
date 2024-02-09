@@ -24,8 +24,8 @@ interface UploadPaymentProofTypes {
 
 export const fileValidation = (value) => {
   if (value) {
-    if (value?.size > 2 * 1024 * 1024) {
-      return "File size should be at most 2MB";
+    if (value?.size > 3 * 1024 * 1024) {
+      return "File size should be at most 3MB";
     }
     if (!acceptedFileType.includes(value?.type)) {
       return "Invalid file type please upload file with accepted file types ";
@@ -92,7 +92,7 @@ const UploadPaymentProof = ({
           gutterBottom
           sx={{ color: (theme: Theme) => theme.palette.grey[600] }}
         >
-          Only PNG, JPEG and PDF files with max size of 2MB
+          Only PNG, JPEG and PDF files with max size of 3MB
         </Typography>
         <Box width="100%" onClick={(e) => e.stopPropagation()}>
           {!!watch(name) && (

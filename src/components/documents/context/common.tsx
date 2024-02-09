@@ -165,8 +165,8 @@ export const fileValidation = (value, isRequired) => {
   if (value) {
     if (value[0] && !acceptedFileTypes.includes(value[0]?.type)) {
       return "This file type is not accepted please upload from accepted file types";
-    } else if (value[0]?.size > 2 * 1024 * 1024) {
-      return "File size should be at most 2MB";
+    } else if (value[0]?.size > 3 * 1024 * 1024) {
+      return "File size should be at most 3MB";
     }
   }
 
