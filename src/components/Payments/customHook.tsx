@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
+import { MBACode } from "../documents/context/common";
 import {
   CommonEnums,
   DocumentStatus,
@@ -251,11 +252,17 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
 
   //Apply RMAT Fee
 
-  let rmatFees = "0";
+  const isOptionalConditopnchek = !masterData?.rmatDetails?.every(
+    (obj) => obj.isOptional === true
+  );
 
-  if (masterData?.programData?.isRmat && !masterData?.rmatDetails?.isOptional) {
+  let rmatFees = "0";
+  if (masterData?.programData?.code == MBACode) {
+    rmatFees = masterData?.feeData?.rmatFee;
+  } else if (masterData?.programData?.isRmat && isOptionalConditopnchek) {
     rmatFees = masterData?.feeData?.rmatFee;
   }
+
   fees.rmatFees = rmatFees;
 
   if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
