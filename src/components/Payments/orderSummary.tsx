@@ -199,7 +199,7 @@ const FinalFees = (props) => {
                   <label>Previously Paid Amount</label>
                   <Typography variant="body1">
                     <strong>
-                      -{" "}
+                      - R
                       {parseInt(
                         studyModes?.fees?.find(
                           (item) => item?.feeMode == feeMode?.MONTHLY
