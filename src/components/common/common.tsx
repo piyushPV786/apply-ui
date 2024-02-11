@@ -307,6 +307,8 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "BURSARY-LETTER-PEND": "Upload Bursary Documents",
   "RMAT-PENDING": "RMAT Exam is Pending",
   "INTAKE-ASSIGNMENT-PENDING": "Intake Assignment Pending",
+  "FINANCE-VERIFICATION-PEND": "Finance Verification Pending",
+  MONTHLY_PAYMENT_REJECTED: "Monthly Payment Rejected",
 };
 export enum FileSize {
   maxSize = 2000 * 1024,
