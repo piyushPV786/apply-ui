@@ -10,6 +10,7 @@ import { kinInfoData } from "./data/kinData";
 const ErrorType = {
   Custom: "custom",
   Required: "required",
+  Validate: "validPhoneNumber",
 };
 const ErrorComponent = ({ errors }: any) => {
   const GenerateArray = (DataArray, Data) => {
@@ -20,6 +21,8 @@ const ErrorComponent = ({ errors }: any) => {
         ? value?.message
         : value?.type === ErrorType?.Required
         ? `Please enter ${i?.label}`
+        : value?.type === ErrorType?.Validate
+        ? value?.message
         : undefined;
     })?.filter((error) => error !== undefined);
   };
