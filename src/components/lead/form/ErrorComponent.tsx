@@ -6,6 +6,7 @@ import { AddressData } from "./data/address";
 import { sponsorInfoData } from "./data/sponsorData";
 import { employmentData } from "./data/employmentData";
 import { kinInfoData } from "./data/kinData";
+
 const ErrorType = {
   Custom: "custom",
   Required: "required",
@@ -22,45 +23,62 @@ const ErrorComponent = ({ errors }: any) => {
         : undefined;
     })?.filter((error) => error !== undefined);
   };
-  const personalInfoDataLead = personalInfoData
-    ?.map((i) => {
-      const value = errors?.lead?.[i?.name];
-      return value?.type === ErrorType?.Custom
-        ? value?.message
-        : value?.type === ErrorType?.Required
-        ? `Please enter ${i?.label}`
-        : undefined;
-    })
-    ?.filter((error) => error !== undefined);
+  const personalInfoDataLead = GenerateArray(personalInfoData, "lead");
   const educationData = GenerateArray(EducationData, "education");
   const sponsorData = GenerateArray(sponsorInfoData, "sponsor");
   const EmploymentData = GenerateArray(employmentData, "employment");
   const NextOfKin = GenerateArray(kinInfoData, "kin");
-  const addressData = AddressData?.map((addressField, index) => {
-    const error = errors?.address?.find(
-      (errorField) => errorField[addressField.name]
-    );
 
-    if (error) {
-      if (error[addressField.name].type === ErrorType.Custom) {
-        return error[addressField.name].message;
-      } else if (error[addressField.name].type === ErrorType.Required) {
-        return `Please enter ${addressField.label}`;
+  const AddressArray = () => {
+    const Addresses: any = {
+      postal: [],
+      residential: [],
+    };
+
+    AddressData?.map((addressField) => {
+      if (errors?.address?.length > 0) {
+        errors?.address?.forEach((err, index) => {
+          const prefix =
+            index === 0
+              ? "Please enter postal"
+              : index === 1
+              ? "Please enter residential"
+              : "";
+
+          if (err) {
+            const errorMessage =
+              err[addressField.name]?.type === ErrorType.Custom
+                ? `${prefix} ${err[addressField?.name]?.message}`
+                : err[addressField?.name]?.type === ErrorType.Required
+                ? `${prefix} ${addressField?.label}`
+                : undefined;
+
+            if (index === 0) {
+              Addresses?.postal.push(errorMessage);
+            } else if (index === 1) {
+              Addresses?.residential.push(errorMessage);
+            }
+          }
+        });
       }
-    }
-    return undefined;
-  })?.filter((error) => error !== undefined);
+    });
+
+    return Addresses;
+  };
+
+  const PostalAddress = AddressArray()?.postal;
+  const ResidentialAddress = AddressArray()?.residential;
 
   return (
     <Grid container sx={{ p: 2 }}>
       {personalInfoDataLead?.length > 0 && (
         <Grid item xs={12}>
-          <Grid item xs={1.5}>
+          <Grid item xs={12} md={1.5} lg={1.5}>
             <label className="form-check-label terms-conditions">
               Personal Information:
             </label>
           </Grid>
-          <Grid xs={11}>
+          <Grid xs={12} md={11} lg={11}>
             <Typography variant="body2" color="error">
               {personalInfoDataLead?.filter((error) => error)?.join(", ")}
             </Typography>
@@ -69,40 +87,55 @@ const ErrorComponent = ({ errors }: any) => {
       )}
       {educationData?.length > 0 && (
         <Grid item xs={12}>
-          <Grid item xs={2}>
+          <Grid item xs={12} md={1.5} lg={1.5}>
             <label className="form-check-label terms-conditions">
               Education and Module Details:
             </label>
           </Grid>
-          <Grid xs={10}>
+          <Grid xs={12} md={11} lg={11}>
             <Typography variant="body2" color="error">
               {educationData?.filter((error) => error)?.join(", ")}
             </Typography>
           </Grid>
         </Grid>
       )}
-      {addressData?.length > 0 && (
+
+      {PostalAddress.length > 0 && (
         <Grid item xs={12}>
-          <Grid item xs={2}>
+          <Grid item xs={12} md={1.5} lg={1.5}>
             <label className="form-check-label terms-conditions">
-              Address Details:
+              Postal Address Details
             </label>
           </Grid>
-          <Grid xs={10}>
+          <Grid xs={12} md={11} lg={11}>
             <Typography variant="body2" color="error">
-              {addressData?.filter((error) => error)?.join(", ")}
+              {PostalAddress?.filter((error) => error)?.join(", ")}
+            </Typography>
+          </Grid>
+        </Grid>
+      )}
+      {ResidentialAddress?.length > 0 && (
+        <Grid item xs={12}>
+          <Grid item xs={12} md={1.5} lg={1.5}>
+            <label className="form-check-label terms-conditions">
+              Residential Address Details:
+            </label>
+          </Grid>
+          <Grid xs={12} md={11} lg={11}>
+            <Typography variant="body2" color="error">
+              {ResidentialAddress?.filter((error) => error)?.join(", ")}
             </Typography>
           </Grid>
         </Grid>
       )}
       {sponsorData?.length > 0 && (
         <Grid item xs={12}>
-          <Grid item xs={2}>
+          <Grid item xs={12} md={1.5} lg={1.5}>
             <label className="form-check-label terms-conditions">
               Sponsor Details:
             </label>
           </Grid>
-          <Grid xs={10}>
+          <Grid xs={12} md={11} lg={11}>
             <Typography variant="body2" color="error">
               {sponsorData?.filter((error) => error)?.join(", ")}
             </Typography>
@@ -111,12 +144,12 @@ const ErrorComponent = ({ errors }: any) => {
       )}
       {EmploymentData?.length > 0 && (
         <Grid item xs={12}>
-          <Grid item xs={2}>
+          <Grid item xs={12} md={1.5} lg={1.5}>
             <label className="form-check-label terms-conditions">
               Employed Details:
             </label>
           </Grid>
-          <Grid xs={10}>
+          <Grid xs={12} md={11} lg={11}>
             <Typography variant="body2" color="error">
               {EmploymentData?.filter((error) => error)?.join(", ")}
             </Typography>
@@ -125,12 +158,12 @@ const ErrorComponent = ({ errors }: any) => {
       )}
       {NextOfKin?.length > 0 && (
         <Grid item xs={12}>
-          <Grid item xs={2}>
+          <Grid item xs={12} md={1.5} lg={1.5}>
             <label className="form-check-label terms-conditions">
               Nex Of Kin Details:
             </label>
           </Grid>
-          <Grid xs={10}>
+          <Grid xs={12} md={11} lg={11}>
             <Typography variant="body2" color="error">
               {NextOfKin?.filter((error) => error)?.join(", ")}
             </Typography>
