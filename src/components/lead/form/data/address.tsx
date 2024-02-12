@@ -5,5 +5,5 @@ export const AddressData = [
   { name: "country", label: "Country" },
   { name: "state", label: "State" },
   { name: "street", label: "Address" },
-  { name: "zipCode", label: "Pin Code / Zip Code" },
+  { name: "zipcode", label: "Pin Code / Zip Code" },
 ];
