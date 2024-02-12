@@ -280,7 +280,7 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
         parseInt(fees.discountFee) +
         parseInt(fees.rmatFees)
       : masterData?.applicationData?.status ==
-        CommonEnums.MONTHLY_PAYMENT_REJECT
+          CommonEnums.MONTHLY_PAYMENT_REJECT && parseInt(fees?.fee) > 0
       ? parseInt(fees?.fee) -
         parseInt(fees.discountFee) -
         parseInt(
