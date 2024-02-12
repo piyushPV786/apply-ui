@@ -5,7 +5,7 @@ export const personalInfoData = [
     name: "firstName",
     key: "firstName",
     label: "First Name",
-    type: "text",
+    type: "name",
     required: true,
     errorMessage: "Please enter your First Name",
     hidden: false,
