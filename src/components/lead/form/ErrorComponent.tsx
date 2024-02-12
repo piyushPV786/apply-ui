@@ -6,6 +6,7 @@ import { AddressData } from "./data/address";
 import { sponsorInfoData } from "./data/sponsorData";
 import { employmentData } from "./data/employmentData";
 import { kinInfoData } from "./data/kinData";
+import { NationalityData } from "./data/nationality";
 
 const ErrorType = {
   Custom: "custom",
@@ -31,6 +32,9 @@ const ErrorComponent = ({ errors }: any) => {
   const sponsorData = GenerateArray(sponsorInfoData, "sponsor");
   const EmploymentData = GenerateArray(employmentData, "employment");
   const NextOfKin = GenerateArray(kinInfoData, "kin");
+  const Nationality = GenerateArray(NationalityData, "lead");
+
+  const personalInfoDataLeadUpdate = [...personalInfoDataLead, ...Nationality];
 
   const AddressArray = () => {
     const Addresses: any = {
@@ -74,7 +78,7 @@ const ErrorComponent = ({ errors }: any) => {
 
   return (
     <Grid container sx={{ p: 2 }}>
-      {personalInfoDataLead?.length > 0 && (
+      {personalInfoDataLeadUpdate?.length > 0 && (
         <Grid item xs={12}>
           <Grid item xs={12} md={1.5} lg={1.5}>
             <label className="form-check-label terms-conditions">
@@ -83,7 +87,7 @@ const ErrorComponent = ({ errors }: any) => {
           </Grid>
           <Grid xs={12} md={11} lg={11}>
             <Typography variant="body2" color="error">
-              {personalInfoDataLead?.filter((error) => error)?.join(", ")}
+              {personalInfoDataLeadUpdate?.filter((error) => error)?.join(", ")}
             </Typography>
           </Grid>
         </Grid>
