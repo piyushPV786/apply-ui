@@ -35,7 +35,7 @@ const NationalityStatus = (props: any) => {
   }, [nationalityStatusWatch]);
 
   const Errors = errors["lead"] as any;
-  console.log("Errors?.identificationNumber", Errors?.identificationNumber);
+
   return (
     <GreyStyledAccordion
       expanded={!!nationalityStatusValue}
