@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { StorageName } from "../../common/constant";
 import { personalInfoData } from "./data/personalInfoData";
 import TextField from "./components/TextField";
+import NameField from "./components/NameField";
 import DateField from "./components/DateField";
 import EmailField from "./components/EmailField";
 
@@ -59,6 +60,15 @@ const PersonalInformation = (props: any) => {
                   {...register("lead.mobileCountryCode")}
                   hidden={true}
                 />
+
+                {element?.type === "name" && (
+                  <NameField
+                    element={element}
+                    Errors={Errors}
+                    registerName={`lead.${element?.name}`}
+                  />
+                )}
+
                 {element?.type === "text" && (
                   <TextField
                     element={element}
