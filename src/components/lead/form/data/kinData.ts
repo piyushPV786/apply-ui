@@ -20,7 +20,7 @@ export const kinInfoData = [
     key: "relationData",
     option: [],
     required: false,
-    errorMessage: "Please enter relation ship",
+    errorMessage: "Please enter Relationship",
     hidden: false,
     disabled: false,
     placeholder: "",
