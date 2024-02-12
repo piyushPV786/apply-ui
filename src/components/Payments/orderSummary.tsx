@@ -17,6 +17,7 @@ import StyledButton from "../button/button";
 import { DeleteOutline, CheckCircle } from "@material-ui/icons";
 import { Green } from "../common/common";
 import styled from "styled-components";
+import { getConvertedAmount } from "./helper";
 
 const OrderSummary = (props) => {
   const { studyModes, fees, masterData, updateFeeMode } = props;
@@ -188,7 +189,7 @@ const FinalFees = (props) => {
             )}
             {masterData?.applicationData?.status ==
               CommonEnums.MONTHLY_PAYMENT_REJECT &&
-              fees.amount != " 0" && (
+              fees.fee != "0.0" && (
                 <Grid
                   item
                   md={12}
@@ -199,8 +200,9 @@ const FinalFees = (props) => {
                   <label>Previously Paid Amount</label>
                   <Typography variant="body1">
                     <strong>
-                      - R
-                      {parseInt(
+                      -{masterData?.currencyData?.currencySymbol}
+                      {getConvertedAmount(
+                        masterData?.currencyData,
                         studyModes?.fees?.find(
                           (item) => item?.feeMode == feeMode?.MONTHLY
                         ).fee
