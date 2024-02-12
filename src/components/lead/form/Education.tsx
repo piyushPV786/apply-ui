@@ -49,6 +49,7 @@ const Education = (props: any) => {
       });
     }
   }, [programCode]);
+  console.log("Errors", Errors);
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
@@ -106,7 +107,9 @@ const Education = (props: any) => {
                       <input
                         className="form-check-input me-2"
                         type={"radio"}
-                        {...register("education.studyModeCode")}
+                        {...register("education.studyModeCode", {
+                          required: "Study Mode & Fee Plan is Required",
+                        })}
                         value={item?.studyModeCode}
                       />
                       {item?.studyModeCode}
@@ -125,6 +128,11 @@ const Education = (props: any) => {
                 )}
               </StyleContainer>
             </>
+            {Errors?.studyModeCode && studentProgram != null && (
+              <div className="invalid-feedback">
+                {Errors?.studyModeCode?.message}
+              </div>
+            )}
             {Errors?.studyModeCode && studentProgram == null && (
               <div className="invalid-feedback">
                 Fees not configured for selected qualification
