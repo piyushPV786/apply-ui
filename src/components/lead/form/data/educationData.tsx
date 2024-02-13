@@ -13,7 +13,7 @@ export const EducationData = [
   },
   {
     name: "referredById",
-    label: "Agent",
+    label: "Referred by",
   },
   {
     name: "studyModeCode",
