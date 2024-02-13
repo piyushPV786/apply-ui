@@ -49,7 +49,6 @@ const Education = (props: any) => {
       });
     }
   }, [programCode]);
-  console.log("Errors", Errors);
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
@@ -213,7 +212,7 @@ const Education = (props: any) => {
                 registerName={`education.referredById`}
                 required={true}
               />
-              {Errors?.refferedById && (
+              {Errors?.referredById && (
                 <div className="invalid-feedback">
                   Please select Referred by
                 </div>
