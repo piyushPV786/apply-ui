@@ -35,8 +35,9 @@ const EmailField = ({ element, Errors, registerName }: any) => {
       />
       {Errors && Errors[element?.name] && (
         <div className="invalid-feedback">
-          {Errors[element?.name]?.type === "custom" &&
-            Errors[element?.name].message}
+          {Errors[element?.name]?.type === "custom"
+            ? Errors[element?.name].message
+            : "Please enter Email"}
         </div>
       )}
     </div>
