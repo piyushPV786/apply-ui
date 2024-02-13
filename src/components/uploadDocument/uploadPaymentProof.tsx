@@ -96,16 +96,24 @@ const UploadPaymentProof = ({
         </Typography>
         <Box width="100%" onClick={(e) => e.stopPropagation()}>
           {!!watch(name) && (
-            <Box className={Styles.Document}>
-              <Box display="flex">
-                <Box textAlign="start" sx={{ pl: 2 }}>
-                  <Typography variant="body1" color={`${Green}`}>
+            <Grid container className={Styles.Document}>
+              <Grid item xs={10}>
+                <Grid item sx={{ pl: 2 }}>
+                  <Typography
+                    variant="body1"
+                    color={`${Green}`}
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
                     {watch(name)?.name}
                   </Typography>
-                  <Typography variant="body2"></Typography>
-                </Box>
-              </Box>
-              <Box
+                </Grid>
+              </Grid>
+              <Grid
+                item
+                xs={2}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
@@ -113,10 +121,10 @@ const UploadPaymentProof = ({
                 }}
               >
                 <IconButton onClick={() => unregister(name)}>
-                  <Close color="error" />
+                  <Close color="error" fontSize="small" />
                 </IconButton>
-              </Box>
-            </Box>
+              </Grid>
+            </Grid>
           )}
         </Box>
         <Box sx={{ pt: 2 }}>
