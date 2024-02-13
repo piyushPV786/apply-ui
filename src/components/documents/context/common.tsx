@@ -4,12 +4,13 @@ import { useFormContext } from "react-hook-form";
 import { CommonEnums } from "../../common/constant";
 
 // comon document page used constants //
-export const mbaDocs = ["MOTIVATIONLETTER", "INTERVIEWNOTES"];
+export const mbaDocs = ["MOTIVATIONLETTER"];
 export const nonMandatoryDocuments = [
   "TERMS&CONDITION",
   "APPLICATIONLETTER",
   "MATRIC",
   "OTHERS",
+  "INTERVIEWNOTES",
 ];
 
 export const docType = {
