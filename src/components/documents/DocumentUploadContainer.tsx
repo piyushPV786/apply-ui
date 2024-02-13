@@ -1,5 +1,5 @@
 import { Typography, Card, Grid } from "@mui/material";
-
+import DocumentServices from "../../services/documentApi";
 import { StyledLabel, CertifiedDocument } from "../common/common";
 import styled from "styled-components";
 import React, { useEffect } from "react";
@@ -40,8 +40,13 @@ const DocumentUploadContainer = ({
     }
   }, [uploadProgress]);
 
+  const removeDocumnet = async (documentCode: string) => {
+    await DocumentServices?.documentRemove(documentCode);
+  };
+
   const onRemoveFile = () => {
     setUploadProgress(0);
+    removeDocumnet(documentCode);
   };
 
   return (
