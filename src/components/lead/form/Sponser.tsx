@@ -6,7 +6,11 @@ import {
   nonMandatorySponsorFeilds,
   mandatorySponsorModeFeilds,
 } from "../../common/common";
-import { AccordionDetails, AccordionSummary } from "@material-ui/core";
+import {
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@material-ui/core";
 import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
@@ -217,7 +221,10 @@ const Sponsor = (props: any) => {
                       )}
                       {element?.type === "address" && (
                         <div className="col-lg-4 mb-4">
-                          <StyledLabel>{element?.label}</StyledLabel>
+                          <StyledLabel>
+                            <label className="me-2">{element?.label}</label>
+                            <span className="text-danger me-2">*</span>
+                          </StyledLabel>
                           <input
                             className="form-control"
                             type={element.type}
