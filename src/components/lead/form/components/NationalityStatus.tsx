@@ -64,7 +64,9 @@ const NationalityStatus = (props: any) => {
         )}
         <div>
           {Errors?.nationalityStatus && (
-            <div className="invalid-feedback">Please Select Nationality</div>
+            <div className="invalid-feedback">
+              Please Select Nationality Status
+            </div>
           )}
         </div>
       </AccordionSummary>
@@ -82,7 +84,7 @@ const NationalityStatus = (props: any) => {
                     disabled={true}
                     defaultValue={"ZAR"}
                   />
-                  {Errors?.permanentResident && (
+                  {Errors?.permanentResident && nationalityStatusWatch && (
                     <div className="invalid-feedback">
                       Please Select Permanent Resident
                     </div>
@@ -108,7 +110,7 @@ const NationalityStatus = (props: any) => {
                     required={true}
                   />
                 )}
-              {Errors?.permanentResident && (
+              {Errors?.permanentResident && nationalityStatusWatch && (
                 <div className="invalid-feedback">
                   Please Select Nationality
                 </div>
@@ -127,7 +129,7 @@ const NationalityStatus = (props: any) => {
                   required={true}
                 />
               )}
-              {Errors?.identificationDocumentType && (
+              {Errors?.identificationDocumentType && nationalityStatusWatch && (
                 <div className="invalid-feedback">
                   Please Select Document Type
                 </div>
@@ -161,6 +163,7 @@ const NationalityStatus = (props: any) => {
                     />
                     <div className="invalid-feedback">
                       {Errors?.identificationNumber &&
+                        nationalityStatusWatch &&
                         Errors?.identificationNumber?.message}
                     </div>
                   </>
