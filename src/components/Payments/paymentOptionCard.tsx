@@ -64,17 +64,18 @@ const PaymentOptionCard = (props) => {
                     type="radio"
                     value={value}
                   />
-                  {label ? (
-                    <span style={{ marginLeft: "5px", marginTop: "3px" }}>
-                      {label}
-                    </span>
-                  ) : (
+
+                  <span style={{ marginLeft: "5px", marginTop: "3px" }}>
+                    {label}
+                  </span>
+
+                  {name === "Ukheshe" && (
                     <Image
                       width={150}
                       height={50}
                       style={{
                         position: "relative",
-                        bottom: "4px",
+
                         marginLeft: "2px",
                       }}
                       src={GetPaymentImage(value) as any}
