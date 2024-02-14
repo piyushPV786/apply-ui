@@ -87,9 +87,9 @@ const LeadForm = (props: IProps) => {
                     disabled={disable}
                   />
                   <StyledButton
-                    // disabled={
-                    //   !watch("lead.isAgreedTermsAndConditions") || disable
-                    // }
+                    disabled={
+                      !watch("lead.isAgreedTermsAndConditions") || disable
+                    }
                     onClick={handleSubmit((d) => saveApplication(d))}
                     className="form-button btn-space"
                     title="Save & Next"
