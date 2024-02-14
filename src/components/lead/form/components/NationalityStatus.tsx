@@ -5,7 +5,6 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import AddressImg from "../../../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import CommonAutocomplete from "./CommonAutocomplete ";
 import { Controller, useFormContext } from "react-hook-form";
-import { useNationalityHook } from "../../customHooks/nationalityHooks";
 import { nationalityStatusEnum } from "../../../../constants";
 import { idNumberValidation } from "../../../../Util/Util";
 
@@ -66,7 +65,9 @@ const NationalityStatus = (props: any) => {
         )}
         <div>
           {Errors?.nationalityStatus && (
-            <div className="invalid-feedback">Please Select Nationality</div>
+            <div className="invalid-feedback">
+              Please Select Nationality Status
+            </div>
           )}
         </div>
       </AccordionSummary>
@@ -84,7 +85,7 @@ const NationalityStatus = (props: any) => {
                     disabled={true}
                     defaultValue={"ZAR"}
                   />
-                  {Errors?.permanentResident && (
+                  {Errors?.permanentResident && nationalityStatusWatch && (
                     <div className="invalid-feedback">
                       Please Select Permanent Resident
                     </div>
@@ -110,13 +111,12 @@ const NationalityStatus = (props: any) => {
                     required={true}
                   />
                 )}
-              {Errors?.nationality && (
+              {Errors?.nationality && nationalityStatusWatch && (
                 <div className="invalid-feedback">
                   Please Select Nationality
                 </div>
               )}
             </div>
-
             <div className="col-md-4 mb-4">
               {!!identificationType?.length && (
                 <CommonAutocomplete
@@ -129,7 +129,7 @@ const NationalityStatus = (props: any) => {
                   required={true}
                 />
               )}
-              {Errors?.identificationDocumentType && (
+              {Errors?.identificationDocumentType && nationalityStatusWatch && (
                 <div className="invalid-feedback">
                   Please Select Document Type
                 </div>
@@ -163,6 +163,7 @@ const NationalityStatus = (props: any) => {
                     />
                     <div className="invalid-feedback">
                       {Errors?.identificationNumber &&
+                        nationalityStatusWatch &&
                         Errors?.identificationNumber?.message}
                     </div>
                   </>

@@ -6,7 +6,8 @@ import { AddressData } from "./data/address";
 import { sponsorInfoData } from "./data/sponsorData";
 import { employmentData } from "./data/employmentData";
 import { kinInfoData } from "./data/kinData";
-import { NationalityData } from "./data/nationality";
+import { NationalityData, NationalityStatusEnum } from "./data/nationality";
+import NationalityStatus from "./components/NationalityStatus";
 
 const ErrorType = {
   Custom: "custom",
@@ -32,9 +33,15 @@ const ErrorComponent = ({ errors }: any) => {
   const sponsorData = GenerateArray(sponsorInfoData, "sponsor");
   const EmploymentData = GenerateArray(employmentData, "employment");
   const NextOfKin = GenerateArray(kinInfoData, "kin");
-  const Nationality = GenerateArray(NationalityData, "lead");
+  const Nationality = GenerateArray(NationalityData, "lead") || [];
+  const nationalities = Nationality.includes(NationalityStatusEnum?.Error)
+    ? [NationalityStatusEnum?.Error]
+    : Nationality;
 
-  const personalInfoDataLeadUpdate = [...personalInfoDataLead, ...Nationality];
+  const personalInfoDataLeadUpdate = [
+    ...personalInfoDataLead,
+    ...nationalities,
+  ];
 
   const AddressArray = () => {
     const Addresses: any = {
