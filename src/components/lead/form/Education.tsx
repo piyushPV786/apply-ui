@@ -99,7 +99,7 @@ const Education = (props: any) => {
             <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
             <br />
             <>
-              {studentProgram?.studyModes?.map((item: any) => {
+              {studentProgram?.studyModes.map((item: any) => {
                 {
                   return (
                     <div className="form-check form-check-inline">
@@ -119,10 +119,19 @@ const Education = (props: any) => {
               <StyleContainer className="fee-cards">
                 {feesDetails && feesDetails?.fees && (
                   <div className="row">
-                    {feesDetails?.fees?.map((item) => {
-                      if (item?.feeMode != feeMode?.TOTAL)
-                        return <FeeCard item={item} />;
-                    })}
+                    {feesDetails?.fees
+                      ?.sort((a, b) => {
+                        const aStartsWithA = a.feeMode.startsWith("A");
+                        const bStartsWithA = b.feeMode.startsWith("A");
+                        if (aStartsWithA && !bStartsWithA) return -1;
+                        if (!aStartsWithA && bStartsWithA) return 1;
+                        return 0;
+                      })
+                      .reverse()
+                      .map((item) => {
+                        if (item?.feeMode != feeMode?.TOTAL)
+                          return <FeeCard item={item} />;
+                      })}
                   </div>
                 )}
               </StyleContainer>
