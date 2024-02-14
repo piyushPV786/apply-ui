@@ -58,7 +58,6 @@ const ProgramFees = (props) => {
     updateFeeMode(data);
   }, [data]);
 
-  console.log("studu", studyModes);
   return (
     <Grid container spacing={4} sx={{ p: 3 }}>
       <Grid item md={6} xs={12}>
