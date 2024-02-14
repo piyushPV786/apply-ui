@@ -39,73 +39,79 @@ const PaymentOptionCard = (props) => {
 
   return (
     <>
-      <Grid container display="flex" justifyContent="center">
-        <Grid item xs={10} md={10}>
-          <Box
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              borderRadius: 1,
-              alignItems: "center",
-            }}
-          >
-            {PaymentTypes.map(({ name, value, registerName, label }, index) => (
-              <>
-                <PaymentCardDetail key={value}>
-                  {name === "Payu" ? (
-                    <PayuInput value={value} payuDetails={payuDetails} />
-                  ) : null}
-                  {name === "Ukheshe" ? (
-                    <UkhesheInput value={value} setOpenPopup={setOpenPopup} />
-                  ) : null}
-                  <input
-                    {...register(registerName)}
-                    className="form-check-input"
-                    type="radio"
-                    value={value}
-                  />
+      <Grid
+        container
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        {PaymentTypes.map(({ name, value, registerName, label }, index) => (
+          <Grid item sm={4} md={4}>
+            {name === "Ukheshe" ? (
+              <UkhesheInput value={value} setOpenPopup={setOpenPopup} />
+            ) : null}
 
-                  <span style={{ marginLeft: "5px", marginTop: "3px" }}>
-                    {label}
-                  </span>
-
-                  {name === "Ukheshe" && (
-                    <Image
-                      width={150}
-                      height={50}
-                      style={{
-                        position: "relative",
-
-                        marginLeft: "2px",
-                      }}
-                      src={GetPaymentImage(value) as any}
-                      alt={GetPaymentImage(value) as string}
-                    />
-                  )}
-                </PaymentCardDetail>
-                {index === 0 && (
-                  <Box
+            <Grid container>
+              <Grid
+                item
+                sm={12}
+                md={12}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <input
+                  {...register(registerName)}
+                  className="form-check-input"
+                  type="radio"
+                  value={value}
+                />
+                <span style={{ marginLeft: "5px", marginTop: "3px" }}>
+                  {label}
+                </span>
+              </Grid>
+              <Grid
+                item
+                sm={12}
+                md={12}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {name === "Ukheshe" ? (
+                  <Image
+                    width={150}
+                    height={30}
                     style={{
-                      fontWeight: "bold",
-                      textAlign: "center",
+                      position: "relative",
+                      bottom: "4px",
+                      marginLeft: "2px",
                     }}
-                  >
-                    (Or)
-                  </Box>
+                    src={GetPaymentImage(value) as any}
+                    alt={GetPaymentImage(value) as string}
+                  />
+                ) : (
+                  <Box sx={{ height: "25px" }}></Box>
                 )}
-              </>
-            ))}
-          </Box>
-          {onlinePaymentWatch === "offline" && (
-            <PaymentProofCard
-              masterData={masterData}
-              uploadPaymentProof={uploadPaymentProof}
-              disabled={disabled}
-              updatePayment={updatePayment}
-            />
-          )}
-        </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        ))}
+
+        {onlinePaymentWatch === "offline" && (
+          <PaymentProofCard
+            masterData={masterData}
+            uploadPaymentProof={uploadPaymentProof}
+            disabled={disabled}
+            updatePayment={updatePayment}
+          />
+        )}
       </Grid>
+
       {onlinePaymentWatch !== "offline" && (
         <Grid container display="flex" justifyContent="center" sx={{ p: 2 }}>
           <StyledButton
