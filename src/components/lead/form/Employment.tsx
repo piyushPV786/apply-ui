@@ -223,7 +223,7 @@ const Employment = (props: any) => {
                         <NumberField
                           element={element}
                           Errors={Errors}
-                          registerName={`sponsor.${element?.name}`}
+                          registerName={`employment.${element?.name}`}
                         />
                       )}
                     </>
