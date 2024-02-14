@@ -19,6 +19,7 @@ const NationalityStatus = (props: any) => {
     setValue,
     setError,
     control,
+    clearErrors,
   } = useFormContext();
 
   const [nationalityStatusValue, setNationalityStatus] = useState("");
@@ -30,6 +31,7 @@ const NationalityStatus = (props: any) => {
         setValue("lead.permenantResident", nationalityStatusEnum.SA);
       } else if (nationalityStatusWatch === nationalityStatusEnum.SA) {
         setValue("lead.nationality", nationalityStatusEnum.SA);
+        clearErrors("lead.nationality");
       }
     }
   }, [nationalityStatusWatch]);
@@ -108,7 +110,7 @@ const NationalityStatus = (props: any) => {
                     required={true}
                   />
                 )}
-              {Errors?.permanentResident && (
+              {Errors?.nationality && (
                 <div className="invalid-feedback">
                   Please Select Nationality
                 </div>
