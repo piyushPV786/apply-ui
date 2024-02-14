@@ -141,6 +141,13 @@ class DocumentApplicationServices {
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
   }
+
+  async documentRemove(payload) {
+    const url = `${this.documentBaseURl}${apiEndPoint?.documentRemove}/${payload}`;
+    const response = await apiServer.delete(url);
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
+  }
 }
 
 export default new DocumentApplicationServices();

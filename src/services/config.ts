@@ -44,4 +44,5 @@ export const apiEndPoint = {
     "lead/check-duplicate-id-number/:idNumber/leadCode/:leadCode",
   updateDocumentStatus: "document/:documentCode/active",
   documentCode: "next-code/DOC",
+  documentRemove: "document/documentCode",
 };
