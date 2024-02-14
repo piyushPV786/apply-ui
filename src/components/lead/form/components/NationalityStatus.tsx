@@ -5,7 +5,6 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import AddressImg from "../../../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import CommonAutocomplete from "./CommonAutocomplete ";
 import { Controller, useFormContext } from "react-hook-form";
-import { useNationalityHook } from "../../customHooks/nationalityHooks";
 import { nationalityStatusEnum } from "../../../../constants";
 import { idNumberValidation } from "../../../../Util/Util";
 
@@ -19,6 +18,7 @@ const NationalityStatus = (props: any) => {
     setValue,
     setError,
     control,
+    clearErrors,
   } = useFormContext();
 
   const [nationalityStatusValue, setNationalityStatus] = useState("");
@@ -30,6 +30,7 @@ const NationalityStatus = (props: any) => {
         setValue("lead.permenantResident", nationalityStatusEnum.SA);
       } else if (nationalityStatusWatch === nationalityStatusEnum.SA) {
         setValue("lead.nationality", nationalityStatusEnum.SA);
+        clearErrors("lead.nationality");
       }
     }
   }, [nationalityStatusWatch]);
@@ -110,13 +111,12 @@ const NationalityStatus = (props: any) => {
                     required={true}
                   />
                 )}
-              {Errors?.permanentResident && nationalityStatusWatch && (
+              {Errors?.nationality && nationalityStatusWatch && (
                 <div className="invalid-feedback">
                   Please Select Nationality
                 </div>
               )}
             </div>
-
             <div className="col-md-4 mb-4">
               {!!identificationType?.length && (
                 <CommonAutocomplete

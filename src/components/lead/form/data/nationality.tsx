@@ -16,3 +16,7 @@ export const NationalityData = [
     label: "Identification Number",
   },
 ];
+
+export const enum NationalityStatusEnum {
+  Error = "Please enter Nationality Status",
+}
