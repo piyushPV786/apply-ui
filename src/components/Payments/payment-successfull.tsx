@@ -35,6 +35,25 @@ const PaymentSuccessFull = (props: any) => {
       </PaymentContainer>
     );
   };
+  const OfflinePaymentSuccess = () => {
+    return (
+      <PaymentContainer>
+        <div className="row">
+          <div className="col-sm-12">
+            <div className="text-center mb-2">
+              <Image width="190" height="170" src={PayIcon} alt="payIcon" />
+            </div>
+            <div className="text-center w-100">
+              <GreenFormHeading style={{ fontSize: "24px" }}>
+                Your Payment Proof Was Submitted Successfully
+              </GreenFormHeading>
+              <p>We will verify and get back to you Shortly.</p>
+            </div>
+          </div>
+        </div>
+      </PaymentContainer>
+    );
+  };
 
   const OnlinePaymentFailed = () => {
     return (
@@ -79,8 +98,8 @@ const PaymentSuccessFull = (props: any) => {
       <div className="container-fluid w-75 mt-5">
         <PaymentContainer style={{ paddingBottom: "1rem" }}>
           {props?.pageType === "failure" && <OnlinePaymentFailed />}
-          {props?.pageType === "success" && <OnlinePaymentSuccess />}
-
+          {props?.pageType === "onlinesuccess" && <OnlinePaymentSuccess />}
+          {props?.pageType === "success" && <OfflinePaymentSuccess />}
           <div>
             {props?.pageType === "failure" && (
               <StyledButton

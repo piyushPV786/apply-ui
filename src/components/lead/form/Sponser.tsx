@@ -3,8 +3,14 @@ import {
   GreenFormHeading,
   StyledAccordion,
   StyledLabel,
+  nonMandatorySponsorFeilds,
+  mandatorySponsorModeFeilds,
 } from "../../common/common";
-import { AccordionDetails, AccordionSummary } from "@material-ui/core";
+import {
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@material-ui/core";
 import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-com.svg";
@@ -16,7 +22,7 @@ import { useAddressHook } from "../customHooks/addressHooks";
 import RadioField from "./components/RadioField";
 import { sponsorInfoData } from "./data/sponsorData";
 import TextFieldWithSpace from "./components/TextFieldWithSpace";
-import { isValidEmail } from "../../../Util/Util";
+import { isValidEmail, validateAddress } from "../../../Util/Util";
 import { MobileField } from "./components/MobileField";
 import { useEffect, useState } from "react";
 import NumberField from "./components/NumberField";
@@ -41,7 +47,11 @@ const Sponsor = (props: any) => {
     const sponsorData: any = [];
     sponsorInfoData?.forEach((item) => {
       if (activeSponsor === "yes") {
-        sponsorData.push({ ...item, required: true });
+        if (nonMandatorySponsorFeilds.includes(item?.key)) {
+          sponsorData.push({ ...item, required: false });
+        } else {
+          sponsorData.push({ ...item, required: true });
+        }
       } else {
         sponsorData.push({ ...item, required: false });
       }
@@ -87,8 +97,8 @@ const Sponsor = (props: any) => {
                       <CommonAutocomplete
                         options={
                           masterData[element?.key]
-                            ? masterData[element?.key]?.filter(
-                                (item) => item?.code === "GUARDIAN"
+                            ? masterData[element?.key]?.filter((item) =>
+                                mandatorySponsorModeFeilds.includes(item?.code)
                               )
                             : element.option
                         }
@@ -182,7 +192,7 @@ const Sponsor = (props: any) => {
                         )}
                       {element?.type === "email" && (
                         <div className="col-lg-4 mb-4">
-                          <StyledLabel required>{element?.label}</StyledLabel>
+                          <StyledLabel>{element?.label}</StyledLabel>
                           <input
                             className="form-control"
                             type={element.type}
@@ -208,6 +218,30 @@ const Sponsor = (props: any) => {
                           countryCodeRegisterName={`sponsor.${element?.countryCodeRegisterName}`}
                           error={Errors}
                         />
+                      )}
+                      {element?.type === "address" && (
+                        <div className="col-lg-4 mb-4">
+                          <StyledLabel>
+                            <label className="me-2">{element?.label}</label>
+                            <span className="text-danger me-2">*</span>
+                          </StyledLabel>
+                          <input
+                            className="form-control"
+                            type={element.type}
+                            placeholder=""
+                            {...register(`sponsor.${element?.name}`, {
+                              required: element.required,
+                              validate: (value) => validateAddress(value),
+                            })}
+                          />
+                          {Errors && Errors?.address && (
+                            <div className="invalid-feedback">
+                              {Errors?.address?.type == "validate"
+                                ? element?.validateErrorMessage
+                                : element?.errorMessage}
+                            </div>
+                          )}
+                        </div>
                       )}
                     </>
                   )}

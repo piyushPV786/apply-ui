@@ -45,10 +45,12 @@ const UseCardActionHook = (applicationDetail) => {
   const isPayBTN =
     status === CommonEnums.RESUB_APP_FEE_PROOF ||
     status === CommonEnums.APP_ENROLLED_ACCEPTED ||
-    status === APPLICATION_STATUS.APPLICATION_FEE_PENDING;
+    status === APPLICATION_STATUS.APPLICATION_FEE_PENDING ||
+    status === APPLICATION_STATUS?.MONTHLY_PAYMENT_REJECT;
 
   const payBtnTitle =
-    status === CommonEnums.APP_ENROLLED_ACCEPTED
+    status === CommonEnums.APP_ENROLLED_ACCEPTED ||
+    status === APPLICATION_STATUS?.MONTHLY_PAYMENT_REJECT
       ? "Pay Qualification Fee"
       : "Pay Application Fee";
 

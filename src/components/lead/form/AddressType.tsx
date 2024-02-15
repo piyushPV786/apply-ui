@@ -26,14 +26,18 @@ const AddressType = (props) => {
           placeholder={"e.g 10 church street"}
           {...register(`address[${index}].street`, {
             required: true,
+            maxLength: 40,
           })}
           onChange={(e) =>
             (e.target.value = capitalizeFirstLetter(e.target.value))
           }
         />
+
         {Errors && Errors[index]?.street && (
           <div className="invalid-feedback">
-            Please enter {`${data?.name}`} Address
+            {Errors[index]?.street.type === "maxLength"
+              ? "Maximum 40 characters allowed"
+              : `Please enter ${data?.name} Address`}
           </div>
         )}
       </div>

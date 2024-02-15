@@ -49,10 +49,10 @@ const PaymentTimer = ({
   closePaymentDialog,
   getPaymentRedirectURL,
 }: IPaymentTimerPropTypes) => {
-  const { counter } = useCustomizeHook(open, closePaymentDialog);
+  const [proceed, setProceed] = useState(false);
+  const { counter } = useCustomizeHook(open, closePaymentDialog, proceed);
   const timer = new Date(counter * 1000).toISOString().slice(14, 19);
   const percentage = counter / 3;
-  const [proceed, setProceed] = useState(false);
 
   const onProceed = () => {
     setProceed(true);
@@ -94,7 +94,7 @@ const PaymentTimer = ({
         ) : (
           <DialogContent sx={{ px: 10, py: 5, textAlign: "center" }}>
             <DialogContentText>
-              You will be redirected to payment gateway Click OK to proceed
+              You will be redirected to payment gateway. Click OK to proceed.
             </DialogContentText>
           </DialogContent>
         )}

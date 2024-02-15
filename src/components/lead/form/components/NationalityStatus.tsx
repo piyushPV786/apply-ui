@@ -4,18 +4,21 @@ import { GreyStyledAccordion, StyledLabel } from "../../../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import AddressImg from "../../../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import CommonAutocomplete from "./CommonAutocomplete ";
-import { useFormContext } from "react-hook-form";
-import { useNationalityHook } from "../../customHooks/nationalityHooks";
+import { Controller, useFormContext } from "react-hook-form";
 import { nationalityStatusEnum } from "../../../../constants";
+import { idNumberValidation } from "../../../../Util/Util";
 
 const NationalityStatus = (props: any) => {
   const { masterData, nationalityStatus, identificationType, applicationData } =
     props?.masterData;
   const {
-    register,
-    formState: { errors, touchedFields },
+    trigger,
+    formState: { errors },
     watch,
     setValue,
+    setError,
+    control,
+    clearErrors,
   } = useFormContext();
 
   const [nationalityStatusValue, setNationalityStatus] = useState("");
@@ -27,11 +30,13 @@ const NationalityStatus = (props: any) => {
         setValue("lead.permenantResident", nationalityStatusEnum.SA);
       } else if (nationalityStatusWatch === nationalityStatusEnum.SA) {
         setValue("lead.nationality", nationalityStatusEnum.SA);
+        clearErrors("lead.nationality");
       }
     }
   }, [nationalityStatusWatch]);
 
   const Errors = errors["lead"] as any;
+
   return (
     <GreyStyledAccordion
       expanded={!!nationalityStatusValue}
@@ -60,7 +65,9 @@ const NationalityStatus = (props: any) => {
         )}
         <div>
           {Errors?.nationalityStatus && (
-            <div className="invalid-feedback">Please Select Nationality</div>
+            <div className="invalid-feedback">
+              Please Select Nationality Status
+            </div>
           )}
         </div>
       </AccordionSummary>
@@ -78,7 +85,7 @@ const NationalityStatus = (props: any) => {
                     disabled={true}
                     defaultValue={"ZAR"}
                   />
-                  {Errors?.permanentResident && (
+                  {Errors?.permanentResident && nationalityStatusWatch && (
                     <div className="invalid-feedback">
                       Please Select Permanent Resident
                     </div>
@@ -104,13 +111,12 @@ const NationalityStatus = (props: any) => {
                     required={true}
                   />
                 )}
-              {Errors?.permanentResident && (
+              {Errors?.nationality && nationalityStatusWatch && (
                 <div className="invalid-feedback">
                   Please Select Nationality
                 </div>
               )}
             </div>
-
             <div className="col-md-4 mb-4">
               {!!identificationType?.length && (
                 <CommonAutocomplete
@@ -123,7 +129,7 @@ const NationalityStatus = (props: any) => {
                   required={true}
                 />
               )}
-              {Errors?.identificationDocumentType && (
+              {Errors?.identificationDocumentType && nationalityStatusWatch && (
                 <div className="invalid-feedback">
                   Please Select Document Type
                 </div>
@@ -131,19 +137,38 @@ const NationalityStatus = (props: any) => {
             </div>
             <div className="col-lg-4 mb-4">
               <StyledLabel required> Identification Number</StyledLabel>
-              <input
-                className="form-control"
-                placeholder=""
-                type={"text"}
-                {...register("lead.identificationNumber", {
-                  required: true,
-                })}
+              <Controller
+                name="lead.identificationNumber"
+                control={control}
+                rules={{
+                  required: "Identification number is required",
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      className="form-control"
+                      type="text"
+                      {...field}
+                      onBlur={async (e) => {
+                        const result = await idNumberValidation(
+                          e?.target?.value.trim()
+                        );
+                        if (result != true) {
+                          setError("lead.identificationNumber", {
+                            type: "custom",
+                            message: result,
+                          });
+                        }
+                      }}
+                    />
+                    <div className="invalid-feedback">
+                      {Errors?.identificationNumber &&
+                        nationalityStatusWatch &&
+                        Errors?.identificationNumber?.message}
+                    </div>
+                  </>
+                )}
               />
-              {Errors?.identificationNumber && (
-                <div className="invalid-feedback">
-                  Please enter Identification Number
-                </div>
-              )}
             </div>
           </div>
         </div>
