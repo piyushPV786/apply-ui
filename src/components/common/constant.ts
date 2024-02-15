@@ -212,7 +212,7 @@ export const PaymentTypes = [
     registerName: "paymentType",
     name: "Ukheshe",
     value: "ukheshe",
-    label: "",
+    label: "Online",
   },
   {
     registerName: "paymentType",
