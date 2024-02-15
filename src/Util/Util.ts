@@ -194,9 +194,13 @@ export const isValidDate = (value) => {
  * @returns {boolean} - Whether the email is valid or not.
  */
 export const isValidEmail = async (email) => {
-  return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-    email
-  );
+  if (email) {
+    return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      email
+    );
+  } else {
+    return true;
+  }
 };
 
 /**
@@ -307,7 +311,7 @@ export const GetPaymentImage = (type) => {
     return `${imgUrl}/stripe.png`;
   }
   if (type === "ukheshe") {
-    return `${imgUrl}/ukheshy.png`;
+    return `${imgUrl}/finEDTech.png`;
   }
 };
 
@@ -533,6 +537,8 @@ export const validateNumber = (number, countryCodeRef) =>
   parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! >= 6 &&
   parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! <= 15;
 
+export const validateAddress = (address) => address?.length <= 40;
+
 /**
  * Transforms a date into a specific format.
  * @param {Date} date - The date to be transformed.
@@ -693,6 +699,20 @@ export const emailValidation = async (e) => {
   return returnVal;
 };
 
+export const idNumberValidation = async (value) => {
+  let result: any = true;
+  if (value.length > 0) {
+    const response = await ApplicationFormServices?.checkDuplicateIdNumber(
+      value
+    );
+
+    if (response?.message) {
+      result = "Provided Identification number already exists";
+    }
+  }
+  return result;
+};
+
 export const downloadDocument = (url, fileName: string) => {
   let alink = document.createElement("a");
   alink.href = url;
@@ -722,6 +742,9 @@ export const mapFormDefaultValue = (studentData: object, setValue: any) => {
       if (key === "education" && studentData[key]) {
         setEducationValue(studentData, setValue, key);
       }
+    }
+    if (key === "address" && studentData[key]?.length > 0) {
+      setValue(key, value);
     }
   }
 };

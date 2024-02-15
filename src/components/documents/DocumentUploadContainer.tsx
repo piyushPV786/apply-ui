@@ -1,8 +1,8 @@
 import { Typography, Card, Grid } from "@mui/material";
-
-import { StyledLabel } from "../common/common";
+import DocumentServices from "../../services/documentApi";
+import { StyledLabel, CertifiedDocument } from "../common/common";
 import styled from "styled-components";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { getStatus } from "./context/common";
 
@@ -14,7 +14,9 @@ import {
   FileRegister,
   BursaryFeilds,
   Reject,
+  Info,
 } from "./components";
+import { UseUploadDocumentHook } from "./customHook/UseUploadDocumentHook";
 
 interface propsType {
   documentName: string;
@@ -24,8 +26,28 @@ interface propsType {
   documetDiclarationLeter: any;
 }
 
-const DocumentUploadContainer = ({ element, masterData }) => {
+const DocumentUploadContainer = ({
+  element,
+  masterData,
+  setDocumentProgress,
+}) => {
   const { watch } = useFormContext();
+  const { uploadDocument, uploadProgress, documentCode, setUploadProgress } =
+    UseUploadDocumentHook(masterData);
+  useEffect(() => {
+    if (uploadProgress > 0) {
+      setDocumentProgress(element, uploadProgress, documentCode);
+    }
+  }, [uploadProgress]);
+
+  const removeDocumnet = async (documentCode: string) => {
+    await DocumentServices?.documentRemove(documentCode);
+  };
+
+  const onRemoveFile = () => {
+    setUploadProgress(0);
+    removeDocumnet(documentCode);
+  };
 
   return (
     <Card className="p-4 mt-3">
@@ -56,10 +78,16 @@ const DocumentUploadContainer = ({ element, masterData }) => {
         <BursaryFeilds element={element} masterData={masterData} />
         <DeclarationComponent element={element} masterData={masterData} />
         <Reject element={element} />
+        {CertifiedDocument.includes(element?.code) && <Info />}
         {!disableStatus.includes(watch(element?.code)?.status) && (
-          <FileRegister element={element} />
+          <FileRegister element={element} uploadDocument={uploadDocument} />
         )}
-        <ErrorHandling element={element} masterData={masterData} />
+        <ErrorHandling
+          element={element}
+          masterData={masterData}
+          uploadProgress={uploadProgress}
+          onRemoveFile={onRemoveFile}
+        />
       </Grid>
     </Card>
   );

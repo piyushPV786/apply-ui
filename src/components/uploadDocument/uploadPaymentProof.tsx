@@ -8,7 +8,7 @@ import {
   UseFormSetValue,
   UseFormUnregister,
 } from "react-hook-form";
-import { Green } from "../common/common";
+import { Green, acceptedFileType } from "../common/common";
 import { IconButton } from "@material-ui/core";
 
 interface UploadPaymentProofTypes {
@@ -19,12 +19,16 @@ interface UploadPaymentProofTypes {
   name: string;
   register: UseFormRegister<any>;
   errors: any;
+  uploadPaymentProof: any;
 }
 
 export const fileValidation = (value) => {
   if (value) {
-    if (value?.size > 2 * 1024 * 1024) {
-      return "File size should be at most 2MB";
+    if (value?.size > 3 * 1024 * 1024) {
+      return "File size should be at most 3MB";
+    }
+    if (!acceptedFileType.includes(value?.type)) {
+      return "Invalid file type please upload file with accepted file types ";
     }
   }
 
@@ -38,6 +42,7 @@ const UploadPaymentProof = ({
   register,
   name,
   errors,
+  uploadPaymentProof,
 }: UploadPaymentProofTypes) => {
   const fileUpload = useRef<any>(null);
   const onDocUploadClick = () => {
@@ -65,14 +70,18 @@ const UploadPaymentProof = ({
           ref={fileUpload}
           accept="application/pdf, image/jpeg, image/png"
           type="file"
-          onChange={(e) =>
-            e?.target?.files &&
-            setValue(name, e?.target?.files[0], {
-              shouldDirty: true,
-              shouldTouch: true,
-              shouldValidate: true,
-            })
-          }
+          onChange={(e) => {
+            if (e?.target?.files) {
+              if (fileValidation(e?.target?.files[0]) === true) {
+                uploadPaymentProof(e?.target?.files);
+              }
+              setValue(name, e?.target?.files[0], {
+                shouldDirty: true,
+                shouldTouch: true,
+                shouldValidate: true,
+              });
+            }
+          }}
         />
         <Box className={Styles.GreenFormHeading}>
           Drag and drop, or <span className={Styles.Text}>browse</span> your
@@ -83,20 +92,28 @@ const UploadPaymentProof = ({
           gutterBottom
           sx={{ color: (theme: Theme) => theme.palette.grey[600] }}
         >
-          Only PNG, JPEG and PDF files with max size of 2MB
+          Only PNG, JPEG and PDF files with max size of 3MB
         </Typography>
         <Box width="100%" onClick={(e) => e.stopPropagation()}>
           {!!watch(name) && (
-            <Box className={Styles.Document}>
-              <Box display="flex">
-                <Box textAlign="start" sx={{ pl: 2 }}>
-                  <Typography variant="body1" color={`${Green}`}>
+            <Grid container className={Styles.Document}>
+              <Grid item xs={10}>
+                <Grid item sx={{ pl: 2 }}>
+                  <Typography
+                    variant="body1"
+                    color={`${Green}`}
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
                     {watch(name)?.name}
                   </Typography>
-                  <Typography variant="body2"></Typography>
-                </Box>
-              </Box>
-              <Box
+                </Grid>
+              </Grid>
+              <Grid
+                item
+                xs={2}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
@@ -104,10 +121,10 @@ const UploadPaymentProof = ({
                 }}
               >
                 <IconButton onClick={() => unregister(name)}>
-                  <Close color="error" />
+                  <Close color="error" fontSize="small" />
                 </IconButton>
-              </Box>
-            </Box>
+              </Grid>
+            </Grid>
           )}
         </Box>
         <Box sx={{ pt: 2 }}>

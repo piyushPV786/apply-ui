@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Grid } from "@material-ui/core";
 import { styled } from "@mui/material";
 
-import { Green } from "../../common/common";
+import { Green, LinearProgressWithLabel } from "../../common/common";
 import PaymentOptionCard from "../paymentOptionCard";
 
 const PaymentOptions = ({
@@ -11,6 +11,10 @@ const PaymentOptions = ({
   uploadPaymentProof,
   fees,
   setOpenPopup,
+  disabled,
+  updatePayment,
+  uploadProgress,
+  masterData,
 }) => {
   return (
     <FullWidthCard>
@@ -26,7 +30,13 @@ const PaymentOptions = ({
                 payuDetails={payuDetails}
                 getPaymentRedirectURL={getPaymentRedirectURL}
                 uploadPaymentProof={uploadPaymentProof}
+                disabled={disabled}
+                updatePayment={updatePayment}
+                masterData={masterData}
               />
+              {!!uploadProgress && (
+                <LinearProgressWithLabel value={uploadProgress} />
+              )}
             </Grid>
           </Grid>
         </Grid>

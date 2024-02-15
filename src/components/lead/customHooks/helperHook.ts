@@ -17,6 +17,9 @@ export const useHelperHook = (masterData, watch, setError) => {
     if (applicationCode === "new") {
       const payload = {
         ...data,
+        address: Object.values(data?.address).filter(
+          (value) => typeof value === "object"
+        ),
         education: {
           ...data?.education,
           programName: programName?.name ? programName?.name : "",
@@ -29,6 +32,9 @@ export const useHelperHook = (masterData, watch, setError) => {
     ) {
       const payload = {
         ...data,
+        address: Object.values(data?.address).filter(
+          (value) => typeof value === "object"
+        ),
         applicationCode: applicationData?.applicationCode,
         education: {
           ...data?.education,
@@ -39,6 +45,9 @@ export const useHelperHook = (masterData, watch, setError) => {
     } else if (applicationData?.applicationCode) {
       const payload = {
         ...data,
+        address: Object.values(data?.address).filter(
+          (value) => typeof value === "object"
+        ),
         kin: data?.kin?.isKin ? data?.kin : { isKin: "no" },
         sponsor: data?.sponsor?.isSponsor ? data?.sponsor : { isSponsor: "no" },
         employment: data?.employment?.isEmployment

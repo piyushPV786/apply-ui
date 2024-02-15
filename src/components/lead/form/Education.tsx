@@ -3,6 +3,7 @@ import {
   GreenFormHeading,
   StyledAccordion,
   StyledLabel,
+  CertifiedDocumentQualification,
 } from "../../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
@@ -16,6 +17,7 @@ import RadioField from "./components/RadioField";
 import { useEducationHook } from "../customHooks/educationHooks";
 import { useEffect } from "react";
 import { feeMode } from "../../common/constant";
+import { Alert } from "@mui/material";
 
 const Education = (props: any) => {
   const {
@@ -85,20 +87,28 @@ const Education = (props: any) => {
                 select your interested Qualification
               </div>
             )}
+
+            {CertifiedDocumentQualification.includes(programCode) && (
+              <Alert severity="warning" className="infoColor">
+                Certified documents are required for this qualification.
+              </Alert>
+            )}
           </div>
 
           <div className="col-lg-4 mb-4">
             <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
             <br />
             <>
-              {studentProgram?.studyModes?.map((item: any) => {
+              {studentProgram?.studyModes.map((item: any) => {
                 {
                   return (
                     <div className="form-check form-check-inline">
                       <input
                         className="form-check-input me-2"
                         type={"radio"}
-                        {...register("education.studyModeCode")}
+                        {...register("education.studyModeCode", {
+                          required: "Study Mode & Fee Plan is Required",
+                        })}
                         value={item?.studyModeCode}
                       />
                       {item?.studyModeCode}
@@ -109,14 +119,28 @@ const Education = (props: any) => {
               <StyleContainer className="fee-cards">
                 {feesDetails && feesDetails?.fees && (
                   <div className="row">
-                    {feesDetails?.fees?.map((item) => {
-                      if (item?.feeMode != feeMode?.TOTAL)
-                        return <FeeCard item={item} />;
-                    })}
+                    {feesDetails?.fees
+                      ?.sort((a, b) => {
+                        const aStartsWithA = a.feeMode.startsWith("A");
+                        const bStartsWithA = b.feeMode.startsWith("A");
+                        if (aStartsWithA && !bStartsWithA) return -1;
+                        if (!aStartsWithA && bStartsWithA) return 1;
+                        return 0;
+                      })
+                      .reverse()
+                      .map((item) => {
+                        if (item?.feeMode != feeMode?.TOTAL)
+                          return <FeeCard item={item} />;
+                      })}
                   </div>
                 )}
               </StyleContainer>
             </>
+            {Errors?.studyModeCode && studentProgram != null && (
+              <div className="invalid-feedback">
+                {Errors?.studyModeCode?.message}
+              </div>
+            )}
             {Errors?.studyModeCode && studentProgram == null && (
               <div className="invalid-feedback">
                 Fees not configured for selected qualification
@@ -197,7 +221,7 @@ const Education = (props: any) => {
                 registerName={`education.referredById`}
                 required={true}
               />
-              {Errors?.refferedById && (
+              {Errors?.referredById && (
                 <div className="invalid-feedback">
                   Please select Referred by
                 </div>

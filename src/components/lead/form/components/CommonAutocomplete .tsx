@@ -24,8 +24,9 @@ const CommonAutocomplete = (props: IProps) => {
     disabled = false,
     onChange,
   } = props;
-  const { register, setValue, watch } = useFormContext();
+  const { register, setValue, watch, trigger } = useFormContext();
   const optionList: any = [];
+
   const dropDownOptions = options
     ?.sort((a, b) => a.name.localeCompare(b.name))
     .map((item) => {
@@ -64,6 +65,9 @@ const CommonAutocomplete = (props: IProps) => {
           setValue(registerName, value);
           onChange && onChange();
         }}
+        onBlur={() => {
+          trigger(registerName);
+        }}
         renderInput={(params) => {
           const { inputProps, ...rest } = params;
           const optionValue = optionList?.find(
@@ -88,6 +92,14 @@ const CommonAutocomplete = (props: IProps) => {
               {...rest}
               inputProps={inputProps}
             />
+          );
+        }}
+        renderOption={(props, option, { selected }) => {
+          const optionValue = optionList?.find((item) => item?.code === option);
+          return (
+            <li {...props} key={option.code}>
+              {optionValue?.name}
+            </li>
           );
         }}
       />

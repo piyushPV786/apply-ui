@@ -26,7 +26,8 @@ const PaymentPage = ({ applicationCode }) => {
   const { getPaymentRedirectURL, closePaymentDialog, setOpenPopup, openPopup } =
     useUkhesheHook(masterData, fees);
 
-  const { uploadPaymentProof } = useOfflinePaymentHook(masterData, fees);
+  const { uploadPaymentProof, disabled, updatePayment, uploadProgress } =
+    useOfflinePaymentHook(masterData, fees);
 
   if (!masterData && !studyModes && !fees) {
     return (
@@ -49,7 +50,7 @@ const PaymentPage = ({ applicationCode }) => {
           alignItems: "center",
         }}
       >
-        <Grid container spacing={2} xs={10}>
+        <Grid container spacing={2} xs={10} sm={10} md={10}>
           <Grid item xs={12}>
             <StepperComponent active={2} />
           </Grid>
@@ -63,17 +64,29 @@ const PaymentPage = ({ applicationCode }) => {
           </Grid>
           <Grid item xs={12}>
             <PaymentOptions
+              masterData={masterData}
               getPayuDetails={getPayuDetails}
               payuDetails={payuDetails}
               fees={fees}
               getPaymentRedirectURL={getPaymentRedirectURL}
               uploadPaymentProof={uploadPaymentProof}
               setOpenPopup={setOpenPopup}
+              disabled={disabled}
+              updatePayment={updatePayment}
+              uploadProgress={uploadProgress}
             />
           </Grid>
 
           <Grid item xs={12} display="flex" justifyContent="center">
-            <Grid item xs={6} display="flex" justifyContent="center">
+            <Grid item xs={2} display="flex" justifyContent="center">
+              <StyledButton
+                title="Back To Dashboard"
+                onClick={() => {
+                  router.replace(`/dashboard`);
+                }}
+              />
+            </Grid>
+            <Grid item xs={1} display="flex" justifyContent="center">
               <StyledButton
                 isGreenWhiteCombination
                 title="Back"

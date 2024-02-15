@@ -4,7 +4,14 @@ import { useFormContext } from "react-hook-form";
 import { CommonEnums } from "../../common/constant";
 
 // comon document page used constants //
-export const mbaDocs = ["MOTIVATIONLETTER", "INTERVIEWNOTES"];
+export const mbaDocs = ["MOTIVATIONLETTER"];
+export const nonMandatoryDocuments = [
+  "TERMS&CONDITION",
+  "APPLICATIONLETTER",
+  "MATRIC",
+  "OTHERS",
+  "INTERVIEWNOTES",
+];
 
 export const docType = {
   RESUMECV: "RESUMECV",
@@ -65,6 +72,8 @@ export const acceptedFileTypes = [
   "image/png",
   "application/pdf",
 ];
+
+export const MBACode = "MBA-Prog";
 
 export const documentCriteria = [
   {
@@ -155,10 +164,10 @@ export const fileValidation = (value, isRequired) => {
     return "This file is Required please upload file";
   }
   if (value) {
-    if (value[0]?.type && !acceptedFileTypes.includes(value[0]?.type)) {
+    if (value[0] && !acceptedFileTypes.includes(value[0]?.type)) {
       return "This file type is not accepted please upload from accepted file types";
-    } else if (value[0]?.size > 2 * 1024 * 1024) {
-      return "File size should be at most 2MB";
+    } else if (value[0]?.size > 3 * 1024 * 1024) {
+      return "File size should be at most 3MB";
     }
   }
 

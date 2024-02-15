@@ -7,10 +7,11 @@ import DollarIcon from "../../../../public/assets/images/dollar-symbol-svgrepo-c
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import RadioField from "./components/RadioField";
 import { employedData, employmentData } from "./data/employmentData";
-import TextField from "./components/TextField";
 import { useAddressHook } from "../customHooks/addressHooks";
 import { useEffect, useState } from "react";
 import { MobileField } from "./components/MobileField";
+import TextFieldWithSpace from "./components/TextFieldWithSpace";
+import NumberField from "./components/NumberField";
 
 const Employment = (props: any) => {
   const {
@@ -118,7 +119,7 @@ const Employment = (props: any) => {
                   {employmentStatusWatch === "SELFEMPLOYED" && (
                     <>
                       {element?.type === "text" && (
-                        <TextField
+                        <TextFieldWithSpace
                           element={element}
                           Errors={Errors}
                           registerName={`employment.${element?.name}`}
@@ -158,7 +159,7 @@ const Employment = (props: any) => {
                   {employmentStatusWatch === "EMPLOYED" && (
                     <>
                       {element?.type === "text" && (
-                        <TextField
+                        <TextFieldWithSpace
                           element={element}
                           Errors={Errors}
                           registerName={`employment.${element?.name}`}
@@ -216,6 +217,13 @@ const Employment = (props: any) => {
                           registerName={`employment.${element?.name}`}
                           countryCodeRegisterName={`employment.${element?.countryCodeRegisterName}`}
                           error={Errors}
+                        />
+                      )}
+                      {element?.type === "number" && (
+                        <NumberField
+                          element={element}
+                          Errors={Errors}
+                          registerName={`employment.${element?.name}`}
                         />
                       )}
                     </>

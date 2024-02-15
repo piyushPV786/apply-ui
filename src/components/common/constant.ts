@@ -4,6 +4,12 @@ export enum StorageName {
   REFRESH_TOKEN = "refresh_token",
 }
 
+export const status = {
+  successCode: 200,
+  successCodeOne: 201,
+  unauthorizedStatus: 401,
+};
+
 export const documentType = {
   "WELCOME-LETTER": "Welcome Letter",
   "ACCEPTANCE-LETTER": "Acceptance Letter",
@@ -38,6 +44,7 @@ export enum CommonEnums {
   QUOTE = "QUOTE",
   BURSARY_LETTER_PEND = "BURSARY-LETTER-PEND",
   RESUB_BURSARY_DOC = "RESUB-BURSARY-DOC",
+  MONTHLY_PAYMENT_REJECT = "MONTHLY_PAYMENT_REJECTED",
 }
 
 export enum GraduationType {
@@ -95,6 +102,8 @@ export const APPLICATION_STATUS = {
   ADMITTED_TO_PROGRAM: "INTAKE-ASSIGNMENT PENDING",
   INTAKE_ASSIGNED: "INTAKE-ASSIGNED",
   ENROLLED_BY_ADMISSION: "PROG-ADMITTED/ENROLLED",
+  MONTHLY_PAYMENT_REJECT: "MONTHLY_PAYMENT_REJECTED",
+  BURSARY_APP_FEE_PEND: "BURSARY-APP-FEE-PEND",
 };
 
 // export const docTypes={WELCOME-LETTER=}
@@ -111,6 +120,7 @@ export const UPLOAD_DOCUMENT_BUTTON_STATUS = [
   APPLICATION_STATUS.APPLICATION_FEE_PENDING,
   APPLICATION_STATUS.UPLOAD_BURSARY_DOCUMENTS,
   APPLICATION_STATUS.RESUBMIT_APPLICATION_DOCUMENTS,
+  APPLICATION_STATUS?.BURSARY_APP_FEE_PEND,
 ];
 export const BURSARY_BUTTON_STATUS = [
   CommonEnums.BURSARY_LETTER_PEND,
@@ -122,6 +132,7 @@ export enum DocumentStatus {
   Approved = "approved",
   Submitted = "submitted",
   Rejected = "rejected",
+  Pending = "PENDING",
 }
 export enum studyMode {
   DAY = "DAY",
@@ -133,6 +144,7 @@ export enum studyMode {
 export enum feeMode {
   APPLICATION = "APPLICATION",
   TOTAL = "TOTAL",
+  MONTHLY = "MONTHLY",
 }
 
 export const ErrorMessage = "Something went wrong please try again later";
@@ -200,7 +212,7 @@ export const PaymentTypes = [
     registerName: "paymentType",
     name: "Ukheshe",
     value: "ukheshe",
-    label: "",
+    label: "Online",
   },
   {
     registerName: "paymentType",
@@ -239,7 +251,6 @@ export const identityDocuments = [
 
 export const acceptedKeysToMap = [
   "kin",
-  "address",
   "lead",
   "education",
   "employment",
