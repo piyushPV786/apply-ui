@@ -10,6 +10,21 @@ export const useEducationHook = (programCode: string) => {
         (item) => item?.programCode === programCode
       );
       if (programData) {
+        const feeModesOrder = [
+          "MONTHLY",
+          "SEMESTER",
+          "APPLICATION",
+          "ANNUALLY",
+          "TOTAL",
+        ];
+        programData.studyModes = programData.studyModes.map((obj) => ({
+          ...obj,
+          fees: obj.fees.sort(
+            (a, b) =>
+              feeModesOrder.indexOf(a.feeMode) -
+              feeModesOrder.indexOf(b.feeMode)
+          ),
+        }));
         setStudentProgramData(programData);
       } else {
         setStudentProgramData(null);
