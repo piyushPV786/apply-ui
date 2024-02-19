@@ -119,19 +119,10 @@ const Education = (props: any) => {
               <StyleContainer className="fee-cards">
                 {feesDetails && feesDetails?.fees && (
                   <div className="row">
-                    {feesDetails?.fees
-                      ?.sort((a, b) => {
-                        const aStartsWithA = a.feeMode.startsWith("A");
-                        const bStartsWithA = b.feeMode.startsWith("A");
-                        if (aStartsWithA && !bStartsWithA) return -1;
-                        if (!aStartsWithA && bStartsWithA) return 1;
-                        return 0;
-                      })
-                      .reverse()
-                      .map((item) => {
-                        if (item?.feeMode != feeMode?.TOTAL)
-                          return <FeeCard item={item} />;
-                      })}
+                    {feesDetails?.fees.map((item) => {
+                      if (item?.feeMode != feeMode?.TOTAL)
+                        return <FeeCard item={item} />;
+                    })}
                   </div>
                 )}
               </StyleContainer>
