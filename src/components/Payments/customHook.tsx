@@ -252,8 +252,8 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
 
   //Apply RMAT Fee
 
-  const isOptionalConditopnchek = !masterData?.rmatDetails?.every(
-    (obj) => obj.isOptional === true
+  const isOptionalConditopnchek = !masterData?.rmatDetails?.some(
+    (obj) => obj?.isOptional === false
   );
 
   let rmatFees = "0";
