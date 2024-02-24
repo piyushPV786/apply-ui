@@ -128,11 +128,11 @@ export const FileRegister = ({ element, uploadDocument }) => {
   const { register } = useFormContext();
   const productImageField = register(`${element.code}`, {
     validate: (value) => {
-      return fileValidation(value, element?.required);
+      return fileValidation(value, element);
     },
   });
   const fileOnChange = (event) => {
-    if (fileValidation(event?.target?.files, element?.required) !== true) {
+    if (fileValidation(event?.target?.files, element) !== true) {
       return;
     }
     uploadDocument(event?.target?.files, element);
@@ -159,7 +159,7 @@ export const FileRegister = ({ element, uploadDocument }) => {
             />
           </StyleLabel>
           <Typography className="doc-upload-text">
-            Click on browse and Select all files to be uploded from your machine
+            Click on browse and Select all files to be uploaded from your machine
           </Typography>
         </Box>
       </FileUploadContainer>
