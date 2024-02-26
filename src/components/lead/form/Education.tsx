@@ -116,16 +116,39 @@ const Education = (props: any) => {
                   );
                 }
               })}
-              <StyleContainer className="fee-cards">
-                {feesDetails && feesDetails?.fees && (
-                  <div className="row">
+
+              {feesDetails && feesDetails?.fees && (
+                <>
+                  <StyleContainer className="fee-cards">
                     {feesDetails?.fees.map((item) => {
-                      if (item?.feeMode != feeMode?.TOTAL)
+                      if (item?.feeMode === feeMode?.APPLICATION)
                         return <FeeCard item={item} />;
                     })}
-                  </div>
-                )}
-              </StyleContainer>
+                  </StyleContainer>
+                  <StyleContainer className="fee-cards">
+                    {feesDetails?.fees
+                      ?.filter(
+                        (item) =>
+                          item?.feeMode !== feeMode?.TOTAL &&
+                          item?.feeMode !== feeMode?.APPLICATION
+                      )
+                      .sort((a, b) => {
+                        const feeModeOrder = {
+                          MONTHLY: 1,
+                          SEMESTER: 2,
+                          ANNUALLY: 3,
+                        };
+
+                        return (
+                          feeModeOrder[a?.feeMode] - feeModeOrder[b?.feeMode]
+                        );
+                      })
+                      .map((item) => (
+                        <FeeCard key={item?.feeMode} item={item} />
+                      ))}
+                  </StyleContainer>
+                </>
+              )}
             </>
             {Errors?.studyModeCode && studentProgram != null && (
               <div className="invalid-feedback">
