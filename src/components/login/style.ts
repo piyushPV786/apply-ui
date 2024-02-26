@@ -170,7 +170,7 @@ export const FormContainer = styled.div`
 export const StyleContainer = styled.div`
   display: flex;
   column-gap: 10px;
-  padding: 1rem 0.2rem;
+  padding: 1rem 0.2rem 0.2rem 0.2rem;
   width: 500;
 `;
 
