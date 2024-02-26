@@ -16,6 +16,7 @@ export const documentType = {
   "CONFIRMATION-LETTER": "Confirmation Letter",
   QUOTE: "Quote",
 };
+export const applicationFeesStatus = ["APP-FEE-PEND", "RESUB-APP-FEE-PROOF"];
 export enum CommonEnums {
   TRUE = "true",
   TOTAL = "TOTAL",
