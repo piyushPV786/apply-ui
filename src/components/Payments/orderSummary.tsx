@@ -10,7 +10,11 @@ import {
 } from "@mui/material";
 import { PaymentCard, StyledLink } from "../../styles/styled";
 import React, { useEffect, useState } from "react";
-import { CommonEnums, feeMode } from "../common/constant";
+import {
+  CommonEnums,
+  applicationFeesStatus,
+  feeMode,
+} from "../common/constant";
 import { useDiscountHook, usePaymentDetailsHook } from "./customHook";
 import { FormProvider, useForm } from "react-hook-form";
 import StyledButton from "../button/button";
@@ -21,6 +25,7 @@ import { getConvertedAmount } from "./helper";
 
 const OrderSummary = (props) => {
   const { studyModes, fees, masterData, updateFeeMode } = props;
+
   return (
     <Card>
       <Grid container spacing={2}>
@@ -78,59 +83,58 @@ const ProgramFees = (props) => {
         </Grid>
       </Grid>
       <Grid item md={7} xs={12}>
-        {masterData?.applicationData?.status !==
-          CommonEnums.FEES_PENDING_STATUS ||
-          (masterData?.applicationData?.status !==
-            CommonEnums.RESUB_APP_FEE_PROOF && (
+        {!applicationFeesStatus.includes(
+          masterData?.applicationData?.status
+        ) && (
+          <Grid>
+            <label>Fee Mode</label>
             <Grid>
-              <label>Fee Mode</label>
-              <Grid>
-                {studyModes?.fees
-                  ?.sort((a, b) => {
-                    const aStartsWithA = a.feeMode.startsWith("A");
-                    const bStartsWithA = b.feeMode.startsWith("A");
+              {studyModes?.fees
+                ?.sort((a, b) => {
+                  const aStartsWithA = a.feeMode.startsWith("A");
+                  const bStartsWithA = b.feeMode.startsWith("A");
 
-                    if (aStartsWithA && !bStartsWithA) return -1;
-                    if (!aStartsWithA && bStartsWithA) return 1;
-                    return 0;
-                  })
-                  .reverse()
-                  .map((item, index) => {
-                    if (
-                      item?.feeMode !== feeMode.APPLICATION &&
-                      item?.feeMode !== feeMode.TOTAL
-                    ) {
-                      return (
-                        <div className="form-check form-check-inline">
-                          <input
-                            {...register("feeModeCode", {
-                              required: {
-                                value: true,
-                                message: "Please select Fee mode",
-                              },
-                            })}
-                            key={index}
-                            className="form-check-input me-2"
-                            type="radio"
-                            value={item?.feeMode}
-                            disabled={
-                              item?.feeMode == feeMode?.MONTHLY &&
-                              masterData?.applicationData?.status ==
-                                CommonEnums?.MONTHLY_PAYMENT_REJECT
-                            }
-                          />
-                          <label className="form-check-label">
-                            {item?.feeMode}
-                            <br />
-                            <Typography>R{item?.fee}</Typography>
-                          </label>
-                        </div>
-                      );
-                    }
-                  })}
-              </Grid>
+                  if (aStartsWithA && !bStartsWithA) return -1;
+                  if (!aStartsWithA && bStartsWithA) return 1;
+                  return 0;
+                })
+                .reverse()
+                .map((item, index) => {
+                  if (
+                    item?.feeMode !== feeMode.APPLICATION &&
+                    item?.feeMode !== feeMode.TOTAL
+                  ) {
+                    return (
+                      <div className="form-check form-check-inline">
+                        <input
+                          {...register("feeModeCode", {
+                            required: {
+                              value: true,
+                              message: "Please select Fee mode",
+                            },
+                          })}
+                          key={index}
+                          className="form-check-input me-2"
+                          type="radio"
+                          value={item?.feeMode}
+                          disabled={
+                            item?.feeMode == feeMode?.MONTHLY &&
+                            masterData?.applicationData?.status ==
+                              CommonEnums?.MONTHLY_PAYMENT_REJECT
+                          }
+                        />
+                        <label className="form-check-label">
+                          {item?.feeMode}
+                          <br />
+                          <Typography>R{item?.fee}</Typography>
+                        </label>
+                      </div>
+                    );
+                  }
+                })}
             </Grid>
-          ))}
+          </Grid>
+        )}
       </Grid>
 
       <Grid item md={7} xs={12}>
