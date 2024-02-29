@@ -68,11 +68,12 @@ const LoginCredentialDialog = ({
                 <h6>ReGenius URL</h6>
                 <Link
                   href={
-                    process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL || ""
+                    process.env.NEXT_PUBLIC_PAYMENT_REGENIUS_REDIRECTION_URL ||
+                    ""
                   }
                   target="blank"
                 >
-                  {process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL}
+                  {process.env.NEXT_PUBLIC_PAYMENT_REGENIUS_REDIRECTION_URL}
                 </Link>
               </Grid>
               <Grid item md={6} sm={6} className="text-center">

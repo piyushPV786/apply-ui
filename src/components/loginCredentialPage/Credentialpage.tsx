@@ -36,11 +36,12 @@ export const LoginCredentials = () => {
                   <h6>ReGenius URL</h6>
                   <Link
                     href={
-                      process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL || ""
+                      process.env
+                        .NEXT_PUBLIC_PAYMENT_REGENIUS_REDIRECTION_URL || ""
                     }
                     target="blank"
                   >
-                    {process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL}
+                    {process.env.NEXT_PUBLIC_PAYMENT_REGENIUS_REDIRECTION_URL}
                   </Link>
                 </div>
                 <div className="text-center w-100">
