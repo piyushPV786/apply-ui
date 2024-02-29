@@ -35,10 +35,12 @@ export const LoginCredentials = () => {
                 <div className="text-center w-100">
                   <h6>ReGenius URL</h6>
                   <Link
-                    href={`http://regeniusuat.regenesys.net/`}
+                    href={
+                      process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL || ""
+                    }
                     target="blank"
                   >
-                    http://regeniusuat.regenesys.net/
+                    {process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL}
                   </Link>
                 </div>
                 <div className="text-center w-100">
