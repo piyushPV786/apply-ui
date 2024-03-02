@@ -67,6 +67,7 @@ const PaymentOptionCard = (props) => {
                   className="form-check-input"
                   type="radio"
                   value={value}
+                  disabled={fees?.feeMode === ""}
                 />
                 <span style={{ marginLeft: "5px", marginTop: "3px" }}>
                   {label}
