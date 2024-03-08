@@ -70,6 +70,7 @@ export const usePaymentHook = (applicationCode: string) => {
             payload.feeData = bursaryAmountFee;
           }
         }
+
         setMasterData(payload);
       }
     };
@@ -87,12 +88,16 @@ export const usePaymentHook = (applicationCode: string) => {
 export const usePaymentDetailsHook = (masterData: any) => {
   const [feeModeCode, setFeeModeCode] = useState(feeMode.APPLICATION);
   let studyModes: any = { helpText: "" };
-  if (masterData?.applicationData?.education?.studyModeCode) {
+
+  if (
+    masterData?.applicationData?.education?.studyModeCode &&
+    masterData?.feeData?.studyModes &&
+    masterData?.studyModeData
+  ) {
     const studyModeCode = masterData?.applicationData?.education?.studyModeCode;
     studyModes = masterData?.feeData?.studyModes?.find(
       (item: any) => item?.studyModeCode === studyModeCode
     );
-
     const studyModeDetails = masterData?.studyModeData?.find(
       (item: any) => item?.code === studyModeCode
     );
