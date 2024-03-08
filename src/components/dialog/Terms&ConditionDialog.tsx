@@ -323,10 +323,16 @@ export const EditGroup = ({
                                                                         programmes:
                                                                         <br />
                                                                         i.
-                                                                        Monthly(bycompulsorydebitorder)
+                                                                        Monthly
+                                                                        (by
+                                                                        compulsory
+                                                                        debit
+                                                                        order)
                                                                         <br />
                                                                         ii. Per
-                                                                        semesteriii.
+                                                                        semester
+                                                                        <br />
+                                                                        iii.
                                                                         Upfront
                                                                         <br />
                                                                         iv.
@@ -336,7 +342,7 @@ export const EditGroup = ({
                                                                         loan
                                                                         through
                                                                         a
-                                                                        regconised
+                                                                        recognised
                                                                         financial
                                                                         institution
                                                                         <br />
@@ -498,11 +504,11 @@ export const EditGroup = ({
                                                                         allowed
                                                                         to
                                                                         attend
-                                                                        className.
+                                                                        class.
                                                                         Should a
                                                                         student
                                                                         attend
-                                                                        className,
+                                                                        class,
                                                                         he/she
                                                                         will be
                                                                         liable
@@ -586,7 +592,7 @@ export const EditGroup = ({
                                                                 </p>
                                                                 <p className="p1">
                                                                   g. Should any
-                                                                  money due by
+                                                                  monies due by
                                                                   the student or
                                                                   the
                                                                   signatory/ies
@@ -636,138 +642,40 @@ export const EditGroup = ({
                                                                   Regenesys.
                                                                   Exclusion as
                                                                   set above,
-                                                                  will
-                                                                </p>
-                                                                <p className="p1">
-                                                                  not relieve
-                                                                  the
+                                                                  will not
+                                                                  relieve the
                                                                   signatory/ies
                                                                   of any
                                                                   obligation to
                                                                   pay the
                                                                   contract
                                                                   amount, or any
-                                                                  balance
+                                                                  balance then
+                                                                  outstanding.
+                                                                  <br />
+                                                                  vii. Interest
+                                                                  will also be
+                                                                  levied
+                                                                  (currently
+                                                                  prime +2%) on
+                                                                  any monies due
+                                                                  from the due
+                                                                  date until
+                                                                  payment is
+                                                                  received and
+                                                                  cleared
+                                                                  through the
+                                                                  Regenesys'
+                                                                  bank account.
+                                                                  <br />
+                                                                  viii. All late
+                                                                  payments will
+                                                                  attract an
+                                                                  administrative
+                                                                  fee of R300 +
+                                                                  VAT.
                                                                 </p>
-                                                                <p className="p1">
-                                                                  being informed
-                                                                  thereof.
-                                                                </p>
-                                                                <ul className="ul1">
-                                                                  <li className="li1">
-                                                                    Should a
-                                                                    monthly
-                                                                    debit order
-                                                                    be returned
-                                                                    by the bank
-                                                                    on a second
-                                                                    occasion, in
-                                                                    addition
-                                                                    <br />
-                                                                    arrangements
-                                                                    will be
-                                                                    forfeited
-                                                                    immediately
-                                                                    and the
-                                                                    student will
-                                                                    then have to
-                                                                    pay in
-                                                                    <br />
-                                                                    advance for
-                                                                    each module
-                                                                    attended.
-                                                                  </li>
-                                                                  <li className="li1">
-                                                                    A returned
-                                                                    debit order
-                                                                    administration
-                                                                    fee will be
-                                                                    charged
-                                                                    (currently
-                                                                    R150 + VAT)
-                                                                  </li>
-                                                                </ul>
-                                                                <p className="p1">
-                                                                  v. An option
-                                                                  for an
-                                                                  extended
-                                                                  monthly
-                                                                  payment period
-                                                                  is available,
-                                                                  subject to
-                                                                  approval.
-                                                                </p>
-                                                                <p className="p1">
-                                                                  c. If a
-                                                                  student elects
-                                                                  to pay for
-                                                                  each semester,
-                                                                  the fee for
-                                                                  the semester
-                                                                  has to be paid
-                                                                  at least
-                                                                </p>
-                                                                <p className="p1">
-                                                                  allowed to
-                                                                  attend
-                                                                  className.
-                                                                  Should a
-                                                                  student attend
-                                                                  className,
-                                                                  he/she will be
-                                                                  liable for
-                                                                  fees.
-                                                                </p>
-                                                                <ul className="ul1">
-                                                                  <li className="li1">
-                                                                    In the case
-                                                                    of upfront
-                                                                    payments,
-                                                                    course fees
-                                                                    need to be
-                                                                    paid prior
-                                                                    to
-                                                                    commencement
-                                                                    and
-                                                                    <br />
-                                                                    attendance
-                                                                    of the
-                                                                    course.
-                                                                  </li>
-                                                                  <li className="li1">
-                                                                    Should the
-                                                                    student
-                                                                    elect to
-                                                                    take a study
-                                                                    loan through
-                                                                    a recogni
-                                                                    <br />
-                                                                    Regenesys
-                                                                    will
-                                                                    facilitate
-                                                                    the
-                                                                    necessary
-                                                                    forms and
-                                                                    contact
-                                                                    details for
-                                                                    a select
-                                                                    number of
-                                                                    these
-                                                                    institutions.
-                                                                    However,
-                                                                    payment for
-                                                                    the
-                                                                    respective
-                                                                    course needs
-                                                                    to be
-                                                                    received by
-                                                                    Regenesys
-                                                                    prior to the
-                                                                    commencement
-                                                                    of the
-                                                                    course.
-                                                                  </li>
-                                                                </ul>
+
                                                                 <p className="p1">
                                                                   h. The
                                                                   signatory/ies
@@ -822,7 +730,7 @@ export const EditGroup = ({
                                                                   fees
                                                                   applicable to
                                                                   the
-                                                                  current-year’s
+                                                                  current-year's
                                                                   rate. For
                                                                   delayed,
                                                                   deferred and
@@ -842,11 +750,20 @@ export const EditGroup = ({
                                                                   actually does
                                                                   the module. If
                                                                   the student
-                                                                </p>
-                                                                <p className="p1">
-                                                                  only be
+                                                                  has paid for
+                                                                  the full
+                                                                  qualification
+                                                                  upfront, the
+                                                                  top-up fee
+                                                                  will only be
                                                                   applicable on
-                                                                  studies e
+                                                                  studies
+                                                                  extending
+                                                                  beyond the
+                                                                  required
+                                                                  minimum
+                                                                  qualification
+                                                                  period of the
                                                                   course.
                                                                 </p>
                                                                 <h3
@@ -866,9 +783,13 @@ export const EditGroup = ({
                                                                   reserves the
                                                                   right to
                                                                   postpone or
-                                                                  cancel a
+                                                                  cancel the
+                                                                  offering of a
                                                                   scheduled
-                                                                  <br />
+                                                                  qualification,
+                                                                  due to
+                                                                  insufficient
+                                                                  enrolment
                                                                   numbers or any
                                                                   reason deemed
                                                                   fair by
@@ -878,9 +799,7 @@ export const EditGroup = ({
                                                                   be provided
                                                                   with an
                                                                   alternative
-                                                                  course date or
-                                                                  offered a
-                                                                  refund.
+                                                                  course date.
                                                                 </p>
                                                                 <p className="p1">
                                                                   <i>
@@ -892,41 +811,42 @@ export const EditGroup = ({
                                                                   Should the
                                                                   student inform
                                                                   Regenesys in
-                                                                  writing,
-                                                                  within 7 days
-                                                                  of
-                                                                  Registration,
-                                                                  that they want
-                                                                  to cancel
-                                                                  their studies
-                                                                  then the
-                                                                  following will
-                                                                  apply:
-                                                                  <br />– The
-                                                                  fees paid by
-                                                                  the student in
-                                                                  relation to
-                                                                  the cancelled
-                                                                  studies will
-                                                                  be refunded,
-                                                                  subject to
+                                                                  writing, less
+                                                                  than 7 working
+                                                                  days before
+                                                                  the start of
+                                                                  Orientation
+                                                                  date, that
+                                                                  they want to
+                                                                  cancel their
+                                                                  studies, then
+                                                                  the following
+                                                                  will apply:
+                                                                  <br />
                                                                 </p>
+
                                                                 <p className="p1">
-                                                                  a cancellation
-                                                                  fee of R750.
-                                                                </p>
-                                                                <p className="p1">
+                                                                  - A
+                                                                  cancellation
+                                                                  fee of 50 % of
+                                                                  their first
+                                                                  semester
+                                                                  programme fees
+                                                                  will be owed.
                                                                   Should a
                                                                   student want
                                                                   to cancel or
                                                                   postpone their
                                                                   studies for
                                                                   any reason,
-                                                                  after the 7
-                                                                  days notice
-                                                                  period above,
-                                                                  the following
-                                                                  will apply:
+                                                                  after
+                                                                  commencement
+                                                                  of the
+                                                                  qualification
+                                                                  on Orientation
+                                                                  date, the
+                                                                  following will
+                                                                  apply:
                                                                   <br />– Notice
                                                                   of intention
                                                                   to
@@ -934,23 +854,24 @@ export const EditGroup = ({
                                                                   needs to be
                                                                   communicated
                                                                   in writing to
-                                                                  the Personal
-                                                                </p>
-                                                                <p className="p1">
-                                                                  Programme
-                                                                  Advisor (PPA).
+                                                                  the Student
+                                                                  Relationship
+                                                                  Advisor (SRA).
                                                                   The full
-                                                                  year’s fees
+                                                                  year's
+                                                                  applicable
+                                                                  annual fees
+                                                                  for that
+                                                                  qualification
                                                                   will still be
                                                                   due and
                                                                   payable,
                                                                   irrespective
-                                                                  of
+                                                                  of the payment
+                                                                  option.
                                                                 </p>
                                                                 <p className="p1">
-                                                                  the payment
-                                                                  option.
-                                                                  <br />– If no
+                                                                  – If no
                                                                   written
                                                                   cancellation
                                                                   is received,
@@ -958,49 +879,57 @@ export const EditGroup = ({
                                                                   will also be
                                                                   liable for the
                                                                   following
-                                                                  year’s
+                                                                  year's
+                                                                  applicable
+                                                                  annual fees
+                                                                  for that
+                                                                  qualification
                                                                 </p>
                                                                 <p className="p1">
-                                                                  fees.
-                                                                  <br />–
+                                                                  –
                                                                   Non-attendance
-                                                                  of className,
+                                                                  of
+                                                                  orientation,
+                                                                  class,
                                                                   non-submission
                                                                   or failure to
                                                                   submit or
                                                                   participate in
                                                                   an assessment
-                                                                </p>
-                                                                <p className="p1">
                                                                   does not
                                                                   constitute a
                                                                   cancellation,
-                                                                  and the year’s
-                                                                  fees are still
-                                                                  due and
-                                                                  payable.
-                                                                  <br />–
-                                                                  Written
+                                                                  and the year's
+                                                                  applicable
+                                                                  annual fees
+                                                                  for that
+                                                                  qualification
+                                                                  are still due
+                                                                  and payable.
+                                                                </p>
+                                                                <p className="p1">
+                                                                  – Written
                                                                   acceptance of
                                                                   the
                                                                   cancellation
                                                                   will be given
                                                                   to the student
-                                                                  by the
-                                                                  Personal
+                                                                  by the Student
+                                                                  Relationship
+                                                                  Advisor (SRA).
+                                                                  The onus is on
+                                                                  the student to
+                                                                  ensure
+                                                                  confirmation
+                                                                  of receipt by
+                                                                  email.
                                                                 </p>
                                                                 <p className="p1">
-                                                                  Programme
-                                                                  Advisor
-                                                                </p>
-                                                                <p className="p1">
-                                                                  email or post.
-                                                                  <br />–
-                                                                  Regenesys will
-                                                                  not be held
-                                                                  liable for
-                                                                  failure to
-                                                                  receive faxed
+                                                                  – Regenesys
+                                                                  will not be
+                                                                  held liable
+                                                                  for failure to
+                                                                  receive
                                                                   cancellation
                                                                   notices.
                                                                 </p>
@@ -1034,9 +963,14 @@ export const EditGroup = ({
                                                                   course or
                                                                   short course
                                                                   occurs with
-                                                                  less than
-                                                                </p>
-                                                                <p className="p1">
+                                                                  less thann 5
+                                                                  days' notice,
+                                                                  the full
+                                                                  course amount
+                                                                  will be due.
+                                                                  If over 5 days
+                                                                  notification
+                                                                  is granted to
                                                                   cancel the
                                                                   attendance of
                                                                   a short course
@@ -1103,7 +1037,22 @@ export const EditGroup = ({
                                                                   requirements).
                                                                 </p>
                                                                 <p className="p1">
-                                                                  to pay the
+                                                                  A confirmed
+                                                                  and registered
+                                                                  place on the
+                                                                  course will be
+                                                                  secured by the
+                                                                  full receipt
+                                                                  of the
+                                                                  invoiced
+                                                                  amount, a
+                                                                  government
+                                                                  order, or 50%
+                                                                  upfront
+                                                                  payment and a
+                                                                  firm written
+                                                                  commitment to
+                                                                  pay the
                                                                   balance within
                                                                   an agreed time
                                                                   frame prior to
@@ -1201,8 +1150,7 @@ export const EditGroup = ({
                                                                 value of digital
                                                                 or contact
                                                                 facilitation,
-                                                                assessments,
-                                                                tablet with
+                                                                assessments and
                                                                 access to
                                                                 digitised study
                                                                 guides and one
@@ -1244,9 +1192,8 @@ export const EditGroup = ({
                                                                 on an annual
                                                                 basis, as well
                                                                 as to change
-                                                                scheduled
-                                                                className and
-                                                                exam dates.
+                                                                scheduled class
+                                                                and exam dates.
                                                               </p>
                                                               <p className="p1">
                                                                 <i>
@@ -1304,6 +1251,7 @@ export const EditGroup = ({
                                                                 get 10% off the
                                                                 cost of their
                                                                 next
+                                                                qualification.
                                                               </p>
                                                               <p className="p1">
                                                                 <i>
@@ -1328,7 +1276,7 @@ export const EditGroup = ({
                                                                 <br />• They
                                                                 only apply to
                                                                 students
-                                                                starting thier
+                                                                starting their
                                                                 course during
                                                                 the first
                                                                 semester.
@@ -1406,7 +1354,7 @@ export const EditGroup = ({
                                                                 information
                                                                 supplied by
                                                                 themselves or on
-                                                                their
+                                                                their{" "}
                                                                 <span className="Apple-converted-space">
                                                                   behalf
                                                                   regarding
@@ -1757,7 +1705,7 @@ export const EditGroup = ({
                                                                       the
                                                                       recording
                                                                       of live
-                                                                      classNamees
+                                                                      classes
                                                                       and events
                                                                       for
                                                                       livestreaming
@@ -1768,8 +1716,9 @@ export const EditGroup = ({
                                                                       video
                                                                       files on
                                                                       Regenesys
-                                                                      websites.ln
-                                                                      this way
+                                                                      websites.
+                                                                      In this
+                                                                      way
                                                                       Regenesys
                                                                       students
                                                                       have
@@ -1782,8 +1731,8 @@ export const EditGroup = ({
                                                                       they are
                                                                       able to
                                                                       attend
-                                                                      className
-                                                                      or not.
+                                                                      class or
+                                                                      not.
                                                                       Regenesys
                                                                       may also
                                                                       use
