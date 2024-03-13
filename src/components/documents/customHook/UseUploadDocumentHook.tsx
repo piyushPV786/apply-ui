@@ -25,7 +25,7 @@ export const UseUploadDocumentHook = (masterData) => {
 
     if (file?.length && studentCode) {
       const fileName = file[0].name;
-      const ext = fileName?.split(".").pop();
+      const ext = fileName?.split(".").pop().toLowerCase();
       const documentCode = await DocumentServices?.DocumentCode();
 
       setDocumentCode(documentCode);

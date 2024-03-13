@@ -103,6 +103,7 @@ export const useHelperHook = (masterData, watch, setError) => {
           message: "Please enter your email",
         });
       }
+      setDisable(false);
       return;
     }
 

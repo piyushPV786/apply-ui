@@ -13,6 +13,7 @@ const ErrorType = {
   Custom: "custom",
   Required: "required",
   Validate: "validPhoneNumber",
+  Manual: "manual",
 };
 const ErrorComponent = ({ errors }: any) => {
   const GenerateArray = (DataArray, Data) => {
@@ -24,6 +25,8 @@ const ErrorComponent = ({ errors }: any) => {
         : value?.type === ErrorType?.Required
         ? `Please enter ${i?.label}`
         : value?.type === ErrorType?.Validate
+        ? value?.message
+        : value?.type === ErrorType?.Manual
         ? value?.message
         : undefined;
     })?.filter((error) => error !== undefined);
