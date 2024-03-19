@@ -23,8 +23,13 @@ const PaymentPage = ({ applicationCode }) => {
   const { studyModes, fees, updateFeeMode } = usePaymentDetailsHook(masterData);
 
   const { getPayuDetails, payuDetails } = usePayuHook(masterData, fees);
-  const { getPaymentRedirectURL, closePaymentDialog, setOpenPopup, openPopup } =
-    useUkhesheHook(masterData, fees);
+  const {
+    getPaymentRedirectURL,
+    closePaymentDialog,
+    setOpenPopup,
+    openPopup,
+    paymentStatusCheck,
+  } = useUkhesheHook(masterData, fees);
 
   const { uploadPaymentProof, disabled, updatePayment, uploadProgress } =
     useOfflinePaymentHook(masterData, fees);
@@ -74,6 +79,7 @@ const PaymentPage = ({ applicationCode }) => {
               disabled={disabled}
               updatePayment={updatePayment}
               uploadProgress={uploadProgress}
+              paymentStatusCheck={paymentStatusCheck}
             />
           </Grid>
 

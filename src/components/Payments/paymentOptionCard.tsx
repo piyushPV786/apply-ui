@@ -23,6 +23,7 @@ const PaymentOptionCard = (props) => {
     disabled,
     updatePayment,
     masterData,
+    paymentStatusCheck,
   } = props;
   const methods = useForm();
   const { register, watch, setValue } = methods;
@@ -48,7 +49,11 @@ const PaymentOptionCard = (props) => {
         {PaymentTypes.map(({ name, value, registerName, label }, index) => (
           <Grid item sm={4} md={4}>
             {name === "Ukheshe" ? (
-              <UkhesheInput value={value} setOpenPopup={setOpenPopup} />
+              <UkhesheInput
+                value={value}
+                setOpenPopup={setOpenPopup}
+                paymentStatusCheck={paymentStatusCheck}
+              />
             ) : null}
 
             <Grid container>
@@ -109,6 +114,7 @@ const PaymentOptionCard = (props) => {
             uploadPaymentProof={uploadPaymentProof}
             disabled={disabled}
             updatePayment={updatePayment}
+            paymentStatusCheck={paymentStatusCheck}
           />
         )}
       </Grid>

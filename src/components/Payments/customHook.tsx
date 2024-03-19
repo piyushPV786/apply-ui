@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
-import { MBACode } from "../documents/context/common";
+import { MBACode, allowedPaymentStatus } from "../documents/context/common";
 import {
   CommonEnums,
   DocumentStatus,
@@ -436,7 +436,16 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   const [intervalId, setIntervalId] = useState(0);
   const [newTab, setNewTab] = useState<Window | null>();
   const [openPopup, setOpenPopup] = useState(false);
-
+  const paymentStatusCheck = async () => {
+    const res = await PaymentServices?.getApplicationData(
+      masterData?.applicationData?.applicationCode
+    );
+    if (allowedPaymentStatus.includes(res?.status)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   const getPaymentRedirectURL = async () => {
     const tokenResponse = await PaymentServices?.getUkhesheToken();
     setLoadingPayment(true);
@@ -524,6 +533,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
     closePaymentDialog,
     setOpenPopup,
     openPopup,
+    paymentStatusCheck,
   };
 };
 
