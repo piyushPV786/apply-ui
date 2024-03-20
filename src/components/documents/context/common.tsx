@@ -77,7 +77,7 @@ export const acceptedFileTypes = [
 
 export const MBACode = "MBA-Prog";
 export const allowedPaymentStatus = [
-  "APP-FEE-PEN",
+  "APP-FEE-PEND",
   "ENRL-ACCEPTED",
   "PROG-FEE-PEND",
 ];
