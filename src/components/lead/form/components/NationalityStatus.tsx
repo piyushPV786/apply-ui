@@ -7,6 +7,11 @@ import CommonAutocomplete from "./CommonAutocomplete ";
 import { Controller, useFormContext } from "react-hook-form";
 import { nationalityStatusEnum } from "../../../../constants";
 import { idNumberValidation } from "../../../../Util/Util";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DatePicker from "@mui/lab/DatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { TextField } from "@mui/material";
+import { transformDate } from "../../../../Util/Util";
 
 const NationalityStatus = (props: any) => {
   const { masterData, nationalityStatus, identificationType, applicationData } =
@@ -23,6 +28,8 @@ const NationalityStatus = (props: any) => {
 
   const [nationalityStatusValue, setNationalityStatus] = useState("");
   const nationalityStatusWatch = watch("lead.nationalityStatus");
+  const docTypeWatch = watch("lead.identificationDocumentType");
+
   useEffect(() => {
     if (nationalityStatusWatch) {
       setNationalityStatus(nationalityStatusWatch);
@@ -135,6 +142,31 @@ const NationalityStatus = (props: any) => {
                 </div>
               )}
             </div>
+            {docTypeWatch == "PASSPORT" && (
+              <div className="col-md-4 mb-4">
+                <StyledLabel required>Expiry Date</StyledLabel>
+                <Controller
+                  name="lead.passportExpiryDate"
+                  control={control}
+                  rules={{
+                    required: "Expiry Date is required",
+                  }}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      className="form-control"
+                      type={"date"}
+                      min={new Date().toISOString().split("T")[0]}
+                    />
+                  )}
+                />
+                {Errors?.passportExpiryDate && nationalityStatusWatch && (
+                  <div className="invalid-feedback">
+                    Please Select Expiry Date
+                  </div>
+                )}
+              </div>
+            )}
             <div className="col-lg-4 mb-4">
               <StyledLabel required> Identification Number</StyledLabel>
               <Controller
