@@ -151,13 +151,28 @@ const NationalityStatus = (props: any) => {
                       {...field}
                       className="form-control"
                       type={"date"}
+                      onBlur={(event) => {
+                        const selectedDate = event.target.value;
+                        const currentDate = new Date()
+                          .toISOString()
+                          .split("T")[0];
+
+                        if (selectedDate < currentDate) {
+                          setError("lead.passportExpiryDate", {
+                            type: "custom",
+                            message: "Please Select Valid Expiry Date",
+                          });
+                        }
+                      }}
                       min={new Date().toISOString().split("T")[0]}
                     />
                   )}
                 />
                 {Errors?.passportExpiryDate && nationalityStatusWatch && (
                   <div className="invalid-feedback">
-                    Please Select Expiry Date
+                    {Errors?.passportExpiryDate?.type === "custom"
+                      ? Errors?.passportExpiryDate?.message
+                      : "Please Select Expiry Date"}
                   </div>
                 )}
               </div>
