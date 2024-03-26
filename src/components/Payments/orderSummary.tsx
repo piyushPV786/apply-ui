@@ -10,7 +10,11 @@ import {
 } from "@mui/material";
 import { PaymentCard, StyledLink } from "../../styles/styled";
 import React, { useEffect, useState } from "react";
-import { CommonEnums, feeMode } from "../common/constant";
+import {
+  CommonEnums,
+  applicationFeesStatus,
+  feeMode,
+} from "../common/constant";
 import { useDiscountHook, usePaymentDetailsHook } from "./customHook";
 import { FormProvider, useForm } from "react-hook-form";
 import StyledButton from "../button/button";
@@ -21,6 +25,7 @@ import { getConvertedAmount } from "./helper";
 
 const OrderSummary = (props) => {
   const { studyModes, fees, masterData, updateFeeMode } = props;
+
   return (
     <Card>
       <Grid container spacing={2}>
@@ -78,8 +83,9 @@ const ProgramFees = (props) => {
         </Grid>
       </Grid>
       <Grid item md={7} xs={12}>
-        {masterData?.applicationData?.status !==
-          CommonEnums.FEES_PENDING_STATUS && (
+        {!applicationFeesStatus.includes(
+          masterData?.applicationData?.status
+        ) && (
           <Grid>
             <label>Fee Mode</label>
             <Grid>

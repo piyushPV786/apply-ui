@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
-import { MBACode } from "../documents/context/common";
+import { MBACode, allowedPaymentStatus } from "../documents/context/common";
 import {
   CommonEnums,
   DocumentStatus,
   status,
+  applicationFeesStatus,
 } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
 import {
@@ -69,6 +70,7 @@ export const usePaymentHook = (applicationCode: string) => {
             payload.feeData = bursaryAmountFee;
           }
         }
+
         setMasterData(payload);
       }
     };
@@ -86,12 +88,16 @@ export const usePaymentHook = (applicationCode: string) => {
 export const usePaymentDetailsHook = (masterData: any) => {
   const [feeModeCode, setFeeModeCode] = useState(feeMode.APPLICATION);
   let studyModes: any = { helpText: "" };
-  if (masterData?.applicationData?.education?.studyModeCode) {
+
+  if (
+    masterData?.applicationData?.education?.studyModeCode &&
+    masterData?.feeData?.studyModes &&
+    masterData?.studyModeData
+  ) {
     const studyModeCode = masterData?.applicationData?.education?.studyModeCode;
     studyModes = masterData?.feeData?.studyModes?.find(
       (item: any) => item?.studyModeCode === studyModeCode
     );
-
     const studyModeDetails = masterData?.studyModeData?.find(
       (item: any) => item?.code === studyModeCode
     );
@@ -102,7 +108,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
   const feesStructure = studyModes?.fees?.find(
     (item: any) => item?.feeMode === feeModeCode
   );
-  if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
+  if (applicationFeesStatus.includes(masterData?.applicationData?.status)) {
     fees = {
       ...feesStructure,
       label: "Application Fee",
@@ -265,7 +271,7 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
 
   fees.rmatFees = rmatFees;
 
-  if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
+  if (applicationFeesStatus.includes(masterData?.applicationData?.status)) {
     fees.rmatAmount = `${
       masterData?.currencyData?.currencySymbol
         ? masterData?.currencyData?.currencySymbol
@@ -274,20 +280,18 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
   }
 
   //Total Amount
-  const totalAmount =
-    masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS
-      ? parseInt(fees?.fee) -
-        parseInt(fees.discountFee) +
-        parseInt(fees.rmatFees)
-      : masterData?.applicationData?.status ==
-          CommonEnums.MONTHLY_PAYMENT_REJECT && parseInt(fees?.fee) > 0
-      ? parseInt(fees?.fee) -
-        parseInt(fees.discountFee) -
-        parseInt(
-          studyModes?.fees?.find((item) => item?.feeMode == feeMode?.MONTHLY)
-            .fee
-        )
-      : parseInt(fees?.fee) - parseInt(fees.discountFee);
+  const totalAmount = applicationFeesStatus.includes(
+    masterData?.applicationData?.status
+  )
+    ? parseInt(fees?.fee) - parseInt(fees.discountFee) + parseInt(fees.rmatFees)
+    : masterData?.applicationData?.status ==
+        CommonEnums.MONTHLY_PAYMENT_REJECT && parseInt(fees?.fee) > 0
+    ? parseInt(fees?.fee) -
+      parseInt(fees.discountFee) -
+      parseInt(
+        studyModes?.fees?.find((item) => item?.feeMode == feeMode?.MONTHLY).fee
+      )
+    : parseInt(fees?.fee) - parseInt(fees.discountFee);
 
   fees.totalFee = totalAmount;
   fees.totalAmount = `${
@@ -398,10 +402,11 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       paymentModeCode: "OFFLINE",
       discountCode: fees?.discountCode,
       discountAmount: payload.discountFee,
-      feeModeCode:
-        masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS
-          ? feeMode.APPLICATION
-          : fees?.feeMode,
+      feeModeCode: applicationFeesStatus.includes(
+        masterData?.applicationData?.status
+      )
+        ? feeMode.APPLICATION
+        : fees?.feeMode,
       isDraft: false,
       currencyCode: masterData?.currencyData?.currencyCode,
       studentCode: masterData?.applicationData?.studentCode,
@@ -431,7 +436,16 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   const [intervalId, setIntervalId] = useState(0);
   const [newTab, setNewTab] = useState<Window | null>();
   const [openPopup, setOpenPopup] = useState(false);
-
+  const paymentStatusCheck = async () => {
+    const res = await PaymentServices?.getApplicationData(
+      masterData?.applicationData?.applicationCode
+    );
+    if (allowedPaymentStatus.includes(res?.status)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   const getPaymentRedirectURL = async () => {
     const tokenResponse = await PaymentServices?.getUkhesheToken();
     setLoadingPayment(true);
@@ -519,6 +533,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
     closePaymentDialog,
     setOpenPopup,
     openPopup,
+    paymentStatusCheck,
   };
 };
 
