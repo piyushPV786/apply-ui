@@ -6,7 +6,7 @@ import AddressImg from "../../../../../public/assets/images/address-card-outline
 import CommonAutocomplete from "./CommonAutocomplete ";
 import { Controller, useFormContext } from "react-hook-form";
 import { nationalityStatusEnum } from "../../../../constants";
-import { idNumberValidation } from "../../../../Util/Util";
+import { idNumberValidation, isValidExpiryDate } from "../../../../Util/Util";
 
 const NationalityStatus = (props: any) => {
   const { masterData, nationalityStatus, identificationType, applicationData } =
@@ -145,34 +145,20 @@ const NationalityStatus = (props: any) => {
                   control={control}
                   rules={{
                     required: "Expiry Date is required",
+                    validate: isValidExpiryDate,
                   }}
                   render={({ field }) => (
                     <input
                       {...field}
                       className="form-control"
                       type={"date"}
-                      onBlur={(event) => {
-                        const selectedDate = event.target.value;
-                        const currentDate = new Date()
-                          .toISOString()
-                          .split("T")[0];
-
-                        if (selectedDate < currentDate) {
-                          setError("lead.passportExpiryDate", {
-                            type: "custom",
-                            message: "Please Select Valid Expiry Date",
-                          });
-                        }
-                      }}
                       min={new Date().toISOString().split("T")[0]}
                     />
                   )}
                 />
                 {Errors?.passportExpiryDate && nationalityStatusWatch && (
                   <div className="invalid-feedback">
-                    {Errors?.passportExpiryDate?.type === "custom"
-                      ? Errors?.passportExpiryDate?.message
-                      : "Please Select Expiry Date"}
+                    {Errors?.passportExpiryDate?.message}
                   </div>
                 )}
               </div>

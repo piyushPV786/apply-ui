@@ -187,6 +187,15 @@ export const isValidDate = (value) => {
   else return true;
 };
 
+export const isValidExpiryDate = (value) => {
+  const selectedDate = value;
+  const currentDate = new Date().toISOString().split("T")[0];
+
+  if (selectedDate < currentDate) {
+    return "Please Select Valid Expiry Date";
+  }
+};
+
 /**
  * Checks if a given email is valid.
  * @param {string} email - The email to be validated.
