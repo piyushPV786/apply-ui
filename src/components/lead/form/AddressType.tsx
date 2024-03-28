@@ -118,10 +118,6 @@ const AddressType = (props) => {
           })}
           onChange={(e) => {
             const numericRegex = /^[0-9]*$/;
-<<<<<<< HEAD
-=======
-
->>>>>>> 3b8c6fa0184c4548415cd0e4a989e968ae944a0b
             if (!numericRegex.test(e.target.value)) {
               e.target.value = e.target.value.replace(/[^0-9]/g, "");
             }
