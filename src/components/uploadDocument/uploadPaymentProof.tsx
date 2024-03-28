@@ -10,6 +10,8 @@ import {
 } from "react-hook-form";
 import { Green, acceptedFileType } from "../common/common";
 import { IconButton } from "@material-ui/core";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 interface UploadPaymentProofTypes {
   setValue: UseFormSetValue<any>;
@@ -20,6 +22,7 @@ interface UploadPaymentProofTypes {
   register: UseFormRegister<any>;
   errors: any;
   uploadPaymentProof: any;
+  paymentStatusCheck: () => boolean;
 }
 
 export const fileValidation = (value) => {
@@ -43,12 +46,14 @@ const UploadPaymentProof = ({
   name,
   errors,
   uploadPaymentProof,
+  paymentStatusCheck,
 }: UploadPaymentProofTypes) => {
   const fileUpload = useRef<any>(null);
   const onDocUploadClick = () => {
     const fileElement = fileUpload.current as HTMLInputElement;
     fileElement?.click() as any;
   };
+  const router = useRouter();
 
   return (
     <Box
@@ -70,16 +75,22 @@ const UploadPaymentProof = ({
           ref={fileUpload}
           accept="application/pdf, image/jpeg, image/png"
           type="file"
-          onChange={(e) => {
+          onChange={async (e) => {
             if (e?.target?.files) {
-              if (fileValidation(e?.target?.files[0]) === true) {
-                uploadPaymentProof(e?.target?.files);
+              const allowPayment = await paymentStatusCheck();
+              if (allowPayment) {
+                if (fileValidation(e?.target?.files[0]) === true) {
+                  uploadPaymentProof(e?.target?.files);
+                }
+                setValue(name, e?.target?.files[0], {
+                  shouldDirty: true,
+                  shouldTouch: true,
+                  shouldValidate: true,
+                });
+              } else {
+                toast.error("Invalid Payment Processing");
+                router.push("/dashboard");
               }
-              setValue(name, e?.target?.files[0], {
-                shouldDirty: true,
-                shouldTouch: true,
-                shouldValidate: true,
-              });
             }
           }}
         />

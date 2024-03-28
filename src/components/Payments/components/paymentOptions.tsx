@@ -16,6 +16,7 @@ const PaymentOptions = ({
   updatePayment,
   uploadProgress,
   masterData,
+  paymentStatusCheck,
 }) => {
   return (
     <FullWidthCard>
@@ -39,6 +40,7 @@ const PaymentOptions = ({
                 disabled={disabled}
                 updatePayment={updatePayment}
                 masterData={masterData}
+                paymentStatusCheck={paymentStatusCheck}
               />
               {!!uploadProgress && (
                 <LinearProgressWithLabel value={uploadProgress} />

@@ -12,6 +12,10 @@ export const NationalityData = [
     label: "Identification Document Type",
   },
   {
+    name: "passportExpiryDate",
+    label: "Expiry Date",
+  },
+  {
     name: "identificationNumber",
     label: "Identification Number",
   },

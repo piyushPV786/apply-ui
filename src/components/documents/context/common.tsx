@@ -11,7 +11,7 @@ export const nonMandatoryDocuments = [
   "MATRIC",
   "OTHERS",
   "INTERVIEWNOTES",
-  "EDFORALLCONTRACT"
+  "EDFORALLCONTRACT",
 ];
 
 export const docType = {
@@ -39,7 +39,7 @@ export const dashboardRedirectStatus = [
 export const customStatus = {
   UPLOADPENDING: "UPLOADPENDING",
   UPLOADED: "UPLOADED",
-  EDFORALLCONTRACT:"EDFORALLCONTRACT"
+  EDFORALLCONTRACT: "EDFORALLCONTRACT",
 };
 
 export const status = {
@@ -76,6 +76,11 @@ export const acceptedFileTypes = [
 ];
 
 export const MBACode = "MBA-Prog";
+export const allowedPaymentStatus = [
+  "APP-FEE-PEND",
+  "ENRL-ACCEPTED",
+  "PROG-FEE-PEND",
+];
 
 export const documentCriteria = [
   {
@@ -168,10 +173,16 @@ export const fileValidation = (value, element) => {
   if (value && element?.code) {
     if (value[0] && !acceptedFileTypes.includes(value[0]?.type)) {
       return "This file type is not accepted please upload from accepted file types";
-    }else if(value[0]?.size > 20 * 1024 * 1024 && element?.code ===customStatus?.EDFORALLCONTRACT){
-      console.log("in codition")
+    } else if (
+      value[0]?.size > 20 * 1024 * 1024 &&
+      element?.code === customStatus?.EDFORALLCONTRACT
+    ) {
+      console.log("in codition");
       return "File size should be at most 20MB";
-    } else if (value[0]?.size > 3 * 1024 * 1024 && element?.code !==customStatus?.EDFORALLCONTRACT) {
+    } else if (
+      value[0]?.size > 3 * 1024 * 1024 &&
+      element?.code !== customStatus?.EDFORALLCONTRACT
+    ) {
       return "File size should be at most 3MB";
     }
   }

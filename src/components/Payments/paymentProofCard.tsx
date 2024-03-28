@@ -11,7 +11,13 @@ export interface IFormValue {
 }
 
 const PaymentProofCard = (props) => {
-  const { uploadPaymentProof, disabled, updatePayment, masterData } = props;
+  const {
+    uploadPaymentProof,
+    disabled,
+    updatePayment,
+    masterData,
+    paymentStatusCheck,
+  } = props;
 
   const {
     watch,
@@ -49,6 +55,7 @@ const PaymentProofCard = (props) => {
           errors={errors}
           name="file"
           uploadPaymentProof={uploadPaymentProof}
+          paymentStatusCheck={paymentStatusCheck}
         />
       </Grid>
       <Grid item xs={12} display="flex" justifyContent="center">
