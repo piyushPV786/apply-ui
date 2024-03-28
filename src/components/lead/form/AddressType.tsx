@@ -108,7 +108,7 @@ const AddressType = (props) => {
         <input
           min="0"
           className="form-control"
-          type={"number"}
+          type={"text"}
           placeholder={"Enter Zip/Postal Code"}
           {...register(`address[${index}].zipcode`, {
             required: true,
@@ -116,6 +116,13 @@ const AddressType = (props) => {
             minLength: 4,
             min: 1,
           })}
+          onChange={(e) => {
+            const numericRegex = /^[0-9]*$/;
+
+            if (!numericRegex.test(e.target.value)) {
+              e.target.value = e.target.value.replace(/[^0-9]/g, "");
+            }
+          }}
         />
         {Errors && Errors[index]?.zipcode && (
           <div className="invalid-feedback">
