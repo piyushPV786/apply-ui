@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { MobileField } from "./components/MobileField";
 import TextFieldWithSpace from "./components/TextFieldWithSpace";
 import NumberField from "./components/NumberField";
+import ZipCodeField from "./components/ZipCodeField";
 
 const Employment = (props: any) => {
   const {
@@ -221,6 +222,13 @@ const Employment = (props: any) => {
                       )}
                       {element?.type === "number" && (
                         <NumberField
+                          element={element}
+                          Errors={Errors}
+                          registerName={`employment.${element?.name}`}
+                        />
+                      )}
+                      {element?.type === "zipCode" && (
+                        <ZipCodeField
                           element={element}
                           Errors={Errors}
                           registerName={`employment.${element?.name}`}

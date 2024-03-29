@@ -26,6 +26,7 @@ import { isValidEmail, validateAddress } from "../../../Util/Util";
 import { MobileField } from "./components/MobileField";
 import { useEffect, useState } from "react";
 import NumberField from "./components/NumberField";
+import ZipCodeField from "./components/ZipCodeField";
 
 const Sponsor = (props: any) => {
   const {
@@ -138,6 +139,14 @@ const Sponsor = (props: any) => {
 
                       {element?.type === "number" && (
                         <NumberField
+                          element={element}
+                          Errors={Errors}
+                          registerName={`sponsor.${element?.name}`}
+                        />
+                      )}
+
+                      {element?.type === "zipCode" && (
+                        <ZipCodeField
                           element={element}
                           Errors={Errors}
                           registerName={`sponsor.${element?.name}`}
