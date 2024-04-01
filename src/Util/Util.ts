@@ -191,7 +191,7 @@ export const isValidExpiryDate = (value) => {
   const selectedDate = value;
   const currentDate = new Date().toISOString().split("T")[0];
 
-  if (selectedDate < currentDate) {
+  if (selectedDate <= currentDate) {
     return "Please Select Valid Expiry Date";
   }
 };
