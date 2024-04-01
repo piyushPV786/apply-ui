@@ -1,6 +1,5 @@
 import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../../common/common";
-import { capitalizeFirstLetter } from "../../../../Util/Util";
 
 const ZipCodeField = ({
   element,
