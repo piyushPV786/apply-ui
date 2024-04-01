@@ -123,12 +123,16 @@ export const sponsorInfoData = [
     name: "zipCode",
     key: "zipCode",
     label: "Pin Code / Zip Code",
-    type: "number",
+    type: "zipCode",
     required: false,
     errorMessage: "Please enter Pin Code / Zip Code",
     hidden: false,
     disabled: false,
     placeholder: "",
     numric: true,
+    rhfOptions: {
+      minLength: 4,
+      maxLength: 10,
+    },
   },
 ];

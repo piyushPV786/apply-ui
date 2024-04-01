@@ -115,7 +115,7 @@ export const employmentData = [
     name: "zipCode",
     key: "zipCode",
     label: "Pin Code / Zip Code",
-    type: "number",
+    type: "zipCode",
     required: false,
     errorMessage: "Please enter Pin Code / Zip Code",
     hidden: false,
