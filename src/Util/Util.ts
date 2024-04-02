@@ -193,7 +193,7 @@ export const isValidExpiryDate = (value) => {
   const year = value?.split("-")[0];
   const regex = /^\d{4}$/;
 
-  if (selectedDate < currentDate || !regex.test(year)) {
+  if (selectedDate <= currentDate || !regex.test(year)) {
     return "Please Select Valid Expiry Date";
   }
 };
