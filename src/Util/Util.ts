@@ -613,6 +613,19 @@ export function sortAscending(a, b, key) {
   return comparison;
 }
 
+export function formatDate(originalString) {
+  const originalDate = new Date(originalString);
+  const year = originalDate.getFullYear();
+  const month = originalDate.getMonth() + 1;
+  const day = originalDate.getDate();
+
+  const formattedString = `${year}-${month < 10 ? "0" : ""}${month}-${
+    day < 10 ? "0" : ""
+  }${day}`;
+
+  return formattedString;
+}
+
 /**
  * Checks if an object is empty.
  * @param {any} object - The object to be checked.

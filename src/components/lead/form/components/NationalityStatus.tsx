@@ -6,7 +6,11 @@ import AddressImg from "../../../../../public/assets/images/address-card-outline
 import CommonAutocomplete from "./CommonAutocomplete ";
 import { Controller, useFormContext } from "react-hook-form";
 import { nationalityStatusEnum } from "../../../../constants";
-import { idNumberValidation, isValidExpiryDate } from "../../../../Util/Util";
+import {
+  formatDate,
+  idNumberValidation,
+  isValidExpiryDate,
+} from "../../../../Util/Util";
 
 const NationalityStatus = (props: any) => {
   const { masterData, nationalityStatus, identificationType, applicationData } =
@@ -150,6 +154,7 @@ const NationalityStatus = (props: any) => {
                   render={({ field }) => (
                     <input
                       {...field}
+                      value={formatDate(watch("lead.passportExpiryDate"))}
                       className="form-control"
                       type={"date"}
                       min={new Date().toISOString().split("T")[0]}
