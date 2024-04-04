@@ -1,6 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../../common/common";
-import { isValidDate, transformDate } from "../../../../Util/Util";
+import { formatDate, isValidDate, transformDate } from "../../../../Util/Util";
+
 const DateField = ({ element, Errors, registerName, defaultValue }: any) => {
   const { register, watch } = useFormContext();
   return (
@@ -8,7 +9,7 @@ const DateField = ({ element, Errors, registerName, defaultValue }: any) => {
       <StyledLabel required={element?.required}>{element?.label}</StyledLabel>
       <input
         defaultValue={defaultValue}
-        value={watch(registerName)}
+        value={formatDate(watch(registerName))}
         className="form-control"
         type={"date"}
         placeholder={element?.placeholder}
