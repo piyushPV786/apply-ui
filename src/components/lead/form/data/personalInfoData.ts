@@ -12,6 +12,10 @@ export const personalInfoData = [
     disabled: false,
     placeholder: "e.g Robert",
     numric: false,
+    rhfOptions: {
+      minLength: 3,
+      maxLength: 30,
+    },
   },
   {
     name: "middleName",
@@ -24,6 +28,10 @@ export const personalInfoData = [
     disabled: false,
     placeholder: "",
     numric: false,
+    rhfOptions: {
+      minLength: 3,
+      maxLength: 30,
+    },
   },
   {
     name: "lastName",
@@ -36,6 +44,10 @@ export const personalInfoData = [
     disabled: false,
     placeholder: "",
     numric: false,
+    rhfOptions: {
+      minLength: 3,
+      maxLength: 30,
+    },
   },
   {
     name: "gender",
