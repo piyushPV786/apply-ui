@@ -706,6 +706,10 @@ export const emailValidation = async (e) => {
     returnVal = {
       message: "you have entered an invalid email address. Please try again",
     };
+  } else if (e?.target?.value?.length > 200) {
+    returnVal = {
+      message: "Email address should not exceed 200 characters.",
+    };
   } else {
     returnVal = {
       message: "clear",
