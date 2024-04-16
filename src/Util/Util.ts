@@ -178,9 +178,9 @@ export const getStatusColor = (status) => {
  */
 export const isValidDate = (value) => {
   const currentYear = new Date().getFullYear();
-  const year = value?.split("-")[0];
+  const year = new Date(value).getFullYear();
   const age = currentYear - +year;
-
+console.log('age',age)
   if (age < 16) return false;
   if (age > 100) return false;
   if (age > currentYear) return false;
@@ -188,12 +188,14 @@ export const isValidDate = (value) => {
 };
 
 export const isValidExpiryDate = (value) => {
-  const selectedDate = value;
-  const currentDate = new Date().toISOString().split("T")[0];
-  const year = value?.split("-")[0];
-  const regex = /^\d{4}$/;
-
-  if (selectedDate <= currentDate || !regex.test(year)) {
+  const selectedDate = new Date(value);
+  const currentDate = new Date();
+  const year = new Date(value).getFullYear;
+    console.log("selectedDate" ,selectedDate);
+    console.log("currentDate" ,currentDate);
+    console.log("year" ,year);
+    
+  if (selectedDate <= currentDate) {
     return "Please Select Valid Expiry Date";
   }
 };
