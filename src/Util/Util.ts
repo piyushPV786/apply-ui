@@ -189,11 +189,7 @@ export const isValidDate = (value) => {
 export const isValidExpiryDate = (value) => {
   const selectedDate = new Date(value);
   const currentDate = new Date();
-  const year = new Date(value).getFullYear;
-    console.log("selectedDate" ,selectedDate);
-    console.log("currentDate" ,currentDate);
-    console.log("year" ,year);
-    
+  const year = new Date(value).getFullYear;    
   if (selectedDate <= currentDate) {
     return "Please Select Valid Expiry Date";
   }
