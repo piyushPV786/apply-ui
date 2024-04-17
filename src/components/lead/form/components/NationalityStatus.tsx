@@ -6,7 +6,15 @@ import AddressImg from "../../../../../public/assets/images/address-card-outline
 import CommonAutocomplete from "./CommonAutocomplete ";
 import { Controller, useFormContext } from "react-hook-form";
 import { nationalityStatusEnum } from "../../../../constants";
-import { idNumberValidation, isValidExpiryDate } from "../../../../Util/Util";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from "dayjs";
+import {
+  formatDate,
+  idNumberValidation,
+  isValidExpiryDate,
+} from "../../../../Util/Util";
 
 const NationalityStatus = (props: any) => {
   const { masterData, nationalityStatus, identificationType, applicationData } =
@@ -143,17 +151,26 @@ const NationalityStatus = (props: any) => {
                 <Controller
                   name="lead.passportExpiryDate"
                   control={control}
+                  defaultValue={null}
                   rules={{
                     required: "Expiry Date is required",
                     validate: isValidExpiryDate,
                   }}
                   render={({ field }) => (
-                    <input
-                      {...field}
-                      className="form-control"
-                      type={"date"}
-                      min={new Date().toISOString().split("T")[0]}
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        {...field}
+                        value={dayjs(new Date(field.value))}
+                        sx={{
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "2px solid #ced4da",
+                          },
+                          "& .MuiOutlinedInput-input": { padding: "8px !important" },
+                          width: "100%",
+                        }}
+                        minDate={dayjs(new Date())}
+                      />
+                    </LocalizationProvider>
                   )}
                 />
                 {Errors?.passportExpiryDate && nationalityStatusWatch && (

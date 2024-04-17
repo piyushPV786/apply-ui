@@ -178,9 +178,8 @@ export const getStatusColor = (status) => {
  */
 export const isValidDate = (value) => {
   const currentYear = new Date().getFullYear();
-  const year = value?.split("-")[0];
+  const year = new Date(value).getFullYear();
   const age = currentYear - +year;
-
   if (age < 16) return false;
   if (age > 100) return false;
   if (age > currentYear) return false;
@@ -188,10 +187,10 @@ export const isValidDate = (value) => {
 };
 
 export const isValidExpiryDate = (value) => {
-  const selectedDate = value;
-  const currentDate = new Date().toISOString().split("T")[0];
-
-  if (selectedDate < currentDate) {
+  const selectedDate = new Date(value);
+  const currentDate = new Date();
+  const year = new Date(value).getFullYear;    
+  if (selectedDate <= currentDate) {
     return "Please Select Valid Expiry Date";
   }
 };
@@ -611,6 +610,19 @@ export function sortAscending(a, b, key) {
   return comparison;
 }
 
+export function formatDate(originalString) {
+  const originalDate = new Date(originalString);
+  const year = originalDate.getFullYear();
+  const month = originalDate.getMonth() + 1;
+  const day = originalDate.getDate();
+
+  const formattedString = `${year}-${month < 10 ? "0" : ""}${month}-${
+    day < 10 ? "0" : ""
+  }${day}`;
+
+  return formattedString;
+}
+
 /**
  * Checks if an object is empty.
  * @param {any} object - The object to be checked.
@@ -690,6 +702,10 @@ export const emailValidation = async (e) => {
   ) {
     returnVal = {
       message: "you have entered an invalid email address. Please try again",
+    };
+  } else if (e?.target?.value?.length > 200) {
+    returnVal = {
+      message: "Email address should not exceed 200 characters.",
     };
   } else {
     returnVal = {

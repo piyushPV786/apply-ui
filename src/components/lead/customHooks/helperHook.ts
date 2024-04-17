@@ -23,6 +23,8 @@ export const useHelperHook = (masterData, watch, setError) => {
         education: {
           ...data?.education,
           programName: programName?.name ? programName?.name : "",
+          isInternationDegree:
+            data.education.isInternationDegree === "yes" ? true : false,
         },
       };
       response = await ApplicationServices.createLead(payload, false);
@@ -39,6 +41,8 @@ export const useHelperHook = (masterData, watch, setError) => {
         education: {
           ...data?.education,
           programName: programName?.name ? programName?.name : "",
+          isInternationDegree:
+            data.education.isInternationDegree === "yes" ? true : false,
         },
       };
       response = await ApplicationServices.createLead(payload, true);
@@ -57,6 +61,8 @@ export const useHelperHook = (masterData, watch, setError) => {
         education: {
           ...data?.education,
           programName: programName?.name ? programName?.name : "",
+          isInternationDegree:
+            data.education.isInternationDegree === "yes" ? true : false,
         },
       };
       response = await ApplicationServices.updateLead(

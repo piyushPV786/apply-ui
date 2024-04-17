@@ -15,6 +15,7 @@ const AddressType = (props) => {
   const stateDetails: any = useAddressHook(countryDetail);
   const stateList = stateDetails[countryDetail];
   const Errors = errors["address"] as any;
+  const isSameAsPostalAddress = watch("address.isSameAsPostalAddress");
 
   return (
     <>
@@ -22,6 +23,9 @@ const AddressType = (props) => {
         <StyledLabel required> {`${data?.name} Address`} </StyledLabel>
         <input
           className="form-control"
+          disabled={
+            isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
+          }
           type={"text"}
           placeholder={"e.g 10 church street"}
           {...register(`address[${index}].street`, {
@@ -50,6 +54,9 @@ const AddressType = (props) => {
                 ? applicationData?.address[index]?.country
                 : null
             }
+            disabled={
+              isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
+            }
             options={masterData?.countryData}
             label="Country"
             registerName={`address[${index}].country`}
@@ -69,6 +76,9 @@ const AddressType = (props) => {
             applicationData && applicationData?.address?.length
               ? applicationData?.address[index]?.state
               : null
+          }
+          disabled={
+            isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
           }
           options={stateList ? stateList : []}
           label="State/Provinces"
@@ -91,6 +101,9 @@ const AddressType = (props) => {
           {...register(`address[${index}].city`, {
             required: true,
           })}
+          disabled={
+            isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
+          }
           onChange={(e) => {
             const alphabeticValue = e.target.value.replace(/[^A-Za-z\s]/g, "");
             e.target.value = alphabeticValue;
@@ -116,6 +129,9 @@ const AddressType = (props) => {
             minLength: 4,
             min: 1,
           })}
+          disabled={
+            isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
+          }
           onChange={(e) => {
             const numericRegex = /^[0-9]*$/;
             if (!numericRegex.test(e.target.value)) {

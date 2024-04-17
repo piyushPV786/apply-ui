@@ -64,6 +64,7 @@ export const useSameResidentialAddress = () => {
       newAddress.push(_p);
       newAddress.push(residentialAddress);
       setValue("address", newAddress);
+      setValue("address.isSameAsPostalAddress", true);
     }
   }, [isSameAsPostalAddress]);
 };
