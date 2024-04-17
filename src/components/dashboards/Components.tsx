@@ -144,6 +144,7 @@ export const ActionButtons = ({ applicationDetail }) => {
     isBursaryBTN,
     isUploadBTNTitle,
     isAdamiteBTN,
+    isAccessProgramBTN,
     openCredentialDialog,
     setOpenCredentialDialog,
     rmatOpen,
@@ -238,6 +239,17 @@ export const ActionButtons = ({ applicationDetail }) => {
             }}
             className="card-button"
             title="view login credentials"
+          />
+        </Grid>
+      )}
+      {isAccessProgramBTN && (
+        <Grid item>
+          <StyledButton
+            onClick={() => {
+              router.push(`/payments/${applicationDetail?.applicationCode}`);
+            }}
+            className="card-button"
+            title="Pay DBM Access Program Fee"
           />
         </Grid>
       )}

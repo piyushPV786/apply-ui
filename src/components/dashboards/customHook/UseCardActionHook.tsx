@@ -9,7 +9,7 @@ import { downloadDocument } from "../../../Util/Util";
 import { useState } from "react";
 
 const UseCardActionHook = (applicationDetail) => {
-  const { status, education, sponsor, document, studentCode } =
+  const { status, education, sponsor, document, studentCode, eligibility } =
     applicationDetail;
 
   const [openCredentialDialog, setOpenCredentialDialog] = useState(false);
@@ -66,11 +66,14 @@ const UseCardActionHook = (applicationDetail) => {
     BURSARY_BUTTON_STATUS.includes(status) &&
     education?.studentTypeCode === CommonEnums?.BURSARY;
   const isAdamiteBTN = status === CommonEnums.PROG_ADMITTED;
+
+  const isAccessProgramBTN = eligibility?.accessProgram;
   const documentDataTypes = [
     CommonEnums.ACCEPTANCE_LETTER,
     CommonEnums.WELCOME_LETTER,
     CommonEnums.QUOTE,
   ];
+
   const documentData = document?.filter(
     (item) =>
       (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
@@ -103,6 +106,7 @@ const UseCardActionHook = (applicationDetail) => {
     rmatOpen,
     getRmatDetails,
     setRmatOpen,
+    isAccessProgramBTN,
   };
 };
 
