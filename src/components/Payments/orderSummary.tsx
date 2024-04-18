@@ -22,6 +22,7 @@ import { DeleteOutline, CheckCircle } from "@material-ui/icons";
 import { Green } from "../common/common";
 import styled from "styled-components";
 import { getConvertedAmount } from "./helper";
+import { DBMCode } from "../documents/context/common";
 
 const OrderSummary = (props) => {
   const { studyModes, fees, masterData, updateFeeMode } = props;
@@ -85,7 +86,7 @@ const ProgramFees = (props) => {
       <Grid item md={7} xs={12}>
         {!applicationFeesStatus.includes(masterData?.applicationData?.status) &&
           !masterData?.applicationData?.eligibility[0]?.accessProgram &&
-          masterData?.applicationData?.education?.programCode == "DBM-Prog" && (
+          masterData?.applicationData?.education?.programCode == DBMCode && (
             <Grid>
               <label>Fee Mode</label>
               <Grid>
