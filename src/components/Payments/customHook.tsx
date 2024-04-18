@@ -132,9 +132,10 @@ export const usePaymentDetailsHook = (masterData: any) => {
     masterData?.applicationData?.education?.programCode == DBMCode
   ) {
     fees = {
-      ...feesStructure,
+      fee: masterData?.feeData?.otherFee?.totalFee,
       label: "Access Program",
       helpText: "",
+      feeMode: "MONTHLY",
       amount: `${
         masterData?.currencyData?.currencySymbol
           ? masterData?.currencyData?.currencySymbol
@@ -424,7 +425,11 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       paymentModeCode: "OFFLINE",
       discountCode: fees?.discountCode,
       discountAmount: payload.discountFee,
-      feeModeCode: fees?.feeMode || fees?.label,
+      feeModeCode: applicationFeesStatus.includes(
+        masterData?.applicationData?.status
+      )
+        ? feeMode.APPLICATION
+        : fees?.feeMode,
       isDraft: false,
       currencyCode: masterData?.currencyData?.currencyCode,
       studentCode: masterData?.applicationData?.studentCode,
