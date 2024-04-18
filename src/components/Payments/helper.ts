@@ -73,7 +73,7 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
     transactionId: getPaymentResponse?.data?.externalUniqueId,
     totalAmount: fees?.totalFee,
     totalPaidAmount: getPaymentResponse?.data?.amount,
-    feeModeCode: fees?.feeMode || fees?.label,
+    feeModeCode: fees?.feeMode,
     currencyCode: masterData?.currencyData?.currencyCode,
     paymentStatus: getPaymentResponse?.data?.status,
     discountCode: fees?.discountCode,
