@@ -110,7 +110,6 @@ export const usePaymentDetailsHook = (masterData: any) => {
   );
   if (applicationFeesStatus.includes(masterData?.applicationData?.status)) {
     fees = {
-      ...feesStructure,
       label: "Application Fee",
       helpText: "(Non-refundable)",
       amount: `${
@@ -120,6 +119,24 @@ export const usePaymentDetailsHook = (masterData: any) => {
       } ${getConvertedAmount(
         masterData?.currencyData,
         String(feesStructure?.fee)
+      )}`,
+    };
+  } else if (
+    !applicationFeesStatus.includes(masterData?.applicationData?.status) &&
+    masterData?.applicationData?.eligibility[0]?.accessProgram &&
+    masterData?.applicationData?.education?.programCode == "DBM-Prog"
+  ) {
+    fees = {
+      ...feesStructure,
+      label: "Access Program",
+      helpText: "",
+      amount: `${
+        masterData?.currencyData?.currencySymbol
+          ? masterData?.currencyData?.currencySymbol
+          : ""
+      } ${getConvertedAmount(
+        masterData?.currencyData,
+        String(masterData?.feeData?.otherFee?.totalFee)
       )}`,
     };
   } else {
@@ -402,11 +419,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       paymentModeCode: "OFFLINE",
       discountCode: fees?.discountCode,
       discountAmount: payload.discountFee,
-      feeModeCode: applicationFeesStatus.includes(
-        masterData?.applicationData?.status
-      )
-        ? feeMode.APPLICATION
-        : fees?.feeMode,
+      feeModeCode: fees?.feeMode || fees?.label,
       isDraft: false,
       currencyCode: masterData?.currencyData?.currencyCode,
       studentCode: masterData?.applicationData?.studentCode,
