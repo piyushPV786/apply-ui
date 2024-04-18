@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
-import { MBACode, allowedPaymentStatus } from "../documents/context/common";
+import {
+  MBACode,
+  allowedPaymentStatus,
+  DBMCode,
+} from "../documents/context/common";
 import {
   CommonEnums,
   DocumentStatus,
@@ -110,6 +114,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
   );
   if (applicationFeesStatus.includes(masterData?.applicationData?.status)) {
     fees = {
+      ...feesStructure,
       label: "Application Fee",
       helpText: "(Non-refundable)",
       amount: `${
@@ -124,7 +129,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
   } else if (
     !applicationFeesStatus.includes(masterData?.applicationData?.status) &&
     masterData?.applicationData?.eligibility[0]?.accessProgram &&
-    masterData?.applicationData?.education?.programCode == "DBM-Prog"
+    masterData?.applicationData?.education?.programCode == DBMCode
   ) {
     fees = {
       ...feesStructure,
