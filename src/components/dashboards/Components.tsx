@@ -242,17 +242,6 @@ export const ActionButtons = ({ applicationDetail }) => {
           />
         </Grid>
       )}
-      {isAccessProgramBTN && (
-        <Grid item>
-          <StyledButton
-            onClick={() => {
-              router.push(`/payments/${applicationDetail?.applicationCode}`);
-            }}
-            className="card-button"
-            title="Pay DBM Access Program Fee"
-          />
-        </Grid>
-      )}
     </Grid>
   );
 };
