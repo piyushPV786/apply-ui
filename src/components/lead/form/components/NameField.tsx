@@ -2,9 +2,20 @@ import { useFormContext } from "react-hook-form";
 import { StyledLabel } from "../../../common/common";
 import { capitalizeFirstLetter } from "../../../../Util/Util";
 import { RhfErrorTypes, rhfErrorMessage } from "../../../common/constant";
+import { useState } from "react";
 
 const NameField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
   const { register } = useFormContext();
+  const [showErrorMessage, setShowErrorMessage] = useState(false); // State to manage error message display
+
+  const handleInputChange = (e) => {
+    const inputValue = e.target.value;
+    if (inputValue.length > 30) {
+      setShowErrorMessage(true); // Show error message if input length exceeds 30
+      setTimeout(() => setShowErrorMessage(false), 1000); // Hide error message after 1 second
+      e.target.value = inputValue.slice(0, 30); // Truncate the input value
+    }
+  };
 
   return (
     <div className="col-lg-4 mb-4">
@@ -18,7 +29,7 @@ const NameField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
         placeholder={element?.placeholder}
         type={"text"}
         disabled={element?.disabled}
-        onChange={(e) => {
+        onBlur={(e) => {
           if (element.numric == false) {
             const alphabeticValue = capitalizeFirstLetter(
               e.target.value.replace(/(^\s+)|(\s{2,})|[^A-Za-z1\s]/g, "")
@@ -29,7 +40,15 @@ const NameField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
             e.target.value = numericValue;
           }
         }}
+        onInput={handleInputChange} // Add onInput event handler
+
       />
+       {showErrorMessage && ( // Show error message if state is true
+        <div className="invalid-feedback">
+          {rhfErrorMessage.maxLength}
+        </div>
+      )}
+      
       {Errors && Errors[element?.name] && (
         <>
           <div className="invalid-feedback">
