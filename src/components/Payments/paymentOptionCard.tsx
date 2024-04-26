@@ -18,6 +18,12 @@ const PaymentOptionCard = (props) => {
     payuDetails,
     getPaymentRedirectURL,
     uploadPaymentProof,
+    fees,
+    setOpenPopup,
+    disabled,
+    updatePayment,
+    masterData,
+    paymentStatusCheck,
   } = props;
   const methods = useForm();
   const { register, watch, setValue } = methods;
@@ -34,76 +40,91 @@ const PaymentOptionCard = (props) => {
 
   return (
     <>
-      <Grid container display="flex" justifyContent="center">
-        <Grid item xs={10} md={10}>
-          <Box
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              borderRadius: 1,
-              alignItems: "center",
-            }}
-          >
-            {PaymentTypes.map(({ name, value, registerName, label }, index) => (
-              <>
-                <PaymentCardDetail key={value}>
-                  {name === "Payu" ? (
-                    <PayuInput value={value} payuDetails={payuDetails} />
-                  ) : null}
-                  {name === "Ukheshe" ? (
-                    <UkhesheInput
-                      value={value}
-                      getPaymentRedirectURL={getPaymentRedirectURL}
-                    />
-                  ) : null}
-                  <input
-                    {...register(registerName)}
-                    className="form-check-input"
-                    type="radio"
-                    value={value}
-                  />
-                  {label ? (
-                    <span style={{ marginLeft: "5px", marginTop: "3px" }}>
-                      {label}
-                    </span>
-                  ) : (
-                    <Image
-                      width={100}
-                      height={40}
-                      style={{ position: "relative", top: "2px" }}
-                      src={GetPaymentImage(value) as any}
-                      alt={GetPaymentImage(value) as string}
-                    />
-                  )}
-                </PaymentCardDetail>
-                {index === 0 && (
-                  <Box
+      <Grid
+        container
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        {PaymentTypes.map(({ name, value, registerName, label }, index) => (
+          <Grid item sm={4} md={4}>
+            {name === "Ukheshe" ? (
+              <UkhesheInput
+                value={value}
+                setOpenPopup={setOpenPopup}
+                paymentStatusCheck={paymentStatusCheck}
+              />
+            ) : null}
+
+            <Grid container>
+              <Grid
+                item
+                sm={12}
+                md={12}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <input
+                  {...register(registerName)}
+                  className="form-check-input"
+                  type="radio"
+                  value={value}
+                  disabled={fees?.feeMode === ""}
+                />
+                <span style={{ marginLeft: "5px", marginTop: "3px" }}>
+                  {label}
+                </span>
+              </Grid>
+              <Grid
+                item
+                sm={12}
+                md={12}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {name === "Ukheshe" ? (
+                  <Image
+                    width={150}
+                    height={30}
                     style={{
-                      fontWeight: "bold",
-                      textAlign: "center",
+                      position: "relative",
+                      bottom: "4px",
+                      marginLeft: "2px",
                     }}
-                  >
-                    (Or)
-                  </Box>
+                    src={GetPaymentImage(value) as any}
+                    alt={GetPaymentImage(value) as string}
+                  />
+                ) : (
+                  <Box sx={{ height: "25px" }}></Box>
                 )}
-              </>
-            ))}
-          </Box>
-          {onlinePaymentWatch === "offline" && (
-            <Grid container display="flex" justifyContent="center">
-              <Grid item xs={12}>
-                <PaymentProofCard uploadPaymentProof={uploadPaymentProof} />
               </Grid>
             </Grid>
-          )}
-        </Grid>
+          </Grid>
+        ))}
+
+        {onlinePaymentWatch === "offline" && (
+          <PaymentProofCard
+            masterData={masterData}
+            uploadPaymentProof={uploadPaymentProof}
+            disabled={disabled}
+            updatePayment={updatePayment}
+            paymentStatusCheck={paymentStatusCheck}
+          />
+        )}
       </Grid>
+
       {onlinePaymentWatch !== "offline" && (
         <Grid container display="flex" justifyContent="center" sx={{ p: 2 }}>
           <StyledButton
             form={onlinePaymentWatch}
             type="submit"
-            disabled={!onlinePaymentWatch}
+            disabled={!onlinePaymentWatch || fees?.feeMode == ""}
             title="Pay Now"
             style={{ width: "120px" }}
           />

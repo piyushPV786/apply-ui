@@ -1,12 +1,15 @@
 import axios from "axios";
 import { CommonEnums, FeemodeCode, feeMode } from "../common/constant";
-export const getConvertedAmount = (
-  conversionRate: string | null,
-  amount: string
-) => {
-  return conversionRate
-    ? Number(parseInt(amount) * parseFloat(conversionRate)).toFixed()
-    : amount;
+export const getConvertedAmount = (currencyData: any, amount: string) => {
+  if (currencyData && parseInt(currencyData?.forecastRate)) {
+    return Number(
+      parseInt(amount) * parseFloat(currencyData?.forecastRate)
+    ).toFixed();
+  } else if (parseInt(currencyData?.rate)) {
+    return Number(parseInt(amount) * parseFloat(currencyData?.rate)).toFixed();
+  } else {
+    return Number(amount);
+  }
 };
 
 export const getFeeDetails = (
@@ -25,10 +28,7 @@ export const getFeeDetails = (
       masterData?.currencyData?.currencySymbol
         ? masterData?.currencyData?.currencySymbol
         : ""
-    } ${getConvertedAmount(
-      masterData?.currencyData?.forecastRate,
-      String(fee)
-    )}`,
+    } ${getConvertedAmount(masterData?.currencyData, String(fee))}`,
     label: feeLabel,
     helpText: feeLabel === "Application Fees" ? "(Non-refundable)" : "",
     rmatFee,
@@ -36,13 +36,13 @@ export const getFeeDetails = (
       masterData?.currencyData?.currencySymbol
         ? masterData?.currencyData?.currencySymbol
         : ""
-    } ${getConvertedAmount(masterData?.currencyData?.forecastRate, rmatFee)}`,
+    } ${getConvertedAmount(masterData?.currencyData, rmatFee)}`,
     totalAmount: `${
       masterData?.currencyData?.currencySymbol
         ? masterData?.currencyData?.currencySymbol
         : ""
     } ${getConvertedAmount(
-      masterData?.currencyData?.forecastRate,
+      masterData?.currencyData,
       fee - discountAmount + rmatFee
     )}`,
     totalFee: fee - discountAmount + rmatFee,
@@ -50,10 +50,7 @@ export const getFeeDetails = (
       masterData?.currencyData?.currencySymbol
         ? masterData?.currencyData?.currencySymbol
         : ""
-    } ${getConvertedAmount(
-      masterData?.currencyData?.forecastRate,
-      String(discountAmount)
-    )}`,
+    } ${getConvertedAmount(masterData?.currencyData, String(discountAmount))}`,
     discountFee: discountAmount,
   };
 };
@@ -95,6 +92,8 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
       paymentType: getPaymentResponse?.data?.paymentType,
     },
     programName: masterData?.programData?.name,
+    paymentStatusCode: getPaymentResponse?.data?.status,
+    PaymentStatusMessage: "payment transaction failed",
   };
 };
 
@@ -185,12 +184,27 @@ export const signedUrlPayload = (response, payload, studentCode) => {
       if (document) {
         signPayload?.push({
           fileName: `${document?.documentCode}.${ext}`,
-          filetype: `${ext}`,
+          filetype: `.${ext}`,
           studentCode: studentCode,
           file: element?.files,
+          documentCode: document?.documentCode,
         });
       }
     });
   }
   return signPayload;
+};
+
+export const changeFileExactions = (files: any, documentCode: string) => {
+  const paymentProofPayload: any = [];
+  files?.forEach((element) => {
+    const ext = element?.fileName?.split(".").pop();
+    paymentProofPayload.push({
+      documentTypeCode: element?.documentTypeCode,
+      fileName: element?.fileName,
+      fileType: `.${ext}`,
+      documentCode: documentCode,
+    });
+  });
+  return paymentProofPayload;
 };

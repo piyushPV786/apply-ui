@@ -33,10 +33,8 @@ export const MobileField = ({
             validate: {
               validPhoneNumber: (value) => {
                 if (element.required) {
-                  return (
-                    validateNumber(value, countryCodeRef) ||
-                    "Invalid phone number"
-                  );
+                  if (!validateNumber(value, countryCodeRef))
+                    return "Invalid phone number";
                 }
               },
             },
@@ -67,7 +65,7 @@ export const MobileField = ({
         {error && error[element?.name] && (
           <>
             <div className="invalid-feedback">
-              {error?.mobileNumber.type === "validate"
+              {error?.mobileNumber?.type === "validPhoneNumber"
                 ? element?.validateErrorMessage
                 : element?.errorMessage}
             </div>

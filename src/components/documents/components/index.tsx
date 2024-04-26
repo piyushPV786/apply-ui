@@ -1,13 +1,12 @@
 import { Box, Card, Grid, IconButton, List, Typography } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { FileUploadContainer, InnerContainer } from "../../login/style";
-import { MobileField } from "../../lead/form/components/MobileField";
 import { useState } from "react";
 import "react-phone-number-input/style.css";
-import PhoneInput, { getCountryCallingCode } from "react-phone-number-input";
+import PhoneInput from "react-phone-number-input";
 import { docRejectStatus } from "../context/common";
 import StyledButton from "../../button/button";
-import { StyledLabel } from "../../common/common";
+import { LinearProgressWithLabel, StyledLabel } from "../../common/common";
 import AlertTitle from "@mui/material/AlertTitle";
 import {
   DeclarationListitems,
@@ -125,8 +124,20 @@ export const BursaryFeilds = ({ element, masterData }) => {
   );
 };
 
-export const FileRegister = ({ element }) => {
+export const FileRegister = ({ element, uploadDocument }) => {
   const { register } = useFormContext();
+  const productImageField = register(`${element.code}`, {
+    validate: (value) => {
+      return fileValidation(value, element);
+    },
+  });
+  const fileOnChange = (event) => {
+    if (fileValidation(event?.target?.files, element) !== true) {
+      return;
+    }
+    uploadDocument(event?.target?.files, element);
+    return event;
+  };
 
   return (
     <Grid item sm={12} xs={12}>
@@ -136,11 +147,11 @@ export const FileRegister = ({ element }) => {
             <span className="labelTitle">Browse</span>
             <input
               multiple={false}
-              {...register(`${element.code}`, {
-                validate: (value) => {
-                  return fileValidation(value, element?.required);
-                },
-              })}
+              {...productImageField}
+              onChange={(e) => {
+                productImageField?.onChange(e);
+                fileOnChange(e);
+              }}
               id={`${element?.code}`}
               className="d-none"
               accept="image/jpeg, application/pdf"
@@ -148,7 +159,7 @@ export const FileRegister = ({ element }) => {
             />
           </StyleLabel>
           <Typography className="doc-upload-text">
-            Click on browse and Select all files to be uploded from your machine
+            Click on browse and Select all files to be uploaded from your machine
           </Typography>
         </Box>
       </FileUploadContainer>
@@ -172,24 +183,44 @@ export const Reject = ({ element }) => {
     )
   );
 };
+export const Info = () => {
+  return (
+    <Grid item sm={12} xs={12}>
+      <Alert severity="warning" variant="standard" className="infoColor">
+        <AlertTitle>Certified document required </AlertTitle>
+        <Typography className="mr-2"></Typography>
+      </Alert>
+    </Grid>
+  );
+};
 
-export const ErrorHandling = ({ element, masterData }) => {
+export const ErrorHandling = ({
+  element,
+  masterData,
+  uploadProgress,
+  onRemoveFile,
+}) => {
   const {
     formState: { errors },
   } = useFormContext();
   return (
     <Grid item sm={12} xs={12}>
+      {!!uploadProgress && <LinearProgressWithLabel value={uploadProgress} />}
       {errors[element.code] && (
         <Typography color={"error"}>
           {errors[element.code]?.message as any}
         </Typography>
       )}
-      <HandleAction element={element} masterData={masterData} />
+      <HandleAction
+        element={element}
+        masterData={masterData}
+        onRemoveFile={onRemoveFile}
+      />
     </Grid>
   );
 };
 
-export const HandleAction = ({ element, masterData }) => {
+export const HandleAction = ({ element, masterData, onRemoveFile }) => {
   const { watch, setValue } = useFormContext();
   const fileWatch = watch(element?.code)?.file
     ? watch(element?.code)?.file
@@ -197,6 +228,7 @@ export const HandleAction = ({ element, masterData }) => {
   const { getFileUrl } = UsePreviewFile();
   const handleRemoveFiles = () => {
     setValue(element?.code, undefined);
+    onRemoveFile();
   };
 
   if (!fileWatch || fileWatch?.length === 0 || !fileWatch[0]?.name) {

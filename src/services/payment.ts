@@ -79,6 +79,15 @@ class PaymentServices {
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
   }
+  async getProgramRmatDetails(programCode: string) {
+    const url = `${apiUrls?.academicBaseUrl}${apiEndPoint.programRmat}`.replace(
+      ":programCode",
+      programCode
+    );
+    const response = await apiServer.get(url);
+    const result = response?.data?.data ? response?.data?.data : {};
+    return result;
+  }
 
   async getUkhesheToken() {
     const url = `${apiUrls?.financeBaseUrl}${apiEndPoint.ukhesheToken}`;

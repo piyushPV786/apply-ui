@@ -17,7 +17,7 @@ const ApplicationCard = ({
 }) => {
   return (
     <>
-      <ApplicationContainer className="container bg-white p-0 app-card border rounded overflow-hidden">
+      <ApplicationContainer className="container bg-white p-0 app-card border rounded ">
         <div className="d-flex flex-row justify-content-between">
           <div
             className="refresh-icon"

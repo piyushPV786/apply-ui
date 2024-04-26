@@ -4,7 +4,15 @@ import { useFormContext } from "react-hook-form";
 import { CommonEnums } from "../../common/constant";
 
 // comon document page used constants //
-export const mbaDocs = ["MOTIVATIONLETTER", "INTERVIEWNOTES"];
+export const mbaDocs = ["MOTIVATIONLETTER"];
+export const nonMandatoryDocuments = [
+  "TERMS&CONDITION",
+  "APPLICATIONLETTER",
+  "MATRIC",
+  "OTHERS",
+  "INTERVIEWNOTES",
+  "EDFORALLCONTRACT",
+];
 
 export const docType = {
   RESUMECV: "RESUMECV",
@@ -31,6 +39,7 @@ export const dashboardRedirectStatus = [
 export const customStatus = {
   UPLOADPENDING: "UPLOADPENDING",
   UPLOADED: "UPLOADED",
+  EDFORALLCONTRACT: "EDFORALLCONTRACT",
 };
 
 export const status = {
@@ -64,6 +73,13 @@ export const acceptedFileTypes = [
   "image/jpg",
   "image/png",
   "application/pdf",
+];
+
+export const MBACode = "MBA-Prog";
+export const allowedPaymentStatus = [
+  "APP-FEE-PEND",
+  "ENRL-ACCEPTED",
+  "PROG-FEE-PEND",
 ];
 
 export const documentCriteria = [
@@ -147,18 +163,27 @@ export const IconButton = styled(Box)<any>(({ color }) => ({
 }));
 
 //common functions//
-export const fileValidation = (value, isRequired) => {
+export const fileValidation = (value, element) => {
   if (
     (!value || value?.length === 0 || value[0]?.name?.length === 0) &&
-    isRequired == true
+    element?.required === true
   ) {
     return "This file is Required please upload file";
   }
-  if (value) {
-    if (value[0]?.type && !acceptedFileTypes.includes(value[0]?.type)) {
+  if (value && element?.code) {
+    if (value[0] && !acceptedFileTypes.includes(value[0]?.type)) {
       return "This file type is not accepted please upload from accepted file types";
-    } else if (value[0]?.size > 2 * 1024 * 1024) {
-      return "File size should be at most 2MB";
+    } else if (
+      value[0]?.size > 20 * 1024 * 1024 &&
+      element?.code === customStatus?.EDFORALLCONTRACT
+    ) {
+      console.log("in codition");
+      return "File size should be at most 20MB";
+    } else if (
+      value[0]?.size > 3 * 1024 * 1024 &&
+      element?.code !== customStatus?.EDFORALLCONTRACT
+    ) {
+      return "File size should be at most 3MB";
     }
   }
 

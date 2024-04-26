@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const documentPayload = (data, isDraft, masterData) => {
+export const documentPayload = (data, isDraft, masterData, progress) => {
   let result = {};
   if (masterData?.documentTypes && masterData?.userDetails?.studentCode) {
     let Files: any = [];
@@ -11,7 +11,7 @@ export const documentPayload = (data, isDraft, masterData) => {
           documentTypeCode: element?.code,
           fileName: fileObj[0]?.name,
           fileType: `.${fileObj[0].name?.split(".").pop()}`,
-          file: fileObj,
+          documentCode: progress[element?.code]?.documentCode,
         };
         Files.push(Obj);
       }
@@ -25,6 +25,20 @@ export const documentPayload = (data, isDraft, masterData) => {
       };
     }
   }
+  return result;
+};
+
+export const studentBursaryPayload = (res, masterData) => {
+  let result = {
+    bursaryId: res?.id,
+    sanctionedAmount: 0,
+    financialYear: new Date().getFullYear(),
+    enrolmentCode: masterData?.userDetails?.applicationCode,
+    studentCode: masterData?.userDetails?.studentCode,
+    status: "BURSARY-REQUESTED",
+    isActive: true,
+  };
+
   return result;
 };
 
@@ -42,6 +56,7 @@ export const signedUrlPayload = (response, payload) => {
           filetype: `${ext}`,
           studentCode: payload?.studentCode,
           file: element?.file[0],
+          documentCode: document?.documentCode,
         });
       }
     });

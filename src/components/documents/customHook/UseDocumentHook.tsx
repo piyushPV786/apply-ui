@@ -6,10 +6,18 @@ import {
   bursarryFeilds,
   dashboardRedirectStatus,
   docType,
+  MBACode,
+  nonMandatoryDocuments,
 } from "../context/common";
 import { useRouter } from "next/router";
-import { documentPayload, signedUrlPayload, viewProofDetails } from "./helper";
+import {
+  documentPayload,
+  signedUrlPayload,
+  studentBursaryPayload,
+  viewProofDetails,
+} from "./helper";
 import { CommonEnums } from "../../common/constant";
+import { toast } from "react-toastify";
 
 interface documentTypeApiResponseType {
   code: string;
@@ -38,11 +46,11 @@ export const UseDocumentHook = (applicationCode) => {
         return {
           name: element?.name,
           label: element?.name,
-          required: userInfo?.education?.programCode === "MBA",
+          required: userInfo?.education?.programCode === MBACode,
           code: element.code,
-          show: userInfo?.education?.programCode === "MBA",
+          show: userInfo?.education?.programCode === MBACode,
         };
-      } else if (element.code === docType.MATRIC) {
+      } else if (nonMandatoryDocuments.includes(element.code)) {
         return {
           name: element?.name,
           label: element?.name,
@@ -91,48 +99,39 @@ export const UseDocumentHook = (applicationCode) => {
   return { masterData };
 };
 
-export const ActionDocumentSubmit = () => {
+export const UseDocumentAction = () => {
+  const [progress, setProgress] = useState({});
   const router = useRouter();
+
+  const setDocumentProgress = (element, percent, documentCode) => {
+    setProgress({ ...progress, [element?.code]: { percent, documentCode } });
+  };
+
   const uploadFiles = async (payload, masterData) => {
     const response = await DocumentServices.uploadDocuments(
       payload,
       masterData?.userDetails?.applicationCode
     );
-
-    const changePayload = signedUrlPayload(response, payload);
-    if (changePayload) {
-      const result = await Promise.all(
-        changePayload?.map(async (item) => {
-          const response = await DocumentServices?.getFileSignUrl(
-            item?.fileName,
-            item?.filetype,
-            item?.studentCode
-          );
-          return await DocumentServices.uploadDocumentToAws(
-            response,
-            item.file
-          );
-        })
-      );
-
+    if (response) {
       dashboardRedirectStatus.includes(masterData?.userDetails?.status)
         ? router.push(`/dashboard`)
         : router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
+    } else {
+      toast.success(`Your document is not uploaded`);
     }
   };
 
   const saveAsDraft = (data, masterData) => {
-    const payload = documentPayload(data, true, masterData);
+    const payload = documentPayload(data, true, masterData, progress);
     if (payload) {
       uploadFiles(payload, masterData);
-      router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
     }
   };
-  const submitDocument = (data, masterData) => {
+  const submitDocument = async (data, masterData) => {
     if (masterData?.userDetails?.status == CommonEnums.BURSARY_LETTER_PEND) {
       const bursaryPayload = {
         name: data[bursarryFeilds.Name],
-        mobile: [bursarryFeilds.Phone],
+        mobile: data[bursarryFeilds.Phone],
         address: "",
         email: data[bursarryFeilds.Email],
         occupation: "",
@@ -147,16 +146,20 @@ export const ActionDocumentSubmit = () => {
           branchCode: "",
         },
       };
-      DocumentServices.updateBursary(bursaryPayload);
+      const res = await DocumentServices.updateBursary(bursaryPayload);
+      if (res) {
+        const payload = studentBursaryPayload(res, masterData);
+        DocumentServices.updateStudentBursary(payload);
+      }
     }
+    const payload = documentPayload(data, false, masterData, progress);
 
-    const payload = documentPayload(data, false, masterData);
     if (payload) {
       uploadFiles(payload, masterData);
     }
   };
 
-  return { saveAsDraft, submitDocument };
+  return { saveAsDraft, submitDocument, progress, setDocumentProgress };
 };
 
 export const UseDownloadDeclarationLatter = () => {

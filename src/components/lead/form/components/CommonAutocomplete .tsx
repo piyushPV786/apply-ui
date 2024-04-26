@@ -24,18 +24,21 @@ const CommonAutocomplete = (props: IProps) => {
     disabled = false,
     onChange,
   } = props;
-  const { register, setValue, watch } = useFormContext();
+  const { register, setValue, watch, trigger } = useFormContext();
   const optionList: any = [];
-  const dropDownOptions = options?.map((item) => {
-    if (item?.code) {
-      optionList.push(item);
-      return item.code;
-    } else if (item?.isoCode) {
-      const { isoCode, ...rest } = item;
-      optionList.push({ ...rest, code: isoCode });
-      return isoCode;
-    }
-  });
+
+  const dropDownOptions = options
+    ?.sort((a, b) => a.name.localeCompare(b.name))
+    .map((item) => {
+      if (item?.code) {
+        optionList.push(item);
+        return item.code;
+      } else if (item?.isoCode) {
+        const { isoCode, ...rest } = item;
+        optionList.push({ ...rest, code: isoCode });
+        return isoCode;
+      }
+    });
 
   return (
     <>
@@ -62,6 +65,9 @@ const CommonAutocomplete = (props: IProps) => {
           setValue(registerName, value);
           onChange && onChange();
         }}
+        onBlur={() => {
+          trigger(registerName);
+        }}
         renderInput={(params) => {
           const { inputProps, ...rest } = params;
           const optionValue = optionList?.find(
@@ -86,6 +92,14 @@ const CommonAutocomplete = (props: IProps) => {
               {...rest}
               inputProps={inputProps}
             />
+          );
+        }}
+        renderOption={(props, option, { selected }) => {
+          const optionValue = optionList?.find((item) => item?.code === option);
+          return (
+            <li {...props} key={option.code}>
+              {optionValue?.name}
+            </li>
           );
         }}
       />

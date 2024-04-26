@@ -1,12 +1,15 @@
+import { useState } from "react";
 import ApplicationServices from "../../../services/applicationForm";
 import { useRouter } from "next/router";
 
 export const useHelperHook = (masterData, watch, setError) => {
+  const [disable, setDisable] = useState(false);
   const { applicationData, programsData } = masterData;
   const router = useRouter();
   const { applicationCode } = router?.query;
 
   const saveApplication = async (data: any) => {
+    setDisable(true);
     const programName = programsData?.find(
       (item) => item?.code === data?.education?.programCode
     );
@@ -14,9 +17,14 @@ export const useHelperHook = (masterData, watch, setError) => {
     if (applicationCode === "new") {
       const payload = {
         ...data,
+        address: Object.values(data?.address).filter(
+          (value) => typeof value === "object"
+        ),
         education: {
           ...data?.education,
           programName: programName?.name ? programName?.name : "",
+          isInternationDegree:
+            data.education.isInternationDegree === "yes" ? true : false,
         },
       };
       response = await ApplicationServices.createLead(payload, false);
@@ -26,16 +34,24 @@ export const useHelperHook = (masterData, watch, setError) => {
     ) {
       const payload = {
         ...data,
+        address: Object.values(data?.address).filter(
+          (value) => typeof value === "object"
+        ),
         applicationCode: applicationData?.applicationCode,
         education: {
           ...data?.education,
           programName: programName?.name ? programName?.name : "",
+          isInternationDegree:
+            data.education.isInternationDegree === "yes" ? true : false,
         },
       };
       response = await ApplicationServices.createLead(payload, true);
     } else if (applicationData?.applicationCode) {
       const payload = {
         ...data,
+        address: Object.values(data?.address).filter(
+          (value) => typeof value === "object"
+        ),
         kin: data?.kin?.isKin ? data?.kin : { isKin: "no" },
         sponsor: data?.sponsor?.isSponsor ? data?.sponsor : { isSponsor: "no" },
         employment: data?.employment?.isEmployment
@@ -45,6 +61,8 @@ export const useHelperHook = (masterData, watch, setError) => {
         education: {
           ...data?.education,
           programName: programName?.name ? programName?.name : "",
+          isInternationDegree:
+            data.education.isInternationDegree === "yes" ? true : false,
         },
       };
       response = await ApplicationServices.updateLead(
@@ -65,6 +83,7 @@ export const useHelperHook = (masterData, watch, setError) => {
   };
 
   const saveApplicationAsDraft = async () => {
+    setDisable(true);
     const data = watch();
     const { lead } = data;
     if (
@@ -90,6 +109,7 @@ export const useHelperHook = (masterData, watch, setError) => {
           message: "Please enter your email",
         });
       }
+      setDisable(false);
       return;
     }
 
@@ -120,5 +140,5 @@ export const useHelperHook = (masterData, watch, setError) => {
       }
     }
   };
-  return { saveApplication, saveApplicationAsDraft };
+  return { saveApplication, saveApplicationAsDraft, disable };
 };

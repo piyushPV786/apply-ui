@@ -15,6 +15,7 @@ const AddressType = (props) => {
   const stateDetails: any = useAddressHook(countryDetail);
   const stateList = stateDetails[countryDetail];
   const Errors = errors["address"] as any;
+  const isSameAsPostalAddress = watch("address.isSameAsPostalAddress");
 
   return (
     <>
@@ -22,18 +23,25 @@ const AddressType = (props) => {
         <StyledLabel required> {`${data?.name} Address`} </StyledLabel>
         <input
           className="form-control"
+          disabled={
+            isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
+          }
           type={"text"}
           placeholder={"e.g 10 church street"}
           {...register(`address[${index}].street`, {
             required: true,
+            maxLength: 40,
           })}
           onChange={(e) =>
             (e.target.value = capitalizeFirstLetter(e.target.value))
           }
         />
+
         {Errors && Errors[index]?.street && (
           <div className="invalid-feedback">
-            Please enter Residential Address
+            {Errors[index]?.street.type === "maxLength"
+              ? "Maximum 40 characters allowed"
+              : `Please enter ${data?.name} Address`}
           </div>
         )}
       </div>
@@ -46,6 +54,9 @@ const AddressType = (props) => {
                 ? applicationData?.address[index]?.country
                 : null
             }
+            disabled={
+              isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
+            }
             options={masterData?.countryData}
             label="Country"
             registerName={`address[${index}].country`}
@@ -54,7 +65,7 @@ const AddressType = (props) => {
         )}
         {Errors && Errors[index]?.country && (
           <div className="invalid-feedback">
-            Please enter Residential Country
+            Please enter {`${data?.name}`} Country
           </div>
         )}
       </div>
@@ -66,13 +77,18 @@ const AddressType = (props) => {
               ? applicationData?.address[index]?.state
               : null
           }
+          disabled={
+            isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
+          }
           options={stateList ? stateList : []}
           label="State/Provinces"
           registerName={`address[${index}].state`}
           required={true}
         />
         {Errors && Errors[index]?.state && (
-          <div className="invalid-feedback">Please enter Residential State</div>
+          <div className="invalid-feedback">
+            Please enter {`${data?.name}`} State
+          </div>
         )}
       </div>
 
@@ -85,14 +101,19 @@ const AddressType = (props) => {
           {...register(`address[${index}].city`, {
             required: true,
           })}
+          disabled={
+            isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
+          }
           onChange={(e) => {
-            const alphabeticValue = e.target.value.replace(/[^A-Za-z]/g, "");
+            const alphabeticValue = e.target.value.replace(/[^A-Za-z\s]/g, "");
             e.target.value = alphabeticValue;
             e.target.value = capitalizeFirstLetter(e.target.value);
           }}
         />
         {Errors && Errors[index]?.city && (
-          <div className="invalid-feedback">Please enter Residential City</div>
+          <div className="invalid-feedback">
+            Please enter {`${data?.name}`} City
+          </div>
         )}
       </div>
       <div className="col-lg-4 mb-4">
@@ -100,7 +121,7 @@ const AddressType = (props) => {
         <input
           min="0"
           className="form-control"
-          type={"number"}
+          type={"text"}
           placeholder={"Enter Zip/Postal Code"}
           {...register(`address[${index}].zipcode`, {
             required: true,
@@ -108,6 +129,15 @@ const AddressType = (props) => {
             minLength: 4,
             min: 1,
           })}
+          disabled={
+            isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
+          }
+          onChange={(e) => {
+            const numericRegex = /^[0-9]*$/;
+            if (!numericRegex.test(e.target.value)) {
+              e.target.value = e.target.value.replace(/[^0-9]/g, "");
+            }
+          }}
         />
         {Errors && Errors[index]?.zipcode && (
           <div className="invalid-feedback">

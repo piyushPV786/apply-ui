@@ -1,4 +1,4 @@
-import { Accordion } from "@material-ui/core";
+import { Accordion, Box, LinearProgressProps } from "@material-ui/core";
 import styled from "styled-components";
 import {
   StyledLink,
@@ -12,6 +12,7 @@ import { CommonEnums } from "./constant";
 import Image from "next/image";
 import Spinner from "../../../public/assets/images/spinner.svg";
 import { IDynamicObject } from "./types";
+import { LinearProgress, Typography } from "@mui/material";
 
 export const GreenFormHeading = styled.p`
   font-size: 16px;
@@ -45,6 +46,7 @@ export const StyledMessage = (props: any) => {
 };
 
 export const Green = "#008554";
+export const acceptedFileType = ["application/pdf", "image/png", "image/jpeg"];
 export const DefaultGrey = "#dde1e3";
 export const StyledLabel = (props: any) => {
   const {
@@ -231,21 +233,32 @@ const LoadinContainer = styled.div`
   align-items: center;
 `;
 
+export const nonMandatorySponsorFeilds = ["email", "mobileNumber"];
+export const mandatorySponsorModeFeilds = ["GUARDIAN", "BURSARY"];
+
+export const accountDetails = {
+  AccountName: "Regenesys Business School",
+  AccountNumber: "1172349479",
+  BranchCode: "198765",
+  BankName: "Nedbank",
+  AccountType: "Cheque Account",
+};
+
 export const studentApplicationAllStatus: IDynamicObject = {
   "APP-FEE-DOC-VER-PEND": "Application Fee Verification Pending",
-  "RESUB-APP-FEE-PROOF": "Resubmit application Fee POP",
+  "RESUB-APP-FEE-PROOF": "Resubmit Application Fee POP",
   "APP-FEE-VER-PEND": "Application Fee POP Verification Pending",
   "APP-FEE-ACCEPTED": "Application Fee Accepted",
   "APP-FEE-REJECTED": "Application Fee Rejected",
-  "APP-ENROLLED": "Registration Confirmed",
+  "APP-ENROLLED": "Application Confirmed",
   "APP-DOC-VER-PEND": "Application Document Verification Pending",
   "APP-DOC-REQUESTED": "Application Documents Requested",
   "APP-DOC-ACCEPTED": "Application Documents Accepted",
   "RMAT-PEND": "RMAT Pending",
   "RMAT-PASS": "RMAT Pass",
   "RMAT-FAIL": "RMAT Fail",
-  "ENRL-ACCEPTED": "Enrolment Accepted",
-  "PROG-FEE-PEND": "Program Fee Pending",
+  "ENRL-ACCEPTED": "Application Accepted",
+  "PROG-FEE-PEND": "Qualification Fee Pending",
   "BURSARY-REQUESTED": "Request for Bursary",
   "BURSARY-DOC-VER-PEND": "Bursary Document Verification Pending",
   "BURSARY-DOC-REQUESTED": "Bursary Documents Requested",
@@ -258,9 +271,9 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "LOAN-PEND": "Loan Confirmation Pending",
   "LOAN-APPROVED": "Loan Approved",
   "LOAN-REJECTED": "Loan Rejected",
-  "PROG-FEE-DOC-VER-PEND": "Program Fees Document Verification Pending",
-  "RESUB-PROG-FEE-PROOF": "Resubmit Program Fee  POP",
-  "PROG-FEE-VER-PEND": "Program Fees POP Verification Pending",
+  "PROG-FEE-DOC-VER-PEND": "Qualification Fees Document Verification Pending",
+  "RESUB-PROG-FEE-PROOF": "Resubmit Program Fee POP",
+  "PROG-FEE-VER-PEND": "Program Fees Verification Pending",
   "DEBIT-ORDER-FORM-PEND": "Debit Order Form Pending",
   "DEBIT-ORDER-FORM-DOC-VER-PEND":
     "Debit Order Form Document Verification Pending",
@@ -272,7 +285,7 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "EFT-LETTER-VER-PEND": "EFT Letter Verification Pending",
   "EFT-LETTER-ACCEPTED": "EFT Letter Accepted",
   "RESUB-EFT-LETTER": "Resubmit EFT Letter",
-  "PROG-FEE-ACCEPTED": "Program Fee Accepted",
+  "PROG-FEE-ACCEPTED": "Qualification Fee Accepted",
   "INTAKE-ASSIGNMENT-PEND": "Intake Assignment Pending",
   "INTAKE-ASSIGNED": "Intake Assigned",
   "PROG-ADMITTED": "Enrolled to the Program",
@@ -281,7 +294,7 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "APP-FEE-PEND": "Application  Fee Pending",
   "UPLD-APP-DOC": "Upload Application documents",
   "APP-DOC-UPLOADED": "Application documents Uploaded",
-  "RESUB-APP-DOC": "Resubmit application Documents",
+  "RESUB-APP-DOC": "Resubmit Application Documents",
   "UPLD-BURSARY-DOC": "Upload Bursary Documents",
   "BURSARY-DOC-UPLOADED": "Bursary Document Uploaded",
   "RESUB-BURSARY-DOC": "Resubmit Bursary Documents",
@@ -292,7 +305,33 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "LOAN-DOC-ACCEPTED": "Loan Documents Accepted",
   "INTAKE-ASSIGNMENT PENDING": "Intake Assignment Pending",
   "BURSARY-LETTER-PEND": "Upload Bursary Documents",
+  "RMAT-PENDING": "RMAT Exam is Pending",
+  "INTAKE-ASSIGNMENT-PENDING": "Intake Assignment Pending",
+  "FINANCE-VERIFICATION-PEND": "Finance Verification Pending",
+  MONTHLY_PAYMENT_REJECTED: "Monthly Payment Rejected",
 };
 export enum FileSize {
   maxSize = 2000 * 1024,
+}
+export const CertifiedDocumentQualification = ["Skills-NDPA-Prog", "DBM-Prog"];
+export const CertifiedDocument = [
+  "MATRIC",
+  "IDPASSPORT",
+  "HIGHESTQUALIFICATION",
+];
+export function LinearProgressWithLabel(
+  props: LinearProgressProps & { value: number }
+) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ width: "100%", mr: 1 }}>
+        <LinearProgress variant="determinate" {...props} color="success" />
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" color="text.primary">{`${Math.round(
+          props.value
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
 }

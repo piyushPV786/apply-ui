@@ -45,11 +45,13 @@ const UseCardActionHook = (applicationDetail) => {
   const isPayBTN =
     status === CommonEnums.RESUB_APP_FEE_PROOF ||
     status === CommonEnums.APP_ENROLLED_ACCEPTED ||
-    status === APPLICATION_STATUS.APPLICATION_FEE_PENDING;
+    status === APPLICATION_STATUS.APPLICATION_FEE_PENDING ||
+    status === APPLICATION_STATUS?.MONTHLY_PAYMENT_REJECT;
 
   const payBtnTitle =
-    status === CommonEnums.APP_ENROLLED_ACCEPTED
-      ? "Pay Program Fee"
+    status === CommonEnums.APP_ENROLLED_ACCEPTED ||
+    status === APPLICATION_STATUS?.MONTHLY_PAYMENT_REJECT
+      ? "Pay Qualification Fee"
       : "Pay Application Fee";
 
   const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
@@ -64,14 +66,17 @@ const UseCardActionHook = (applicationDetail) => {
     BURSARY_BUTTON_STATUS.includes(status) &&
     education?.studentTypeCode === CommonEnums?.BURSARY;
   const isAdamiteBTN = status === CommonEnums.PROG_ADMITTED;
-  const documentData = document?.filter((item) => {
-    return (
+  const documentDataTypes = [
+    CommonEnums.ACCEPTANCE_LETTER,
+    CommonEnums.WELCOME_LETTER,
+    CommonEnums.QUOTE,
+  ];
+  const documentData = document?.filter(
+    (item) =>
       (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
         status === CommonEnums?.PROG_ADMITTED) ||
-      item?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER ||
-      item?.documentTypeCode === CommonEnums.WELCOME_LETTER
-    );
-  });
+      documentDataTypes.includes(item?.documentTypeCode)
+  );
 
   const getDownloadDocument = async (documentDetail) => {
     const { name } = documentDetail;

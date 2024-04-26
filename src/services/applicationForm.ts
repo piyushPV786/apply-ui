@@ -129,6 +129,16 @@ class ApplicationFormServices {
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
+  async checkDuplicateIdNumber(idNumber: string) {
+    const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
+    const route = apiEndPoint?.checkDuplicateIdNumber
+      .replace(":idNumber", idNumber)
+      .replace(":leadCode", studentDetails?.leadCode);
+    const url = `${apiUrls?.applyBaseUrl}${route}`;
+    const response = await apiServer.get(url);
+    const result = response?.data?.data ? response?.data?.data : null;
+    return result;
+  }
 }
 
 export default new ApplicationFormServices();
