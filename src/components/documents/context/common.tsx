@@ -76,6 +76,8 @@ export const acceptedFileTypes = [
 ];
 
 export const MBACode = "MBA-Prog";
+export const DBMCode = "DBM-Prog";
+
 export const allowedPaymentStatus = [
   "APP-FEE-PEND",
   "ENRL-ACCEPTED",
