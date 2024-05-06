@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
-import { MBACode, allowedPaymentStatus } from "../documents/context/common";
+import {
+  MBACode,
+  allowedPaymentStatus,
+  DBMCode,
+} from "../documents/context/common";
 import {
   CommonEnums,
   DocumentStatus,
@@ -120,6 +124,25 @@ export const usePaymentDetailsHook = (masterData: any) => {
       } ${getConvertedAmount(
         masterData?.currencyData,
         String(feesStructure?.fee)
+      )}`,
+    };
+  } else if (
+    !applicationFeesStatus.includes(masterData?.applicationData?.status) &&
+    masterData?.applicationData?.eligibility[0]?.accessProgram &&
+    masterData?.applicationData?.education?.programCode == DBMCode
+  ) {
+    fees = {
+      fee: masterData?.feeData?.otherFee?.totalFee,
+      label: "Access Program",
+      helpText: "",
+      feeMode: "MONTHLY",
+      amount: `${
+        masterData?.currencyData?.currencySymbol
+          ? masterData?.currencyData?.currencySymbol
+          : ""
+      } ${getConvertedAmount(
+        masterData?.currencyData,
+        String(masterData?.feeData?.otherFee?.totalFee)
       )}`,
     };
   } else {
