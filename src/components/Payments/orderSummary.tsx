@@ -85,7 +85,12 @@ const ProgramFees = (props) => {
       </Grid>
       <Grid item md={7} xs={12}>
         {!applicationFeesStatus.includes(masterData?.applicationData?.status) &&
-          !masterData?.applicationData?.eligibility[0]?.accessProgram && (
+
+          
+
+          !masterData?.applicationData?.eligibility[0]?.accessProgram &&
+  
+
             <Grid>
               <label>Fee Mode</label>
               <Grid>
