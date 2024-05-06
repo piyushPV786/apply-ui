@@ -4,7 +4,7 @@ import { capitalizeFirstLetter } from "../../../../Util/Util";
 import { RhfErrorTypes, rhfErrorMessage } from "../../../common/constant";
 import { useState } from "react";
 
-const NameField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
+const NameField = ({ element, Errors, registerName }: any) => {
   const { register } = useFormContext();
   const [showErrorMessage, setShowErrorMessage] = useState(false); // State to manage error message display
 
@@ -14,6 +14,19 @@ const NameField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
       setShowErrorMessage(true); // Show error message if input length exceeds 30
       setTimeout(() => setShowErrorMessage(false), 1000); // Hide error message after 1 second
       e.target.value = inputValue.slice(0, 30); // Truncate the input value
+    }
+  };
+
+  const handleBlur = (e) => {
+    const inputValue = e.target.value;
+    const hasNumbers = /\d/.test(inputValue);
+    if (hasNumbers) {
+      setShowErrorMessage(true); // Show error message if input contains numbers
+      e.target.value = ""; // Clear the input field
+    } else {
+      setShowErrorMessage(false);
+      const alphabeticValue = inputValue.replace(/[^A-Za-z]/g, "");
+      e.target.value = alphabeticValue;
     }
   };
 
@@ -29,26 +42,15 @@ const NameField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
         placeholder={element?.placeholder}
         type={"text"}
         disabled={element?.disabled}
-        onBlur={(e) => {
-          if (element.numric == false) {
-            const alphabeticValue = capitalizeFirstLetter(
-              e.target.value.replace(/(^\s+)|(\s{2,})|[^A-Za-z1\s]/g, "")
-            );
-            e.target.value = alphabeticValue;
-          } else if (element.numric == true) {
-            const numericValue = e.target.value.replace(/[^0-9]/g, "");
-            e.target.value = numericValue;
-          }
-        }}
-        onInput={handleInputChange} // Add onInput event handler
-
+        onBlur={handleBlur}
+        onInput={handleInputChange}
       />
-       {showErrorMessage && ( // Show error message if state is true
+      {showErrorMessage && ( 
         <div className="invalid-feedback">
-          {rhfErrorMessage.maxLength}
+          Number not allowed
         </div>
       )}
-      
+
       {Errors && Errors[element?.name] && (
         <>
           <div className="invalid-feedback">

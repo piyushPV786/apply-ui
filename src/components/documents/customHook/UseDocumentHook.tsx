@@ -33,7 +33,12 @@ export const UseDocumentHook = (applicationCode) => {
   });
 
   const convertDataToFormData = (documentTypes, userInfo) => {
-    const result = documentTypes?.map((element) => {
+    //Remove this filter once RPL done
+    const documentData = documentTypes?.filter(
+      (item) => item?.code !== "SAQA   " && item?.code !== "RPL"
+    );
+
+    const result = documentData?.map((element) => {
       if (element.code === docType?.BURSARYLETTER) {
         return {
           name: element?.name,
