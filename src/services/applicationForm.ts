@@ -14,6 +14,7 @@ class ApplicationFormServices {
     const url = `${apiUrls?.userManagementBaseUrl}${apiEndPoint?.salesAgent}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
+
     return result;
   }
 
@@ -35,7 +36,7 @@ class ApplicationFormServices {
           ? applicationCode
           : `${applicationCode}?isDraft=true`
       )
-      .replace(":leadCode", studentDetails?.leadCode);
+      .replace(":leadId", studentDetails?.leadId);
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
@@ -106,13 +107,15 @@ class ApplicationFormServices {
 
   async updateLead(payload, applicationCode) {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
-    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.lead}/${studentDetails?.leadCode}/${apiEndPoint?.application}/${applicationCode}?isDraft=false`;
+    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.lead}/${studentDetails?.leadId}/${apiEndPoint?.application}/${applicationCode}?isDraft=false`;
     const response = await apiServer.put(url, payload);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
   async getTermsAndConditionFile(name: string, email: string) {
-    let route = apiEndPoint?.termAndCondFile.replace(":name", name);
+    const Name = name.replace(" ", "-");
+
+    let route = apiEndPoint?.termAndCondFile.replace(":name", Name);
     route = route.replace(":email", email);
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url, { responseType: "blob" });
@@ -123,7 +126,7 @@ class ApplicationFormServices {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
     const route = apiEndPoint?.checkDuplicateEmail
       .replace(":email", email)
-      .replace(":leadCode", studentDetails?.leadCode);
+      .replace(":leadId", studentDetails?.leadId);
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
@@ -133,7 +136,7 @@ class ApplicationFormServices {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
     const route = apiEndPoint?.checkDuplicateIdNumber
       .replace(":idNumber", idNumber)
-      .replace(":leadCode", studentDetails?.leadCode);
+      .replace(":leadId", studentDetails?.leadId);
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;

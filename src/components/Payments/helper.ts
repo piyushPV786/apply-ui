@@ -78,7 +78,7 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
     paymentStatus: getPaymentResponse?.data?.status,
     discountCode: fees?.discountCode,
     discountAmount: fees.discountFee,
-    studentCode: masterData?.applicationData?.studentCode,
+    studentCode: masterData?.applicationData?.lead?.studentCode,
     applicationCode: masterData?.applicationData?.applicationCode,
     paymentType: "ONLINE",
     ukheshe: {

@@ -284,3 +284,18 @@ export enum RhfErrorTypes {
   MinLength = "minLength",
   Min = "min",
 }
+
+export const AddressTypeData = [
+  {
+    isActive: true,
+    id: 1,
+    name: "Postal",
+    code: "POSTAL",
+  },
+  {
+    isActive: true,
+    id: 2,
+    name: "Residential",
+    code: "RESIDENTIAL",
+  },
+];

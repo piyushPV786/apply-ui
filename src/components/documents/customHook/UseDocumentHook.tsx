@@ -195,7 +195,7 @@ export const UsePreviewFile = () => {
     } else {
       const response = await DocumentServices?.getFileUrl(
         file?.name,
-        masterData?.userDetails?.studentCode
+        masterData?.userDetails?.lead?.studentCode
       );
       viewProofDetails(response);
     }

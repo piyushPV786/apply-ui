@@ -13,6 +13,7 @@ import {
   useCompareAddressHook,
   useSameResidentialAddress,
 } from "../customHooks/addressHooks";
+import { AddressTypeData } from "../../common/constant";
 
 const Address = (props: any) => {
   const { masterData, applicationData } = props?.masterData;
@@ -36,8 +37,8 @@ const Address = (props: any) => {
       </AccordionSummary>
       <AccordionDetails>
         <div className="row">
-          {masterData?.addressTypeData?.length &&
-            masterData?.addressTypeData?.map((item: any, index: any) => (
+          {AddressTypeData?.length &&
+            AddressTypeData?.map((item: any, index: any) => (
               <>
                 <AddressType
                   applicationData={applicationData}
