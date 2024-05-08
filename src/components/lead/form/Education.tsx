@@ -33,6 +33,8 @@ const Education = (props: any) => {
     props?.masterData;
   const programCode = watch("education.programCode");
   const studyModeCodeWatch = watch("education.studyModeCode");
+  const agendWatch = watch("education.agentCode");
+  const socialMediaWatch = watch("education.socialMediaCode");
   const studentProgram: any = useEducationHook(programCode);
   const refferedBy = watch("education.referredById");
 
@@ -49,6 +51,24 @@ const Education = (props: any) => {
       });
     }
   }, [programCode]);
+
+  useEffect(() => {
+    if (agendWatch !== null) {
+      setError("education.socialMediaCode", {
+        type: "manual",
+        message: "",
+      });
+    }
+  }, [agendWatch]);
+
+  useEffect(() => {
+  if(socialMediaWatch !== null){
+      setError("education.agentCode", {
+        type: "manual",
+        message: "",
+      });
+    }
+  }, [socialMediaWatch]);
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
