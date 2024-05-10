@@ -9,9 +9,8 @@ import { downloadDocument } from "../../../Util/Util";
 import { useState } from "react";
 
 const UseCardActionHook = (applicationDetail) => {
-  const { status, education, sponsor, document, studentCode } =
+  const { status, education, sponsor, document, studentCode, eligibility } =
     applicationDetail;
-
   const [openCredentialDialog, setOpenCredentialDialog] = useState(false);
 
   const [rmatOpen, setRmatOpen] = useState({
@@ -45,14 +44,20 @@ const UseCardActionHook = (applicationDetail) => {
   const isPayBTN =
     status === CommonEnums.RESUB_APP_FEE_PROOF ||
     status === CommonEnums.APP_ENROLLED_ACCEPTED ||
+    status === CommonEnums.RPL_FEE_PEND ||
     status === APPLICATION_STATUS.APPLICATION_FEE_PENDING ||
     status === APPLICATION_STATUS?.MONTHLY_PAYMENT_REJECT;
 
+  const isAccessProgramBTN = eligibility?.accessProgram;
   const payBtnTitle =
     status === CommonEnums.APP_ENROLLED_ACCEPTED ||
     status === APPLICATION_STATUS?.MONTHLY_PAYMENT_REJECT
-      ? "Pay Qualification Fee"
-      : "Pay Application Fee";
+      ? isAccessProgramBTN
+        ? "Pay DBM Access Program Fee"
+        : "Pay Qualification Fee"
+      : "Pay Application Fee" || status === CommonEnums.RPL_FEE_PEND
+      ? "Pay Rpl Fee"
+      : "";
 
   const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
 
@@ -66,11 +71,13 @@ const UseCardActionHook = (applicationDetail) => {
     BURSARY_BUTTON_STATUS.includes(status) &&
     education?.studentTypeCode === CommonEnums?.BURSARY;
   const isAdamiteBTN = status === CommonEnums.PROG_ADMITTED;
+
   const documentDataTypes = [
     CommonEnums.ACCEPTANCE_LETTER,
     CommonEnums.WELCOME_LETTER,
     CommonEnums.QUOTE,
   ];
+
   const documentData = document?.filter(
     (item) =>
       (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
@@ -103,6 +110,7 @@ const UseCardActionHook = (applicationDetail) => {
     rmatOpen,
     getRmatDetails,
     setRmatOpen,
+    isAccessProgramBTN,
   };
 };
 
