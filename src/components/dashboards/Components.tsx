@@ -80,9 +80,9 @@ export const UserNumberInformation = ({ applicationDetail }) => {
             Application No: {applicationDetail?.applicationCode}
           </StudentIdCard>
         )}
-        {applicationDetail?.studentCode && (
+        {applicationDetail?.lead?.studentCode && (
           <StudentIdCard bgColor="#235290">
-            Student No: {applicationDetail?.studentCode}
+            Student No: {applicationDetail?.lead?.studentCode}
           </StudentIdCard>
         )}
       </div>

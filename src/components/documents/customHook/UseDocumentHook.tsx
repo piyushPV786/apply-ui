@@ -117,6 +117,7 @@ export const UseDocumentAction = () => {
       payload,
       masterData?.userDetails?.applicationCode
     );
+
     if (response) {
       dashboardRedirectStatus.includes(masterData?.userDetails?.status)
         ? router.push(`/dashboard`)
