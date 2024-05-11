@@ -25,8 +25,9 @@ const Education = (props: any) => {
     watch,
     formState: { errors },
     setError,
+    setValue,
     control,
-    clearErrors
+    clearErrors,
   } = useFormContext();
 
   const { masterData, programsData, applicationData, salesAgentData } =
@@ -51,11 +52,11 @@ const Education = (props: any) => {
       });
     }
   }, [programCode]);
-  
+
   useEffect(() => {
     if (agendWatch !== null || socialMediaWatch !== null) {
-      clearErrors("education.socialMediaCode")
-      clearErrors("education.agentCode")
+      clearErrors("education.socialMediaCode");
+      clearErrors("education.agentCode");
     }
   }, [agendWatch, socialMediaWatch]);
 
@@ -243,6 +244,10 @@ const Education = (props: any) => {
                 label="Referred by Agent/Social Media"
                 registerName={`education.referredById`}
                 required={true}
+                onChange={() => {
+                  setValue("education.agentCode", null);
+                  setValue("education.socialMediaCode", null);
+                }}
               />
               {Errors?.referredById && (
                 <div className="invalid-feedback">
@@ -257,7 +262,11 @@ const Education = (props: any) => {
               <div className="mb-4 others">
                 {!!salesAgentData?.length && (
                   <CommonAutocomplete
-                    defaultValue={applicationData?.education?.agentCode}
+                    defaultValue={
+                      applicationData?.education?.agentCode
+                        ? applicationData?.education?.agentCode
+                        : null
+                    }
                     options={salesAgentData}
                     label="Agent Name"
                     registerName={`education.agentCode`}
@@ -277,7 +286,11 @@ const Education = (props: any) => {
               <div className="mb-4 others">
                 {!!masterData?.socialMediaData?.length && (
                   <CommonAutocomplete
-                    defaultValue={applicationData?.education?.socialMediaCode}
+                    defaultValue={
+                      applicationData?.education?.socialMediaCode
+                        ? applicationData?.education?.socialMediaCode
+                        : null
+                    }
                     options={masterData?.socialMediaData}
                     label="Social Media"
                     registerName={`education.socialMediaCode`}
