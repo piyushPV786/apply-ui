@@ -144,6 +144,7 @@ export const ActionButtons = ({ applicationDetail }) => {
     isBursaryBTN,
     isUploadBTNTitle,
     isAdamiteBTN,
+    isAccessProgramBTN,
     openCredentialDialog,
     setOpenCredentialDialog,
     rmatOpen,

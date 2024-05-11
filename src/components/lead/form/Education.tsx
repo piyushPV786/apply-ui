@@ -24,7 +24,6 @@ const Education = (props: any) => {
     register,
     watch,
     formState: { errors },
-    setValue,
     setError,
     control,
     clearErrors
@@ -52,7 +51,7 @@ const Education = (props: any) => {
       });
     }
   }, [programCode]);
-
+  
   useEffect(() => {
     if (agendWatch !== null || socialMediaWatch !== null) {
       clearErrors("education.socialMediaCode")
