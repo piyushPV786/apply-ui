@@ -43,26 +43,26 @@ const Education = (props: any) => {
     (item) => item?.studyModeCode === studyModeCodeWatch
   );
 
-  useEffect(() => {
-    if (studentProgram == null && programCode) {
-      setError("education.studyModeCode", {
-        type: "manual",
-        message: "",
-      });
-    }
-  }, [programCode]);
+  // useEffect(() => {
+  //   if (studentProgram == null && programCode) {
+  //     setError("education.studyModeCode", {
+  //       type: "manual",
+  //       message: "",
+  //     });
+  //   }
+  // }, [programCode]);
+
+  // useEffect(() => {
+  //   if (agendWatch !== null) {
+  //     setError("education.socialMediaCode", {
+  //       type: "manual",
+  //       message: "",
+  //     });
+  //   }
+  // }, [agendWatch]);
 
   useEffect(() => {
-    if (agendWatch !== null) {
-      setError("education.socialMediaCode", {
-        type: "manual",
-        message: "",
-      });
-    }
-  }, [agendWatch]);
-
-  useEffect(() => {
-  if(socialMediaWatch !== null){
+    if (socialMediaWatch !== null) {
       setError("education.agentCode", {
         type: "manual",
         message: "",

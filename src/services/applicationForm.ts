@@ -113,7 +113,7 @@ class ApplicationFormServices {
     return result;
   }
   async getTermsAndConditionFile(name: string, email: string) {
-    const Name = name.replace(" ", "-");
+    const Name = name.replace(/ /g, "-");
 
     let route = apiEndPoint?.termAndCondFile.replace(":name", Name);
     route = route.replace(":email", email);
