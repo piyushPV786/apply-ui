@@ -27,6 +27,7 @@ const Education = (props: any) => {
     setValue,
     setError,
     control,
+    clearErrors
   } = useFormContext();
 
   const { masterData, programsData, applicationData, salesAgentData } =
@@ -53,22 +54,11 @@ const Education = (props: any) => {
   }, [programCode]);
 
   useEffect(() => {
-    if (agendWatch !== null) {
-      setError("education.socialMediaCode", {
-        type: "manual",
-        message: "",
-      });
+    if (agendWatch !== null || socialMediaWatch !== null) {
+      clearErrors("education.socialMediaCode")
+      clearErrors("education.agentCode")
     }
-  }, [agendWatch]);
-
-  useEffect(() => {
-  if(socialMediaWatch !== null){
-      setError("education.agentCode", {
-        type: "manual",
-        message: "",
-      });
-    }
-  }, [socialMediaWatch]);
+  }, [agendWatch, socialMediaWatch]);
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
