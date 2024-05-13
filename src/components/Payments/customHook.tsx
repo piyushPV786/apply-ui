@@ -2,12 +2,17 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
-import { MBACode, allowedPaymentStatus } from "../documents/context/common";
+import {
+  MBACode,
+  allowedPaymentStatus,
+  DBMCode,
+} from "../documents/context/common";
 import {
   CommonEnums,
   DocumentStatus,
   status,
   applicationFeesStatus,
+  rplFeeStatus,
 } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
 import {
@@ -86,6 +91,7 @@ export const usePaymentHook = (applicationCode: string) => {
 };
 
 export const usePaymentDetailsHook = (masterData: any) => {
+  console.log("masterData ======>", masterData);
   const [feeModeCode, setFeeModeCode] = useState(feeMode.APPLICATION);
   let studyModes: any = { helpText: "" };
 
@@ -120,6 +126,40 @@ export const usePaymentDetailsHook = (masterData: any) => {
       } ${getConvertedAmount(
         masterData?.currencyData,
         String(feesStructure?.fee)
+      )}`,
+    };
+  } else if (
+    !applicationFeesStatus.includes(masterData?.applicationData?.status) &&
+    masterData?.applicationData?.eligibility[0]?.accessProgram &&
+    masterData?.applicationData?.education?.programCode == DBMCode
+  ) {
+    fees = {
+      fee: masterData?.feeData?.otherFee?.totalFee,
+      label: "Access Program",
+      helpText: "",
+      feeMode: "MONTHLY",
+      amount: `${
+        masterData?.currencyData?.currencySymbol
+          ? masterData?.currencyData?.currencySymbol
+          : ""
+      } ${getConvertedAmount(
+        masterData?.currencyData,
+        String(masterData?.feeData?.otherFee?.totalFee)
+      )}`,
+    };
+  } else if (rplFeeStatus?.includes(masterData?.applicationData?.status)) {
+    fees = {
+      fee: masterData?.feeData?.otherFee?.totalFee,
+      label: "RPL Fee",
+      helpText: "",
+      feeMode: "MONTHLY",
+      amount: `${
+        masterData?.currencyData?.currencySymbol
+          ? masterData?.currencyData?.currencySymbol
+          : ""
+      } ${getConvertedAmount(
+        masterData?.currencyData,
+        String(masterData?.feeData?.rplFee?.totalFee)
       )}`,
     };
   } else {

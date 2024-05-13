@@ -17,6 +17,7 @@ export const documentType = {
   QUOTE: "Quote",
 };
 export const applicationFeesStatus = ["APP-FEE-PEND", "RESUB-APP-FEE-PROOF"];
+export const rplFeeStatus = ["RPL-FEE-PEND"];
 export enum CommonEnums {
   TRUE = "true",
   TOTAL = "TOTAL",
