@@ -82,6 +82,7 @@ export const allowedPaymentStatus = [
   "APP-FEE-PEND",
   "ENRL-ACCEPTED",
   "PROG-FEE-PEND",
+  "RPL-FEE-PEND",
 ];
 
 export const documentCriteria = [
