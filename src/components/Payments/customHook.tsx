@@ -91,7 +91,6 @@ export const usePaymentHook = (applicationCode: string) => {
 };
 
 export const usePaymentDetailsHook = (masterData: any) => {
-  console.log("masterData ======>", masterData);
   const [feeModeCode, setFeeModeCode] = useState(feeMode.APPLICATION);
   let studyModes: any = { helpText: "" };
 

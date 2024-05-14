@@ -182,7 +182,6 @@ export const fileValidation = (value, element) => {
       value[0]?.size > 20 * 1024 * 1024 &&
       element?.code === customStatus?.EDFORALLCONTRACT
     ) {
-      console.log("in codition");
       return "File size should be at most 20MB";
     } else if (
       value[0]?.size > 3 * 1024 * 1024 &&
