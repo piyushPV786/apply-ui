@@ -11,7 +11,6 @@ import { useState } from "react";
 const UseCardActionHook = (applicationDetail) => {
   const { status, education, sponsor, document, studentCode, eligibility } =
     applicationDetail;
-
   const [openCredentialDialog, setOpenCredentialDialog] = useState(false);
 
   const [rmatOpen, setRmatOpen] = useState({
@@ -45,6 +44,7 @@ const UseCardActionHook = (applicationDetail) => {
   const isPayBTN =
     status === CommonEnums.RESUB_APP_FEE_PROOF ||
     status === CommonEnums.APP_ENROLLED_ACCEPTED ||
+    status === CommonEnums.RPL_FEE_PEND ||
     status === APPLICATION_STATUS.APPLICATION_FEE_PENDING ||
     status === APPLICATION_STATUS?.MONTHLY_PAYMENT_REJECT;
 
@@ -55,7 +55,9 @@ const UseCardActionHook = (applicationDetail) => {
       ? isAccessProgramBTN
         ? "Pay DBM Access Program Fee"
         : "Pay Qualification Fee"
-      : "Pay Application Fee";
+      : "Pay Application Fee" || status === CommonEnums.RPL_FEE_PEND
+      ? "Pay Rpl Fee"
+      : "";
 
   const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
 
