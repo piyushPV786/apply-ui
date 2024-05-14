@@ -12,6 +12,8 @@ export const nonMandatoryDocuments = [
   "OTHERS",
   "INTERVIEWNOTES",
   "EDFORALLCONTRACT",
+  "RPL",
+  "SAQA",
 ];
 
 export const docType = {
