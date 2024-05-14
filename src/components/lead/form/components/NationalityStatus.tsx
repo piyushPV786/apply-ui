@@ -6,9 +6,9 @@ import AddressImg from "../../../../../public/assets/images/address-card-outline
 import CommonAutocomplete from "./CommonAutocomplete ";
 import { Controller, useFormContext } from "react-hook-form";
 import { nationalityStatusEnum } from "../../../../constants";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import {
   formatDate,
@@ -160,12 +160,16 @@ const NationalityStatus = (props: any) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         {...field}
-                        value={dayjs(new Date(field.value))}
+                        value={
+                          field.value ? dayjs(new Date(field.value)) : null
+                        }
                         sx={{
                           "& .MuiOutlinedInput-notchedOutline": {
                             border: "2px solid #ced4da",
                           },
-                          "& .MuiOutlinedInput-input": { padding: "8px !important" },
+                          "& .MuiOutlinedInput-input": {
+                            padding: "8px !important",
+                          },
                           width: "100%",
                         }}
                         minDate={dayjs(new Date())}

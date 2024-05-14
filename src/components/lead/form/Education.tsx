@@ -23,16 +23,17 @@ const Education = (props: any) => {
   const {
     register,
     watch,
+    clearErrors,
     formState: { errors },
-    setValue,
     setError,
-    control,
   } = useFormContext();
 
   const { masterData, programsData, applicationData, salesAgentData } =
     props?.masterData;
   const programCode = watch("education.programCode");
   const studyModeCodeWatch = watch("education.studyModeCode");
+  const agendWatch = watch("education.agentCode");
+  const socialMediaWatch = watch("education.socialMediaCode");
   const studentProgram: any = useEducationHook(programCode);
   const refferedBy = watch("education.referredById");
 
@@ -49,6 +50,18 @@ const Education = (props: any) => {
       });
     }
   }, [programCode]);
+
+  useEffect(() => {
+    if (agendWatch !== null) {
+      clearErrors("education.agentCode");
+    }
+  }, [agendWatch]);
+
+  useEffect(() => {
+    if (socialMediaWatch !== null) {
+      clearErrors("education.agentCode");
+    }
+  }, [socialMediaWatch]);
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
