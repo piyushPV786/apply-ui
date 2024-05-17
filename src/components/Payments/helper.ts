@@ -93,7 +93,7 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
     },
     programName: masterData?.programData?.name,
     paymentStatusCode: getPaymentResponse?.data?.status,
-    PaymentStatusMessage: "payment transaction failed",
+    PaymentStatusMessage: getPaymentResponse?.data?.status,
   };
 };
 

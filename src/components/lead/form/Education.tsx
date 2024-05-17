@@ -23,10 +23,9 @@ const Education = (props: any) => {
   const {
     register,
     watch,
+    clearErrors,
     formState: { errors },
-    setValue,
     setError,
-    control,
   } = useFormContext();
 
   const { masterData, programsData, applicationData, salesAgentData } =
@@ -67,6 +66,15 @@ const Education = (props: any) => {
         type: "manual",
         message: "",
       });
+      if (agendWatch !== null) {
+        clearErrors("education.agentCode");
+      }
+    }
+  }, [agendWatch]);
+
+  useEffect(() => {
+    if (socialMediaWatch !== null) {
+      clearErrors("education.agentCode");
     }
   }, [socialMediaWatch]);
 
