@@ -12,6 +12,7 @@ import {
   DocumentStatus,
   status,
   applicationFeesStatus,
+  rplFeeStatus,
 } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
 import {
@@ -147,6 +148,21 @@ export const usePaymentDetailsHook = (masterData: any) => {
         String(masterData?.feeData?.otherFee?.totalFee)
       )}`,
     };
+  } else if (rplFeeStatus?.includes(masterData?.applicationData?.status)) {
+    fees = {
+      fee: masterData?.feeData?.otherFee?.totalFee,
+      label: "RPL Fee",
+      helpText: "",
+      feeMode: "MONTHLY",
+      amount: `${
+        masterData?.currencyData?.currencySymbol
+          ? masterData?.currencyData?.currencySymbol
+          : ""
+      } ${getConvertedAmount(
+        masterData?.currencyData,
+        String(masterData?.feeData?.rplFee?.totalFee)
+      )}`,
+    } 
   } else {
     fees = {
       fee: "0.0",
