@@ -77,16 +77,11 @@ const CommonAutocomplete = (props: IProps) => {
         }}
         renderInput={(params) => {
           const { inputProps, ...rest } = params;
-
           const optionValue = optionList?.find(
             (item) => item?.code === watch(registerName)
           );
-          inputProps.value =
-            registerName === "education.agentCode"
-              ? optionValue?.firstName
-                ? `${optionValue?.firstName} ${optionValue?.lastName}`
-                : ""
-              : optionValue?.name;
+
+          inputProps.value = optionValue?.name;
           return (
             <TextField
               placeholder="Select"
