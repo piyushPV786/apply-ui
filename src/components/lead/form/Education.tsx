@@ -44,6 +44,12 @@ const Education = (props: any) => {
     (item) => item?.studyModeCode === studyModeCodeWatch
   );
 
+  const agentArray =
+    salesAgentData?.map((i) => ({
+      ...i,
+      name: `${i?.firstName} ${i?.lastName}`,
+    })) || [];
+
   // useEffect(() => {
   //   if (studentProgram == null && programCode) {
   //     setError("education.studyModeCode", {
@@ -52,7 +58,6 @@ const Education = (props: any) => {
   //     });
   //   }
   // }, [programCode]);
-
 
   useEffect(() => {
     if (agendWatch !== null || socialMediaWatch !== null) {
@@ -244,7 +249,7 @@ const Education = (props: any) => {
                 ]}
                 label="Referred by Agent/Social Media"
                 registerName={`education.referredById`}
-                required={true} 
+                required={true}
                 onChange={() => {
                   setValue("education.agentCode", null);
                   setValue("education.socialMediaCode", null);
@@ -263,12 +268,12 @@ const Education = (props: any) => {
               <div className="mb-4 others">
                 {!!salesAgentData?.length && (
                   <CommonAutocomplete
-                  defaultValue={
-                    applicationData?.education?.agentCode
-                      ? applicationData?.education?.agentCode
-                      : null
-                  }
-                    options={salesAgentData}
+                    defaultValue={
+                      applicationData?.education?.agentCode
+                        ? applicationData?.education?.agentCode
+                        : null
+                    }
+                    options={agentArray}
                     label="Agent Name"
                     registerName={`education.agentCode`}
                     required={true}
@@ -287,11 +292,11 @@ const Education = (props: any) => {
               <div className="mb-4 others">
                 {!!masterData?.socialMediaData?.length && (
                   <CommonAutocomplete
-                  defaultValue={
-                    applicationData?.education?.socialMediaCode
-                      ? applicationData?.education?.socialMediaCode
-                      : null
-                  }
+                    defaultValue={
+                      applicationData?.education?.socialMediaCode
+                        ? applicationData?.education?.socialMediaCode
+                        : null
+                    }
                     options={masterData?.socialMediaData}
                     label="Social Media"
                     registerName={`education.socialMediaCode`}

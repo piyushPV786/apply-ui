@@ -26,11 +26,7 @@ const CommonAutocomplete = (props: IProps) => {
   } = props;
   const { register, setValue, watch, trigger } = useFormContext();
   const optionList: any = [];
-
-  const shortName =
-    registerName === "education.agentCode"
-      ? options?.sort((a, b) => a.firstName.localeCompare(b.firstName))
-      : options?.sort((a, b) => a.name.localeCompare(b.name));
+  const shortName = options?.sort((a, b) => a.name.localeCompare(b.name));
   const dropDownOptions = shortName?.map((item) => {
     if (item?.code) {
       optionList.push(item);
@@ -62,11 +58,7 @@ const CommonAutocomplete = (props: IProps) => {
         getOptionLabel={(option: any) => {
           const optionValue = optionList?.find((item) => item?.code === option);
 
-          return registerName === "education.agentCode"
-            ? optionValue?.firstName
-              ? `${optionValue?.firstName} ${optionValue?.lastName}`
-              : ""
-            : optionValue?.name;
+          return optionValue?.name;
         }}
         onChange={(e, value) => {
           setValue(registerName, value);
@@ -82,6 +74,7 @@ const CommonAutocomplete = (props: IProps) => {
           );
 
           inputProps.value = optionValue?.name;
+
           return (
             <TextField
               placeholder="Select"
@@ -107,11 +100,7 @@ const CommonAutocomplete = (props: IProps) => {
 
           return (
             <li {...props} key={option.code}>
-              {registerName === "education.agentCode"
-                ? optionValue?.firstName
-                  ? `${optionValue?.firstName} ${optionValue?.lastName}`
-                  : ""
-                : optionValue?.name}
+              {optionValue?.name}
             </li>
           );
         }}

@@ -292,13 +292,13 @@ export enum RhfErrorTypes {
 export const AddressTypeData = [
   {
     isActive: true,
-    id: 1,
+    id: 0,
     name: "Postal",
     code: "POSTAL",
   },
   {
     isActive: true,
-    id: 2,
+    id: 1,
     name: "Residential",
     code: "RESIDENTIAL",
   },

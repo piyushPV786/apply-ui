@@ -18,7 +18,7 @@ import { AddressTypeData } from "../../common/constant";
 const Address = (props: any) => {
   const { masterData, applicationData } = props?.masterData;
   const { register } = useFormContext();
-  useCompareAddressHook(applicationData?.address);
+  useCompareAddressHook(applicationData?.lead?.address);
   useSameResidentialAddress();
 
   return (
@@ -41,7 +41,7 @@ const Address = (props: any) => {
             AddressTypeData?.map((item: any, index: any) => (
               <>
                 <AddressType
-                  applicationData={applicationData}
+                  applicationData={applicationData?.lead}
                   masterData={masterData}
                   data={item}
                   index={index}
