@@ -56,9 +56,9 @@ const UseCardActionHook = (applicationDetail) => {
       ? isAccessProgramBTN
         ? "Pay DBM Access Program Fee"
         : "Pay Qualification Fee"
-      : "Pay Application Fee" || status === CommonEnums.RPL_FEE_PEND
+      : status === CommonEnums.RPL_FEE_PEND
       ? "Pay Rpl Fee"
-      : "";
+      : "Pay Application Fee";
 
   const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
 
