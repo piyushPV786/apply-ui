@@ -43,7 +43,6 @@ export const usePaymentHook = (applicationCode: string) => {
         PaymentServices?.getApplicationData(applicationCode),
         ApplicationFormService.getStudyModes(),
       ]);
-
       const response = result[0];
       payload.applicationData = response;
       payload.studyModeData = result[1];
@@ -162,7 +161,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
         masterData?.currencyData,
         String(masterData?.feeData?.rplFee?.totalFee)
       )}`,
-    } 
+    };
   } else {
     fees = {
       fee: "0.0",

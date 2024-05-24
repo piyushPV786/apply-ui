@@ -9,7 +9,7 @@ import { downloadDocument } from "../../../Util/Util";
 import { useState } from "react";
 
 const UseCardActionHook = (applicationDetail) => {
-  const { status, education, sponsor, document, studentCode, eligibility } =
+  const { status, education, sponsor, documentData, lead, eligibility } =
     applicationDetail;
 
   const [openCredentialDialog, setOpenCredentialDialog] = useState(false);
@@ -56,9 +56,9 @@ const UseCardActionHook = (applicationDetail) => {
       ? isAccessProgramBTN
         ? "Pay DBM Access Program Fee"
         : "Pay Qualification Fee"
-        : "Pay Application Fee" || status === CommonEnums.RPL_FEE_PEND
-        ? "Pay Rpl Fee"
-        : "";
+      : "Pay Application Fee" || status === CommonEnums.RPL_FEE_PEND
+      ? "Pay Rpl Fee"
+      : "";
 
   const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
 
@@ -79,7 +79,7 @@ const UseCardActionHook = (applicationDetail) => {
     CommonEnums.QUOTE,
   ];
 
-  const documentData = document?.filter(
+  const document = documentData?.filter(
     (item) =>
       (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
         status === CommonEnums?.PROG_ADMITTED) ||
@@ -90,7 +90,7 @@ const UseCardActionHook = (applicationDetail) => {
     const { name } = documentDetail;
     const documentResponse = await DashboardApplicationServices?.getDocumentURL(
       name,
-      studentCode
+      lead?.studentCode
     );
     downloadDocument(documentResponse?.data, name);
   };
@@ -104,7 +104,7 @@ const UseCardActionHook = (applicationDetail) => {
     isUploadBTN,
     isBursaryBTN,
     isAdamiteBTN,
-    documentData,
+    document,
     getDownloadDocument,
     openCredentialDialog,
     setOpenCredentialDialog,
