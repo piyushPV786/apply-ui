@@ -85,6 +85,7 @@ export const allowedPaymentStatus = [
   "ENRL-ACCEPTED",
   "PROG-FEE-PEND",
   "RPL-FEE-PEND",
+  "MONTHLY_PAYMENT_REJECTED",
 ];
 
 export const documentCriteria = [
