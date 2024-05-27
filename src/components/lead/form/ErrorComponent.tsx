@@ -8,6 +8,7 @@ import { employmentData } from "./data/employmentData";
 import { kinInfoData } from "./data/kinData";
 import { NationalityData, NationalityStatusEnum } from "./data/nationality";
 import NationalityStatus from "./components/NationalityStatus";
+import { ReferredByData } from "./data/referredByData";
 
 const ErrorType = {
   Custom: "custom",
@@ -39,6 +40,7 @@ const ErrorComponent = ({ errors }: any) => {
   const sponsorData = GenerateArray(sponsorInfoData, "sponsor");
   const EmploymentData = GenerateArray(employmentData, "employment");
   const NextOfKin = GenerateArray(kinInfoData, "kin");
+  const referredByData = GenerateArray(ReferredByData, "education");
   const Nationality = GenerateArray(NationalityData, "lead") || [];
   const nationalities = Nationality.includes(NationalityStatusEnum?.Error)
     ? [NationalityStatusEnum?.Error]
@@ -91,6 +93,20 @@ const ErrorComponent = ({ errors }: any) => {
 
   return (
     <Grid container sx={{ p: 2 }}>
+      {referredByData?.length > 0 && (
+        <Grid item xs={12}>
+          <Grid item xs={12} md={1.5} lg={1.5}>
+            <label className="form-check-label terms-conditions">
+              Referred By :
+            </label>
+          </Grid>
+          <Grid xs={12} md={11} lg={11}>
+            <Typography variant="body2" color="error">
+              {referredByData?.filter((error) => error)?.join(", ")}
+            </Typography>
+          </Grid>
+        </Grid>
+      )}
       {personalInfoDataLeadUpdate?.length > 0 && (
         <Grid item xs={12}>
           <Grid item xs={12} md={1.5} lg={1.5}>
