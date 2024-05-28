@@ -20,6 +20,7 @@ import "react-phone-number-input/style.css";
 import { Stack } from "@mui/material";
 import { Spinner } from "../Loader";
 import ErrorComponent from "./form/ErrorComponent";
+import ReferredBy from "./form/ReferredBy";
 
 interface IProps {
   applicationCode: string;
@@ -70,6 +71,7 @@ const LeadForm = (props: IProps) => {
           <FormContainer>
             <div className="application-form">
               <form>
+                <ReferredBy masterData={masterData} />
                 <PersonalInformation masterData={masterData} />
                 <Address masterData={masterData} />
                 <Education masterData={masterData} />
