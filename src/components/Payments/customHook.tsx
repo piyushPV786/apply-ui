@@ -149,7 +149,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
     };
   } else if (rplFeeStatus?.includes(masterData?.applicationData?.status)) {
     fees = {
-      fee: masterData?.feeData?.otherFee?.totalFee,
+      fee: masterData?.feeData?.rplFee?.totalFee,
       label: "RPL Fee",
       helpText: "",
       feeMode: "MONTHLY",
