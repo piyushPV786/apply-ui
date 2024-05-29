@@ -111,8 +111,8 @@ export const getStatusPayload = (paymentMode, masterData, fees) => {
 
 export const bursaryFeeCalculation = (bursaryDetails, payload) => {
   if (
-    bursaryDetails?.education &&
-    bursaryDetails?.education[0]?.bursaryAmount &&
+    bursaryDetails?.application?.education &&
+    bursaryDetails?.application?.education?.bursaryAmount &&
     payload?.feeData &&
     payload?.programData &&
     payload?.applicationData &&
@@ -127,7 +127,8 @@ export const bursaryFeeCalculation = (bursaryDetails, payload) => {
       const totalFeeAmount = getTotalFeeAmount(feeDetails?.fees);
       if (totalFeeAmount > 0) {
         const feeCalculationResult = feeCalculate(
-          totalFeeAmount - bursaryDetails?.education[0]?.bursaryAmount,
+          totalFeeAmount -
+            bursaryDetails?.application?.education?.bursaryAmount,
           payload?.programData?.noOfYear
         );
 
