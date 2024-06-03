@@ -86,6 +86,7 @@ export const allowedPaymentStatus = [
   "PROG-FEE-PEND",
   "RPL-FEE-PEND",
   "MONTHLY_PAYMENT_REJECTED",
+  "RESUB-APP-FEE-PROOF",
 ];
 
 export const documentCriteria = [
