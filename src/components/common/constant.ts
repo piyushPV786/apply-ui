@@ -17,6 +17,7 @@ export const documentType = {
   QUOTE: "Quote",
 };
 export const applicationFeesStatus = ["APP-FEE-PEND", "RESUB-APP-FEE-PROOF"];
+export const rplFeeStatus = ["RPL-FEE-PEND"];
 export enum CommonEnums {
   TRUE = "true",
   TOTAL = "TOTAL",
@@ -46,6 +47,7 @@ export enum CommonEnums {
   BURSARY_LETTER_PEND = "BURSARY-LETTER-PEND",
   RESUB_BURSARY_DOC = "RESUB-BURSARY-DOC",
   MONTHLY_PAYMENT_REJECT = "MONTHLY_PAYMENT_REJECTED",
+  RPL_FEE_PEND = "RPL-FEE-PEND",
 }
 
 export enum GraduationType {
@@ -105,6 +107,7 @@ export const APPLICATION_STATUS = {
   ENROLLED_BY_ADMISSION: "PROG-ADMITTED/ENROLLED",
   MONTHLY_PAYMENT_REJECT: "MONTHLY_PAYMENT_REJECTED",
   BURSARY_APP_FEE_PEND: "BURSARY-APP-FEE-PEND",
+  RPL_FEE_PEND: "RPL-FEE-PEND",
 };
 
 // export const docTypes={WELCOME-LETTER=}
@@ -122,6 +125,7 @@ export const UPLOAD_DOCUMENT_BUTTON_STATUS = [
   APPLICATION_STATUS.UPLOAD_BURSARY_DOCUMENTS,
   APPLICATION_STATUS.RESUBMIT_APPLICATION_DOCUMENTS,
   APPLICATION_STATUS?.BURSARY_APP_FEE_PEND,
+  APPLICATION_STATUS?.RPL_FEE_PEND,
 ];
 export const BURSARY_BUTTON_STATUS = [
   CommonEnums.BURSARY_LETTER_PEND,
@@ -284,3 +288,18 @@ export enum RhfErrorTypes {
   MinLength = "minLength",
   Min = "min",
 }
+
+export const AddressTypeData = [
+  {
+    isActive: true,
+    id: 0,
+    name: "Postal",
+    code: "POSTAL",
+  },
+  {
+    isActive: true,
+    id: 1,
+    name: "Residential",
+    code: "RESIDENTIAL",
+  },
+];

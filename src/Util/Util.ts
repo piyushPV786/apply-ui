@@ -189,7 +189,7 @@ export const isValidDate = (value) => {
 export const isValidExpiryDate = (value) => {
   const selectedDate = new Date(value);
   const currentDate = new Date();
-  const year = new Date(value).getFullYear;    
+  const year = new Date(value).getFullYear;
   if (selectedDate <= currentDate) {
     return "Please Select Valid Expiry Date";
   }
@@ -345,10 +345,10 @@ export const getApplicationCode = () => {
   const activeLeadDetail = JSON.parse(
     sessionStorage?.getItem("activeLeadDetail") as any
   )?.applicationCode;
-  const leadCode = activeLeadDetail || applicationCode;
+  const leadId = activeLeadDetail || applicationCode;
 
-  if (leadCode) {
-    appCode = leadCode;
+  if (leadId) {
+    appCode = leadId;
   }
 
   return appCode;
@@ -768,8 +768,9 @@ export const mapFormDefaultValue = (studentData: object, setValue: any) => {
         setEducationValue(studentData, setValue, key);
       }
     }
-    if (key === "address" && studentData[key]?.length > 0) {
-      setValue(key, value);
+
+    if (key === "lead" && studentData?.[key]?.address?.length > 0) {
+      setValue("address", value?.address);
     }
   }
 };

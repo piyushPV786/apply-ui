@@ -83,7 +83,7 @@ class DocumentApplicationServices {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
     const route = apiEndPoint?.applicationDetails
       .replace(":applicationCode", applicationCode)
-      .replace(":leadCode", studentDetails?.leadCode);
+      .replace(":leadId", studentDetails?.leadId);
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : {};

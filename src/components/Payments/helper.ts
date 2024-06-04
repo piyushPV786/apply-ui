@@ -78,7 +78,7 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
     paymentStatus: getPaymentResponse?.data?.status,
     discountCode: fees?.discountCode,
     discountAmount: fees.discountFee,
-    studentCode: masterData?.applicationData?.studentCode,
+    studentCode: masterData?.applicationData?.lead?.studentCode,
     applicationCode: masterData?.applicationData?.applicationCode,
     paymentType: "ONLINE",
     ukheshe: {
@@ -93,7 +93,7 @@ export const getUkheshePayload = (getPaymentResponse, fees, masterData) => {
     },
     programName: masterData?.programData?.name,
     paymentStatusCode: getPaymentResponse?.data?.status,
-    PaymentStatusMessage: "payment transaction failed",
+    PaymentStatusMessage: getPaymentResponse?.data?.status,
   };
 };
 
@@ -111,8 +111,8 @@ export const getStatusPayload = (paymentMode, masterData, fees) => {
 
 export const bursaryFeeCalculation = (bursaryDetails, payload) => {
   if (
-    bursaryDetails?.education &&
-    bursaryDetails?.education[0]?.bursaryAmount &&
+    bursaryDetails?.application?.education &&
+    bursaryDetails?.application?.education?.bursaryAmount &&
     payload?.feeData &&
     payload?.programData &&
     payload?.applicationData &&
@@ -127,7 +127,8 @@ export const bursaryFeeCalculation = (bursaryDetails, payload) => {
       const totalFeeAmount = getTotalFeeAmount(feeDetails?.fees);
       if (totalFeeAmount > 0) {
         const feeCalculationResult = feeCalculate(
-          totalFeeAmount - bursaryDetails?.education[0]?.bursaryAmount,
+          totalFeeAmount -
+            bursaryDetails?.application?.education?.bursaryAmount,
           payload?.programData?.noOfYear
         );
 

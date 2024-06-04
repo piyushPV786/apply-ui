@@ -11,7 +11,8 @@ export const UseUploadDocumentHook = (masterData) => {
   };
 
   const uploadDocument = async (file, element) => {
-    const { studentCode, applicationCode } = masterData?.userDetails;
+    const { applicationCode } = masterData?.userDetails;
+
     const setUploadPercent = (progressEvent) => {
       const uploadPercent = Math.ceil(
         (progressEvent.loaded / progressEvent.total) * 100
@@ -23,23 +24,26 @@ export const UseUploadDocumentHook = (masterData) => {
       (item) => item?.documentTypeCode === element?.code
     );
 
-    if (file?.length && studentCode) {
+    if (file?.length && masterData?.userDetails?.lead?.studentCode) {
       const fileName = file[0].name;
       const ext = fileName?.split(".").pop().toLowerCase();
       const documentCode = await DocumentServices?.DocumentCode();
 
       setDocumentCode(documentCode);
       const name = `${documentCode}.${ext}`;
+
       const signedUrl = await DocumentServices?.getFileSignUrl(
         name,
         `.${ext}`,
-        studentCode
+        masterData?.userDetails?.lead?.studentCode
       );
+
       const response = await DocumentServices.uploadDocumentToAws(
         signedUrl,
         file[0],
         setUploadPercent
       );
+
       if (response?.status === status?.successCode) {
         const documentUpdatePayload = {
           name: name,

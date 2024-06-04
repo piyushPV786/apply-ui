@@ -1,4 +1,4 @@
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -9,13 +9,11 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import EducationImg from "../../../../public/assets/images/education-svgrepo-com.svg";
-import { refferedById } from "../../../constants";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import { StyleContainer } from "../../login/style";
 import { FeeCard } from "./components/CommonComponents";
 import RadioField from "./components/RadioField";
 import { useEducationHook } from "../customHooks/educationHooks";
-import { useEffect } from "react";
 import { feeMode } from "../../common/constant";
 import { Alert } from "@mui/material";
 
@@ -23,45 +21,27 @@ const Education = (props: any) => {
   const {
     register,
     watch,
-    clearErrors,
     formState: { errors },
-    setError,
   } = useFormContext();
 
-  const { masterData, programsData, applicationData, salesAgentData } =
-    props?.masterData;
+  const { masterData, programsData, applicationData } = props?.masterData;
   const programCode = watch("education.programCode");
   const studyModeCodeWatch = watch("education.studyModeCode");
-  const agendWatch = watch("education.agentCode");
-  const socialMediaWatch = watch("education.socialMediaCode");
   const studentProgram: any = useEducationHook(programCode);
-  const refferedBy = watch("education.referredById");
 
   const Errors = errors["education"] as any;
   const feesDetails = studentProgram?.studyModes?.find(
     (item) => item?.studyModeCode === studyModeCodeWatch
   );
 
-  useEffect(() => {
-    if (studentProgram == null && programCode) {
-      setError("education.studyModeCode", {
-        type: "manual",
-        message: "",
-      });
-    }
-  }, [programCode]);
-
-  useEffect(() => {
-    if (agendWatch !== null) {
-      clearErrors("education.agentCode");
-    }
-  }, [agendWatch]);
-
-  useEffect(() => {
-    if (socialMediaWatch !== null) {
-      clearErrors("education.agentCode");
-    }
-  }, [socialMediaWatch]);
+  // useEffect(() => {
+  //   if (studentProgram == null && programCode) {
+  //     setError("education.studyModeCode", {
+  //       type: "manual",
+  //       message: "",
+  //     });
+  //   }
+  // }, [programCode]);
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
@@ -225,74 +205,6 @@ const Education = (props: any) => {
             {Errors?.isInternationDegree && (
               <div className="invalid-feedback">
                 international degree is required
-              </div>
-            )}
-          </div>
-
-          <div className="col-lg-4 mb-4">
-            <div className="mb-4">
-              <CommonAutocomplete
-                defaultValue={
-                  !applicationData?.education?.agentCode &&
-                  !applicationData?.education?.socialMediaCode
-                    ? null
-                    : applicationData?.education?.agentCode
-                    ? refferedById.agent
-                    : refferedById.social
-                }
-                options={[
-                  { name: "Agent", code: refferedById.agent, id: 1 },
-                  { name: "Social Media", code: refferedById.social, id: 2 },
-                ]}
-                label="Referred by Agent/Social Media"
-                registerName={`education.referredById`}
-                required={true}
-              />
-              {Errors?.referredById && (
-                <div className="invalid-feedback">
-                  Please select Referred by
-                </div>
-              )}
-            </div>
-
-            {(refferedBy === refferedById.agent ||
-              (applicationData?.education?.agentCode &&
-                refferedBy === refferedById.agent)) && (
-              <div className="mb-4 others">
-                {!!salesAgentData?.length && (
-                  <CommonAutocomplete
-                    defaultValue={applicationData?.education?.agentCode}
-                    options={salesAgentData}
-                    label="Agent Name"
-                    registerName={`education.agentCode`}
-                    required={true}
-                  />
-                )}
-                {Errors?.agentCode && (
-                  <div className="invalid-feedback">
-                    Please select Agent Name
-                  </div>
-                )}
-              </div>
-            )}
-            {(refferedBy === refferedById.social ||
-              (applicationData?.education?.socialMediaCode &&
-                refferedBy === refferedById.social)) && (
-              <div className="mb-4 others">
-                {!!masterData?.socialMediaData?.length && (
-                  <CommonAutocomplete
-                    defaultValue={applicationData?.education?.socialMediaCode}
-                    options={masterData?.socialMediaData}
-                    label="Social Media"
-                    registerName={`education.socialMediaCode`}
-                    required={true}
-                  />
-                )}
-                {Errors?.socialMediaCode && (
-                  <div className="invalid-feedback">
-                    Please select social media
-                  </div>
-                )}
               </div>
             )}
           </div>

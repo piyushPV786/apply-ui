@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const documentPayload = (data, isDraft, masterData, progress) => {
   let result = {};
-  if (masterData?.documentTypes && masterData?.userDetails?.studentCode) {
+  if (masterData?.documentTypes && masterData?.userDetails?.lead?.studentCode) {
     let Files: any = [];
     masterData?.documentTypes.forEach((element) => {
       const fileObj = data[element?.code];
@@ -21,7 +21,7 @@ export const documentPayload = (data, isDraft, masterData, progress) => {
         files: Files,
         paymentModeCode: "OFFLINE",
         isDraft: isDraft,
-        studentCode: masterData?.userDetails?.studentCode,
+        studentCode: masterData?.userDetails?.lead?.studentCode,
       };
     }
   }
@@ -34,7 +34,7 @@ export const studentBursaryPayload = (res, masterData) => {
     sanctionedAmount: 0,
     financialYear: new Date().getFullYear(),
     enrolmentCode: masterData?.userDetails?.applicationCode,
-    studentCode: masterData?.userDetails?.studentCode,
+    studentCode: masterData?.userDetails?.lead?.studentCode,
     status: "BURSARY-REQUESTED",
     isActive: true,
   };

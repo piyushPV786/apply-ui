@@ -12,11 +12,11 @@ interface IVerifyOtp {
 }
 
 interface IGetLeadApplications {
-  leadCode: string;
+  leadId: string;
 }
 
 interface IGetLeadApplicationDetails {
-  leadCode: string;
+  leadId: string;
   applicationCode: string;
   isDraft: boolean;
 }
@@ -44,7 +44,7 @@ export const verifyOtp = async (data: IVerifyOtp) => {
 export const getLeadApplications = async (
   data: IGetLeadApplications
 ): Promise<[]> => {
-  const response = await _axios.get(`lead/${data.leadCode}/application`);
+  const response = await _axios.get(`lead/${data.leadId}/application`);
   return response?.data?.data ? response?.data?.data : [];
 };
 
@@ -69,7 +69,7 @@ export const getLeadApplicationDetails = async (
   data: IGetLeadApplicationDetails
 ) => {
   const response = await _axios.get(
-    `lead/${data.leadCode}/application/${data.applicationCode}?isDraft=${data?.isDraft}`
+    `lead/${data.leadId}/application/${data.applicationCode}?isDraft=${data?.isDraft}`
   );
   return response?.data?.data ? response?.data?.data : {};
 };
