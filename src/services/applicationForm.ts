@@ -142,6 +142,13 @@ class ApplicationFormServices {
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
+
+  async updateCreditReport(id: any) {
+    const url = `${apiUrls?.financeBaseUrl}${apiEndPoint?.updateCredit}/${id}`;
+    const response = await apiServer.patch(url);
+    const result = response?.data ? response?.data : null;
+    return result;
+  }
 }
 
 export default new ApplicationFormServices();
