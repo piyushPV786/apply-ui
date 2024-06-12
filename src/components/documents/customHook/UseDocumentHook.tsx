@@ -33,12 +33,7 @@ export const UseDocumentHook = (applicationCode) => {
   });
 
   const convertDataToFormData = (documentTypes, userInfo) => {
-    //Remove this filter once RPL done
-    const documentData = documentTypes?.filter(
-      (item) => item?.code !== "SAQA   " && item?.code !== "RPL"
-    );
-
-    const result = documentData?.map((element) => {
+    const result = documentTypes?.map((element) => {
       if (element.code === docType?.BURSARYLETTER) {
         return {
           name: element?.name,
@@ -117,6 +112,7 @@ export const UseDocumentAction = () => {
       payload,
       masterData?.userDetails?.applicationCode
     );
+
     if (response) {
       dashboardRedirectStatus.includes(masterData?.userDetails?.status)
         ? router.push(`/dashboard`)
@@ -195,7 +191,7 @@ export const UsePreviewFile = () => {
     } else {
       const response = await DocumentServices?.getFileUrl(
         file?.name,
-        masterData?.userDetails?.studentCode
+        masterData?.userDetails?.lead?.studentCode
       );
       viewProofDetails(response);
     }

@@ -2,7 +2,6 @@ import { Grid, Typography } from "@mui/material";
 import { Green, accountDetails } from "../../common/common";
 
 const PaymentDetails = ({ masterData }) => {
-  console.log("master", masterData);
   return (
     <Grid container rowGap={2}>
       <Grid
@@ -81,7 +80,7 @@ const PaymentDetails = ({ masterData }) => {
                   Reference:
                 </Typography>
                 <Typography variant="caption">
-                  {masterData?.applicationData?.studentCode}{" "}
+                  {masterData?.applicationData?.lead?.studentCode}{" "}
                 </Typography>
               </Grid>
             </Grid>

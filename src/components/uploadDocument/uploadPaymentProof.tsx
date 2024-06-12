@@ -78,6 +78,7 @@ const UploadPaymentProof = ({
           onChange={async (e) => {
             if (e?.target?.files) {
               const allowPayment = await paymentStatusCheck();
+
               if (allowPayment) {
                 if (fileValidation(e?.target?.files[0]) === true) {
                   uploadPaymentProof(e?.target?.files);

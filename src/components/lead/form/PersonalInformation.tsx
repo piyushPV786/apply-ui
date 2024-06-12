@@ -27,7 +27,7 @@ const PersonalInformation = (props: any) => {
 
   useEffect(() => {
     setValue("lead.mobileNumber", `+${studentDetails?.mobileNumber}`);
-    setValue("lead.leadCode", `${studentDetails?.leadCode}`);
+    setValue("lead.leadId", `${studentDetails?.leadId}`);
     setValue("lead.mobileCountryCode", `27`);
   }, []);
 
@@ -50,11 +50,7 @@ const PersonalInformation = (props: any) => {
           <div className="row">
             {personalInfoData?.map((element) => (
               <>
-                <input
-                  type="text"
-                  {...register("lead.leadCode")}
-                  hidden={true}
-                />
+                <input type="text" {...register("lead.leadId")} hidden={true} />
                 <input
                   type="text"
                   {...register("lead.mobileCountryCode")}

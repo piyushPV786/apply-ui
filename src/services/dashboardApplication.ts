@@ -2,8 +2,8 @@ import { apiEndPoint, apiUrls } from "./config";
 import { apiServer } from "./index";
 
 class DashboardApplicationServices {
-  async getApplicationData(leadCode: string) {
-    const url = `${apiUrls?.applyBaseUrl}lead/${leadCode}/application`;
+  async getApplicationData(leadId: string) {
+    const url = `${apiUrls?.applyBaseUrl}lead/${leadId}/application`;
     const response = await apiServer.get(url);
     return response?.data;
   }

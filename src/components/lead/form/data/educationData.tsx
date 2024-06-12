@@ -12,19 +12,7 @@ export const EducationData = [
     label: "Highest Qualification",
   },
   {
-    name: "referredById",
-    label: "Referred by",
-  },
-  {
     name: "studyModeCode",
     label: "Study Mode & Fee Plan",
-  },
-  {
-    name: "agentCode",
-    label: "Agent Name",
-  },
-  {
-    name: "socialMediaCode",
-    label: "Social Media",
   },
 ];

@@ -80,9 +80,9 @@ export const UserNumberInformation = ({ applicationDetail }) => {
             Application No: {applicationDetail?.applicationCode}
           </StudentIdCard>
         )}
-        {applicationDetail?.studentCode && (
+        {applicationDetail?.lead?.studentCode && (
           <StudentIdCard bgColor="#235290">
-            Student No: {applicationDetail?.studentCode}
+            Student No: {applicationDetail?.lead?.studentCode}
           </StudentIdCard>
         )}
       </div>
@@ -110,18 +110,18 @@ export const CardAction = (props) => {
 };
 
 export const DocumentInformation = ({ applicationDetail }) => {
-  const { documentData, getDownloadDocument } =
+  const { document, getDownloadDocument } =
     UseCardActionHook(applicationDetail);
 
   return (
     <Grid sm={3} item>
-      {!!documentData?.length && (
+      {!!document?.length && (
         <Dropdown style={{ width: "100%" }}>
           <ContentCard variant="success" id="dropdown-basic">
             Downloads
           </ContentCard>
           <Dropdown.Menu>
-            {documentData?.map((item) => (
+            {document?.map((item) => (
               <Dropdown.Item onClick={() => getDownloadDocument(item)}>
                 {documentType[item?.documentTypeCode]}
               </Dropdown.Item>

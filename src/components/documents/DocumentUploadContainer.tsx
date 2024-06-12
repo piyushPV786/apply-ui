@@ -39,7 +39,6 @@ const DocumentUploadContainer = ({
       setDocumentProgress(element, uploadProgress, documentCode);
     }
   }, [uploadProgress]);
-
   const removeDocumnet = async (documentCode: string) => {
     await DocumentServices?.documentRemove(documentCode);
   };

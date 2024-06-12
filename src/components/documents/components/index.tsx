@@ -125,7 +125,8 @@ export const BursaryFeilds = ({ element, masterData }) => {
 };
 
 export const FileRegister = ({ element, uploadDocument }) => {
-  const { register } = useFormContext();
+  const { register, watch } = useFormContext();
+
   const productImageField = register(`${element.code}`, {
     validate: (value) => {
       return fileValidation(value, element);
@@ -159,7 +160,8 @@ export const FileRegister = ({ element, uploadDocument }) => {
             />
           </StyleLabel>
           <Typography className="doc-upload-text">
-            Click on browse and Select all files to be uploaded from your machine
+            Click on browse and Select all files to be uploaded from your
+            machine
           </Typography>
         </Box>
       </FileUploadContainer>

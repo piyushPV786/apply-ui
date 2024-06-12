@@ -309,6 +309,7 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "INTAKE-ASSIGNMENT-PENDING": "Intake Assignment Pending",
   "FINANCE-VERIFICATION-PEND": "Finance Verification Pending",
   MONTHLY_PAYMENT_REJECTED: "Monthly Payment Rejected",
+  "RPL-FEE-PEND": "RPL-Fee Pending",
 };
 export enum FileSize {
   maxSize = 2000 * 1024,
