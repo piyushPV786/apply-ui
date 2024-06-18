@@ -56,7 +56,7 @@ export const DeclarationComponent = ({ element, masterData }) => {
 
 export const BursaryFeilds = ({ element, masterData }) => {
   const [countryCodeRef, setCountryCode] = useState<any>("ZA");
-  const { register } = useFormContext();
+  const { register, formState: { errors } } = useFormContext();
 
   const onCountryChange = (value: string | any) => {
     if (value) {
@@ -80,8 +80,12 @@ export const BursaryFeilds = ({ element, masterData }) => {
         <StyledLabel required={element?.required}>Bursary Name</StyledLabel>
         <input
           {...register(`${element.code}Name`, {
-            required: element?.required,
+            required: {
+              value: element?.required,
+              message: 'Name field is required', // Custom error message
+            },
           })}
+          
           className="form-control"
           type={"text"}
           placeholder={"e.g 10 church street"}
@@ -94,6 +98,10 @@ export const BursaryFeilds = ({ element, masterData }) => {
         <input
           {...register(`${element.code}Email`, {
             required: element?.required,
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: 'Please enter a valid email address'
+            }
           })}
           className="form-control"
           type={"text"}
@@ -107,6 +115,10 @@ export const BursaryFeilds = ({ element, masterData }) => {
         <PhoneInput
           {...register(`${element.code}Phone`, {
             required: element?.required,
+            pattern: {
+              value: /^\+\d{1,3}\s\d{1,}(?:\s\d+)*$/, 
+              message: 'Please enter a valid phone number'
+            }
           })}
           fullWidth
           id="2"
@@ -117,9 +129,30 @@ export const BursaryFeilds = ({ element, masterData }) => {
           onCountryChange={(value: any) => {
             onCountryChange(value);
           }}
-          onChange={() => {}}
+          onChange={() => { }}
         />
       </Grid>
+      {errors[`${element.code}Name`] && <Grid item sm={12} xs={12}>
+        {errors[`${element.code}Name`] && (
+          <Typography color={"error"}>
+            {errors[`${element.code}Name`]?.message as any}
+          </Typography>
+        )}
+      </Grid>}
+      {errors[`${element.code}Email`] && <Grid item sm={12} xs={12}>
+        {errors[`${element.code}Email`] && (
+          <Typography color={"error"}>
+            {errors[`${element.code}Email`]?.message as any}
+          </Typography>
+        )}
+      </Grid>}
+      {errors[`${element.code}Phone`] && <Grid item sm={12} xs={12}>
+        {errors[`${element.code}Phone`] && (
+          <Typography color={"error"}>
+            {errors[`${element.code}Phone`]?.message as any}
+          </Typography>
+        )}
+      </Grid>}
     </Grid>
   );
 };
