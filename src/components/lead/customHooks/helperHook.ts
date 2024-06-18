@@ -76,8 +76,11 @@ export const useHelperHook = (masterData, watch, setError) => {
       response?.applicationData &&
       response?.applicationData?.applicationCode
     ) {
+      const updateCreditPayload = {
+        isImmediate: false
+      }
       const updateCredit = await ApplicationServices.updateCreditReport(
-        response?.applicationData?.applicationCode
+        response?.applicationData?.applicationCode, updateCreditPayload
       );
       console.log("updateCredit", updateCredit);
       router.push(`/uploads/${response?.applicationData?.applicationCode}`);

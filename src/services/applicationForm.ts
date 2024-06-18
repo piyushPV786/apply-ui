@@ -143,9 +143,9 @@ class ApplicationFormServices {
     return result;
   }
 
-  async updateCreditReport(id: any) {
-    const url = `${apiUrls?.financeBaseUrl}${apiEndPoint?.updateCredit}/${id}`;
-    const response = await apiServer.patch(url);
+  async updateCreditReport(id: string, updateCreditPayload : { isImmediate : boolean}) {
+    const url = `${apiUrls?.financeBaseUrl}${apiEndPoint?.updateCredit}/${id}/new`;
+    const response = await apiServer.patch(url, updateCreditPayload);
     const result = response?.data ? response?.data : null;
     return result;
   }
