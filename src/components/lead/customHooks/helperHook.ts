@@ -71,20 +71,24 @@ export const useHelperHook = (masterData, watch, setError) => {
       );
     }
 
+   
+
     if (
       response &&
       response?.applicationData &&
       response?.applicationData?.applicationCode
     ) {
-      const updateCreditPayload = {
-        isImmediate: false
-      }
-      const updateCredit = await ApplicationServices.updateCreditReport(
-        response?.applicationData?.applicationCode, updateCreditPayload
-      );
-      console.log("updateCredit", updateCredit);
+      
       router.push(`/uploads/${response?.applicationData?.applicationCode}`);
     }
+
+    const updateCreditPayload = {
+      isImmediate: false
+    }
+    const updateCredit = await ApplicationServices.updateCreditReport(
+      response?.applicationData?.applicationCode, updateCreditPayload
+    );
+    console.log("updateCredit", updateCredit);
 
     // ApplicationServices.updateLead(payload, leadId);
   };
