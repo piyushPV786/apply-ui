@@ -9,7 +9,7 @@ import { downloadDocument } from "../../../Util/Util";
 import { useState } from "react";
 
 const UseCardActionHook = (applicationDetail) => {
-  const { status, education, sponsor, document, studentCode } =
+  const { status, education, sponsor, documentData, lead, eligibility } =
     applicationDetail;
 
   const [openCredentialDialog, setOpenCredentialDialog] = useState(false);
@@ -45,11 +45,19 @@ const UseCardActionHook = (applicationDetail) => {
   const isPayBTN =
     status === CommonEnums.RESUB_APP_FEE_PROOF ||
     status === CommonEnums.APP_ENROLLED_ACCEPTED ||
-    status === APPLICATION_STATUS.APPLICATION_FEE_PENDING;
+    status === CommonEnums.RPL_FEE_PEND ||
+    status === APPLICATION_STATUS.APPLICATION_FEE_PENDING ||
+    status === APPLICATION_STATUS?.MONTHLY_PAYMENT_REJECT;
 
+  const isAccessProgramBTN = eligibility?.accessProgram;
   const payBtnTitle =
-    status === CommonEnums.APP_ENROLLED_ACCEPTED
-      ? "Pay Program Fee"
+    status === CommonEnums.APP_ENROLLED_ACCEPTED ||
+    status === APPLICATION_STATUS?.MONTHLY_PAYMENT_REJECT
+      ? isAccessProgramBTN
+        ? "Pay DBM Access Program Fee"
+        : "Pay Qualification Fee"
+      : status === CommonEnums.RPL_FEE_PEND
+      ? "Pay Rpl Fee"
       : "Pay Application Fee";
 
   const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
@@ -64,20 +72,25 @@ const UseCardActionHook = (applicationDetail) => {
     BURSARY_BUTTON_STATUS.includes(status) &&
     education?.studentTypeCode === CommonEnums?.BURSARY;
   const isAdamiteBTN = status === CommonEnums.PROG_ADMITTED;
-  const documentData = document?.filter((item) => {
-    return (
+
+  const documentDataTypes = [
+    CommonEnums.ACCEPTANCE_LETTER,
+    CommonEnums.WELCOME_LETTER,
+    CommonEnums.QUOTE,
+  ];
+
+  const document = documentData?.filter(
+    (item) =>
       (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
         status === CommonEnums?.PROG_ADMITTED) ||
-      item?.documentTypeCode === CommonEnums.ACCEPTANCE_LETTER ||
-      item?.documentTypeCode === CommonEnums.WELCOME_LETTER
-    );
-  });
+      documentDataTypes.includes(item?.documentTypeCode)
+  );
 
   const getDownloadDocument = async (documentDetail) => {
     const { name } = documentDetail;
     const documentResponse = await DashboardApplicationServices?.getDocumentURL(
       name,
-      studentCode
+      lead?.studentCode
     );
     downloadDocument(documentResponse?.data, name);
   };
@@ -91,13 +104,14 @@ const UseCardActionHook = (applicationDetail) => {
     isUploadBTN,
     isBursaryBTN,
     isAdamiteBTN,
-    documentData,
+    document,
     getDownloadDocument,
     openCredentialDialog,
     setOpenCredentialDialog,
     rmatOpen,
     getRmatDetails,
     setRmatOpen,
+    isAccessProgramBTN,
   };
 };
 

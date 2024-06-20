@@ -25,6 +25,7 @@ interface IButoonProps {
   isRMATBtn?: boolean;
   isUploadBtn?: boolean;
   isDownloadBtn?: boolean;
+  isError?: boolean;
 }
 const StyledButton = ({
   title = "",
@@ -41,6 +42,7 @@ const StyledButton = ({
   isUploadBtn = false,
   isDownloadBtn = false,
   form = "",
+  isError,
   ...rest
 }: IButoonProps) => {
   return (
@@ -49,6 +51,7 @@ const StyledButton = ({
       disabled={disabled}
       roundBtn={roundBtn}
       isGreenWhiteCombination={isGreenWhiteCombination}
+      isError={isError}
       style={style}
       className={className}
       type={type}
@@ -92,30 +95,35 @@ export default StyledButton;
 
 const MyButton = styled(Button)<any>`
   border-radius: ${({ roundBtn }) => (roundBtn ? "20px" : "")}!important;
-  background: ${({ isGreenWhiteCombination, disabled }) =>
-    isGreenWhiteCombination
+  background: ${({ isGreenWhiteCombination, disabled, isError }) =>
+    isGreenWhiteCombination || isError
       ? "white!important"
       : disabled
       ? "#d2d2d2!important"
       : "#008554 !important"};
-  border: 1px solid #008554 !important;
+  border: 1px solid
+    ${({ isError }) => (isError ? "#d32f2f" : "#008554")}!important;
   .MuiButton-label {
-    color: ${({ isGreenWhiteCombination, disabled }) =>
+    color: ${({ isGreenWhiteCombination, disabled, isError }) =>
       isGreenWhiteCombination
         ? Green
         : disabled
         ? "#b6b6b6!important"
+        : isError
+        ? "#d32f2f"
         : "white"};
   }
   // opacity: ${({ disabled }) => (disabled ? 0.3 : 1)}!important;
   cursor: pointer;
   @media (max-width: 510px) {
-    background: ${({ isGreenWhiteCombination }) =>
-      isGreenWhiteCombination ? "#fff!important" : "#008554 !important"};
+    background: ${({ isGreenWhiteCombination, isError }) =>
+      isGreenWhiteCombination || isError
+        ? "#fff!important"
+        : "#008554 !important"};
     padding: 6px 8px !important;
     .MuiButton-label {
-      color: ${({ isGreenWhiteCombination }) =>
-        isGreenWhiteCombination ? Green : "white"};
+      color: ${({ isGreenWhiteCombination, isError }) =>
+        isGreenWhiteCombination ? Green : isError ? "#d32f2f" : "white"};
     }
   }
 `;

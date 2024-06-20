@@ -1,4 +1,8 @@
-import { isValidEmail, validateNumber } from "../../../../Util/Util";
+import {
+  isValidEmail,
+  validateAddress,
+  validateNumber,
+} from "../../../../Util/Util";
 
 export const sponsorInfoData = [
   {
@@ -28,7 +32,7 @@ export const sponsorInfoData = [
   {
     name: "name",
     key: "name",
-    label: "Sponsor Name",
+    label: "Sponsor/company Name",
     type: "textWithSpace",
     required: false,
     errorMessage: "Please enter sponsor name",
@@ -69,9 +73,11 @@ export const sponsorInfoData = [
     name: "address",
     key: "address",
     label: "Address",
-    type: "text",
+    type: "address",
     required: false,
     errorMessage: "Please enter Address",
+    validate: validateAddress,
+    validateErrorMessage: "Maximum 40 characters allowed",
     hidden: false,
     disabled: false,
     placeholder: "",
@@ -117,12 +123,16 @@ export const sponsorInfoData = [
     name: "zipCode",
     key: "zipCode",
     label: "Pin Code / Zip Code",
-    type: "number",
+    type: "zipCode",
     required: false,
     errorMessage: "Please enter Pin Code / Zip Code",
     hidden: false,
     disabled: false,
     placeholder: "",
     numric: true,
+    rhfOptions: {
+      minLength: 4,
+      maxLength: 10,
+    },
   },
 ];

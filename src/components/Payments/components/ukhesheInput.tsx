@@ -1,7 +1,17 @@
-const UkhesheInput = ({ value, getPaymentRedirectURL }) => {
-  const handleSubmit = (e) => {
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+
+const UkhesheInput = ({ value, setOpenPopup, paymentStatusCheck }) => {
+  const router = useRouter();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    getPaymentRedirectURL();
+    const allowPayment = await paymentStatusCheck();
+    if (allowPayment) {
+      setOpenPopup(true);
+    } else {
+      toast.error("Invalid Payment Processing");
+      router.push("/dashboard");
+    }
   };
   return (
     <>

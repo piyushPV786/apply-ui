@@ -5,6 +5,7 @@ import { Green } from "../common/common";
 import Dropdown from "react-bootstrap/Dropdown";
 import LoginCredentialDialog from "./loginCridentialDialog";
 import RmatCredentialDialog from "./rmatDetailsDialog";
+import { documentType } from "../common/constant";
 import {
   capitalizeFirstLetter,
   convertCodeToName,
@@ -20,7 +21,7 @@ export const EducationDetails = ({ educationInfo, allProgram }) => {
       <div className="col-md-6">
         <div className="mt-2 w-100 app-card-block">
           <p className="mb-0" style={{ color: `#5a636a` }}>
-            Interested Program
+            Interested Qualification
           </p>
           <strong>
             {convertCodeToName(allProgram, educationInfo?.programCode)}
@@ -72,16 +73,16 @@ export const UserInformation = ({ userInfo }) => {
 
 export const UserNumberInformation = ({ applicationDetail }) => {
   return (
-    <div className="row px-6">
+    <div className="row px-4">
       <div className="d-flex flex-row ">
         {applicationDetail?.applicationCode && (
           <StudentIdCard bgColor="#235290">
             Application No: {applicationDetail?.applicationCode}
           </StudentIdCard>
         )}
-        {applicationDetail?.studentCode && (
+        {applicationDetail?.lead?.studentCode && (
           <StudentIdCard bgColor="#235290">
-            Student No: {applicationDetail?.studentCode}
+            Student No: {applicationDetail?.lead?.studentCode}
           </StudentIdCard>
         )}
       </div>
@@ -109,25 +110,21 @@ export const CardAction = (props) => {
 };
 
 export const DocumentInformation = ({ applicationDetail }) => {
-  const { documentData, getDownloadDocument } =
+  const { document, getDownloadDocument } =
     UseCardActionHook(applicationDetail);
 
   return (
     <Grid sm={3} item>
-      {!!documentData?.length && (
+      {!!document?.length && (
         <Dropdown style={{ width: "100%" }}>
           <ContentCard variant="success" id="dropdown-basic">
             Downloads
           </ContentCard>
           <Dropdown.Menu>
-            {documentData?.map((item) => (
-              <Dropdown.Item
-                onClick={() => getDownloadDocument(item)}
-              >{`${capitalizeFirstLetter(
-                item?.documentTypeCode.split("-")[0].toLowerCase()
-              )} ${item?.documentTypeCode
-                .split("-")[1]
-                .toLowerCase()}`}</Dropdown.Item>
+            {document?.map((item) => (
+              <Dropdown.Item onClick={() => getDownloadDocument(item)}>
+                {documentType[item?.documentTypeCode]}
+              </Dropdown.Item>
             ))}
           </Dropdown.Menu>
         </Dropdown>
@@ -147,6 +144,7 @@ export const ActionButtons = ({ applicationDetail }) => {
     isBursaryBTN,
     isUploadBTNTitle,
     isAdamiteBTN,
+    isAccessProgramBTN,
     openCredentialDialog,
     setOpenCredentialDialog,
     rmatOpen,

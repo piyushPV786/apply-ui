@@ -35,6 +35,25 @@ const PaymentSuccessFull = (props: any) => {
       </PaymentContainer>
     );
   };
+  const OfflinePaymentSuccess = () => {
+    return (
+      <PaymentContainer>
+        <div className="row">
+          <div className="col-sm-12">
+            <div className="text-center mb-2">
+              <Image width="190" height="170" src={PayIcon} alt="payIcon" />
+            </div>
+            <div className="text-center w-100">
+              <GreenFormHeading style={{ fontSize: "24px" }}>
+                Your Payment Proof Was Submitted Successfully
+              </GreenFormHeading>
+              <p>We will verify and get back to you Shortly.</p>
+            </div>
+          </div>
+        </div>
+      </PaymentContainer>
+    );
+  };
 
   const OnlinePaymentFailed = () => {
     return (
@@ -58,10 +77,11 @@ const PaymentSuccessFull = (props: any) => {
                 </GreenFormHeading>
                 <p>
                   Your payment was not successfully processed. Please try again,
-                  if still <br />
-                  encounter the same error, try with another payment method.
+                  if you still <br />
+                  encounter the same error, try again with another payment
+                  method.
                   <br />
-                  In case of any query please free to contact{" "}
+                  In case of any query please feel free to contact{" "}
                   <span style={{ color: `${Green}` }}>1800 212 9950</span>
                 </p>
               </div>
@@ -78,9 +98,17 @@ const PaymentSuccessFull = (props: any) => {
       <div className="container-fluid w-75 mt-5">
         <PaymentContainer style={{ paddingBottom: "1rem" }}>
           {props?.pageType === "failure" && <OnlinePaymentFailed />}
-          {props?.pageType === "success" && <OnlinePaymentSuccess />}
-
+          {props?.pageType === "onlinesuccess" && <OnlinePaymentSuccess />}
+          {props?.pageType === "success" && <OfflinePaymentSuccess />}
           <div>
+            {props?.pageType === "failure" && (
+              <StyledButton
+                onClick={() => router.push(`/payments/${props.appCode}`)}
+                title="Retry Payment"
+                isGreenWhiteCombination
+                className="me-2"
+              />
+            )}
             <StyledButton
               onClick={() => {
                 localStorage.setItem("leadData", "");
@@ -89,7 +117,6 @@ const PaymentSuccessFull = (props: any) => {
               }}
               title="Back to Dashboard"
               isGreenWhiteCombination
-              className="me-2"
             />
           </div>
         </PaymentContainer>

@@ -1,41 +1,47 @@
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import {
   GreenFormHeading,
   StyledAccordion,
   StyledLabel,
+  CertifiedDocumentQualification,
 } from "../../common/common";
 import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import Image from "next/image";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import EducationImg from "../../../../public/assets/images/education-svgrepo-com.svg";
-import { refferedById } from "../../../constants";
 import CommonAutocomplete from "./components/CommonAutocomplete ";
 import { StyleContainer } from "../../login/style";
 import { FeeCard } from "./components/CommonComponents";
 import RadioField from "./components/RadioField";
 import { useEducationHook } from "../customHooks/educationHooks";
-import { useEffect } from "react";
 import { feeMode } from "../../common/constant";
+import { Alert } from "@mui/material";
 
 const Education = (props: any) => {
   const {
     register,
     watch,
     formState: { errors },
-    setValue,
-    control,
   } = useFormContext();
 
-  const { masterData, programsData, applicationData, salesAgentData } =
-    props?.masterData;
+  const { masterData, programsData, applicationData } = props?.masterData;
   const programCode = watch("education.programCode");
   const studyModeCodeWatch = watch("education.studyModeCode");
   const studentProgram: any = useEducationHook(programCode);
-  const refferedBy = watch("education.referredById");
+
   const Errors = errors["education"] as any;
   const feesDetails = studentProgram?.studyModes?.find(
     (item) => item?.studyModeCode === studyModeCodeWatch
   );
+
+  // useEffect(() => {
+  //   if (studentProgram == null && programCode) {
+  //     setError("education.studyModeCode", {
+  //       type: "manual",
+  //       message: "",
+  //     });
+  //   }
+  // }, [programCode]);
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
@@ -48,7 +54,7 @@ const Education = (props: any) => {
           <span className="me-2">
             <Image src={EducationImg} alt="user" />
           </span>
-          Education and Course details
+          Education and Module details
         </GreenFormHeading>
       </AccordionSummary>
       <AccordionDetails>
@@ -64,49 +70,88 @@ const Education = (props: any) => {
               <CommonAutocomplete
                 defaultValue={applicationData?.education?.programCode}
                 options={programsData}
-                label="Interested Program"
+                label="Interested Qualification"
                 registerName={`education.programCode`}
                 required={true}
               />
             )}
             {Errors?.programCode && (
               <div className="invalid-feedback">
-                select your interested program
+                select your interested Qualification
               </div>
+            )}
+
+            {CertifiedDocumentQualification.includes(programCode) && (
+              <Alert severity="warning" className="infoColor">
+                Certified documents are required for this qualification.
+              </Alert>
             )}
           </div>
 
           <div className="col-lg-4 mb-4">
             <StyledLabel required>Study Mode & Fee Plan</StyledLabel>
             <br />
-            {!!studentProgram?.studyModes?.length && (
-              <>
-                {studentProgram?.studyModes?.map((item: any) => {
-                  {
-                    return (
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input me-2"
-                          type={"radio"}
-                          {...register("education.studyModeCode")}
-                          value={item?.studyModeCode}
-                        />
-                        {item?.studyModeCode}
-                      </div>
-                    );
-                  }
-                })}
-                <StyleContainer className="fee-cards">
-                  {feesDetails && feesDetails?.fees && (
-                    <div className="row">
-                      {feesDetails?.fees?.map((item) => {
-                        if (item?.feeMode != feeMode?.TOTAL)
-                          return <FeeCard item={item} />;
-                      })}
+            <>
+              {studentProgram?.studyModes.map((item: any) => {
+                {
+                  return (
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input me-2"
+                        type={"radio"}
+                        {...register("education.studyModeCode", {
+                          required: "Study Mode & Fee Plan is Required",
+                        })}
+                        value={item?.studyModeCode}
+                      />
+                      {item?.studyModeCode}
                     </div>
-                  )}
-                </StyleContainer>
-              </>
+                  );
+                }
+              })}
+
+              {feesDetails && feesDetails?.fees && (
+                <>
+                  <StyleContainer className="fee-cards">
+                    {feesDetails?.fees.map((item) => {
+                      if (item?.feeMode === feeMode?.APPLICATION)
+                        return <FeeCard item={item} />;
+                    })}
+                  </StyleContainer>
+                  <StyleContainer className="fee-cards">
+                    {feesDetails?.fees
+                      ?.filter(
+                        (item) =>
+                          item?.feeMode !== feeMode?.TOTAL &&
+                          item?.feeMode !== feeMode?.APPLICATION
+                      )
+                      .sort((a, b) => {
+                        const feeModeOrder = {
+                          MONTHLY: 1,
+                          SEMESTER: 2,
+                          ANNUALLY: 3,
+                        };
+
+                        return (
+                          feeModeOrder[a?.feeMode] - feeModeOrder[b?.feeMode]
+                        );
+                      })
+                      .map((item) => (
+                        <FeeCard key={item?.feeMode} item={item} />
+                      ))}
+                  </StyleContainer>
+                </>
+              )}
+            </>
+            {Errors?.studyModeCode && studentProgram != null && (
+              <div className="invalid-feedback">
+                {Errors?.studyModeCode?.message}
+              </div>
+            )}
+            {Errors?.studyModeCode && studentProgram == null && (
+              <div className="invalid-feedback">
+                Fees not configured for selected qualification
+              </div>
             )}
           </div>
 
@@ -160,74 +205,6 @@ const Education = (props: any) => {
             {Errors?.isInternationDegree && (
               <div className="invalid-feedback">
                 international degree is required
-              </div>
-            )}
-          </div>
-
-          <div className="col-lg-4 mb-4">
-            <div className="mb-4">
-              <CommonAutocomplete
-                defaultValue={
-                  !applicationData?.education?.agentCode &&
-                  !applicationData?.education?.socialMediaCode
-                    ? null
-                    : applicationData?.education?.agentCode
-                    ? refferedById.agent
-                    : refferedById.social
-                }
-                options={[
-                  { name: "Agent", code: refferedById.agent, id: 1 },
-                  { name: "Social Media", code: refferedById.social, id: 2 },
-                ]}
-                label="Referred by Agent/Social Media"
-                registerName={`education.referredById`}
-                required={true}
-              />
-              {Errors?.refferedById && (
-                <div className="invalid-feedback">
-                  Please select Referred by
-                </div>
-              )}
-            </div>
-
-            {(refferedBy === refferedById.agent ||
-              (applicationData?.education?.agentCode &&
-                refferedBy === refferedById.agent)) && (
-              <div className="mb-4 others">
-                {!!salesAgentData?.length && (
-                  <CommonAutocomplete
-                    defaultValue={applicationData?.education?.agentCode}
-                    options={salesAgentData}
-                    label="Agent Name"
-                    registerName={`education.agentCode`}
-                    required={true}
-                  />
-                )}
-                {Errors?.agentCode && (
-                  <div className="invalid-feedback">
-                    Please select Agent Name
-                  </div>
-                )}
-              </div>
-            )}
-            {(refferedBy === refferedById.social ||
-              (applicationData?.education?.socialMediaCode &&
-                refferedBy === refferedById.social)) && (
-              <div className="mb-4 others">
-                {!!masterData?.socialMediaData?.length && (
-                  <CommonAutocomplete
-                    defaultValue={applicationData?.education?.socialMediaCode}
-                    options={masterData?.socialMediaData}
-                    label="Social Media"
-                    registerName={`education.socialMediaCode`}
-                    required={true}
-                  />
-                )}
-                {Errors?.socialMediaCode && (
-                  <div className="invalid-feedback">
-                    Please select social media
-                  </div>
-                )}
               </div>
             )}
           </div>

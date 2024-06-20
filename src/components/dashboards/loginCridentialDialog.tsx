@@ -66,8 +66,14 @@ const LoginCredentialDialog = ({
             >
               <Grid item md={6} sm={6} className="text-center">
                 <h6>ReGenius URL</h6>
-                <Link href={`http://regeniusuat.regenesys.net/`} target="blank">
-                  http://regeniusuat.regenesys.net/
+                <Link
+                  href={
+                    process.env.NEXT_PUBLIC_PAYMENT_REGENIUS_REDIRECTION_URL ||
+                    ""
+                  }
+                  target="blank"
+                >
+                  {process.env.NEXT_PUBLIC_PAYMENT_REGENIUS_REDIRECTION_URL}
                 </Link>
               </Grid>
               <Grid item md={6} sm={6} className="text-center">
@@ -88,11 +94,11 @@ const LoginCredentialDialog = ({
             >
               <Grid item md={6} sm={6} className="text-center">
                 <p>Username</p>
-                <h5>{applicationDetail?.username}</h5>
+                <h5>{applicationDetail?.lead?.student?.userName}</h5>
               </Grid>
               <Grid item md={6} sm={6} className="text-center">
                 <p>Password</p>
-                <h5>{applicationDetail?.password}</h5>
+                <h5>{applicationDetail?.lead?.student?.password}</h5>
               </Grid>
             </Grid>
           </Grid>

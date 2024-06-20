@@ -178,13 +178,21 @@ export const getStatusColor = (status) => {
  */
 export const isValidDate = (value) => {
   const currentYear = new Date().getFullYear();
-  const year = value?.split("-")[0];
+  const year = new Date(value).getFullYear();
   const age = currentYear - +year;
-
   if (age < 16) return false;
   if (age > 100) return false;
   if (age > currentYear) return false;
   else return true;
+};
+
+export const isValidExpiryDate = (value) => {
+  const selectedDate = new Date(value);
+  const currentDate = new Date();
+  const year = new Date(value).getFullYear;
+  if (selectedDate <= currentDate) {
+    return "Please Select Valid Expiry Date";
+  }
 };
 
 /**
@@ -194,9 +202,13 @@ export const isValidDate = (value) => {
  * @returns {boolean} - Whether the email is valid or not.
  */
 export const isValidEmail = async (email) => {
-  return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-    email
-  );
+  if (email) {
+    return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      email
+    );
+  } else {
+    return true;
+  }
 };
 
 /**
@@ -307,7 +319,7 @@ export const GetPaymentImage = (type) => {
     return `${imgUrl}/stripe.png`;
   }
   if (type === "ukheshe") {
-    return `${imgUrl}/ukheshy.png`;
+    return `${imgUrl}/finEDTech.png`;
   }
 };
 
@@ -333,10 +345,10 @@ export const getApplicationCode = () => {
   const activeLeadDetail = JSON.parse(
     sessionStorage?.getItem("activeLeadDetail") as any
   )?.applicationCode;
-  const leadCode = activeLeadDetail || applicationCode;
+  const leadId = activeLeadDetail || applicationCode;
 
-  if (leadCode) {
-    appCode = leadCode;
+  if (leadId) {
+    appCode = leadId;
   }
 
   return appCode;
@@ -533,6 +545,8 @@ export const validateNumber = (number, countryCodeRef) =>
   parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! >= 6 &&
   parsePhoneNumber(number, countryCodeRef)?.nationalNumber?.length! <= 15;
 
+export const validateAddress = (address) => address?.length <= 40;
+
 /**
  * Transforms a date into a specific format.
  * @param {Date} date - The date to be transformed.
@@ -594,6 +608,19 @@ export function sortAscending(a, b, key) {
   }
 
   return comparison;
+}
+
+export function formatDate(originalString) {
+  const originalDate = new Date(originalString);
+  const year = originalDate.getFullYear();
+  const month = originalDate.getMonth() + 1;
+  const day = originalDate.getDate();
+
+  const formattedString = `${year}-${month < 10 ? "0" : ""}${month}-${
+    day < 10 ? "0" : ""
+  }${day}`;
+
+  return formattedString;
 }
 
 /**
@@ -676,6 +703,10 @@ export const emailValidation = async (e) => {
     returnVal = {
       message: "you have entered an invalid email address. Please try again",
     };
+  } else if (e?.target?.value?.length > 200) {
+    returnVal = {
+      message: "Email address should not exceed 200 characters.",
+    };
   } else {
     returnVal = {
       message: "clear",
@@ -691,6 +722,20 @@ export const emailValidation = async (e) => {
   }
 
   return returnVal;
+};
+
+export const idNumberValidation = async (value) => {
+  let result: any = true;
+  if (value.length > 0) {
+    const response = await ApplicationFormServices?.checkDuplicateIdNumber(
+      value
+    );
+
+    if (response?.message) {
+      result = "Provided Identification number already exists";
+    }
+  }
+  return result;
 };
 
 export const downloadDocument = (url, fileName: string) => {
@@ -723,6 +768,10 @@ export const mapFormDefaultValue = (studentData: object, setValue: any) => {
         setEducationValue(studentData, setValue, key);
       }
     }
+
+    if (key === "lead" && studentData?.[key]?.address?.length > 0) {
+      setValue("address", value?.address);
+    }
   }
 };
 
@@ -747,7 +796,7 @@ export const showWarningToast = (message: string) => {
 export const formateInPascalCase = (value: string) => {
   const words = value.split("-");
   const formattedString = words
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .map((word) => word.charAt(0)?.toUpperCase() + word.slice(1)?.toLowerCase())
     .join(" ");
   return formattedString;
 };

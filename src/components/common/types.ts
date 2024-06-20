@@ -124,7 +124,7 @@ interface Lead {
   identificationDocumentType: string;
   nationality: string;
   mobileCountryCode: string;
-  leadCode: string;
+  leadId: string;
   isAgreedTermsAndConditions: boolean;
 }
 
@@ -203,7 +203,7 @@ export interface IEducation {
 export interface ILead {
   isActive: boolean;
   id: number;
-  leadCode: string;
+  leadId: string;
   firstName: string;
   middleName: string;
   lastName: string;

@@ -19,16 +19,24 @@ import { mapFormDefaultValue } from "../../Util/Util";
 import "react-phone-number-input/style.css";
 import { Stack } from "@mui/material";
 import { Spinner } from "../Loader";
+import ErrorComponent from "./form/ErrorComponent";
+import ReferredBy from "./form/ReferredBy";
 
 interface IProps {
   applicationCode: string;
 }
 
 const LeadForm = (props: IProps) => {
-  const methods = useForm();
-  const { watch, handleSubmit, setError } = methods;
+  const methods = useForm({ mode: "all" });
+  const {
+    watch,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = methods;
+
   const masterData = useFormHook(props?.applicationCode);
-  const { saveApplication, saveApplicationAsDraft } = useHelperHook(
+  const { saveApplication, saveApplicationAsDraft, disable } = useHelperHook(
     masterData,
     watch,
     setError
@@ -63,6 +71,7 @@ const LeadForm = (props: IProps) => {
           <FormContainer>
             <div className="application-form">
               <form>
+                <ReferredBy masterData={masterData} />
                 <PersonalInformation masterData={masterData} />
                 <Address masterData={masterData} />
                 <Education masterData={masterData} />
@@ -70,15 +79,19 @@ const LeadForm = (props: IProps) => {
                 <Employment masterData={masterData} />
                 <Kin masterData={masterData} />
                 <TermsAndCondition />
+                <ErrorComponent errors={errors} />
                 <div className="mt-4 text-center">
                   <StyledButton
                     style={{ marginRight: "10px" }}
                     onClick={saveApplicationAsDraft}
                     className="form-button btn-space"
                     title="Save As Draft"
+                    disabled={disable}
                   />
                   <StyledButton
-                    disabled={!watch("lead.isAgreedTermsAndConditions")}
+                    disabled={
+                      !watch("lead.isAgreedTermsAndConditions") || disable
+                    }
                     onClick={handleSubmit((d) => saveApplication(d))}
                     className="form-button btn-space"
                     title="Save & Next"

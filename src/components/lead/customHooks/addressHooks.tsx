@@ -47,6 +47,7 @@ export const useSameResidentialAddress = () => {
   const { setValue, watch } = useFormContext();
   const address = watch("address");
   const isSameAsPostalAddress = watch("address.isSameAsPostalAddress");
+
   useEffect(() => {
     if (isSameAsPostalAddress) {
       const _p = address[0];
@@ -63,7 +64,9 @@ export const useSameResidentialAddress = () => {
       const newAddress: any = [];
       newAddress.push(_p);
       newAddress.push(residentialAddress);
+
       setValue("address", newAddress);
+      setValue("address.isSameAsPostalAddress", true);
     }
   }, [isSameAsPostalAddress]);
 };

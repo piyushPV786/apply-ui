@@ -2,15 +2,24 @@ import { useEffect, useState } from "react";
 import PaymentServices from "../../services/payment";
 import DocumentServices from "../../services/documentApi";
 import ApplicationFormService from "../../services/applicationForm";
-import { CommonEnums } from "../../components/common/constant";
+import {
+  MBACode,
+  allowedPaymentStatus,
+  DBMCode,
+} from "../documents/context/common";
+import {
+  CommonEnums,
+  DocumentStatus,
+  status,
+  applicationFeesStatus,
+  rplFeeStatus,
+} from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
 import {
-  uploadDocumentsToAws,
   getConvertedAmount,
   getUkheshePayload,
-  getStatusPayload,
   bursaryFeeCalculation,
-  signedUrlPayload,
+  changeFileExactions,
 } from "./helper";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
@@ -24,6 +33,7 @@ export const usePaymentHook = (applicationCode: string) => {
     studyModeData: null,
     programData: null,
     bursaryData: null,
+    rmatDetails: null,
   });
 
   useEffect(() => {
@@ -33,24 +43,29 @@ export const usePaymentHook = (applicationCode: string) => {
         PaymentServices?.getApplicationData(applicationCode),
         ApplicationFormService.getStudyModes(),
       ]);
-
       const response = result[0];
       payload.applicationData = response;
       payload.studyModeData = result[1];
 
       if (response?.lead?.nationality && response?.education?.programCode) {
         const data = await Promise.all([
-          PaymentServices.getCurrencyConversion(response?.address[0]?.country),
+          PaymentServices.getCurrencyConversion(
+            response?.lead?.address[0]?.country
+          ),
           ApplicationFormService.getStudentProgram(
             response?.education?.programCode
           ),
           PaymentServices.getProgramDetails(response?.education?.programCode),
+          PaymentServices.getProgramRmatDetails(
+            response?.education?.programCode
+          ),
         ]);
         payload.feeData = data[1].find(
           (item) => item?.programCode === response?.education?.programCode
         );
         payload.currencyData = data[0];
         payload.programData = data[2];
+        payload.rmatDetails = data[3];
 
         if (response?.education?.studentTypeCode === CommonEnums?.BURSARY) {
           const response = await PaymentServices.getApplicationDataForBursary(
@@ -61,6 +76,7 @@ export const usePaymentHook = (applicationCode: string) => {
             payload.feeData = bursaryAmountFee;
           }
         }
+
         setMasterData(payload);
       }
     };
@@ -78,12 +94,16 @@ export const usePaymentHook = (applicationCode: string) => {
 export const usePaymentDetailsHook = (masterData: any) => {
   const [feeModeCode, setFeeModeCode] = useState(feeMode.APPLICATION);
   let studyModes: any = { helpText: "" };
-  if (masterData?.applicationData?.education?.studyModeCode) {
+
+  if (
+    masterData?.applicationData?.education?.studyModeCode &&
+    masterData?.feeData?.studyModes &&
+    masterData?.studyModeData
+  ) {
     const studyModeCode = masterData?.applicationData?.education?.studyModeCode;
     studyModes = masterData?.feeData?.studyModes?.find(
       (item: any) => item?.studyModeCode === studyModeCode
     );
-
     const studyModeDetails = masterData?.studyModeData?.find(
       (item: any) => item?.code === studyModeCode
     );
@@ -94,7 +114,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
   const feesStructure = studyModes?.fees?.find(
     (item: any) => item?.feeMode === feeModeCode
   );
-  if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
+  if (applicationFeesStatus.includes(masterData?.applicationData?.status)) {
     fees = {
       ...feesStructure,
       label: "Application Fee",
@@ -104,24 +124,55 @@ export const usePaymentDetailsHook = (masterData: any) => {
           ? masterData?.currencyData?.currencySymbol
           : ""
       } ${getConvertedAmount(
-        masterData?.currencyData?.forecastRate,
+        masterData?.currencyData,
         String(feesStructure?.fee)
+      )}`,
+    };
+  } else if (
+    !applicationFeesStatus.includes(masterData?.applicationData?.status) &&
+    masterData?.applicationData?.eligibility[0]?.accessProgram &&
+    masterData?.applicationData?.education?.programCode == DBMCode
+  ) {
+    fees = {
+      fee: masterData?.feeData?.otherFee?.totalFee,
+      label: "Access Program",
+      helpText: "",
+      feeMode: "MONTHLY",
+      amount: `${
+        masterData?.currencyData?.currencySymbol
+          ? masterData?.currencyData?.currencySymbol
+          : ""
+      } ${getConvertedAmount(
+        masterData?.currencyData,
+        String(masterData?.feeData?.otherFee?.totalFee)
+      )}`,
+    };
+  } else if (rplFeeStatus?.includes(masterData?.applicationData?.status)) {
+    fees = {
+      fee: masterData?.feeData?.rplFee?.totalFee,
+      label: "RPL Fee",
+      helpText: "",
+      feeMode: "MONTHLY",
+      amount: `${
+        masterData?.currencyData?.currencySymbol
+          ? masterData?.currencyData?.currencySymbol
+          : ""
+      } ${getConvertedAmount(
+        masterData?.currencyData,
+        String(masterData?.feeData?.rplFee?.totalFee)
       )}`,
     };
   } else {
     fees = {
       fee: "0.0",
       feeMode: "",
-      label: "Program Fees",
+      label: "Qualification Fees",
       helpText: "",
       amount: `${
         masterData?.currencyData?.currencySymbol
           ? masterData?.currencyData?.currencySymbol
           : ""
-      } ${getConvertedAmount(
-        masterData?.currencyData?.forecastRate,
-        String(0)
-      )}`,
+      } ${getConvertedAmount(masterData?.currencyData, String(0))}`,
       ...(feeModeCode !== feeMode.APPLICATION && { ...feesStructure }),
       ...(feeModeCode !== feeMode.APPLICATION && {
         amount: `${
@@ -129,7 +180,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
             ? masterData?.currencyData?.currencySymbol
             : ""
         } ${getConvertedAmount(
-          masterData?.currencyData?.forecastRate,
+          masterData?.currencyData,
           String(feesStructure?.fee)
         )}`,
       }),
@@ -149,7 +200,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
   };
 };
 
-export const useDiscountHook = (masterData: any, fees: any) => {
+export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
   //Hide and Show promo code
   const [showDiscount, setShowDiscount] = useState(false);
   const toggleDiscount = () => {
@@ -183,9 +234,14 @@ export const useDiscountHook = (masterData: any, fees: any) => {
         toast.success(
           `${SuccessMessage.discountSuccessMessage} ${
             res?.percent
-          } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
-            res?.maxAmount * masterData.currencyData?.forecastRate
-          } `
+          } % or Max Amount ${
+            masterData.currencyData?.currencySymbol
+              ? masterData.currencyData?.currencySymbol
+              : ""
+          } ${getConvertedAmount(
+            masterData?.currencyData,
+            String(res?.maxAmount)
+          )} `
         );
       } else {
         toast.error(ErrorMessage.discountErrorMessage);
@@ -203,9 +259,14 @@ export const useDiscountHook = (masterData: any, fees: any) => {
           toast.success(
             `${SuccessMessage.discountSuccessMessage} ${
               res?.percent
-            } % or Max Amount ${masterData.currencyData?.currencySymbol} ${
-              res?.maxAmount * masterData.currencyData?.forecastRate
-            } `
+            } % or Max Amount ${
+              masterData.currencyData?.currencySymbol
+                ? masterData.currencyData?.currencySymbol
+                : ""
+            } ${getConvertedAmount(
+              masterData?.currencyData,
+              String(res?.maxAmount)
+            )} `
           );
         }
       } else {
@@ -232,39 +293,52 @@ export const useDiscountHook = (masterData: any, fees: any) => {
     masterData?.currencyData?.currencySymbol
       ? masterData?.currencyData?.currencySymbol
       : ""
-  } ${getConvertedAmount(
-    masterData?.currencyData?.forecastRate,
-    String(fees.discountFee)
-  )}`;
+  } ${getConvertedAmount(masterData?.currencyData, String(fees.discountFee))}`;
   fees.discountCode = discount?.code;
 
   //Apply RMAT Fee
 
+  const isOptionalConditopnchek = !masterData?.rmatDetails?.every(
+    (obj) => obj.isOptional === true
+  );
+
   let rmatFees = "0";
-  if (masterData?.programData?.isRmat) {
+  if (masterData?.programData?.code == MBACode) {
+    rmatFees = masterData?.feeData?.rmatFee;
+  } else if (masterData?.programData?.isRmat && isOptionalConditopnchek) {
     rmatFees = masterData?.feeData?.rmatFee;
   }
+
   fees.rmatFees = rmatFees;
-  if (masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS) {
+
+  if (applicationFeesStatus.includes(masterData?.applicationData?.status)) {
     fees.rmatAmount = `${
       masterData?.currencyData?.currencySymbol
         ? masterData?.currencyData?.currencySymbol
         : ""
-    } ${getConvertedAmount(masterData?.currencyData?.forecastRate, rmatFees)}`;
+    } ${getConvertedAmount(masterData?.currencyData, rmatFees)}`;
   }
 
   //Total Amount
-  const totalAmount =
-    parseInt(fees?.fee) - parseInt(fees.discountFee) + parseInt(fees.rmatFees);
+  const totalAmount = applicationFeesStatus.includes(
+    masterData?.applicationData?.status
+  )
+    ? parseInt(fees?.fee) - parseInt(fees.discountFee) + parseInt(fees.rmatFees)
+    : masterData?.applicationData?.status ==
+        CommonEnums.MONTHLY_PAYMENT_REJECT && parseInt(fees?.fee) > 0
+    ? parseInt(fees?.fee) -
+      parseInt(fees.discountFee) -
+      parseInt(
+        studyModes?.fees?.find((item) => item?.feeMode == feeMode?.MONTHLY).fee
+      )
+    : parseInt(fees?.fee) - parseInt(fees.discountFee);
+
   fees.totalFee = totalAmount;
   fees.totalAmount = `${
     masterData?.currencyData?.currencySymbol
       ? masterData?.currencyData?.currencySymbol
       : ""
-  } ${getConvertedAmount(
-    masterData?.currencyData?.forecastRate,
-    String(totalAmount)
-  )}`;
+  } ${getConvertedAmount(masterData?.currencyData, String(totalAmount))}`;
   return {
     resetDiscount,
     fees,
@@ -309,58 +383,109 @@ export const usePayuHook = (masterData: any, fees: any) => {
 };
 
 export const useOfflinePaymentHook = (masterData: any, fees: any) => {
+  const [disabled, setDisabled] = useState(false);
+  const [documentCode, setDocumentCode] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const studentCode = masterData?.applicationData?.lead?.studentCode;
   const router = useRouter();
-  const uploadPaymentProof = async (payload) => {
+
+  const setUploadPercent = (progressEvent) => {
+    const uploadPercent = Math.ceil(
+      (progressEvent.loaded / progressEvent.total) * 100
+    );
+    setUploadProgress(uploadPercent);
+  };
+  const uploadPaymentProof = async (file) => {
+    setDisabled(true);
+    const fileName = file[0]?.name;
+
+    const ext = fileName?.split(".").pop().toLowerCase();
+
+    const documentCode = await DocumentServices?.DocumentCode();
+    setDocumentCode(documentCode);
+    const name = `${documentCode}.${ext}`;
+    const signedUrl = await DocumentServices?.getFileSignUrl(
+      name,
+      `.${ext}`,
+      studentCode
+    );
+    const response = await DocumentServices.uploadDocumentToAws(
+      signedUrl,
+      file[0],
+      setUploadPercent
+    );
+    if (response?.status === status?.successCode) {
+      const documentUpdatePayload = {
+        name: name,
+        fileExtension: `.${ext}`,
+        status: DocumentStatus.Pending,
+        documentTypeCode: "PAYMENTPROOF",
+        applicationCode: masterData?.applicationData?.applicationCode,
+        code: documentCode,
+      };
+      const updateDocumentResponse = await DocumentServices?.documentUpdate(
+        documentUpdatePayload
+      );
+      if (updateDocumentResponse?.status === status?.successCode) {
+        toast.success(
+          `Your document is uploaded successfully. Please submit document`
+        );
+      }
+    }
+
+    setDisabled(false);
+  };
+  const updatePayment = async (payload) => {
     const apiPayload = {
-      files: payload?.files,
+      files: changeFileExactions(payload?.files, documentCode),
       amount: fees?.totalFee,
       paymentModeCode: "OFFLINE",
       discountCode: fees?.discountCode,
       discountAmount: payload.discountFee,
-      feeModeCode:
-        masterData?.applicationData?.status === CommonEnums.FEES_PENDING_STATUS
-          ? feeMode.APPLICATION
-          : fees?.feeMode,
+      feeModeCode: applicationFeesStatus.includes(
+        masterData?.applicationData?.status
+      )
+        ? feeMode.APPLICATION
+        : fees?.feeMode,
       isDraft: false,
       currencyCode: masterData?.currencyData?.currencyCode,
-      studentCode: masterData?.applicationData?.studentCode,
+      studentCode: masterData?.applicationData?.lead?.studentCode,
     };
+
     const response = await DocumentServices?.uploadDocuments(
       apiPayload,
       masterData?.applicationData?.applicationCode
     );
-
-    const changePayload = signedUrlPayload(
-      response,
-      payload,
-      masterData?.applicationData?.studentCode
-    );
-    if (changePayload) {
-      const result = await Promise.all(
-        changePayload?.map(async (item) => {
-          const response = await DocumentServices?.getFileSignUrl(
-            item?.fileName,
-            item?.filetype,
-            item?.studentCode
-          );
-          return await DocumentServices.uploadDocumentToAws(
-            response,
-            item.file
-          );
-        })
-      );
+    if (response) {
       router.push("/payment/success");
+    } else {
+      router.push("/payment/failure");
     }
   };
   return {
     uploadPaymentProof,
+    disabled,
+    updatePayment,
+    uploadProgress,
   };
 };
 
 export const useUkhesheHook = (masterData: any, fees: any) => {
   const router = useRouter();
   const [loadingPayment, setLoadingPayment] = useState(false);
-
+  const [intervalId, setIntervalId] = useState(0);
+  const [newTab, setNewTab] = useState<Window | null>();
+  const [openPopup, setOpenPopup] = useState(false);
+  const paymentStatusCheck = async () => {
+    const res = await PaymentServices?.getApplicationData(
+      masterData?.applicationData?.applicationCode
+    );
+    if (allowedPaymentStatus.includes(res?.status)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   const getPaymentRedirectURL = async () => {
     const tokenResponse = await PaymentServices?.getUkhesheToken();
     setLoadingPayment(true);
@@ -370,7 +495,10 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
       currency: "ZAR",
       type: "GLOBAL_PAYMENT_LINK",
       paymentMechanism: "CARD",
-      paymentData: `${process.env.NEXT_PUBLIC_UKHESHE_WALLET_ID}`,
+      paymentData: process.env.NEXT_PUBLIC_UKHESHE_WALLET_ID,
+      callbackUrl: process.env.NEXT_PUBLIC_UKHESHE_CALLBACK_URL,
+      reference: masterData?.applicationData?.lead?.studentCode,
+      minAmount: `${fees?.totalFee || 0}`,
     };
     const headers = {
       "Content-Type": "application/json",
@@ -383,8 +511,9 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
       headers
     );
     if (paymentResponse) {
-      window.open(paymentResponse?.completionUrl, "_ blank");
-      const interval = setInterval(async () => {
+      const tabId = window.open(paymentResponse?.completionUrl, "_ blank");
+      setNewTab(tabId);
+      const intervalId: any = setInterval(async () => {
         const getPaymentResponse = await PaymentServices.getPaymentInfo(
           tokenResponse?.tenantId,
           paymentResponse?.paymentId,
@@ -392,32 +521,85 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
         );
 
         if (getPaymentResponse?.data?.status == "SUCCESSFUL") {
-          clearInterval(interval);
+          clearInterval(intervalId);
           const payload = getUkheshePayload(
             getPaymentResponse,
             fees,
             masterData
           );
 
-          const statusPayload = getStatusPayload("online", masterData, fees);
-
           const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
             payload
           );
-          if (sendPaymentInfo?.statusCode == 201) {
+          if (sendPaymentInfo?.statusCode === status?.successCodeOne) {
             setLoadingPayment(false);
-            PaymentServices.setStatus(statusPayload);
-            router?.push("/payment/success");
+            router?.push("/payment/onlinesuccess");
           }
-          clearInterval(interval);
+          clearInterval(intervalId);
         } else if (getPaymentResponse?.data?.status == "ERROR_PERM") {
-          clearInterval(interval);
-          setLoadingPayment(false);
-          router?.push("/payment/failure");
+          const payload = getUkheshePayload(
+            getPaymentResponse,
+            fees,
+            masterData
+          );
+          const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
+            payload
+          );
+          if (sendPaymentInfo?.statusCode == status?.successCodeOne) {
+            clearInterval(intervalId);
+            setLoadingPayment(false);
+            router?.push(
+              `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+            );
+          }
         }
       }, 10000);
+      setIntervalId(intervalId);
     }
   };
 
-  return { getPaymentRedirectURL, loadingPayment };
+  const closePaymentDialog = (isCounter?: boolean) => {
+    clearInterval(intervalId);
+    newTab?.close();
+    setLoadingPayment(false);
+    setOpenPopup(false);
+    router?.push(
+      `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+    );
+  };
+
+  return {
+    getPaymentRedirectURL,
+    loadingPayment,
+    closePaymentDialog,
+    setOpenPopup,
+    openPopup,
+    paymentStatusCheck,
+  };
+};
+
+export const useCustomizeHook = (open, closePaymentDialog, proceed) => {
+  const [counter, setCounter] = useState(300);
+  const [timer, setTimer] = useState(0);
+  useEffect(() => {
+    if (open && proceed) {
+      const timer: any = setInterval(() => {
+        setCounter((prev) => prev - 1);
+      }, 1000);
+      setTimer(timer);
+      return () => {
+        clearInterval(timer);
+        setCounter(300);
+      };
+    }
+  }, [open, proceed]);
+
+  useEffect(() => {
+    if (counter === 0) {
+      closePaymentDialog(true);
+      clearInterval(timer);
+    }
+  }, [counter]);
+
+  return { counter };
 };

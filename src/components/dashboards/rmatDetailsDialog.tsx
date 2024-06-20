@@ -73,7 +73,9 @@ const RmatCredentialDialog = ({ rmatOpen, setRmatOpen }) => {
             >
               <Grid item md={4} sm={4} className="text-center">
                 <div> RMAT Test URL</div>
-                <a href={rmatOpen?.rmaturl}>{rmatOpen?.rmaturl}</a>
+                <a href={process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL}>
+                  {process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL}
+                </a>
               </Grid>
               <Grid item md={4} sm={4} className="text-center">
                 <div>Username</div>
@@ -89,7 +91,9 @@ const RmatCredentialDialog = ({ rmatOpen, setRmatOpen }) => {
                 <Grid item md={12} sm={12} className="text-center">
                   <StyledButton
                     onClick={() =>
-                      window.open("https://rmatuat.regenesys.net/")
+                      window.open(
+                        process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL
+                      )
                     }
                     title={"Take RMAT Test"}
                   />

@@ -9,10 +9,10 @@ export const DragDropContainer = styled<any>("div")(() => ({
 
 export const PaymentCard = styled(Card)(({}: { theme: Theme }) => ({
   background: "#f2f2f2 !important",
-  borderRadius: "50px 20px",
+  borderRadius: "20px 20px",
   boxShadow: "10px 10px 10px #f0eded",
   width: "100%",
-  padding: 5,
+  marginBottom: "20px",
 }));
 
 export const StyledLink = styled("a")(({}) => ({

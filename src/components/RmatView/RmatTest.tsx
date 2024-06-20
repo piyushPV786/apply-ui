@@ -22,7 +22,6 @@ const RmatTest: React.FC = () => {
     const enrolmentCode = searchParams.get("enrolmentCode");
     AuthApi.get(`${CommonApi.GETRMATDETAILS}${enrolmentCode}`)
       .then((res) => {
-        console.log({ res });
         // const data = {
         //   statusCode: 200,
         //   message: "Data Fetched Successfully.",
@@ -109,7 +108,11 @@ const RmatTest: React.FC = () => {
             />
             &nbsp;&nbsp;&nbsp;
             <StyledButton
-              onClick={() => window.open("https://rmatuat.regenesys.net/")}
+              onClick={() =>
+                window.open(
+                  process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL
+                )
+              }
               title={"Take RMAT Test"}
             />
           </>

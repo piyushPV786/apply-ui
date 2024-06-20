@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { StorageName } from "../../common/constant";
 import { personalInfoData } from "./data/personalInfoData";
 import TextField from "./components/TextField";
+import NameField from "./components/NameField";
 import DateField from "./components/DateField";
 import EmailField from "./components/EmailField";
 
@@ -26,7 +27,7 @@ const PersonalInformation = (props: any) => {
 
   useEffect(() => {
     setValue("lead.mobileNumber", `+${studentDetails?.mobileNumber}`);
-    setValue("lead.leadCode", `${studentDetails?.leadCode}`);
+    setValue("lead.leadId", `${studentDetails?.leadId}`);
     setValue("lead.mobileCountryCode", `27`);
   }, []);
 
@@ -49,16 +50,21 @@ const PersonalInformation = (props: any) => {
           <div className="row">
             {personalInfoData?.map((element) => (
               <>
-                <input
-                  type="text"
-                  {...register("lead.leadCode")}
-                  hidden={true}
-                />
+                <input type="text" {...register("lead.leadId")} hidden={true} />
                 <input
                   type="text"
                   {...register("lead.mobileCountryCode")}
                   hidden={true}
                 />
+
+                {element?.type === "name" && (
+                  <NameField
+                    element={element}
+                    Errors={Errors}
+                    registerName={`lead.${element?.name}`}
+                  />
+                )}
+
                 {element?.type === "text" && (
                   <TextField
                     element={element}

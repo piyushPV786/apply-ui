@@ -10,15 +10,24 @@ import {
 } from "@mui/material";
 import { PaymentCard, StyledLink } from "../../styles/styled";
 import React, { useEffect, useState } from "react";
-import { CommonEnums, feeMode } from "../common/constant";
+import {
+  CommonEnums,
+  applicationFeesStatus,
+  feeMode,
+  rplFeeStatus,
+} from "../common/constant";
 import { useDiscountHook, usePaymentDetailsHook } from "./customHook";
 import { FormProvider, useForm } from "react-hook-form";
 import StyledButton from "../button/button";
 import { DeleteOutline, CheckCircle } from "@material-ui/icons";
 import { Green } from "../common/common";
+import styled from "styled-components";
+import { getConvertedAmount } from "./helper";
+import { DBMCode } from "../documents/context/common";
 
 const OrderSummary = (props) => {
   const { studyModes, fees, masterData, updateFeeMode } = props;
+
   return (
     <Card>
       <Grid container spacing={2}>
@@ -27,7 +36,7 @@ const OrderSummary = (props) => {
             Order Summary
           </Typography>
         </Grid>
-        <Grid item md={8} xs={8}>
+        <Grid item md={8} xs={12} sm={8}>
           <ProgramFees
             masterData={masterData}
             studyModes={studyModes}
@@ -35,7 +44,7 @@ const OrderSummary = (props) => {
             updateFeeMode={updateFeeMode}
           />
         </Grid>
-        <Grid item md={4} xs={4}>
+        <Grid item md={4} xs={12} sm={4}>
           <FinalFees
             masterData={masterData}
             studyModes={studyModes}
@@ -55,6 +64,7 @@ const ProgramFees = (props) => {
   useEffect(() => {
     updateFeeMode(data);
   }, [data]);
+
   return (
     <Grid container spacing={4} sx={{ p: 3 }}>
       <Grid item md={6} xs={12}>
@@ -75,42 +85,58 @@ const ProgramFees = (props) => {
         </Grid>
       </Grid>
       <Grid item md={7} xs={12}>
-        {masterData?.applicationData?.status !==
-          CommonEnums.FEES_PENDING_STATUS && (
-          <Grid>
-            <label>Fee Mode</label>
+        {!applicationFeesStatus.includes(masterData?.applicationData?.status) &&
+        !rplFeeStatus.includes(masterData?.applicationData?.status) &&
+          !masterData?.applicationData?.eligibility[0]?.accessProgram && (
             <Grid>
-              {studyModes?.fees?.map((item, index) => {
-                if (
-                  item?.feeMode !== feeMode.APPLICATION &&
-                  item?.feeMode !== feeMode.TOTAL
-                ) {
-                  return (
-                    <div className="form-check form-check-inline">
-                      <input
-                        {...register("feeModeCode", {
-                          required: {
-                            value: true,
-                            message: "Please select Fee mode",
-                          },
-                        })}
-                        key={index}
-                        className="form-check-input me-2"
-                        type="radio"
-                        value={item?.feeMode}
-                      />
-                      <label className="form-check-label">
-                        {item?.feeMode}
-                        <br />
-                        <Typography>R{item?.fee}</Typography>
-                      </label>
-                    </div>
-                  );
-                }
-              })}
+              <label>Fee Mode</label>
+              <Grid>
+                {studyModes?.fees
+                  ?.sort((a, b) => {
+                    const aStartsWithA = a.feeMode.startsWith("A");
+                    const bStartsWithA = b.feeMode.startsWith("A");
+
+                    if (aStartsWithA && !bStartsWithA) return -1;
+                    if (!aStartsWithA && bStartsWithA) return 1;
+                    return 0;
+                  })
+                  .reverse()
+                  .map((item, index) => {
+                    if (
+                      item?.feeMode !== feeMode.APPLICATION &&
+                      item?.feeMode !== feeMode.TOTAL
+                    ) {
+                      return (
+                        <div className="form-check form-check-inline">
+                          <input
+                            {...register("feeModeCode", {
+                              required: {
+                                value: true,
+                                message: "Please select Fee mode",
+                              },
+                            })}
+                            key={index}
+                            className="form-check-input me-2"
+                            type="radio"
+                            value={item?.feeMode}
+                            disabled={
+                              item?.feeMode == feeMode?.MONTHLY &&
+                              masterData?.applicationData?.status ==
+                                CommonEnums?.MONTHLY_PAYMENT_REJECT
+                            }
+                          />
+                          <label className="form-check-label">
+                            {item?.feeMode}
+                            <br />
+                            <Typography>R{item?.fee}</Typography>
+                          </label>
+                        </div>
+                      );
+                    }
+                  })}
+              </Grid>
             </Grid>
-          </Grid>
-        )}
+          )}
       </Grid>
 
       <Grid item md={7} xs={12}>
@@ -138,7 +164,7 @@ const FinalFees = (props) => {
     applyDiscount,
     resetDiscount,
     discount,
-  } = useDiscountHook(masterData, fees);
+  } = useDiscountHook(masterData, fees, studyModes);
   const methods = useForm();
   const {
     handleSubmit,
@@ -180,6 +206,30 @@ const FinalFees = (props) => {
                 </Typography>
               </Grid>
             )}
+            {masterData?.applicationData?.status ==
+              CommonEnums.MONTHLY_PAYMENT_REJECT &&
+              fees.fee != "0.0" && (
+                <Grid
+                  item
+                  md={12}
+                  xs={12}
+                  display="flex"
+                  justifyContent="space-between"
+                >
+                  <label>Previously Paid Amount</label>
+                  <Typography variant="body1">
+                    <strong>
+                      -{masterData?.currencyData?.currencySymbol}
+                      {getConvertedAmount(
+                        masterData?.currencyData,
+                        studyModes?.fees?.find(
+                          (item) => item?.feeMode == feeMode?.MONTHLY
+                        ).fee
+                      )}
+                    </strong>
+                  </Typography>
+                </Grid>
+              )}
             <Grid
               item
               md={12}
@@ -212,17 +262,16 @@ const FinalFees = (props) => {
           {fees.feeMode != "" && (
             <Grid
               container
-              spacing={5}
-              className="pb-2 pt-2"
               display="flex"
               justifyContent="center"
+              className="mt-2"
             >
               <Grid
                 item
                 xs={12}
                 display="flex"
                 justifyContent="center"
-                className="cursor-pointer"
+                className="cursor-pointer mb-3"
               >
                 <StyledLink onClick={toggleDiscount}>
                   Have a promo code?
@@ -232,11 +281,12 @@ const FinalFees = (props) => {
               {showDiscount && (
                 <FormProvider {...methods}>
                   <form>
-                    {discount?.max == 0 ? (
+                    {discount?.max == 0 && discount?.percent == 0 ? (
                       <Grid xs={12} spacing={1} container>
                         <Grid xs={9} item>
                           <TextField
                             placeholder="Enter Promo Code"
+                            size="small"
                             fullWidth
                             {...methods?.register("discountCode", {
                               required: {
@@ -252,7 +302,7 @@ const FinalFees = (props) => {
                               applyDiscount(d);
                             })}
                             title="Apply"
-                            className="p-3"
+                            className="py-2 "
                           />
                         </Grid>
                       </Grid>
@@ -286,7 +336,7 @@ const FinalFees = (props) => {
                           display="flex"
                           justifyContent="center"
                         >
-                          <Typography color={Green}>
+                          <Typography color={Green} className="shortTypography">
                             <CheckCircle />
                             <strong>
                               {`You have saved ${fees.discountAmount} on this application`}

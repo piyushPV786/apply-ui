@@ -5,6 +5,7 @@ export const apiUrls = {
   commonBaseUrl: process.env.NEXT_PUBLIC_COMMON_BACKEND_API,
   userManagementBaseUrl: process.env.NEXT_PUBLIC_USER_MANAGEMENT_BACKEND_API,
   enrolmentBaseUrl: process.env.NEXT_PUBLIC_ENROLMENT_BACKEND_API,
+  documentBaseURl: process.env.NEXT_PUBLIC_DOCUMENT_BACKEND_API,
 };
 
 export const apiEndPoint = {
@@ -17,7 +18,7 @@ export const apiEndPoint = {
   programs: "programs/all",
   commonDocuments: "document-type",
   document: "document",
-  applicationDetails: "lead/:leadCode/application/:applicationCode",
+  applicationDetails: "lead/:leadId/application/:applicationCode",
   enrolmentApplicationDetails: "admissions/:applicationCode",
   studentProgram: "programs-fee/byProgramCode/:programCode",
   stateDetails: "state/:countryCode",
@@ -26,15 +27,22 @@ export const apiEndPoint = {
   lead: "lead",
   payu: "/payment/payu",
   termAndCondFile: "application/terms-condition/:name/:email",
-  checkDuplicateEmail: "lead/check-duplicate-email/:email/leadCode/:leadCode",
+  checkDuplicateEmail: "lead/check-duplicate-email/:email/leadId/:leadId",
   draft: "draft",
   declarationForm: "download/declarationForm",
   GETCURRENCYCONVERSION: "programs-fee/fee-conversion-rate/",
   studyModes: "study-mode",
   program: "programs/:programCode",
+  programRmat: "rmat/byProgramCode/:programCode",
   rmat: "application/rmat/details/:studentCode",
   ukhesheToken: "payments/get-ukheshe-token",
   updatePayment: "payments/ukheshe-payment",
   bursary: "bursary",
+  student: "student",
   status: "set-status",
+  checkDuplicateIdNumber:
+    "lead/check-duplicate-id-number/:idNumber/leadId/:leadId",
+  updateDocumentStatus: "document/:documentCode/active",
+  documentCode: "next-code/DOC",
+  documentRemove: "document/documentCode",
 };
