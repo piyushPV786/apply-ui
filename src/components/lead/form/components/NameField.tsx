@@ -5,15 +5,16 @@ import { RhfErrorTypes, rhfErrorMessage } from "../../../common/constant";
 import { useState } from "react";
 
 const NameField = ({ element, Errors, registerName }: any) => {
-  const { register } = useFormContext();
-  const [showErrorMessage, setShowErrorMessage] = useState(false); // State to manage error message display
+  const { register, setValue, trigger } = useFormContext();
+  const [showErrorMessage, setShowErrorMessage] = useState("");
 
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
     if (inputValue.length > 30) {
-      setShowErrorMessage(true); // Show error message if input length exceeds 30
-      setTimeout(() => setShowErrorMessage(false), 1000); // Hide error message after 1 second
-      e.target.value = inputValue.slice(0, 30); // Truncate the input value
+      setShowErrorMessage("Maximum 30 characters allowed.");
+      e.target.value = inputValue.slice(0, 30);
+    } else {
+      setShowErrorMessage("");
     }
   };
 
@@ -21,12 +22,14 @@ const NameField = ({ element, Errors, registerName }: any) => {
     const inputValue = e.target.value;
     const hasNumbers = /\d/.test(inputValue);
     if (hasNumbers) {
-      setShowErrorMessage(true); // Show error message if input contains numbers
-      e.target.value = ""; // Clear the input field
+      setShowErrorMessage("Numbers are not allowed.");
+      e.target.value = "";
     } else {
-      setShowErrorMessage(false);
-      const alphabeticValue = inputValue.replace(/[^A-Za-z]/g, "");
+      setShowErrorMessage("");
+      const alphabeticValue = inputValue.replace(/[^A-Za-z\s]/g, "");
       e.target.value = alphabeticValue;
+      setValue(registerName, alphabeticValue); // Update the form value
+      trigger(registerName); // Trigger validation
     }
   };
 
@@ -36,33 +39,39 @@ const NameField = ({ element, Errors, registerName }: any) => {
       <input
         {...register(registerName, {
           required: element?.required,
-          ...(!!element?.rhfOptions ? element?.rhfOptions : {}),
+          maxLength: {
+            value: 30,
+            message: "Maximum 30 characters allowed.",
+          },
+          pattern: {
+            value: /^[A-Za-z\s]*$/,
+            message: "Numbers are not allowed.",
+          },
+          ...(element?.rhfOptions || {}),
         })}
-        className="form-control"
+        className={`form-control ${
+          Errors && Errors[element?.name] ? "is-invalid" : ""
+        }`}
         placeholder={element?.placeholder}
-        type={"text"}
+        type="text"
         disabled={element?.disabled}
         onBlur={handleBlur}
         onInput={handleInputChange}
       />
-      {showErrorMessage && ( 
-        <div className="invalid-feedback">
-          Number not allowed
-        </div>
+      {showErrorMessage && (
+        <div className="invalid-feedback">{showErrorMessage}</div>
       )}
 
       {Errors && Errors[element?.name] && (
-        <>
-          <div className="invalid-feedback">
-            {Errors[element?.name].type === RhfErrorTypes.MaxLength
-              ? rhfErrorMessage.maxLength
-              : Errors[element?.name].type === RhfErrorTypes.MinLength
-              ? rhfErrorMessage.minLength
-              : Errors[element?.name].type === RhfErrorTypes.Min
-              ? rhfErrorMessage.min
-              : element?.errorMessage}
-          </div>
-        </>
+        <div className="invalid-feedback">
+          {Errors[element?.name].type === RhfErrorTypes.MaxLength
+            ? rhfErrorMessage.maxLength
+            : Errors[element?.name].type === RhfErrorTypes.MinLength
+            ? rhfErrorMessage.minLength
+            : Errors[element?.name].type === RhfErrorTypes.Min
+            ? rhfErrorMessage.min
+            : Errors[element?.name].message || element?.errorMessage}
+        </div>
       )}
     </div>
   );
