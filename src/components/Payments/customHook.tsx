@@ -13,6 +13,7 @@ import {
   status,
   applicationFeesStatus,
   rplFeeStatus,
+  qualificationFeesStatus,
 } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
 import {
@@ -43,14 +44,15 @@ export const usePaymentHook = (applicationCode: string) => {
         PaymentServices?.getApplicationData(applicationCode),
         ApplicationFormService.getStudyModes(),
       ]);
-
       const response = result[0];
       payload.applicationData = response;
       payload.studyModeData = result[1];
 
       if (response?.lead?.nationality && response?.education?.programCode) {
         const data = await Promise.all([
-          PaymentServices.getCurrencyConversion(response?.address[0]?.country),
+          PaymentServices.getCurrencyConversion(
+            response?.lead?.address[0]?.country
+          ),
           ApplicationFormService.getStudentProgram(
             response?.education?.programCode
           ),
@@ -148,7 +150,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
     };
   } else if (rplFeeStatus?.includes(masterData?.applicationData?.status)) {
     fees = {
-      fee: masterData?.feeData?.otherFee?.totalFee,
+      fee: masterData?.feeData?.rplFee?.totalFee,
       label: "RPL Fee",
       helpText: "",
       feeMode: "MONTHLY",
@@ -161,7 +163,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
         String(masterData?.feeData?.rplFee?.totalFee)
       )}`,
     };
-  } else {
+  } else if(qualificationFeesStatus?.includes(masterData?.applicationData?.status)) {
     fees = {
       fee: "0.0",
       feeMode: "",
@@ -385,7 +387,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
   const [disabled, setDisabled] = useState(false);
   const [documentCode, setDocumentCode] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
-  const studentCode = masterData?.applicationData?.studentCode;
+  const studentCode = masterData?.applicationData?.lead?.studentCode;
   const router = useRouter();
 
   const setUploadPercent = (progressEvent) => {
@@ -448,7 +450,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
         : fees?.feeMode,
       isDraft: false,
       currencyCode: masterData?.currencyData?.currencyCode,
-      studentCode: masterData?.applicationData?.studentCode,
+      studentCode: masterData?.applicationData?.lead?.studentCode,
     };
 
     const response = await DocumentServices?.uploadDocuments(
@@ -496,7 +498,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
       paymentMechanism: "CARD",
       paymentData: process.env.NEXT_PUBLIC_UKHESHE_WALLET_ID,
       callbackUrl: process.env.NEXT_PUBLIC_UKHESHE_CALLBACK_URL,
-      reference: masterData?.applicationData?.studentCode,
+      reference: masterData?.applicationData?.lead?.studentCode,
       minAmount: `${fees?.totalFee || 0}`,
     };
     const headers = {

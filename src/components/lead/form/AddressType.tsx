@@ -6,11 +6,13 @@ import { capitalizeFirstLetter } from "../../../Util/Util";
 
 const AddressType = (props) => {
   const { data, index, masterData, applicationData } = props;
+
   const {
     register,
     watch,
     formState: { errors },
   } = useFormContext();
+
   const countryDetail = watch(`address[${index}].country`);
   const stateDetails: any = useAddressHook(countryDetail);
   const stateList = stateDetails[countryDetail];

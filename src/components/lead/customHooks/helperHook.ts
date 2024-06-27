@@ -79,7 +79,7 @@ export const useHelperHook = (masterData, watch, setError) => {
       router.push(`/uploads/${response?.applicationData?.applicationCode}`);
     }
 
-    // ApplicationServices.updateLead(payload, leadCode);
+    // ApplicationServices.updateLead(payload, leadId);
   };
 
   const saveApplicationAsDraft = async () => {

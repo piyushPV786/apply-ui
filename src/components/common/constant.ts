@@ -17,6 +17,7 @@ export const documentType = {
   QUOTE: "Quote",
 };
 export const applicationFeesStatus = ["APP-FEE-PEND", "RESUB-APP-FEE-PROOF"];
+export const qualificationFeesStatus = ["ENRL-ACCEPTED"]
 export const rplFeeStatus = ["RPL-FEE-PEND"];
 export enum CommonEnums {
   TRUE = "true",
@@ -288,3 +289,18 @@ export enum RhfErrorTypes {
   MinLength = "minLength",
   Min = "min",
 }
+
+export const AddressTypeData = [
+  {
+    isActive: true,
+    id: 0,
+    name: "Postal",
+    code: "POSTAL",
+  },
+  {
+    isActive: true,
+    id: 1,
+    name: "Residential",
+    code: "RESIDENTIAL",
+  },
+];

@@ -80,7 +80,7 @@ const PaymentDetails = ({ masterData }) => {
                   Reference:
                 </Typography>
                 <Typography variant="caption">
-                  {masterData?.applicationData?.studentCode}{" "}
+                  {masterData?.applicationData?.lead?.studentCode}{" "}
                 </Typography>
               </Grid>
             </Grid>

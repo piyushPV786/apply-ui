@@ -112,6 +112,7 @@ export const UseDocumentAction = () => {
       payload,
       masterData?.userDetails?.applicationCode
     );
+
     if (response) {
       dashboardRedirectStatus.includes(masterData?.userDetails?.status)
         ? router.push(`/dashboard`)
@@ -190,7 +191,7 @@ export const UsePreviewFile = () => {
     } else {
       const response = await DocumentServices?.getFileUrl(
         file?.name,
-        masterData?.userDetails?.studentCode
+        masterData?.userDetails?.lead?.studentCode
       );
       viewProofDetails(response);
     }

@@ -16,7 +16,7 @@ const UseDashboardHook = () => {
     if (userDetails) {
       const data = JSON?.parse(userDetails ? userDetails : "");
       const applicationResponse =
-        await DashboardApplicationServices?.getApplicationData(data?.leadCode);
+        await DashboardApplicationServices?.getApplicationData(data?.leadId);
       if (
         applicationResponse?.statusCode === 200 &&
         applicationResponse?.data

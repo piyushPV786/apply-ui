@@ -85,7 +85,11 @@ const StyledButton = ({
             {/* <Image alt="download" src={DownloadIcon} width={18} height={18} /> */}
           </StyledDownloadIcon>
         )}
-        {title}
+        {title === "Download Declaration form" ? (
+          <span style={{ padding: 2 }}>{title}</span>
+        ) : (
+          title
+        )}
       </>
     </MyButton>
   );

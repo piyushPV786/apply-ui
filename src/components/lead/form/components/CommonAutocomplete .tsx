@@ -26,19 +26,17 @@ const CommonAutocomplete = (props: IProps) => {
   } = props;
   const { register, setValue, watch, trigger } = useFormContext();
   const optionList: any = [];
-
-  const dropDownOptions = options
-    ?.sort((a, b) => a.name.localeCompare(b.name))
-    .map((item) => {
-      if (item?.code) {
-        optionList.push(item);
-        return item.code;
-      } else if (item?.isoCode) {
-        const { isoCode, ...rest } = item;
-        optionList.push({ ...rest, code: isoCode });
-        return isoCode;
-      }
-    });
+  const shortName = options?.sort((a, b) => a.name.localeCompare(b.name));
+  const dropDownOptions = shortName?.map((item) => {
+    if (item?.code) {
+      optionList.push(item);
+      return item.code;
+    } else if (item?.isoCode) {
+      const { isoCode, ...rest } = item;
+      optionList.push({ ...rest, code: isoCode });
+      return isoCode;
+    }
+  });
 
   return (
     <>
@@ -55,10 +53,11 @@ const CommonAutocomplete = (props: IProps) => {
         }}
         {...register(registerName, { required: required })}
         options={dropDownOptions}
-        defaultValue={defaultValue}
+        defaultValue={defaultValue ?? null}
         disabled={disabled}
         getOptionLabel={(option: any) => {
           const optionValue = optionList?.find((item) => item?.code === option);
+
           return optionValue?.name;
         }}
         onChange={(e, value) => {
@@ -73,7 +72,9 @@ const CommonAutocomplete = (props: IProps) => {
           const optionValue = optionList?.find(
             (item) => item?.code === watch(registerName)
           );
+
           inputProps.value = optionValue?.name;
+
           return (
             <TextField
               placeholder="Select"
@@ -96,6 +97,7 @@ const CommonAutocomplete = (props: IProps) => {
         }}
         renderOption={(props, option, { selected }) => {
           const optionValue = optionList?.find((item) => item?.code === option);
+
           return (
             <li {...props} key={option.code}>
               {optionValue?.name}
