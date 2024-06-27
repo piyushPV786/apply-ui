@@ -54,7 +54,7 @@ const Kin = (props: any) => {
   return (
     <StyledAccordion
       defaultExpanded={false}
-      expanded={isNextKinVal === "yes"}
+      expanded={isNextKinVal === "yes" || applicationData?.kin?.isActive}
       className="card-shadow"
     >
       <AccordionSummary
@@ -77,7 +77,7 @@ const Kin = (props: any) => {
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid">
-          {isNextKinVal === "yes" && (
+          {(isNextKinVal === "yes" || applicationData?.kin?.isActive) && (
             <div className="row">
               {SpData?.map((element) => (
                 <>
