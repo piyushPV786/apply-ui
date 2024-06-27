@@ -65,7 +65,10 @@ const Employment = (props: any) => {
     }
   }, [applicationData]);
   return (
-    <StyledAccordion defaultExpanded={false} expanded={activeEmp === "yes"}>
+    <StyledAccordion
+      defaultExpanded={false}
+      expanded={activeEmp === "yes" || applicationData?.employment?.isActive}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
@@ -83,7 +86,7 @@ const Employment = (props: any) => {
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid">
-          {activeEmp === "yes" && (
+          {(activeEmp === "yes" || applicationData?.employment?.isActive) && (
             <div className="row">
               {SpData?.map((element) => (
                 <>
