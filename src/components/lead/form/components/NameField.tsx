@@ -25,7 +25,7 @@ const NameField = ({ element, Errors, registerName }: any) => {
       e.target.value = ""; // Clear the input field
     } else {
       setShowErrorMessage(false);
-      const alphabeticValue = inputValue.replace(/[^A-Za-z]/g, "");
+      const alphabeticValue = inputValue.replace(/[^A-Za-z\- ]/g, "");
       e.target.value = alphabeticValue;
     }
   };
