@@ -69,7 +69,10 @@ const Sponsor = (props: any) => {
   }, [applicationData]);
 
   return (
-    <StyledAccordion defaultExpanded={false} expanded={activeSponsor === "yes"}>
+    <StyledAccordion
+      defaultExpanded={false}
+      expanded={activeSponsor === "yes" || applicationData?.sponsor?.isActive}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
@@ -89,7 +92,7 @@ const Sponsor = (props: any) => {
       </AccordionSummary>
       <AccordionDetails>
         <div className="container-fluid">
-          {activeSponsor === "yes" && (
+          {(activeSponsor === "yes" || applicationData?.sponsor?.isActive) && (
             <div className="row">
               {SpData?.map((element) => (
                 <>

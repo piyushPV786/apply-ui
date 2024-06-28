@@ -13,6 +13,7 @@ import {
   status,
   applicationFeesStatus,
   rplFeeStatus,
+  qualificationFeesStatus,
 } from "../../components/common/constant";
 import { feeMode } from "../../components/common/constant";
 import {
@@ -162,7 +163,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
         String(masterData?.feeData?.rplFee?.totalFee)
       )}`,
     };
-  } else {
+  } else if(qualificationFeesStatus?.includes(masterData?.applicationData?.status)) {
     fees = {
       fee: "0.0",
       feeMode: "",
