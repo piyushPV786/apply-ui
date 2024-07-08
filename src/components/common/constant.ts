@@ -17,7 +17,10 @@ export const documentType = {
   QUOTE: "Quote",
 };
 export const applicationFeesStatus = ["APP-FEE-PEND", "RESUB-APP-FEE-PROOF"];
-export const qualificationFeesStatus = ["ENRL-ACCEPTED"]
+export const qualificationFeesStatus = [
+  "ENRL-ACCEPTED",
+  "MONTHLY_PAYMENT_REJECTED",
+];
 export const rplFeeStatus = ["RPL-FEE-PEND"];
 export enum CommonEnums {
   TRUE = "true",
@@ -281,8 +284,9 @@ export const tokenName = {
 
 export const rhfErrorMessage = {
   maxLength: "Max length exceeded",
-  minLength: "Minimum length should be 4",
+  minLength: "Minimum length should be 3",
   min: "Please enter positive number",
+  numeric: "Number not allowed",
 };
 export enum RhfErrorTypes {
   MaxLength = "maxLength",

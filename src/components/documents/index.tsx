@@ -15,7 +15,6 @@ import {
 } from "./customHook/UseDocumentHook";
 import { DocumentStatus } from "./components";
 import { setDocumentValue } from "../../Util/Util";
-import { Spinner } from "../Loader";
 
 const DocumentUploadPage = (props) => {
   const methods = useForm({ mode: "all" });
@@ -23,17 +22,38 @@ const DocumentUploadPage = (props) => {
   const { masterData } = UseDocumentHook(applicationCode);
   const { saveAsDraft, submitDocument, progress, setDocumentProgress } =
     UseDocumentAction();
-  const { handleSubmit } = methods;
+  const { handleSubmit, watch } = methods;
 
   useEffect(() => {
     if (masterData?.documents) {
       setDocumentValue(masterData?.documents, methods.setValue);
     }
   }, [masterData?.documents]);
-  let uploadValue: any = Object.values(progress);
-  const disable = uploadValue?.length
-    ? uploadValue?.every((val, i, arr) => val?.percent === 100)
-    : false;
+
+  const verifyDoc = () => {
+    const requiredFields = ["IDPASSPORT", "RESUMECV", "HIGHESTQUALIFICATION", "DECLARATIONFORM"];
+  
+    // Check if all required fields have a file uploaded
+    const allFieldsValid = requiredFields.every(field => {
+      const fieldValue = watch(field)?.[0];
+      const fileLength = watch(field)?.file?.length;
+      return fieldValue || fileLength > 0;
+    });
+  
+    return allFieldsValid;
+  };
+
+  useEffect(() => {
+    verifyDoc();
+  }, [watch]);
+
+  // let uploadValue: any = Object.values(progress);
+
+  // const disable = uploadValue?.length
+  //   ? uploadValue?.every((val, i, arr) => val?.percent === 100)
+  //   : false;
+
+  const disable = verifyDoc();
 
   return (
     <MainContainer>
