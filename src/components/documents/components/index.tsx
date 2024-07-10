@@ -66,6 +66,9 @@ export const BursaryFeilds = ({ element, masterData }) => {
   const [countryCodeRef, setCountryCode] = useState<any>("ZA");
   const {
     register,
+    clearErrors,
+    setError,
+    watch,
     formState: { errors },
   } = useFormContext();
 
@@ -138,6 +141,26 @@ export const BursaryFeilds = ({ element, masterData }) => {
           placeholder="Select Country Code*"
           onCountryChange={(value: any) => {
             onCountryChange(value);
+          }}
+          onBlur={(e: any) => {
+            const mobileNumber =
+              e?.target?.value &&
+              e?.target?.value
+                .replaceAll(" ", "")
+                .replace("+", "")
+                .replace("-", "");
+            const mobileCheck = mobileNumber.slice(
+              watch(`${element?.code}Phone`)?.length,
+              mobileNumber?.length
+            );
+            if (mobileCheck?.length >= 5) {
+              clearErrors(`${element?.code}Phone`);
+            } else {
+              setError(`${element?.code}Phone`, {
+                type: "manual",
+                message: "Please enter a valid phone number",
+              });
+            }
           }}
           onChange={() => {}}
         />
