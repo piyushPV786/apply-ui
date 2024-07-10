@@ -1,4 +1,9 @@
-import { emailValidation, isValidDate } from "../../../../Util/Util";
+import {
+  emailValidation,
+  isValidDate,
+  isValidName,
+} from "../../../../Util/Util";
+import { rhfErrorMessage } from "../../../common/constant";
 
 export const personalInfoData = [
   {
@@ -10,6 +15,8 @@ export const personalInfoData = [
     errorMessage: "Please enter your First Name",
     hidden: false,
     disabled: false,
+    validate: isValidName,
+    validateErrorMessage: rhfErrorMessage.numeric,
     placeholder: "e.g Robert",
     numric: false,
     rhfOptions: {
@@ -28,6 +35,8 @@ export const personalInfoData = [
     disabled: false,
     placeholder: "",
     numric: false,
+    validate: isValidName,
+    validateErrorMessage: rhfErrorMessage.numeric,
     rhfOptions: {
       minLength: 3,
       maxLength: 30,
@@ -44,6 +53,8 @@ export const personalInfoData = [
     disabled: false,
     placeholder: "",
     numric: false,
+    validate: isValidName,
+    validateErrorMessage: rhfErrorMessage.numeric,
     rhfOptions: {
       minLength: 3,
       maxLength: 30,

@@ -185,6 +185,13 @@ export const isValidDate = (value) => {
   if (age > currentYear) return false;
   else return true;
 };
+export const isValidName = async (name) => {
+  if (name) {
+    return /^[a-zA-Z ]+$/.test(name);
+  } else {
+    return true;
+  }
+};
 
 export const isValidExpiryDate = (value) => {
   const selectedDate = new Date(value);
