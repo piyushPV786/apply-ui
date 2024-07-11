@@ -66,9 +66,6 @@ export const BursaryFeilds = ({ element, masterData }) => {
   const [countryCodeRef, setCountryCode] = useState<any>("ZA");
   const {
     register,
-    clearErrors,
-    setError,
-    watch,
     formState: { errors },
   } = useFormContext();
 
