@@ -93,7 +93,11 @@ export const BursaryFeilds = ({ element, masterData }) => {
           {...register(`${element.code}Name`, {
             required: {
               value: element?.required,
-              message: "Name field is required", // Custom error message
+              message: "Name field is required",
+            },
+            pattern: {
+              value: /^[A-Za-z -]+$/,
+              message: "Only letters are allowed",
             },
           })}
           className="form-control"
