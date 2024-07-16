@@ -7,8 +7,8 @@ import LoginCredentialDialog from "./loginCridentialDialog";
 import RmatCredentialDialog from "./rmatDetailsDialog";
 import { documentType } from "../common/constant";
 import {
-  capitalizeFirstLetter,
   convertCodeToName,
+  formatDateTime,
   transformDate,
 } from "../../Util/Util";
 import StyledButton from "../button/button";
@@ -123,7 +123,8 @@ export const DocumentInformation = ({ applicationDetail }) => {
           <Dropdown.Menu>
             {document?.map((item) => (
               <Dropdown.Item onClick={() => getDownloadDocument(item)}>
-                {documentType[item?.documentTypeCode]}
+                {item?.documentTypeCode !== "QUOTE" ?
+                documentType[item?.documentTypeCode] : `${documentType[item?.documentTypeCode]} - ${formatDateTime(item?.createdAt)}`}
               </Dropdown.Item>
             ))}
           </Dropdown.Menu>

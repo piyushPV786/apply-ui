@@ -857,3 +857,23 @@ export const setDocumentValue = (documents, setValue) => {
     setValue(element?.documentTypeCode, value);
   });
 };
+
+export const formatDateTime = (timestamp) => {
+  const dateObj = new Date(timestamp);
+
+  const year = dateObj.getUTCFullYear();
+  const month = formatNumber(dateObj.getUTCMonth() + 1);
+  const day = formatNumber(dateObj.getUTCDate());
+  const hours = formatNumber(dateObj.getUTCHours());
+  const minutes = formatNumber(dateObj.getUTCMinutes());
+  const seconds = formatNumber(dateObj.getUTCSeconds());
+
+  const formattedDate = `${year}-${month}-${day}`;
+  const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+  return `${formattedDate} ${formattedTime}`;
+};
+
+export const formatNumber = (num) => {
+  return num < 10 ? `0${num}` : `${num}`;
+};
