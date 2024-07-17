@@ -14,6 +14,9 @@ export const nonMandatoryDocuments = [
   "EDFORALLCONTRACT",
   "RPL",
   "SAQA",
+  "DEBITORDER",
+  "COURSEAPPROVAL",
+  "MBCERTIFICATE",
 ];
 
 export const docType = {
