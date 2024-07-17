@@ -130,7 +130,7 @@ export const BursaryFeilds = ({ element, masterData }) => {
           {...register(`${element.code}Phone`, {
             required: element?.required,
             pattern: {
-              value: /^\+\d{1,3}\s\d{1,}(?:\s\d+)*$/,
+              value: /^\+\d{1,3}(?:\s?\d){7,15}$/,
               message: "Please enter a valid phone number",
             },
           })}
