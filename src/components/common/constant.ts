@@ -286,7 +286,7 @@ export const rhfErrorMessage = {
   maxLength: "Max length exceeded",
   minLength: "Minimum length should be 3",
   min: "Please enter positive number",
-  numeric: "Number not allowed",
+  numeric: "name must be Characters",
 };
 export enum RhfErrorTypes {
   MaxLength = "maxLength",
