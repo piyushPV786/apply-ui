@@ -16,7 +16,7 @@ export const personalInfoData = [
     hidden: false,
     disabled: false,
     validate: isValidName,
-    validateErrorMessage: rhfErrorMessage.numeric,
+    validateErrorMessage: `Invalid First Name, ${rhfErrorMessage.numeric}`,
     placeholder: "e.g Robert",
     numric: false,
     rhfOptions: {
@@ -36,7 +36,7 @@ export const personalInfoData = [
     placeholder: "",
     numric: false,
     validate: isValidName,
-    validateErrorMessage: rhfErrorMessage.numeric,
+    validateErrorMessage: `Invalid Middle Name, ${rhfErrorMessage.numeric}`,
     rhfOptions: {
       minLength: 3,
       maxLength: 30,
@@ -54,7 +54,7 @@ export const personalInfoData = [
     placeholder: "",
     numric: false,
     validate: isValidName,
-    validateErrorMessage: rhfErrorMessage.numeric,
+    validateErrorMessage: `Invalid Last Name, ${rhfErrorMessage.numeric}`,
     rhfOptions: {
       minLength: 3,
       maxLength: 30,
