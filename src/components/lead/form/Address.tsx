@@ -18,9 +18,12 @@ import { AddressTypeData } from "../../common/constant";
 const Address = (props: any) => {
   const { masterData, applicationData } = props?.masterData;
   const { register } = useFormContext();
-  useCompareAddressHook(applicationData?.lead?.address);
+  useCompareAddressHook(
+    applicationData?.lead?.address
+      ? applicationData?.lead?.address
+      : applicationData?.address
+  );
   useSameResidentialAddress();
-
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
       <AccordionSummary
@@ -41,7 +44,11 @@ const Address = (props: any) => {
             AddressTypeData?.map((item: any, index: any) => (
               <>
                 <AddressType
-                  applicationData={applicationData?.lead}
+                  applicationData={
+                    applicationData?.lead?.address
+                      ? applicationData?.lead
+                      : applicationData
+                  }
                   masterData={masterData}
                   data={item}
                   index={index}

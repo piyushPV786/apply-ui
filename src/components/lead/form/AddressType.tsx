@@ -108,8 +108,7 @@ const AddressType = (props) => {
           }
           onChange={(e) => {
             const alphabeticValue = e.target.value.replace(/[^A-Za-z\s]/g, "");
-            e.target.value = alphabeticValue;
-            e.target.value = capitalizeFirstLetter(e.target.value);
+            e.target.value = capitalizeFirstLetter(alphabeticValue);
           }}
         />
         {Errors && Errors[index]?.city && (
@@ -121,35 +120,35 @@ const AddressType = (props) => {
       <div className="col-lg-4 mb-4">
         <StyledLabel required>Pin Code / Zip Code</StyledLabel>
         <input
-          min="0"
           className="form-control"
-          type={"text"}
-          placeholder={"Enter Zip/Postal Code"}
+          type="text"
+          placeholder="Enter Zip/Postal Code"
           {...register(`address[${index}].zipcode`, {
             required: true,
-            maxLength: 10,
-            minLength: 4,
-            min: 1,
+            maxLength: {
+              value: 50,
+              message: "Maximum 50 characters allowed.",
+            },
+            minLength: {
+              value: 4,
+              message: "Minimum length should be 4.",
+            },
+            pattern: {
+              value: /^[0-9]*$/,
+              message: "Only numeric values are allowed.",
+            },
           })}
           disabled={
-            isSameAsPostalAddress == true && data?.code == "RESIDENTIAL"
+            isSameAsPostalAddress === true && data?.code === "RESIDENTIAL"
           }
           onChange={(e) => {
-            const numericRegex = /^[0-9]*$/;
-            if (!numericRegex.test(e.target.value)) {
-              e.target.value = e.target.value.replace(/[^0-9]/g, "");
-            }
+            const numericValue = e.target.value.replace(/[^0-9]/g, "");
+            e.target.value = numericValue;
           }}
         />
         {Errors && Errors[index]?.zipcode && (
           <div className="invalid-feedback">
-            {Errors[index]?.zipcode.type === "maxLength"
-              ? "Max length exceeded"
-              : Errors[index]?.zipcode.type === "minLength"
-              ? "Minimum length should be 4"
-              : Errors[index]?.zipcode.type === "min"
-              ? "Please enter positive number"
-              : "Please enter Zip/Postal Code"}
+            {Errors[index]?.zipcode.message}
           </div>
         )}
       </div>
