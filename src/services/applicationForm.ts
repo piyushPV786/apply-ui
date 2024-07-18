@@ -1,5 +1,6 @@
 import { getLocalStorageData } from "../Util/Util";
 import { StorageName } from "../components/common/constant";
+import { createCreditVettingForType } from "../components/common/types";
 import { apiEndPoint, apiUrls } from "./config";
 import { apiServer } from "./index";
 
@@ -143,7 +144,12 @@ class ApplicationFormServices {
     return result;
   }
 
-  async updateCreditReport(id: string, updateCreditPayload : { isImmediate : boolean}) {
+  async updateCreditReport(
+    id: string,
+    updateCreditPayload: {
+      createCreditVettingFor: createCreditVettingForType;
+    }
+  ) {
     const url = `${apiUrls?.financeBaseUrl}${apiEndPoint?.updateCredit}/${id}/new`;
     const response = await apiServer.post(url, updateCreditPayload);
     const result = response?.data ? response?.data : null;

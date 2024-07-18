@@ -1,12 +1,15 @@
 import { useState } from "react";
 import ApplicationServices from "../../../services/applicationForm";
 import { useRouter } from "next/router";
+import { createCreditVettingForType } from "../../common/types";
 
 export const useHelperHook = (masterData, watch, setError) => {
   const [disable, setDisable] = useState(false);
   const { applicationData, programsData } = masterData;
   const router = useRouter();
   const { applicationCode } = router?.query;
+  const allowedDocsForCreditReport = ["SMARTID", "PASSPORT"];
+  let createCreditVettingFor: createCreditVettingForType;
 
   const saveApplication = async (data: any) => {
     setDisable(true);
@@ -71,24 +74,36 @@ export const useHelperHook = (masterData, watch, setError) => {
       );
     }
 
-   
-
     if (
       response &&
       response?.applicationData &&
       response?.applicationData?.applicationCode
     ) {
-      
       router.push(`/uploads/${response?.applicationData?.applicationCode}`);
     }
 
-    const updateCreditPayload = {
-      isImmediate: false
+    if (
+      allowedDocsForCreditReport.includes(data?.lead.identificationDocumentType)
+    ) {
+      createCreditVettingFor = ["lead"];
     }
-    const updateCredit = await ApplicationServices.updateCreditReport(
-      response?.applicationData?.applicationCode, updateCreditPayload
-    );
-    console.log("updateCredit", updateCredit);
+
+    if (
+      allowedDocsForCreditReport.includes(
+        data?.sponsor.identificationDocumentType
+      )
+    ) {
+      if (createCreditVettingFor?.length)
+        createCreditVettingFor.push("sponsor");
+      else createCreditVettingFor = ["sponsor"];
+    }
+
+    if (createCreditVettingFor?.length) {
+      await ApplicationServices.updateCreditReport(
+        response?.applicationData?.applicationCode,
+        { createCreditVettingFor }
+      );
+    }
 
     // ApplicationServices.updateLead(payload, leadId);
   };
