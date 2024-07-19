@@ -23,6 +23,7 @@ interface UploadPaymentProofTypes {
   errors: any;
   uploadPaymentProof: any;
   paymentStatusCheck: () => boolean;
+  removeDocument: () => void
 }
 
 export const fileValidation = (value) => {
@@ -47,6 +48,7 @@ const UploadPaymentProof = ({
   errors,
   uploadPaymentProof,
   paymentStatusCheck,
+  removeDocument
 }: UploadPaymentProofTypes) => {
   const fileUpload = useRef<any>(null);
   const onDocUploadClick = () => {
@@ -132,7 +134,10 @@ const UploadPaymentProof = ({
                   alignItems: "center",
                 }}
               >
-                <IconButton onClick={() => unregister(name)}>
+                <IconButton onClick={() => {
+                  unregister(name)
+                  removeDocument()
+                }}>
                   <Close color="error" fontSize="small" />
                 </IconButton>
               </Grid>

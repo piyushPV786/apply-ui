@@ -436,6 +436,11 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
 
     setDisabled(false);
   };
+
+  const removeDocument = async () => {
+    await DocumentServices?.documentRemove(documentCode);
+  };
+  
   const updatePayment = async (payload) => {
     const apiPayload = {
       files: changeFileExactions(payload?.files, documentCode),
@@ -460,6 +465,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
     if (response) {
       router.push("/payment/success");
     } else {
+      removeDocument()
       router.push("/payment/failure");
     }
   };
@@ -468,6 +474,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
     disabled,
     updatePayment,
     uploadProgress,
+    removeDocument
   };
 };
 
