@@ -15,9 +15,7 @@ const NameField = ({ element, Errors, registerName }: any) => {
           required: element?.required,
           ...(!!element?.rhfOptions ? element?.rhfOptions : {}),
           validate: (value) => {
-            if (element.required) {
-              return element?.validate(value);
-            }
+            return element?.validate(value);
           },
         })}
         className={`form-control ${
