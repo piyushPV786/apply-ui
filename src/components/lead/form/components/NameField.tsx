@@ -18,9 +18,11 @@ const NameField = ({ element, Errors, registerName }: any) => {
             return element?.validate(value);
           },
         })}
-        className="form-control"
+        className={`form-control ${
+          Errors && Errors[element?.name] ? "is-invalid" : ""
+        }`}
         placeholder={element?.placeholder}
-        type={"text"}
+        type="text"
         disabled={element?.disabled}
       />
 
