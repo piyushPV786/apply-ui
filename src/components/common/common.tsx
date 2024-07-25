@@ -257,7 +257,7 @@ export const studentApplicationAllStatus: IDynamicObject = {
   "RMAT-PEND": "RMAT Pending",
   "RMAT-PASS": "RMAT Pass",
   "RMAT-FAIL": "RMAT Fail",
-  "ENRL-ACCEPTED": "Enrolment Accepted",
+  "ENRL-ACCEPTED": "Application Accepted",
   "PROG-FEE-PEND": "Qualification Fee Pending",
   "BURSARY-REQUESTED": "Request for Bursary",
   "BURSARY-DOC-VER-PEND": "Bursary Document Verification Pending",
