@@ -73,7 +73,9 @@ const RmatCredentialDialog = ({ rmatOpen, setRmatOpen }) => {
             >
               <Grid item md={4} sm={4} className="text-center">
                 <div> RMAT Test URL</div>
-                <a href={rmatOpen?.rmaturl}>{rmatOpen?.rmaturl}</a>
+                <a href={process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL}>
+                  {process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL}
+                </a>
               </Grid>
               <Grid item md={4} sm={4} className="text-center">
                 <div>Username</div>

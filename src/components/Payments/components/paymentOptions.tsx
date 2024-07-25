@@ -17,6 +17,7 @@ const PaymentOptions = ({
   uploadProgress,
   masterData,
   paymentStatusCheck,
+  removeDocument
 }) => {
   return (
     <FullWidthCard>
@@ -41,6 +42,7 @@ const PaymentOptions = ({
                 updatePayment={updatePayment}
                 masterData={masterData}
                 paymentStatusCheck={paymentStatusCheck}
+                removeDocument={removeDocument}
               />
               {!!uploadProgress && (
                 <LinearProgressWithLabel value={uploadProgress} />

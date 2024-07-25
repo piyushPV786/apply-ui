@@ -14,6 +14,9 @@ export const nonMandatoryDocuments = [
   "EDFORALLCONTRACT",
   "RPL",
   "SAQA",
+  "DEBITORDER",
+  "COURSEAPPROVAL",
+  "MBCERTIFICATE",
 ];
 
 export const docType = {
@@ -36,6 +39,7 @@ export const dashboardRedirectStatus = [
   CommonEnums?.RESUB_APP_DOC,
   CommonEnums?.BURSARY_LETTER_PEND,
   CommonEnums?.RESUB_BURSARY_DOC,
+  CommonEnums?.APP_ENROLLED_STATUS,
 ];
 
 export const customStatus = {

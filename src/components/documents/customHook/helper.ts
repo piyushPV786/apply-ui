@@ -6,12 +6,13 @@ export const documentPayload = (data, isDraft, masterData, progress) => {
     let Files: any = [];
     masterData?.documentTypes.forEach((element) => {
       const fileObj = data[element?.code];
-      if (fileObj && fileObj?.length && fileObj[0]?.size > 0) {
+      const docCode = masterData?.documents?.find((data) => data.documentTypeCode === element?.code);
+      if ((fileObj && fileObj?.length && fileObj?.[0]?.size > 0) || (fileObj && fileObj?.file?.length > 0)) {
         let Obj = {
           documentTypeCode: element?.code,
-          fileName: fileObj[0]?.name,
-          fileType: `.${fileObj[0].name?.split(".").pop()}`,
-          documentCode: progress[element?.code]?.documentCode,
+          fileName: fileObj?.[0]?.name || fileObj?.file?.[0]?.name,
+          fileType: `.${fileObj?.[0]?.name?.split(".").pop() || fileObj?.file?.[0]?.name?.split(".").pop()}`,
+          documentCode: progress[element?.code]?.documentCode || docCode?.code,
         };
         Files.push(Obj);
       }

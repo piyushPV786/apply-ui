@@ -185,6 +185,13 @@ export const isValidDate = (value) => {
   if (age > currentYear) return false;
   else return true;
 };
+export const isValidName = async (name) => {
+  if (name) {
+    return /^[a-zA-Z _\-]+$/.test(name);
+  } else {
+    return true;
+  }
+};
 
 export const isValidExpiryDate = (value) => {
   const selectedDate = new Date(value);
@@ -760,7 +767,10 @@ const setEducationValue = (studentData: object, setValue: any, key: string) => {
   }
 };
 
-export const mapFormDefaultValue = (studentData: object, setValue: any) => {
+export const mapFormDefaultValue = (
+  studentData: object | any,
+  setValue: any
+) => {
   for (let [key, value] of Object.entries(studentData)) {
     if (acceptedKeysToMap.includes(key)) {
       setValue(key, value);
@@ -768,10 +778,12 @@ export const mapFormDefaultValue = (studentData: object, setValue: any) => {
         setEducationValue(studentData, setValue, key);
       }
     }
-
     if (key === "lead" && studentData?.[key]?.address?.length > 0) {
-      setValue("address", value?.address);
+      setValue("address", (value as any)?.address);
     }
+  }
+  if (studentData?.address?.length > 0) {
+    setValue("address", studentData?.address);
   }
 };
 
