@@ -33,7 +33,7 @@ const LeadForm = (props: IProps) => {
     handleSubmit,
     setError,
     formState: { errors },
-  } = methods;
+  }:any = methods;
 
   const masterData = useFormHook(props?.applicationCode);
   const { saveApplication, saveApplicationAsDraft, disable } = useHelperHook(
@@ -86,11 +86,13 @@ const LeadForm = (props: IProps) => {
                     onClick={saveApplicationAsDraft}
                     className="form-button btn-space"
                     title="Save As Draft"
-                    disabled={disable}
+                    disabled={disable || errors?.lead?.email}
                   />
                   <StyledButton
                     disabled={
-                      !watch("lead.isAgreedTermsAndConditions") || disable
+                      !watch("lead.isAgreedTermsAndConditions") ||
+                      disable ||
+                      errors?.lead?.email
                     }
                     onClick={handleSubmit((d) => saveApplication(d))}
                     className="form-button btn-space"
