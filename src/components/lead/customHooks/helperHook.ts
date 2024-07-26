@@ -1,12 +1,15 @@
 import { useState } from "react";
 import ApplicationServices from "../../../services/applicationForm";
 import { useRouter } from "next/router";
+import { createCreditVettingForType } from "../../common/types";
 
 export const useHelperHook = (masterData, watch, setError) => {
   const [disable, setDisable] = useState(false);
   const { applicationData, programsData } = masterData;
   const router = useRouter();
   const { applicationCode } = router?.query;
+  const allowedDocsForCreditReport = ["SMARTID", "PASSPORT"];
+  let createCreditVettingFor: createCreditVettingForType;
 
   const saveApplication = async (data: any) => {
     setDisable(true);
@@ -79,6 +82,29 @@ export const useHelperHook = (masterData, watch, setError) => {
       router.push(`/uploads/${response?.applicationData?.applicationCode}`);
     }
     setDisable(false);
+
+    if (
+      allowedDocsForCreditReport.includes(data?.lead.identificationDocumentType)
+    ) {
+      createCreditVettingFor = ["lead"];
+    }
+
+    if (
+      allowedDocsForCreditReport.includes(
+        data?.sponsor.identificationDocumentType
+      )
+    ) {
+      if (createCreditVettingFor?.length)
+        createCreditVettingFor.push("sponsor");
+      else createCreditVettingFor = ["sponsor"];
+    }
+
+    if (createCreditVettingFor?.length) {
+      await ApplicationServices.updateCreditReport(
+        response?.applicationData?.applicationCode,
+        { createCreditVettingFor }
+      );
+    }
 
     // ApplicationServices.updateLead(payload, leadId);
   };
