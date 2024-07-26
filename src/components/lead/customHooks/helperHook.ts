@@ -78,6 +78,7 @@ export const useHelperHook = (masterData, watch, setError) => {
     ) {
       router.push(`/uploads/${response?.applicationData?.applicationCode}`);
     }
+    setDisable(false);
 
     // ApplicationServices.updateLead(payload, leadId);
   };
