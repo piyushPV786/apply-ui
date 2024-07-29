@@ -126,8 +126,8 @@ const AddressType = (props) => {
           {...register(`address[${index}].zipcode`, {
             required: true,
             maxLength: {
-              value: 50,
-              message: "Maximum 50 characters allowed.",
+              value: 5,
+              message: "Maximum 5 characters allowed.",
             },
             minLength: {
               value: 4,

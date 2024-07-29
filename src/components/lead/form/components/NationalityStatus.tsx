@@ -47,6 +47,15 @@ const NationalityStatus = (props: any) => {
 
   const Errors = errors["lead"] as any;
 
+  const validateIdNumber = (value: string) => {
+    if (docTypeWatch === "SMARTID") {
+      if (!/^\d{13}$/.test(value)) {
+        return "Identification number must be 13 digits and contain only numbers for smartID.";
+      }
+    }
+    return true;
+  };
+
   return (
     <GreyStyledAccordion
       expanded={!!nationalityStatusValue}
@@ -191,6 +200,7 @@ const NationalityStatus = (props: any) => {
                 control={control}
                 rules={{
                   required: "Identification number is required",
+
                   maxLength: {
                     value: 13,
                     message: "Maximum 13 characters allowed.",
@@ -199,6 +209,9 @@ const NationalityStatus = (props: any) => {
                     value: 8,
                     message: "Minimum length should be 8.",
                   },
+
+                  validate: validateIdNumber,
+
                 }}
                 render={({ field }) => (
                   <>

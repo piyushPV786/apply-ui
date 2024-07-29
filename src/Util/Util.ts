@@ -187,7 +187,7 @@ export const isValidDate = (value) => {
 };
 export const isValidName = async (name) => {
   if (name) {
-    return /^[a-zA-Z _\-]+$/.test(name);
+    return /^[a-zA-Z]+(?:[ _\-\.][a-zA-Z]+)*$/.test(name);
   } else {
     return true;
   }

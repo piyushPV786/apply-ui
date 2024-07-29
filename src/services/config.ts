@@ -45,4 +45,5 @@ export const apiEndPoint = {
   updateDocumentStatus: "document/:documentCode/active",
   documentCode: "next-code/DOC",
   documentRemove: "document/documentCode",
+  updateCredit: "credit-history",
 };

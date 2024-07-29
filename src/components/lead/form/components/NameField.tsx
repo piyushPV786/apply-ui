@@ -5,7 +5,12 @@ import { RhfErrorTypes, rhfErrorMessage } from "../../../common/constant";
 import { useState } from "react";
 
 const NameField = ({ element, Errors, registerName }: any) => {
-  const { register } = useFormContext();
+  const { register, setValue } = useFormContext();
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event?.target?.value;
+    setValue(registerName, value?.trim());
+  };
 
   return (
     <div className="col-lg-4 mb-4">
@@ -15,9 +20,12 @@ const NameField = ({ element, Errors, registerName }: any) => {
           required: element?.required,
           ...(!!element?.rhfOptions ? element?.rhfOptions : {}),
           validate: (value) => {
-            return element?.validate(value);
+             const trimmedValue = value.trim();
+
+             return element?.validate(trimmedValue);
           },
         })}
+        onBlur={handleChange}
         className={`form-control ${
           Errors && Errors[element?.name] ? "is-invalid" : ""
         }`}
