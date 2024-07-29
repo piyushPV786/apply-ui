@@ -123,7 +123,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
       amount: `${
         masterData?.currencyData?.currencySymbol
           ? masterData?.currencyData?.currencySymbol
-          : ""
+          : "R"
       } ${getConvertedAmount(
         masterData?.currencyData,
         String(feesStructure?.fee)
@@ -142,7 +142,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
       amount: `${
         masterData?.currencyData?.currencySymbol
           ? masterData?.currencyData?.currencySymbol
-          : ""
+          : "R"
       } ${getConvertedAmount(
         masterData?.currencyData,
         String(masterData?.feeData?.otherFee?.totalFee)
@@ -157,13 +157,15 @@ export const usePaymentDetailsHook = (masterData: any) => {
       amount: `${
         masterData?.currencyData?.currencySymbol
           ? masterData?.currencyData?.currencySymbol
-          : ""
+          : "R"
       } ${getConvertedAmount(
         masterData?.currencyData,
         String(masterData?.feeData?.rplFee?.totalFee)
       )}`,
     };
-  } else if(qualificationFeesStatus?.includes(masterData?.applicationData?.status)) {
+  } else if (
+    qualificationFeesStatus?.includes(masterData?.applicationData?.status)
+  ) {
     fees = {
       fee: "0.0",
       feeMode: "",
@@ -172,14 +174,14 @@ export const usePaymentDetailsHook = (masterData: any) => {
       amount: `${
         masterData?.currencyData?.currencySymbol
           ? masterData?.currencyData?.currencySymbol
-          : ""
+          : "R"
       } ${getConvertedAmount(masterData?.currencyData, String(0))}`,
       ...(feeModeCode !== feeMode.APPLICATION && { ...feesStructure }),
       ...(feeModeCode !== feeMode.APPLICATION && {
         amount: `${
           masterData?.currencyData?.currencySymbol
             ? masterData?.currencyData?.currencySymbol
-            : ""
+            : "R"
         } ${getConvertedAmount(
           masterData?.currencyData,
           String(feesStructure?.fee)
@@ -293,7 +295,7 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
   fees.discountAmount = `${
     masterData?.currencyData?.currencySymbol
       ? masterData?.currencyData?.currencySymbol
-      : ""
+      : "R"
   } ${getConvertedAmount(masterData?.currencyData, String(fees.discountFee))}`;
   fees.discountCode = discount?.code;
 
@@ -316,7 +318,7 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
     fees.rmatAmount = `${
       masterData?.currencyData?.currencySymbol
         ? masterData?.currencyData?.currencySymbol
-        : ""
+        : "R"
     } ${getConvertedAmount(masterData?.currencyData, rmatFees)}`;
   }
 
@@ -338,7 +340,7 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
   fees.totalAmount = `${
     masterData?.currencyData?.currencySymbol
       ? masterData?.currencyData?.currencySymbol
-      : ""
+      : "R"
   } ${getConvertedAmount(masterData?.currencyData, String(totalAmount))}`;
   return {
     resetDiscount,
