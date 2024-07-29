@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { Grid } from "@mui/material";
@@ -17,6 +17,8 @@ const PaymentProofCard = (props) => {
     updatePayment,
     masterData,
     paymentStatusCheck,
+    handleFileExist,
+    removeDocument
   } = props;
 
   const {
@@ -42,6 +44,11 @@ const PaymentProofCard = (props) => {
     updatePayment(payload);
   };
 
+  useEffect(()=>{
+    handleFileExist(watch('file'))
+  },[watch('file')])
+
+
   return (
     <Grid container mt={5} rowGap={5} component="form" justifyContent="center">
       <PaymentDetails masterData={masterData} />
@@ -56,6 +63,7 @@ const PaymentProofCard = (props) => {
           name="file"
           uploadPaymentProof={uploadPaymentProof}
           paymentStatusCheck={paymentStatusCheck}
+          removeDocument={removeDocument}
         />
       </Grid>
       <Grid item xs={12} display="flex" justifyContent="center">

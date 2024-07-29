@@ -11,7 +11,6 @@ import { useState } from "react";
 const UseCardActionHook = (applicationDetail) => {
   const { status, education, sponsor, documentData, lead, eligibility } =
     applicationDetail;
-
   const [openCredentialDialog, setOpenCredentialDialog] = useState(false);
 
   const [rmatOpen, setRmatOpen] = useState({

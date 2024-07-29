@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 import PayuInput from "./components/payuInput";
@@ -24,7 +24,9 @@ const PaymentOptionCard = (props) => {
     updatePayment,
     masterData,
     paymentStatusCheck,
+    removeDocument
   } = props;
+  const [ check, setCheck] = useState<boolean>(false)
   const methods = useForm();
   const { register, watch, setValue } = methods;
   const onlinePaymentWatch = watch(PaymentTypes[0].registerName);
@@ -37,6 +39,15 @@ const PaymentOptionCard = (props) => {
       getPayuDetails();
     }
   }, [onlinePaymentWatch]);
+
+
+    const handleFileExist = (file:any)=>{
+      if(file === undefined || file === null ) 
+        setCheck(false)
+      else setCheck(true)
+    }
+  
+  
 
   return (
     <>
@@ -72,7 +83,7 @@ const PaymentOptionCard = (props) => {
                   className="form-check-input"
                   type="radio"
                   value={value}
-                  disabled={fees?.feeMode === ""}
+                  disabled={fees?.feeMode === "" || check }
                 />
                 <span style={{ marginLeft: "5px", marginTop: "3px" }}>
                   {label}
@@ -115,6 +126,8 @@ const PaymentOptionCard = (props) => {
             disabled={disabled}
             updatePayment={updatePayment}
             paymentStatusCheck={paymentStatusCheck}
+            handleFileExist={handleFileExist}
+            removeDocument={removeDocument}
           />
         )}
       </Grid>

@@ -7,7 +7,6 @@ import LoginCredentialDialog from "./loginCridentialDialog";
 import RmatCredentialDialog from "./rmatDetailsDialog";
 import { documentType } from "../common/constant";
 import {
-  capitalizeFirstLetter,
   convertCodeToName,
   transformDate,
 } from "../../Util/Util";
