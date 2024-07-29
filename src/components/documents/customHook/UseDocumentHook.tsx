@@ -8,6 +8,7 @@ import {
   docType,
   MBACode,
   nonMandatoryDocuments,
+  actionType,
 } from "../context/common";
 import { useRouter } from "next/router";
 import {
@@ -107,7 +108,7 @@ export const UseDocumentAction = () => {
     setProgress({ ...progress, [element?.code]: { percent, documentCode } });
   };
 
-  const uploadFiles = async (payload, masterData) => {
+  const uploadFiles = async (payload, masterData, type) => {
     const response = await DocumentServices.uploadDocuments(
       payload,
       masterData?.userDetails?.applicationCode
@@ -115,6 +116,8 @@ export const UseDocumentAction = () => {
 
     if (response) {
       dashboardRedirectStatus.includes(masterData?.userDetails?.status)
+        ? router.push(`/dashboard`)
+        : type === actionType?.draft
         ? router.push(`/dashboard`)
         : router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
     } else {
@@ -125,7 +128,7 @@ export const UseDocumentAction = () => {
   const saveAsDraft = (data, masterData) => {
     const payload = documentPayload(data, true, masterData, progress);
     if (payload) {
-      uploadFiles(payload, masterData);
+      uploadFiles(payload, masterData, actionType.draft);
     }
   };
   const submitDocument = async (data, masterData) => {
@@ -156,7 +159,7 @@ export const UseDocumentAction = () => {
     const payload = documentPayload(data, false, masterData, progress);
 
     if (payload) {
-      uploadFiles(payload, masterData);
+      uploadFiles(payload, masterData, actionType.submit);
     }
   };
 
