@@ -14,6 +14,9 @@ export const nonMandatoryDocuments = [
   "EDFORALLCONTRACT",
   "RPL",
   "SAQA",
+  "DEBITORDER",
+  "COURSEAPPROVAL",
+  "MBCERTIFICATE",
 ];
 
 export const docType = {
@@ -32,6 +35,10 @@ export const bursarryFeilds = {
   Phone: "BURSARYLETTERPhone",
 };
 
+export const actionType = {
+  submit: "submit",
+  draft: "Draft",
+};
 export const dashboardRedirectStatus = [
   CommonEnums?.RESUB_APP_DOC,
   CommonEnums?.BURSARY_LETTER_PEND,

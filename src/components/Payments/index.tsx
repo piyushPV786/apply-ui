@@ -31,7 +31,7 @@ const PaymentPage = ({ applicationCode }) => {
     paymentStatusCheck,
   } = useUkhesheHook(masterData, fees);
 
-  const { uploadPaymentProof, disabled, updatePayment, uploadProgress } =
+  const { uploadPaymentProof, disabled, updatePayment, uploadProgress, removeDocument } =
     useOfflinePaymentHook(masterData, fees);
 
   if (!masterData && !studyModes && !fees) {
@@ -80,6 +80,7 @@ const PaymentPage = ({ applicationCode }) => {
               updatePayment={updatePayment}
               uploadProgress={uploadProgress}
               paymentStatusCheck={paymentStatusCheck}
+              removeDocument={removeDocument}
             />
           </Grid>
 
