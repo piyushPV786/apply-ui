@@ -200,7 +200,18 @@ const NationalityStatus = (props: any) => {
                 control={control}
                 rules={{
                   required: "Identification number is required",
+
+                  maxLength: {
+                    value: 13,
+                    message: "Maximum 13 characters allowed.",
+                  },
+                  minLength: {
+                    value: 8,
+                    message: "Minimum length should be 8.",
+                  },
+
                   validate: validateIdNumber,
+
                 }}
                 render={({ field }) => (
                   <>
