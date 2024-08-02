@@ -283,7 +283,7 @@ export const tokenName = {
 };
 
 export const rhfErrorMessage = {
-  maxLength: "Max length exceeded",
+  maxLength: "Max length should be 30",
   minLength: "Minimum length should be 3",
   min: "Please enter positive number",
   numeric: "name must be Characters",
