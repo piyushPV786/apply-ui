@@ -10,9 +10,10 @@ export const useHelperHook = (masterData, watch, setError) => {
   const { applicationCode } = router?.query;
   const allowedDocsForCreditReport = ["SMARTID", "PASSPORT"];
   let createCreditVettingFor: createCreditVettingForType;
+  const [disableForApplication, setDisableForApplication] = useState(false);
 
   const saveApplication = async (data: any) => {
-    setDisable(true);
+    setDisableForApplication(true);
     const programName = programsData?.find(
       (item) => item?.code === data?.education?.programCode
     );
@@ -81,6 +82,7 @@ export const useHelperHook = (masterData, watch, setError) => {
     ) {
       router.push(`/uploads/${response?.applicationData?.applicationCode}`);
     }
+    setDisableForApplication(false);
 
     if (
       allowedDocsForCreditReport.includes(data?.lead.identificationDocumentType)
@@ -166,5 +168,10 @@ export const useHelperHook = (masterData, watch, setError) => {
       }
     }
   };
-  return { saveApplication, saveApplicationAsDraft, disable };
+  return {
+    saveApplication,
+    saveApplicationAsDraft,
+    disable,
+    disableForApplication,
+  };
 };
