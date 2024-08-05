@@ -77,12 +77,11 @@ const UseCardActionHook = (applicationDetail) => {
     CommonEnums.WELCOME_LETTER,
     CommonEnums.QUOTE,
   ];
-
   const document = documentData?.filter(
-    (item) =>
-      (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
+    (item) => (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
         status === CommonEnums?.PROG_ADMITTED) ||
-      documentDataTypes.includes(item?.documentTypeCode)
+      documentDataTypes.includes(item?.documentTypeCode) ||
+      (status === CommonEnums?.GRADUATED && item?.documentTypeCode === CommonEnums?.CONFIRMATION_LETTER)
   );
 
   const getDownloadDocument = async (documentDetail) => {
