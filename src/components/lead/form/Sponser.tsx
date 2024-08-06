@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import NumberField from "./components/NumberField";
 import ZipCodeField from "./components/ZipCodeField";
 import DateField from "./components/DateField";
+import EmailField from "./components/EmailField";
 
 const Sponsor = (props: any) => {
   const {
@@ -100,8 +101,8 @@ const Sponsor = (props: any) => {
                         options={
                           masterData[element?.key]
                             ? masterData[element?.key]?.filter((item) =>
-                              mandatorySponsorModeFeilds.includes(item?.code)
-                            )
+                                mandatorySponsorModeFeilds.includes(item?.code)
+                              )
                             : element.option
                         }
                         label={element?.label}
@@ -122,7 +123,7 @@ const Sponsor = (props: any) => {
                   )}
                   {sponsorType && (
                     <>
-                      {watch('sponsor.relationshipCode') === 'EMPLOYER' ?
+                      {watch("sponsor.relationshipCode") === "EMPLOYER" ? (
                         <>
                           {element?.type === "text" && (
                             <TextField
@@ -147,17 +148,52 @@ const Sponsor = (props: any) => {
                               registerName={`sponsor.${element?.name}`}
                             />
                           )}
-
                           {element?.type === "zipCode" && (
-                            <ZipCodeField
-                              element={element}
-                              Errors={Errors}
-                              registerName={`sponsor.${element?.name}`}
-                            />
+                            <>
+                              <div className="col-lg-4 mb-4">
+                                <StyledLabel required>
+                                  Pin Code / Zip Code
+                                </StyledLabel>
+                                <input
+                                  className="form-control"
+                                  type="text"
+                                  placeholder="Enter Zip/Postal Code"
+                                  {...register(`sponsor.${element?.name}`, {
+                                    required: true,
+                                    maxLength: {
+                                      value: 5,
+                                      message: "Maximum 5 characters allowed.",
+                                    },
+                                    minLength: {
+                                      value: 4,
+                                      message: "Minimum length should be 4.",
+                                    },
+                                    pattern: {
+                                      value: /^[0-9]*$/,
+                                      message:
+                                        "Only numeric values are allowed.",
+                                    },
+                                  })}
+                                  onChange={(e) => {
+                                    const numericValue = e.target.value.replace(
+                                      /[^0-9]/g,
+                                      ""
+                                    );
+                                    e.target.value = numericValue;
+                                  }}
+                                />
+                                {Errors && Errors[element?.name] && (
+                                  <div className="invalid-feedback">
+                                    {Errors[element?.name]?.message}
+                                  </div>
+                                )}
+                              </div>
+                            </>
                           )}
-
                           {element?.type === "select" &&
-                            element?.key !== "state" && element?.key !== "genderData" && element?.key !== "identificationDocumentType" && (
+                            element?.key !== "state" &&
+                            element?.key !== "genderData" &&
+                            element?.key !== "identificationDocumentType" && (
                               <div className="col-lg-4 mb-4">
                                 <CommonAutocomplete
                                   options={
@@ -185,7 +221,9 @@ const Sponsor = (props: any) => {
                             element?.key === "state" && (
                               <div className="col-lg-4 mb-4">
                                 <CommonAutocomplete
-                                  options={stateList ? stateList : element.option}
+                                  options={
+                                    stateList ? stateList : element.option
+                                  }
                                   label={element?.label}
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
@@ -203,25 +241,11 @@ const Sponsor = (props: any) => {
                               </div>
                             )}
                           {element?.type === "email" && (
-                            <div className="col-lg-4 mb-4">
-                              <StyledLabel>{element?.label}</StyledLabel>
-                              <input
-                                className="form-control"
-                                type={element.type}
-                                placeholder=""
-                                {...register(`sponsor.${element?.name}`, {
-                                  required: element.required,
-                                  validate: (value) => isValidEmail(value),
-                                })}
-                              />
-                              {Errors && Errors?.email && (
-                                <div className="invalid-feedback">
-                                  {Errors?.email?.type == "validate"
-                                    ? element?.validateErrorMessage
-                                    : element?.errorMessage}
-                                </div>
-                              )}
-                            </div>
+                            <EmailField
+                              element={element}
+                              Errors={Errors}
+                              registerName={`sponsor.${element?.name}`}
+                            />
                           )}
                           {element?.type === "mobileNumber" && (
                             <MobileField
@@ -256,7 +280,7 @@ const Sponsor = (props: any) => {
                             </div>
                           )}
                         </>
-                        :
+                      ) : (
                         <>
                           {element?.type === "name" && (
                             <TextField
@@ -294,7 +318,9 @@ const Sponsor = (props: any) => {
                               <div className="col-lg-4 mb-4">
                                 <CommonAutocomplete
                                   options={
-                                    identificationType?.length ? identificationType : []
+                                    identificationType?.length
+                                      ? identificationType
+                                      : []
                                   }
                                   label={element?.label}
                                   registerName={`sponsor.${element?.name}`}
@@ -313,7 +339,8 @@ const Sponsor = (props: any) => {
                               </div>
                             )}
                           {element?.type === "select" &&
-                            element?.key !== "state" && element?.key !== "identificationDocumentType" && (
+                            element?.key !== "state" &&
+                            element?.key !== "identificationDocumentType" && (
                               <div className="col-lg-4 mb-4">
                                 <CommonAutocomplete
                                   options={
@@ -341,7 +368,9 @@ const Sponsor = (props: any) => {
                             element?.key === "state" && (
                               <div className="col-lg-4 mb-4">
                                 <CommonAutocomplete
-                                  options={stateList ? stateList : element.option}
+                                  options={
+                                    stateList ? stateList : element.option
+                                  }
                                   label={element?.label}
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
@@ -358,26 +387,12 @@ const Sponsor = (props: any) => {
                                 )}
                               </div>
                             )}
-                          {element?.type === "email" && (
-                            <div className="col-lg-4 mb-4">
-                              <StyledLabel>{element?.label}</StyledLabel>
-                              <input
-                                className="form-control"
-                                type={element.type}
-                                placeholder=""
-                                {...register(`sponsor.${element?.name}`, {
-                                  required: element.required,
-                                  validate: (value) => isValidEmail(value),
-                                })}
-                              />
-                              {Errors && Errors?.email && (
-                                <div className="invalid-feedback">
-                                  {Errors?.email?.type == "validate"
-                                    ? element?.validateErrorMessage
-                                    : element?.errorMessage}
-                                </div>
-                              )}
-                            </div>
+                              {element?.type === "email" && (
+                            <EmailField
+                              element={element}
+                              Errors={Errors}
+                              registerName={`sponsor.${element?.name}`}
+                            />
                           )}
                           {element?.type === "mobileNumber" && (
                             <MobileField
@@ -424,7 +439,7 @@ const Sponsor = (props: any) => {
                             />
                           )}
                         </>
-                      }
+                      )}
                     </>
                   )}
                 </>
