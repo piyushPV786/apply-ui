@@ -37,13 +37,13 @@ const Sponsor = (props: any) => {
     formState: { errors },
   } = useFormContext();
   const { masterData, applicationData, identificationType } = props?.masterData;
-  const activeSponsor = watch("sponsor.isSponsor");
   const countryDetail = watch(`sponsor.country`);
   const sponsorType = watch(`sponsor.sponsorModeCode`);
   const stateDetails: any = useAddressHook(countryDetail);
   const stateList = stateDetails[countryDetail];
   const Errors = errors["sponsor"] as any;
   const [SpData, setSpData] = useState<any>([]);
+  const [activeSponsor, setActiveSponsor ] = useState<string>(watch("sponsor.isSponsor"))
 
   useEffect(() => {
     const sponsorData: any = [];
@@ -62,8 +62,9 @@ const Sponsor = (props: any) => {
   }, [activeSponsor]);
 
   useEffect(() => {
-    if (applicationData?.sponsor?.isActive) {
+    if (applicationData?.sponsor?.[0]?.isActive) {
       setValue("sponsor.isSponsor", "yes");
+      setActiveSponsor("yes")
     } else {
       setValue("sponsor.isSponsor", "no");
     }
@@ -84,8 +85,8 @@ const Sponsor = (props: any) => {
 
         <RadioField
           registerName={"sponsor.isSponsor"}
-          defaultValue={applicationData?.sponsor?.isActive ? "yes" : "no"}
-          defaultChecked={applicationData?.sponsor?.isActive ? "yes" : "no"}
+          defaultValue={applicationData?.sponsor[0]?.isActive ? "yes" : "no"}
+          defaultChecked={applicationData?.sponsor?.[0]?.isActive ? "yes" : "no"}
         />
       </AccordionSummary>
       <AccordionDetails>
@@ -108,8 +109,8 @@ const Sponsor = (props: any) => {
                         registerName={`sponsor.${element?.name}`}
                         required={element?.required}
                         defaultValue={
-                          applicationData && applicationData?.sponsor
-                            ? applicationData?.sponsor[element?.name]
+                          applicationData && applicationData?.sponsor?.length >0
+                            ? applicationData?.sponsor?.[0][element?.name]
                             : null
                         }
                       />
@@ -169,8 +170,8 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor
-                                      ? applicationData?.sponsor[element?.name]
+                                    applicationData && applicationData?.sponsor?.length > 0
+                                      ? applicationData?.sponsor?.[0][element?.name]
                                       : null
                                   }
                                 />
@@ -190,8 +191,8 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor
-                                      ? applicationData?.sponsor[element?.name]
+                                    applicationData && applicationData?.sponsor?.length > 0
+                                      ? applicationData?.sponsor?.[0][element?.name]
                                       : null
                                   }
                                 />
@@ -300,8 +301,8 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor
-                                      ? applicationData?.sponsor[element?.name]
+                                    applicationData && applicationData?.sponsor?.length
+                                      ? applicationData?.sponsor?.[0][element?.name]
                                       : null
                                   }
                                 />
@@ -325,8 +326,8 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor
-                                      ? applicationData?.sponsor[element?.name]
+                                    applicationData && applicationData?.sponsor?.length > 0
+                                      ? applicationData?.sponsor?.[0][element?.name]
                                       : null
                                   }
                                 />
@@ -346,8 +347,8 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor
-                                      ? applicationData?.sponsor[element?.name]
+                                    applicationData && applicationData?.sponsor?.length>0
+                                      ? applicationData?.sponsor?.[0][element?.name]
                                       : null
                                   }
                                 />
