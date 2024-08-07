@@ -41,6 +41,19 @@ const LeadForm = (props: IProps) => {
     watch,
     setError
   );
+  
+  const lead = watch().lead || {};
+
+  // Check if firstName is present and not an empty string
+  const areNamesFilled = lead.firstName && lead.firstName.trim() !== '' &&
+                         lead.lastName && lead.lastName.trim() !== '';
+
+  // Check if middleName is in the correct format if it's provided
+  const isMiddleNameValid = !lead.middleName || /^[a-zA-Z\s\-]+$/.test(lead.middleName);
+
+  // TermsAndCondition should be shown only if both firstName and lastName are filled and middleName is valid
+  const showTermsAndCondition = areNamesFilled && isMiddleNameValid;
+  
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
   //Setting values in form after data fetch
@@ -78,21 +91,24 @@ const LeadForm = (props: IProps) => {
                 <Sponsor masterData={masterData} />
                 <Employment masterData={masterData} />
                 <Kin masterData={masterData} />
-                <TermsAndCondition />
+                {showTermsAndCondition ? <TermsAndCondition /> : null}
                 <ErrorComponent errors={errors} />
+                <>
+                {console.log(errors)}
+                </>
                 <div className="mt-4 text-center">
                   <StyledButton
                     style={{ marginRight: "10px" }}
                     onClick={saveApplicationAsDraft}
                     className="form-button btn-space"
                     title="Save As Draft"
-                    disabled={disable || errors?.lead?.email}
+                    disabled={disable || errors?.lead?.email || !showTermsAndCondition}
                   />
                   <StyledButton
                     disabled={
                       !watch("lead.isAgreedTermsAndConditions") ||
                       disable ||
-                      errors?.lead?.email
+                      errors?.lead?.email  || !showTermsAndCondition
                     }
                     onClick={handleSubmit((d) => saveApplication(d))}
                     className="form-button btn-space"
