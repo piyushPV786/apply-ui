@@ -62,6 +62,11 @@ const Sponsor = (props: any) => {
     setSpData(sponsorData);
   }, [activeSponsor]);
 
+  useEffect(()=>{
+    setActiveSponsor(watch("sponsor.isSponsor"))
+  },[watch("sponsor.isSponsor")])
+
+
   useEffect(() => {
     if (applicationData?.sponsor?.[0]?.isActive) {
       setValue("sponsor.isSponsor", "yes");
