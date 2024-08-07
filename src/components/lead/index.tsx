@@ -44,25 +44,25 @@ const LeadForm = (props: IProps) => {
   
   const lead = watch().lead || {};
 
-  // Check if firstName is present and not an empty string
+  
   const areNamesFilled = lead.firstName && lead.firstName.trim() !== '' &&
                          lead.lastName && lead.lastName.trim() !== '';
 
-  // Check if middleName is in the correct format if it's provided
+  
   const isMiddleNameValid = !lead.middleName || /^[a-zA-Z\s\-]+$/.test(lead.middleName);
 
-  // TermsAndCondition should be shown only if both firstName and lastName are filled and middleName is valid
+  
   const showTermsAndCondition = areNamesFilled && isMiddleNameValid;
   
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
-  //Setting values in form after data fetch
+  
   useEffect(() => {
     if (masterData?.applicationData) {
       mapFormDefaultValue(masterData?.applicationData, methods.setValue);
     }
   }, [applicationData?.applicationCode]);
-  //form code  ends
+  
   if (!masterData?.masterData) {
     return (
       <>
