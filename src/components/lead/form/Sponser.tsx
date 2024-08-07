@@ -86,7 +86,7 @@ const Sponsor = (props: any) => {
 
         <RadioField
           registerName={"sponsor.isSponsor"}
-          defaultValue={applicationData?.sponsor[0]?.isActive ? "yes" : "no"}
+          defaultValue={applicationData?.sponsor?.[0]?.isActive ? "yes" : "no"}
           defaultChecked={applicationData?.sponsor?.[0]?.isActive ? "yes" : "no"}
         />
       </AccordionSummary>
