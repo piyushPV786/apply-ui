@@ -765,7 +765,7 @@ export const mapFormDefaultValue = (studentData: object, setValue: any) => {
     if (acceptedKeysToMap.includes(key)) {
       setValue(key, value);
       if(key=== 'sponsor'&& studentData[key] ){
-        setValue( key, value[0])
+        setValue( key, value?.[0])
       }
       if (key === "education" && studentData[key]) {
         setEducationValue(studentData, setValue, key);
