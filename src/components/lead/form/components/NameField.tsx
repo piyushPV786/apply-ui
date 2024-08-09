@@ -32,6 +32,7 @@ const NameField = ({ element, Errors, registerName }: any) => {
         placeholder={element?.placeholder}
         type="text"
         disabled={element?.disabled}
+        onInput={element?.onlyLetters ? (e:any) => { e.target.value = e.target.value.replace(/[^a-zA-Z]/g, ''); } : undefined}
       />
 
       {Errors && Errors[element?.name] && (
