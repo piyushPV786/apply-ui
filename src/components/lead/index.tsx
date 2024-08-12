@@ -36,11 +36,12 @@ const LeadForm = (props: IProps) => {
   }:any = methods;
 
   const masterData = useFormHook(props?.applicationCode);
-  const { saveApplication, saveApplicationAsDraft, disable } = useHelperHook(
-    masterData,
-    watch,
-    setError
-  );
+  const {
+    saveApplication,
+    saveApplicationAsDraft,
+    disable,
+    disableForApplication,
+  } = useHelperHook(masterData, watch, setError);
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
   //Setting values in form after data fetch
@@ -91,7 +92,7 @@ const LeadForm = (props: IProps) => {
                   <StyledButton
                     disabled={
                       !watch("lead.isAgreedTermsAndConditions") ||
-                      disable ||
+                      disableForApplication ||
                       errors?.lead?.email
                     }
                     onClick={handleSubmit((d) => saveApplication(d))}
