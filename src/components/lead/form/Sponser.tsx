@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import NumberField from "./components/NumberField";
 import ZipCodeField from "./components/ZipCodeField";
 import DateField from "./components/DateField";
+import EmailField from "./components/EmailField";
 
 const Sponsor = (props: any) => {
   const {
@@ -37,13 +38,13 @@ const Sponsor = (props: any) => {
     formState: { errors },
   } = useFormContext();
   const { masterData, applicationData, identificationType } = props?.masterData;
-  const activeSponsor = watch("sponsor.isSponsor");
   const countryDetail = watch(`sponsor.country`);
   const sponsorType = watch(`sponsor.sponsorModeCode`);
   const stateDetails: any = useAddressHook(countryDetail);
   const stateList = stateDetails[countryDetail];
   const Errors = errors["sponsor"] as any;
   const [SpData, setSpData] = useState<any>([]);
+  const [activeSponsor, setActiveSponsor ] = useState<string>(watch("sponsor.isSponsor"))
 
   useEffect(() => {
     const sponsorData: any = [];
@@ -61,9 +62,15 @@ const Sponsor = (props: any) => {
     setSpData(sponsorData);
   }, [activeSponsor]);
 
+  useEffect(()=>{
+    setActiveSponsor(watch("sponsor.isSponsor"))
+  },[watch("sponsor.isSponsor")])
+
+
   useEffect(() => {
-    if (applicationData?.sponsor?.isActive) {
+    if (applicationData?.sponsor?.[0]?.isActive) {
       setValue("sponsor.isSponsor", "yes");
+      setActiveSponsor("yes")
     } else {
       setValue("sponsor.isSponsor", "no");
     }
@@ -87,8 +94,8 @@ const Sponsor = (props: any) => {
 
         <RadioField
           registerName={"sponsor.isSponsor"}
-          defaultValue={applicationData?.sponsor?.isActive ? "yes" : "no"}
-          defaultChecked={applicationData?.sponsor?.isActive ? "yes" : "no"}
+          defaultValue={applicationData?.sponsor?.[0]?.isActive ? "yes" : "no"}
+          defaultChecked={applicationData?.sponsor?.[0]?.isActive ? "yes" : "no"}
         />
       </AccordionSummary>
       <AccordionDetails>
@@ -103,16 +110,16 @@ const Sponsor = (props: any) => {
                         options={
                           masterData[element?.key]
                             ? masterData[element?.key]?.filter((item) =>
-                              mandatorySponsorModeFeilds.includes(item?.code)
-                            )
+                                mandatorySponsorModeFeilds.includes(item?.code)
+                              )
                             : element.option
                         }
                         label={element?.label}
                         registerName={`sponsor.${element?.name}`}
                         required={element?.required}
                         defaultValue={
-                          applicationData && applicationData?.sponsor
-                            ? applicationData?.sponsor[element?.name]
+                          applicationData && applicationData?.sponsor?.length >0
+                            ? applicationData?.sponsor?.[0][element?.name]
                             : null
                         }
                       />
@@ -125,7 +132,7 @@ const Sponsor = (props: any) => {
                   )}
                   {sponsorType && (
                     <>
-                      {watch('sponsor.relationshipCode') === 'EMPLOYER' ?
+                      {watch("sponsor.relationshipCode") === "EMPLOYER" ? (
                         <>
                           {element?.type === "text" && (
                             <TextField
@@ -150,17 +157,52 @@ const Sponsor = (props: any) => {
                               registerName={`sponsor.${element?.name}`}
                             />
                           )}
-
                           {element?.type === "zipCode" && (
-                            <ZipCodeField
-                              element={element}
-                              Errors={Errors}
-                              registerName={`sponsor.${element?.name}`}
-                            />
+                            <>
+                              <div className="col-lg-4 mb-4">
+                                <StyledLabel required>
+                                  Pin Code / Zip Code
+                                </StyledLabel>
+                                <input
+                                  className="form-control"
+                                  type="text"
+                                  placeholder="Enter Zip/Postal Code"
+                                  {...register(`sponsor.${element?.name}`, {
+                                    required: true,
+                                    maxLength: {
+                                      value: 5,
+                                      message: "Maximum 5 characters allowed.",
+                                    },
+                                    minLength: {
+                                      value: 4,
+                                      message: "Minimum length should be 4.",
+                                    },
+                                    pattern: {
+                                      value: /^[0-9]*$/,
+                                      message:
+                                        "Only numeric values are allowed.",
+                                    },
+                                  })}
+                                  onChange={(e) => {
+                                    const numericValue = e.target.value.replace(
+                                      /[^0-9]/g,
+                                      ""
+                                    );
+                                    e.target.value = numericValue;
+                                  }}
+                                />
+                                {Errors && Errors[element?.name] && (
+                                  <div className="invalid-feedback">
+                                    {Errors[element?.name]?.message}
+                                  </div>
+                                )}
+                              </div>
+                            </>
                           )}
-
                           {element?.type === "select" &&
-                            element?.key !== "state" && element?.key !== "genderData" && element?.key !== "identificationDocumentType" && (
+                            element?.key !== "state" &&
+                            element?.key !== "genderData" &&
+                            element?.key !== "identificationDocumentType" && (
                               <div className="col-lg-4 mb-4">
                                 <CommonAutocomplete
                                   options={
@@ -172,8 +214,8 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor
-                                      ? applicationData?.sponsor[element?.name]
+                                    applicationData && applicationData?.sponsor?.length > 0
+                                      ? applicationData?.sponsor?.[0][element?.name]
                                       : null
                                   }
                                 />
@@ -188,13 +230,15 @@ const Sponsor = (props: any) => {
                             element?.key === "state" && (
                               <div className="col-lg-4 mb-4">
                                 <CommonAutocomplete
-                                  options={stateList ? stateList : element.option}
+                                  options={
+                                    stateList ? stateList : element.option
+                                  }
                                   label={element?.label}
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor
-                                      ? applicationData?.sponsor[element?.name]
+                                    applicationData && applicationData?.sponsor?.length > 0
+                                      ? applicationData?.sponsor?.[0][element?.name]
                                       : null
                                   }
                                 />
@@ -206,25 +250,11 @@ const Sponsor = (props: any) => {
                               </div>
                             )}
                           {element?.type === "email" && (
-                            <div className="col-lg-4 mb-4">
-                              <StyledLabel>{element?.label}</StyledLabel>
-                              <input
-                                className="form-control"
-                                type={element.type}
-                                placeholder=""
-                                {...register(`sponsor.${element?.name}`, {
-                                  required: element.required,
-                                  validate: (value) => isValidEmail(value),
-                                })}
-                              />
-                              {Errors && Errors?.email && (
-                                <div className="invalid-feedback">
-                                  {Errors?.email?.type == "validate"
-                                    ? element?.validateErrorMessage
-                                    : element?.errorMessage}
-                                </div>
-                              )}
-                            </div>
+                            <EmailField
+                              element={element}
+                              Errors={Errors}
+                              registerName={`sponsor.${element?.name}`}
+                            />
                           )}
                           {element?.type === "mobileNumber" && (
                             <MobileField
@@ -259,7 +289,7 @@ const Sponsor = (props: any) => {
                             </div>
                           )}
                         </>
-                        :
+                      ) : (
                         <>
                           {element?.type === "name" && (
                             <TextField
@@ -297,14 +327,16 @@ const Sponsor = (props: any) => {
                               <div className="col-lg-4 mb-4">
                                 <CommonAutocomplete
                                   options={
-                                    identificationType?.length ? identificationType : []
+                                    identificationType?.length
+                                      ? identificationType
+                                      : []
                                   }
                                   label={element?.label}
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor
-                                      ? applicationData?.sponsor[element?.name]
+                                    applicationData && applicationData?.sponsor?.length
+                                      ? applicationData?.sponsor?.[0][element?.name]
                                       : null
                                   }
                                 />
@@ -316,7 +348,8 @@ const Sponsor = (props: any) => {
                               </div>
                             )}
                           {element?.type === "select" &&
-                            element?.key !== "state" && element?.key !== "identificationDocumentType" && (
+                            element?.key !== "state" &&
+                            element?.key !== "identificationDocumentType" && (
                               <div className="col-lg-4 mb-4">
                                 <CommonAutocomplete
                                   options={
@@ -328,8 +361,8 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor
-                                      ? applicationData?.sponsor[element?.name]
+                                    applicationData && applicationData?.sponsor?.length > 0
+                                      ? applicationData?.sponsor?.[0][element?.name]
                                       : null
                                   }
                                 />
@@ -344,13 +377,15 @@ const Sponsor = (props: any) => {
                             element?.key === "state" && (
                               <div className="col-lg-4 mb-4">
                                 <CommonAutocomplete
-                                  options={stateList ? stateList : element.option}
+                                  options={
+                                    stateList ? stateList : element.option
+                                  }
                                   label={element?.label}
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor
-                                      ? applicationData?.sponsor[element?.name]
+                                    applicationData && applicationData?.sponsor?.length>0
+                                      ? applicationData?.sponsor?.[0][element?.name]
                                       : null
                                   }
                                 />
@@ -361,26 +396,12 @@ const Sponsor = (props: any) => {
                                 )}
                               </div>
                             )}
-                          {element?.type === "email" && (
-                            <div className="col-lg-4 mb-4">
-                              <StyledLabel>{element?.label}</StyledLabel>
-                              <input
-                                className="form-control"
-                                type={element.type}
-                                placeholder=""
-                                {...register(`sponsor.${element?.name}`, {
-                                  required: element.required,
-                                  validate: (value) => isValidEmail(value),
-                                })}
-                              />
-                              {Errors && Errors?.email && (
-                                <div className="invalid-feedback">
-                                  {Errors?.email?.type == "validate"
-                                    ? element?.validateErrorMessage
-                                    : element?.errorMessage}
-                                </div>
-                              )}
-                            </div>
+                              {element?.type === "email" && (
+                            <EmailField
+                              element={element}
+                              Errors={Errors}
+                              registerName={`sponsor.${element?.name}`}
+                            />
                           )}
                           {element?.type === "mobileNumber" && (
                             <MobileField
@@ -427,7 +448,7 @@ const Sponsor = (props: any) => {
                             />
                           )}
                         </>
-                      }
+                      )}
                     </>
                   )}
                 </>
