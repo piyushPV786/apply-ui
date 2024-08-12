@@ -65,7 +65,7 @@ const Sponsor = (props: any) => {
   useEffect(()=>{
     setActiveSponsor(watch("sponsor.isSponsor"))
   },[watch("sponsor.isSponsor")])
-
+ 
 
   useEffect(() => {
     if (applicationData?.sponsor?.[0]?.isActive) {
@@ -156,7 +156,7 @@ const Sponsor = (props: any) => {
                               Errors={Errors}
                               registerName={`sponsor.${element?.name}`}
                             />
-                          )}
+                          )}              
                           {element?.type === "zipCode" && (
                             <>
                               <div className="col-lg-4 mb-4">
@@ -165,13 +165,13 @@ const Sponsor = (props: any) => {
                                 </StyledLabel>
                                 <input
                                   className="form-control"
-                                  type="text"
+                                  type="text" 
                                   placeholder="Enter Zip/Postal Code"
                                   {...register(`sponsor.${element?.name}`, {
                                     required: true,
                                     maxLength: {
-                                      value: 5,
-                                      message: "Maximum 5 characters allowed.",
+                                      value: 6,
+                                      message: "Maximum 6 characters allowed.",
                                     },
                                     minLength: {
                                       value: 4,
@@ -315,11 +315,46 @@ const Sponsor = (props: any) => {
                           )}
 
                           {element?.type === "zipCode" && (
-                            <ZipCodeField
-                              element={element}
-                              Errors={Errors}
-                              registerName={`sponsor.${element?.name}`}
-                            />
+                             <>
+                             <div className="col-lg-4 mb-4">
+                               <StyledLabel required>
+                                 Pin Code / Zip Code
+                               </StyledLabel>
+                               <input
+                                 className="form-control"
+                                 type="text"
+                                 placeholder="Enter Zip/Postal Code"
+                                 {...register(`sponsor.${element?.name}`, {
+                                   required: true,
+                                   maxLength: {
+                                     value: 6,
+                                     message: "Maximum 6 characters allowed.",
+                                   },
+                                   minLength: {
+                                     value: 4,
+                                     message: "Minimum length should be 4.",
+                                   },
+                                   pattern: {
+                                     value: /^[0-9]*$/,
+                                     message:
+                                       "Only numeric values are allowed.",
+                                   },
+                                 })}
+                                 onChange={(e) => {
+                                   const numericValue = e.target.value.replace(
+                                     /[^0-9]/g,
+                                     ""
+                                   );
+                                   e.target.value = numericValue;
+                                 }}
+                               />
+                               {Errors && Errors[element?.name] && (
+                                 <div className="invalid-feedback">
+                                   {Errors[element?.name]?.message}
+                                 </div>
+                               )}
+                             </div>
+                           </>
                           )}
 
                           {element?.type === "select" &&
