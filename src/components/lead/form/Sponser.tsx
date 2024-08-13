@@ -1,4 +1,4 @@
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import {
   GreenFormHeading,
   StyledAccordion,
@@ -29,12 +29,15 @@ import NumberField from "./components/NumberField";
 import ZipCodeField from "./components/ZipCodeField";
 import DateField from "./components/DateField";
 import EmailField from "./components/EmailField";
+import { userInformationStatus } from "../../common/constant";
+import { patternForPassport, patternForSMARTID } from "../../../constants";
 
 const Sponsor = (props: any) => {
   const {
     register,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useFormContext();
   const { masterData, applicationData, identificationType } = props?.masterData;
@@ -45,6 +48,7 @@ const Sponsor = (props: any) => {
   const Errors = errors["sponsor"] as any;
   const [SpData, setSpData] = useState<any>([]);
   const [activeSponsor, setActiveSponsor ] = useState<string>(watch("sponsor.isSponsor"))
+  const docType = watch('sponsor.identificationDocumentType')
 
   useEffect(() => {
     const sponsorData: any = [];
@@ -75,6 +79,22 @@ const Sponsor = (props: any) => {
       setValue("sponsor.isSponsor", "no");
     }
   }, [applicationData]);
+
+  const validateIndentificationNumber = (value: string) => {
+    if (docType === "SMARTID") {
+      if (!patternForSMARTID.test(value)) {
+        return userInformationStatus.IdentificationNumberSmart;
+      }
+    }
+    if (docType === "PASSPORT") {
+      if (!patternForPassport.test(value)) {
+        return userInformationStatus.IdentificationNumberPassport;
+      }
+    }
+    return true;
+  }
+
+  console.log('Errors',Errors)
 
   return (
     <StyledAccordion
@@ -291,11 +311,39 @@ const Sponsor = (props: any) => {
                         </>
                       ) : (
                         <>
-                          {element?.type === "name" && (
+                          {element?.type === "name" && element?.key !== "identificationNumber" && (
                             <TextField
                               element={element}
                               Errors={Errors}
                               registerName={`sponsor.${element?.name}`}
+                            />
+                          )}
+                           {element?.type === "name" &&  element?.key === "identificationNumber" && (
+                            <Controller
+                            name={`sponsor.${element?.name}`}
+                            control={control}
+                            rules={{
+                              required: "Identification number is required",
+            
+                              maxLength: {
+                                value: 13,
+                                message: "Maximum 13 characters allowed.",
+                              },
+                              minLength: {
+                                value: 8,
+                                message: "Minimum length should be 8.",
+                              },
+            
+                              validate: validateIndentificationNumber,
+                            }}
+                            render={({ field }) => (
+                            <TextField
+                            {...field}
+                              element={element}
+                              Errors={Errors}
+                              registerName={`sponsor.${element?.name}`}
+                              inputProps={{ maxLength: 13 }} 
+                            />)}
                             />
                           )}
                           {element?.type === "text" && (
