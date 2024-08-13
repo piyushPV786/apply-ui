@@ -1,5 +1,6 @@
 import { getLocalStorageData } from "../Util/Util";
 import { StorageName } from "../components/common/constant";
+import { createCreditVettingForType } from "../components/common/types";
 import { apiEndPoint, apiUrls } from "./config";
 import { apiServer } from "./index";
 
@@ -140,6 +141,18 @@ class ApplicationFormServices {
     const url = `${apiUrls?.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
+    return result;
+  }
+
+  async updateCreditReport(
+    id: string,
+    updateCreditPayload: {
+      createCreditVettingFor: createCreditVettingForType;
+    }
+  ) {
+    const url = `${apiUrls?.financeBaseUrl}${apiEndPoint?.updateCredit}/${id}/new`;
+    const response = await apiServer.post(url, updateCreditPayload);
+    const result = response?.data ? response?.data : null;
     return result;
   }
 }
