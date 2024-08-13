@@ -287,6 +287,7 @@ export enum RhfErrorTypes {
   MaxLength = "maxLength",
   MinLength = "minLength",
   Min = "min",
+  Valid = "validate"
 }
 
 export const AddressTypeData = [
@@ -303,3 +304,8 @@ export const AddressTypeData = [
     code: "RESIDENTIAL",
   },
 ];
+
+export enum userInformationStatus  {
+  IdentificationNumberSmart = "Identification number must be 13 digits and contain only numbers for smartID, e.g.- YYMMDD1234567",
+  IdentificationNumberPassport = "Passport number must be valid, e.g:- P4366918",
+}
