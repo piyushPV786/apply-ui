@@ -35,6 +35,7 @@ const Sponsor = (props: any) => {
     register,
     watch,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useFormContext();
   const { masterData, applicationData, identificationType } = props?.masterData;
@@ -57,6 +58,7 @@ const Sponsor = (props: any) => {
         }
       } else {
         sponsorData.push({ ...item, required: false });
+        clearErrors("sponsor");
       }
     });
     setSpData(sponsorData);
