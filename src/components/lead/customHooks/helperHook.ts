@@ -159,12 +159,12 @@ export const useHelperHook = (masterData, watch, setError) => {
         applicationData?.applicationCode
       );
       if (response?.statusCode === 200) {
-        router.push("/dashboard");
+        window.location.replace("/dashboard");
       }
     } else {
       const response = await ApplicationServices?.createDraft(payload);
       if (response?.statusCode === 201) {
-        router.push("/dashboard");
+        window.location.replace("/dashboard");
       }
     }
   };
