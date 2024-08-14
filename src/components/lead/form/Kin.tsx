@@ -24,6 +24,7 @@ const Kin = (props: any) => {
     register,
     watch,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useFormContext();
   const error = errors["kin"] as any;
@@ -38,6 +39,7 @@ const Kin = (props: any) => {
         sponsorData.push({ ...item, required: true });
       } else {
         sponsorData.push({ ...item, required: false });
+        clearErrors("kin");
       }
     });
     setSpData(sponsorData);

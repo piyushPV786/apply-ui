@@ -37,6 +37,7 @@ const Sponsor = (props: any) => {
     register,
     watch,
     setValue,
+    clearErrors,
     control,
     formState: { errors },
   } = useFormContext();
@@ -47,8 +48,10 @@ const Sponsor = (props: any) => {
   const stateList = stateDetails[countryDetail];
   const Errors = errors["sponsor"] as any;
   const [SpData, setSpData] = useState<any>([]);
-  const [activeSponsor, setActiveSponsor ] = useState<string>(watch("sponsor.isSponsor"))
-  const docType = watch('sponsor.identificationDocumentType')
+  const [activeSponsor, setActiveSponsor] = useState<string>(
+    watch("sponsor.isSponsor")
+  );
+  const docType = watch("sponsor.identificationDocumentType");
 
   useEffect(() => {
     const sponsorData: any = [];
@@ -61,20 +64,20 @@ const Sponsor = (props: any) => {
         }
       } else {
         sponsorData.push({ ...item, required: false });
+        clearErrors("sponsor");
       }
     });
     setSpData(sponsorData);
   }, [activeSponsor]);
 
-  useEffect(()=>{
-    setActiveSponsor(watch("sponsor.isSponsor"))
-  },[watch("sponsor.isSponsor")])
- 
+  useEffect(() => {
+    setActiveSponsor(watch("sponsor.isSponsor"));
+  }, [watch("sponsor.isSponsor")]);
 
   useEffect(() => {
     if (applicationData?.sponsor?.[0]?.isActive) {
       setValue("sponsor.isSponsor", "yes");
-      setActiveSponsor("yes")
+      setActiveSponsor("yes");
     } else {
       setValue("sponsor.isSponsor", "no");
     }
@@ -92,9 +95,9 @@ const Sponsor = (props: any) => {
       }
     }
     return true;
-  }
+  };
 
-  console.log('Errors',Errors)
+  console.log("Errors", Errors);
 
   return (
     <StyledAccordion
@@ -115,7 +118,9 @@ const Sponsor = (props: any) => {
         <RadioField
           registerName={"sponsor.isSponsor"}
           defaultValue={applicationData?.sponsor?.[0]?.isActive ? "yes" : "no"}
-          defaultChecked={applicationData?.sponsor?.[0]?.isActive ? "yes" : "no"}
+          defaultChecked={
+            applicationData?.sponsor?.[0]?.isActive ? "yes" : "no"
+          }
         />
       </AccordionSummary>
       <AccordionDetails>
@@ -138,7 +143,8 @@ const Sponsor = (props: any) => {
                         registerName={`sponsor.${element?.name}`}
                         required={element?.required}
                         defaultValue={
-                          applicationData && applicationData?.sponsor?.length >0
+                          applicationData &&
+                          applicationData?.sponsor?.length > 0
                             ? applicationData?.sponsor?.[0][element?.name]
                             : null
                         }
@@ -176,7 +182,7 @@ const Sponsor = (props: any) => {
                               Errors={Errors}
                               registerName={`sponsor.${element?.name}`}
                             />
-                          )}              
+                          )}
                           {element?.type === "zipCode" && (
                             <>
                               <div className="col-lg-4 mb-4">
@@ -185,7 +191,7 @@ const Sponsor = (props: any) => {
                                 </StyledLabel>
                                 <input
                                   className="form-control"
-                                  type="text" 
+                                  type="text"
                                   placeholder="Enter Zip/Postal Code"
                                   {...register(`sponsor.${element?.name}`, {
                                     required: true,
@@ -234,8 +240,11 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor?.length > 0
-                                      ? applicationData?.sponsor?.[0][element?.name]
+                                    applicationData &&
+                                    applicationData?.sponsor?.length > 0
+                                      ? applicationData?.sponsor?.[0][
+                                          element?.name
+                                        ]
                                       : null
                                   }
                                 />
@@ -257,8 +266,11 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor?.length > 0
-                                      ? applicationData?.sponsor?.[0][element?.name]
+                                    applicationData &&
+                                    applicationData?.sponsor?.length > 0
+                                      ? applicationData?.sponsor?.[0][
+                                          element?.name
+                                        ]
                                       : null
                                   }
                                 />
@@ -311,41 +323,44 @@ const Sponsor = (props: any) => {
                         </>
                       ) : (
                         <>
-                          {element?.type === "name" && element?.key !== "identificationNumber" && (
-                            <TextField
-                              element={element}
-                              Errors={Errors}
-                              registerName={`sponsor.${element?.name}`}
-                            />
-                          )}
-                           {element?.type === "name" &&  element?.key === "identificationNumber" && (
-                            <Controller
-                            name={`sponsor.${element?.name}`}
-                            control={control}
-                            rules={{
-                              required: "Identification number is required",
-            
-                              maxLength: {
-                                value: 13,
-                                message: "Maximum 13 characters allowed.",
-                              },
-                              minLength: {
-                                value: 8,
-                                message: "Minimum length should be 8.",
-                              },
-            
-                              validate: validateIndentificationNumber,
-                            }}
-                            render={({ field }) => (
-                            <TextField
-                            {...field}
-                              element={element}
-                              Errors={Errors}
-                              registerName={`sponsor.${element?.name}`}
-                              inputProps={{ maxLength: 13 }} 
-                            />)}
-                            />
-                          )}
+                          {element?.type === "name" &&
+                            element?.key !== "identificationNumber" && (
+                              <TextField
+                                element={element}
+                                Errors={Errors}
+                                registerName={`sponsor.${element?.name}`}
+                              />
+                            )}
+                          {element?.type === "name" &&
+                            element?.key === "identificationNumber" && (
+                              <Controller
+                                name={`sponsor.${element?.name}`}
+                                control={control}
+                                rules={{
+                                  required: "Identification number is required",
+
+                                  maxLength: {
+                                    value: 13,
+                                    message: "Maximum 13 characters allowed.",
+                                  },
+                                  minLength: {
+                                    value: 8,
+                                    message: "Minimum length should be 8.",
+                                  },
+
+                                  validate: validateIndentificationNumber,
+                                }}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    element={element}
+                                    Errors={Errors}
+                                    registerName={`sponsor.${element?.name}`}
+                                    inputProps={{ maxLength: 13 }}
+                                  />
+                                )}
+                              />
+                            )}
                           {element?.type === "text" && (
                             <TextField
                               element={element}
@@ -363,46 +378,46 @@ const Sponsor = (props: any) => {
                           )}
 
                           {element?.type === "zipCode" && (
-                             <>
-                             <div className="col-lg-4 mb-4">
-                               <StyledLabel required>
-                                 Pin Code / Zip Code
-                               </StyledLabel>
-                               <input
-                                 className="form-control"
-                                 type="text"
-                                 placeholder="Enter Zip/Postal Code"
-                                 {...register(`sponsor.${element?.name}`, {
-                                   required: true,
-                                   maxLength: {
-                                     value: 6,
-                                     message: "Maximum 6 characters allowed.",
-                                   },
-                                   minLength: {
-                                     value: 4,
-                                     message: "Minimum length should be 4.",
-                                   },
-                                   pattern: {
-                                     value: /^[0-9]*$/,
-                                     message:
-                                       "Only numeric values are allowed.",
-                                   },
-                                 })}
-                                 onChange={(e) => {
-                                   const numericValue = e.target.value.replace(
-                                     /[^0-9]/g,
-                                     ""
-                                   );
-                                   e.target.value = numericValue;
-                                 }}
-                               />
-                               {Errors && Errors[element?.name] && (
-                                 <div className="invalid-feedback">
-                                   {Errors[element?.name]?.message}
-                                 </div>
-                               )}
-                             </div>
-                           </>
+                            <>
+                              <div className="col-lg-4 mb-4">
+                                <StyledLabel required>
+                                  Pin Code / Zip Code
+                                </StyledLabel>
+                                <input
+                                  className="form-control"
+                                  type="text"
+                                  placeholder="Enter Zip/Postal Code"
+                                  {...register(`sponsor.${element?.name}`, {
+                                    required: true,
+                                    maxLength: {
+                                      value: 6,
+                                      message: "Maximum 6 characters allowed.",
+                                    },
+                                    minLength: {
+                                      value: 4,
+                                      message: "Minimum length should be 4.",
+                                    },
+                                    pattern: {
+                                      value: /^[0-9]*$/,
+                                      message:
+                                        "Only numeric values are allowed.",
+                                    },
+                                  })}
+                                  onChange={(e) => {
+                                    const numericValue = e.target.value.replace(
+                                      /[^0-9]/g,
+                                      ""
+                                    );
+                                    e.target.value = numericValue;
+                                  }}
+                                />
+                                {Errors && Errors[element?.name] && (
+                                  <div className="invalid-feedback">
+                                    {Errors[element?.name]?.message}
+                                  </div>
+                                )}
+                              </div>
+                            </>
                           )}
 
                           {element?.type === "select" &&
@@ -418,8 +433,11 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor?.length
-                                      ? applicationData?.sponsor?.[0][element?.name]
+                                    applicationData &&
+                                    applicationData?.sponsor?.length
+                                      ? applicationData?.sponsor?.[0][
+                                          element?.name
+                                        ]
                                       : null
                                   }
                                 />
@@ -444,8 +462,11 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor?.length > 0
-                                      ? applicationData?.sponsor?.[0][element?.name]
+                                    applicationData &&
+                                    applicationData?.sponsor?.length > 0
+                                      ? applicationData?.sponsor?.[0][
+                                          element?.name
+                                        ]
                                       : null
                                   }
                                 />
@@ -467,8 +488,11 @@ const Sponsor = (props: any) => {
                                   registerName={`sponsor.${element?.name}`}
                                   required={element?.required}
                                   defaultValue={
-                                    applicationData && applicationData?.sponsor?.length>0
-                                      ? applicationData?.sponsor?.[0][element?.name]
+                                    applicationData &&
+                                    applicationData?.sponsor?.length > 0
+                                      ? applicationData?.sponsor?.[0][
+                                          element?.name
+                                        ]
                                       : null
                                   }
                                 />
@@ -479,7 +503,7 @@ const Sponsor = (props: any) => {
                                 )}
                               </div>
                             )}
-                              {element?.type === "email" && (
+                          {element?.type === "email" && (
                             <EmailField
                               element={element}
                               Errors={Errors}
