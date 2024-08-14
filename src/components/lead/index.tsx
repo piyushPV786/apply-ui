@@ -34,36 +34,38 @@ const LeadForm = (props: IProps) => {
     handleSubmit,
     setError,
     formState: { errors },
-  }:any = methods;
+  }: any = methods;
 
   const masterData = useFormHook(props?.applicationCode);
-  const { saveApplication, saveApplicationAsDraft, disable } = useHelperHook(
-    masterData,
-    watch,
-    setError
-  );
-  
+
   const lead = watch().lead || {};
 
-  
-  const areNamesFilled = lead.firstName && lead.firstName.trim() !== '' &&
-                         lead.lastName && lead.lastName.trim() !== '';
+  const areNamesFilled =
+    lead.firstName &&
+    lead.firstName.trim() !== "" &&
+    lead.lastName &&
+    lead.lastName.trim() !== "";
 
-  
-  const isMiddleNameValid = !lead.middleName || /^[a-zA-Z\s\-]+$/.test(lead.middleName);
+  const isMiddleNameValid =
+    !lead.middleName || /^[a-zA-Z\s\-]+$/.test(lead.middleName);
 
-  
   const showTermsAndCondition = areNamesFilled && isMiddleNameValid;
-  
+
+  const {
+    saveApplication,
+    saveApplicationAsDraft,
+    disable,
+    disableForApplication,
+  } = useHelperHook(masterData, watch, setError);
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
-  
+
   useEffect(() => {
     if (masterData?.applicationData) {
       mapFormDefaultValue(masterData?.applicationData, methods.setValue);
     }
   }, [applicationData?.applicationCode]);
-  
+
   if (!masterData?.masterData) {
     return (
       <>
@@ -108,7 +110,9 @@ const LeadForm = (props: IProps) => {
                     disabled={
                       !watch("lead.isAgreedTermsAndConditions") ||
                       disable ||
-                      errors?.lead?.email  || !showTermsAndCondition
+                      errors?.lead?.email ||
+                      !showTermsAndCondition ||
+                      disableForApplication
                     }
                     onClick={handleSubmit((d) => saveApplication(d))}
                     className="form-button btn-space"
