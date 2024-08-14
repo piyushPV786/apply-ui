@@ -222,3 +222,9 @@ export interface ILead {
 export interface IDynamicObject {
   [key: string]: any;
 }
+
+export type LeadOrSponsorType = "lead" | "sponsor";
+
+export type createCreditVettingForType =
+  | [LeadOrSponsorType]
+  | [LeadOrSponsorType, LeadOrSponsorType];

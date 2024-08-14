@@ -1,15 +1,19 @@
 import { useState } from "react";
 import ApplicationServices from "../../../services/applicationForm";
 import { useRouter } from "next/router";
+import { createCreditVettingForType } from "../../common/types";
 
 export const useHelperHook = (masterData, watch, setError) => {
   const [disable, setDisable] = useState(false);
   const { applicationData, programsData } = masterData;
   const router = useRouter();
   const { applicationCode } = router?.query;
+  const allowedDocsForCreditReport = ["SMARTID", "PASSPORT"];
+  let createCreditVettingFor: createCreditVettingForType;
+  const [disableForApplication, setDisableForApplication] = useState(false);
 
   const saveApplication = async (data: any) => {
-    setDisable(true);
+    setDisableForApplication(true);
     const programName = programsData?.find(
       (item) => item?.code === data?.education?.programCode
     );
@@ -78,7 +82,30 @@ export const useHelperHook = (masterData, watch, setError) => {
     ) {
       router.push(`/uploads/${response?.applicationData?.applicationCode}`);
     }
-    setDisable(false);
+    setDisableForApplication(false);
+
+    if (
+      allowedDocsForCreditReport.includes(data?.lead.identificationDocumentType)
+    ) {
+      createCreditVettingFor = ["lead"];
+    }
+
+    if (
+      allowedDocsForCreditReport.includes(
+        data?.sponsor.identificationDocumentType
+      )
+    ) {
+      if (createCreditVettingFor?.length)
+        createCreditVettingFor.push("sponsor");
+      else createCreditVettingFor = ["sponsor"];
+    }
+
+    if (createCreditVettingFor?.length) {
+      await ApplicationServices.updateCreditReport(
+        response?.applicationData?.applicationCode,
+        { createCreditVettingFor }
+      );
+    }
 
     // ApplicationServices.updateLead(payload, leadId);
   };
@@ -132,14 +159,19 @@ export const useHelperHook = (masterData, watch, setError) => {
         applicationData?.applicationCode
       );
       if (response?.statusCode === 200) {
-        router.push("/dashboard");
+        window.location.replace("/dashboard");
       }
     } else {
       const response = await ApplicationServices?.createDraft(payload);
       if (response?.statusCode === 201) {
-        router.push("/dashboard");
+        window.location.replace("/dashboard");
       }
     }
   };
-  return { saveApplication, saveApplicationAsDraft, disable };
+  return {
+    saveApplication,
+    saveApplicationAsDraft,
+    disable,
+    disableForApplication,
+  };
 };
