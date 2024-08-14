@@ -33,13 +33,15 @@ const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
       {Errors && Errors[element?.name] && (
         <>
           <div className="invalid-feedback">
-            {Errors[element?.name].type === RhfErrorTypes.MaxLength
-              ? rhfErrorMessage.maxLength
-              : Errors[element?.name].type === RhfErrorTypes.MinLength
-              ? rhfErrorMessage.minLength
-              : Errors[element?.name].type === RhfErrorTypes.Min
-              ? rhfErrorMessage.min
-              : element?.errorMessage}
+            {Errors[element?.name].type === RhfErrorTypes.Valid
+              ? Errors[element?.name]?.message
+              : Errors[element?.name].type === RhfErrorTypes.MaxLength
+                ? (Errors[element?.name]?.message ? Errors[element?.name]?.message : rhfErrorMessage.maxLength)
+                : Errors[element?.name].type === RhfErrorTypes.MinLength
+                  ? (Errors[element?.name]?.message ? Errors[element?.name]?.message : rhfErrorMessage.minLength)
+                  : Errors[element?.name].type === RhfErrorTypes.Min
+                    ? rhfErrorMessage.min
+                    : element?.errorMessage}
           </div>
         </>
       )}
