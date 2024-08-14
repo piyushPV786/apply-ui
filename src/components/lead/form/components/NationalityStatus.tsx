@@ -5,7 +5,11 @@ import { AccordionDetails, AccordionSummary } from "@material-ui/core";
 import AddressImg from "../../../../../public/assets/images/address-card-outlined-svgrepo-com.svg";
 import CommonAutocomplete from "./CommonAutocomplete ";
 import { Controller, useFormContext } from "react-hook-form";
-import { nationalityStatusEnum } from "../../../../constants";
+import {
+  nationalityStatusEnum,
+  patternForPassport,
+  patternForSMARTID,
+} from "../../../../constants";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -46,6 +50,20 @@ const NationalityStatus = (props: any) => {
   }, [nationalityStatusWatch]);
 
   const Errors = errors["lead"] as any;
+
+  const validateIdNumber = (value: string) => {
+    if (docTypeWatch === "SMARTID") {
+      if (!patternForSMARTID.test(value)) {
+        return nationalityStatusEnum.IdentificationNumberSmart;
+      }
+    }
+    if (docTypeWatch === "PASSPORT") {
+      if (!patternForPassport.test(value)) {
+        return nationalityStatusEnum.IdentificationNumberPassport;
+      }
+    }
+    return true;
+  };
 
   return (
     <GreyStyledAccordion
@@ -191,6 +209,17 @@ const NationalityStatus = (props: any) => {
                 control={control}
                 rules={{
                   required: "Identification number is required",
+
+                  maxLength: {
+                    value: 13,
+                    message: "Maximum 13 characters allowed.",
+                  },
+                  minLength: {
+                    value: 8,
+                    message: "Minimum length should be 8.",
+                  },
+
+                  validate: validateIdNumber,
                 }}
                 render={({ field }) => (
                   <>
@@ -199,14 +228,16 @@ const NationalityStatus = (props: any) => {
                       type="text"
                       {...field}
                       onBlur={async (e) => {
-                        const result = await idNumberValidation(
-                          e?.target?.value.trim()
-                        );
-                        if (result != true) {
-                          setError("lead.identificationNumber", {
-                            type: "custom",
-                            message: result,
-                          });
+                        if (!Errors?.identificationNumber) {
+                          const result = await idNumberValidation(
+                            e?.target?.value.trim()
+                          );
+                          if (result != true) {
+                            setError("lead.identificationNumber", {
+                              type: "custom",
+                              message: result,
+                            });
+                          }
                         }
                       }}
                     />
