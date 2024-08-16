@@ -9,7 +9,8 @@ const NameField = ({ element, Errors, registerName }: any) => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event?.target?.value;
-    setValue(registerName, value?.trim());
+   const checkName= /^[a-zA-Z]+(?:[ _\-\.][a-zA-Z]+)*$/.test(value)
+   checkName?setValue(registerName, value?.trim()):setValue(registerName,'')
   };
 
   return (
@@ -32,6 +33,7 @@ const NameField = ({ element, Errors, registerName }: any) => {
         placeholder={element?.placeholder}
         type="text"
         disabled={element?.disabled}
+        onInput={element?.onlyLetters ? (e:any) => { e.target.value = e.target.value.replace(/[^a-zA-Z]/g, ''); } : undefined}
       />
 
       {Errors && Errors[element?.name] && (
