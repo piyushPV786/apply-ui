@@ -21,7 +21,7 @@ import { Stack } from "@mui/material";
 import { Spinner } from "../Loader";
 import ErrorComponent from "./form/ErrorComponent";
 import ReferredBy from "./form/ReferredBy";
-import {APPLICATION_STATUS} from '../common/constant';
+import { APPLICATION_STATUS } from "../common/constant";
 
 interface IProps {
   applicationCode: string;
@@ -96,15 +96,20 @@ const LeadForm = (props: IProps) => {
                 <Kin masterData={masterData} />
                 {showTermsAndCondition ? <TermsAndCondition /> : null}
                 <ErrorComponent errors={errors} />
-                <>
-                </>
+                <></>
                 <div className="mt-4 text-center">
                   <StyledButton
                     style={{ marginRight: "10px" }}
                     onClick={saveApplicationAsDraft}
                     className="form-button btn-space"
                     title="Save As Draft"
-                    disabled={disable || errors?.lead?.email || !showTermsAndCondition || applicationData?.status === APPLICATION_STATUS.APPLICATION_FEE_PENDING}
+                    disabled={
+                      disable ||
+                      errors?.lead?.email ||
+                      !showTermsAndCondition ||
+                      applicationData?.status ===
+                        APPLICATION_STATUS.APPLICATION_FEE_PENDING
+                    }
                   />
                   <StyledButton
                     disabled={

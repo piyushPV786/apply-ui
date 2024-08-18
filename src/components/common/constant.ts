@@ -52,7 +52,7 @@ export enum CommonEnums {
   RESUB_BURSARY_DOC = "RESUB-BURSARY-DOC",
   MONTHLY_PAYMENT_REJECT = "MONTHLY_PAYMENT_REJECTED",
   RPL_FEE_PEND = "RPL-FEE-PEND",
-  GRADUATED='GRADUATED',
+  GRADUATED = "GRADUATED",
 }
 
 export enum GraduationType {
@@ -181,7 +181,7 @@ export const AddressApi = {
 };
 export const CommonApi = {
   GETSTUDYMODEPROGRAMS: "programs-fee/byProgramCode",
-  GETMASTERDATA: "master/loadMasterData",
+  GETMASTERDATA: "apply/master/loadMasterData",
   GETAGENT: "global/agent",
   GETUSERDETAIL: "/user",
   SAVEUSER: "/lead",
@@ -198,7 +198,7 @@ export const CommonApi = {
   NATIONALITYSTATUS: "/nationality-status",
   AGENT_LIST: "/user/role/Sales",
   IDENTIFICATIONDOCUMENT: "/identification-Type",
-  EMAILCHECK: "/lead/check-duplicate-email",
+  EMAILCHECK: "/apply/lead/check-duplicate-email",
   STATE: "state",
 };
 
@@ -293,7 +293,7 @@ export enum RhfErrorTypes {
   MaxLength = "maxLength",
   MinLength = "minLength",
   Min = "min",
-  Valid = "validate"
+  Valid = "validate",
 }
 
 export const AddressTypeData = [
@@ -311,7 +311,7 @@ export const AddressTypeData = [
   },
 ];
 
-export enum userInformationStatus  {
+export enum userInformationStatus {
   IdentificationNumberSmart = "Identification number must be 13 digits and contain only numbers for smartID, e.g.- YYMMDD1234567",
   IdentificationNumberPassport = "Passport number must be valid, e.g:- P4366918",
 }

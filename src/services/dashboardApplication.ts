@@ -3,7 +3,7 @@ import { apiServer } from "./index";
 
 class DashboardApplicationServices {
   async getApplicationData(leadId: string) {
-    const url = `${apiUrls?.applyBaseUrl}lead/${leadId}/application`;
+    const url = `${apiUrls?.applyBaseUrl}apply/lead/${leadId}/application`;
     const response = await apiServer.get(url);
     return response?.data;
   }

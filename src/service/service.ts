@@ -44,7 +44,7 @@ export const verifyOtp = async (data: IVerifyOtp) => {
 export const getLeadApplications = async (
   data: IGetLeadApplications
 ): Promise<[]> => {
-  const response = await _axios.get(`lead/${data.leadId}/application`);
+  const response = await _axios.get(`apply/lead/${data.leadId}/application`);
   return response?.data?.data ? response?.data?.data : [];
 };
 
@@ -69,7 +69,7 @@ export const getLeadApplicationDetails = async (
   data: IGetLeadApplicationDetails
 ) => {
   const response = await _axios.get(
-    `lead/${data.leadId}/application/${data.applicationCode}?isDraft=${data?.isDraft}`
+    `apply/lead/${data.leadId}/application/${data.applicationCode}?isDraft=${data?.isDraft}`
   );
   return response?.data?.data ? response?.data?.data : {};
 };
