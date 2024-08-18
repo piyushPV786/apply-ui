@@ -85,14 +85,14 @@ export const useHelperHook = (masterData, watch, setError) => {
     setDisableForApplication(false);
 
     if (
-      allowedDocsForCreditReport.includes(data?.lead.identificationDocumentType)
+      allowedDocsForCreditReport.includes(data?.lead?.identificationDocumentType)
     ) {
       createCreditVettingFor = ["lead"];
     }
 
     if (
       allowedDocsForCreditReport.includes(
-        data?.sponsor.identificationDocumentType
+        data?.sponsor?.identificationDocumentType
       )
     ) {
       if (createCreditVettingFor?.length)

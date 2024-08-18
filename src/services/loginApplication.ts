@@ -7,15 +7,15 @@ interface IRegister {
 }
 
 class LoginApplicationServices {
-  applyBaseUrl: string | undefined = apiUrls?.applyBaseUrl;
+  applyBaseUrl: string | undefined = `${apiUrls?.baseApiURL}apply/`;
 
   async register(payload: IRegister) {
-    const url = `${this.applyBaseUrl}${apiEndPoint?.register}`;
+    const url = `${apiUrls?.baseApiURL}${apiEndPoint?.register}`;
     const response = await apiServer.post(url, payload);
     return response;
   }
   async verifyOTP(payload) {
-    const url = `${this.applyBaseUrl}${apiEndPoint?.verifyOtp}`;
+    const url = `${apiUrls?.baseApiURL}${apiEndPoint?.verifyOtp}`;
     const response = await apiServer.post(url, payload);
     return response;
   }
