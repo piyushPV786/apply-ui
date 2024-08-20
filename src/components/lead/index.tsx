@@ -93,9 +93,6 @@ const LeadForm = (props: IProps) => {
                 <Kin masterData={masterData} />
                 {showTermsAndCondition ? <TermsAndCondition /> : null}
                 <ErrorComponent errors={errors} />
-                <>
-                {console.log(errors)}
-                </>
                 <div className="mt-4 text-center">
                   <StyledButton
                     style={{ marginRight: "10px" }}
