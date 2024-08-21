@@ -755,14 +755,12 @@ export const downloadDocument = (url, fileName: string) => {
 const setEducationValue = (studentData: object, setValue: any, key: string) => {
   if (studentData[key]?.socialMediaCode) {
     setValue("education.referredById", refferedById.social);
-  }
-  if (studentData[key]?.agentCode) {
+  } else if (studentData[key]?.agentCode) {
     setValue("education.referredById", refferedById.agent);
   }
   if (studentData[key]?.isInternationDegree) {
     setValue("education.isInternationDegree", "yes");
-  }
-  if (!studentData[key]?.isInternationDegree) {
+  } else if (!studentData[key]?.isInternationDegree) {
     setValue("education.isInternationDegree", "no");
   }
 };
