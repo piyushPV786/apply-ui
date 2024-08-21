@@ -62,7 +62,7 @@ const CommonAutocomplete = (props: IProps) => {
         }}
         onChange={(e, value) => {
           setValue(registerName, value);
-          onChange && onChange();
+          onChange && onChange(value);
         }}
         onBlur={() => {
           trigger(registerName);
