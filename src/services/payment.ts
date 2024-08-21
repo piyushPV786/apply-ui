@@ -6,7 +6,12 @@ import { getLocalStorageData } from "../Util/Util";
 import { StorageName } from "../components/common/constant";
 
 class PaymentServices {
-  applyBaseUrl: string | undefined = apiUrls?.applyBaseUrl;
+  applyBaseUrl: string | undefined =  `${apiUrls?.baseApiURL}apply/`;
+  enrolmentBaseUrl: string | undefined = `${apiUrls?.baseApiURL}enrolment/`;
+  financeBaseUrl:string | undefined = `${apiUrls?.baseApiURL}finance/`;
+  academicBaseUrl: string | undefined = `${apiUrls?.baseApiURL}academics/`;
+  commonBaseUrl: string | undefined = `${apiUrls?.baseApiURL}common/`;
+  
 
   async applicationDiscount(studentType, applicationCode, discountCode) {
     const url = `${this.applyBaseUrl}${apiEndPoint?.application}/${applicationCode}/discount/${discountCode}?studentType=${studentType}`;
@@ -30,7 +35,7 @@ class PaymentServices {
     const route = apiEndPoint?.applicationDetails
       .replace(":applicationCode", applicationCode)
       .replace(":leadId", studentDetails?.leadId);
-    const url = `${apiUrls?.applyBaseUrl}${route}`;
+    const url = `${this.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
@@ -42,7 +47,7 @@ class PaymentServices {
       applicationCode
     );
 
-    const url = `${apiUrls?.enrolmentBaseUrl}${route}`;
+    const url = `${this.enrolmentBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
@@ -50,28 +55,28 @@ class PaymentServices {
 
   async getCurrencyConversion(selectedNationality) {
     const response = await apiServer.get(
-      `${apiUrls.financeBaseUrl}${apiEndPoint.GETCURRENCYCONVERSION}${selectedNationality}`
+      `${this.financeBaseUrl}${apiEndPoint.GETCURRENCYCONVERSION}${selectedNationality}`
     );
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
   }
 
   async getPayuDetais(applicationCode: string, payload) {
-    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint.application}/${applicationCode}${apiEndPoint.payu}`;
+    const url = `${this.applyBaseUrl}${apiEndPoint.application}/${applicationCode}${apiEndPoint.payu}`;
     const response = await apiServer.post(url, payload);
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
   }
 
   async setStatus(payload) {
-    const url = `${apiUrls?.commonBaseUrl}${apiEndPoint.status}`;
+    const url = `${this.commonBaseUrl}${apiEndPoint.status}`;
     const response = await apiServer.post(url, payload);
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
   }
 
   async getProgramDetails(programCode: string) {
-    const url = `${apiUrls?.academicBaseUrl}${apiEndPoint.program}`.replace(
+    const url = `${this.academicBaseUrl}${apiEndPoint.program}`.replace(
       ":programCode",
       programCode
     );
@@ -80,7 +85,7 @@ class PaymentServices {
     return result;
   }
   async getProgramRmatDetails(programCode: string) {
-    const url = `${apiUrls?.academicBaseUrl}${apiEndPoint.programRmat}`.replace(
+    const url = `${this.academicBaseUrl}${apiEndPoint.programRmat}`.replace(
       ":programCode",
       programCode
     );
@@ -90,7 +95,7 @@ class PaymentServices {
   }
 
   async getUkhesheToken() {
-    const url = `${apiUrls?.financeBaseUrl}${apiEndPoint.ukhesheToken}`;
+    const url = `${this.financeBaseUrl}${apiEndPoint.ukhesheToken}`;
     const response = await apiServer.post(url);
     return response?.data?.data ? response?.data?.data : null;
   }
@@ -111,7 +116,7 @@ class PaymentServices {
   };
 
   updateUkheshePayment = async (payload) => {
-    const url = `${apiUrls?.financeBaseUrl}${apiEndPoint.updatePayment}`;
+    const url = `${this.financeBaseUrl}${apiEndPoint.updatePayment}`;
     const response = await apiServer.post(url, payload);
     return response?.data ? response?.data : null;
   };

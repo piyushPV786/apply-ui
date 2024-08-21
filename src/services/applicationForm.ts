@@ -6,13 +6,13 @@ import { apiServer } from "./index";
 
 class ApplicationFormServices {
   async getMasterData() {
-    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.loadMasterData}`;
+    const url = `${apiUrls?.baseApiURL}apply/${apiEndPoint?.loadMasterData}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
   async getSalesAgentData() {
-    const url = `${apiUrls?.userManagementBaseUrl}${apiEndPoint?.salesAgent}`;
+    const url = `${apiUrls?.baseApiURL}user-management/${apiEndPoint?.salesAgent}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
 
@@ -20,7 +20,7 @@ class ApplicationFormServices {
   }
 
   async getProgramData() {
-    const url = `${apiUrls?.academicBaseUrl}${
+    const url = `${apiUrls?.baseApiURL}academics/${
       apiEndPoint?.programs
     }?project=${false}`;
     const response = await apiServer.get(url);
@@ -38,7 +38,7 @@ class ApplicationFormServices {
           : `${applicationCode}?isDraft=true`
       )
       .replace(":leadId", studentDetails?.leadId);
-    const url = `${apiUrls?.applyBaseUrl}${route}`;
+    const url = `${apiUrls?.baseApiURL}apply/${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
@@ -49,7 +49,7 @@ class ApplicationFormServices {
       ":programCode",
       programCode
     );
-    const url = `${apiUrls?.financeBaseUrl}${route}`;
+    const url = `${apiUrls?.baseApiURL}finance/${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
@@ -60,47 +60,47 @@ class ApplicationFormServices {
       ":countryCode",
       countryCode
     );
-    const url = `${apiUrls?.commonBaseUrl}${route}`;
+    const url = `${apiUrls?.baseApiURL}common/${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
   async getNationalityStatus() {
-    const url = `${apiUrls?.commonBaseUrl}${apiEndPoint?.nationalityStatus}`;
+    const url = `${apiUrls?.baseApiURL}common/${apiEndPoint?.nationalityStatus}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
 
   async getStudyModes() {
-    const url = `${apiUrls?.commonBaseUrl}${apiEndPoint?.studyModes}`;
+    const url = `${apiUrls?.baseApiURL}common/${apiEndPoint?.studyModes}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
 
   async getIdentificationType() {
-    const url = `${apiUrls?.commonBaseUrl}${apiEndPoint?.identificationType}`;
+    const url = `${apiUrls?.baseApiURL}common/${apiEndPoint?.identificationType}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
   }
 
   async createDraft(payload) {
-    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.draft}`;
+    const url = `${apiUrls?.baseApiURL}apply/${apiEndPoint?.draft}`;
     const response = await apiServer.post(url, payload);
     const result = response?.data ? response?.data : null;
     return result;
   }
   async updateDraft(payload, applicationCode) {
-    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.draft}/${applicationCode}`;
+    const url = `${apiUrls?.baseApiURL}apply/${apiEndPoint?.draft}/${applicationCode}`;
     const response = await apiServer.put(url, payload);
     const result = response?.data ? response?.data : null;
     return result;
   }
 
   async createLead(payload, isDraft) {
-    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.lead}?isDraft=${isDraft}`;
+    const url = `${apiUrls?.baseApiURL}apply/${apiEndPoint?.lead}?isDraft=${isDraft}`;
     const response = await apiServer.post(url, payload);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
@@ -108,7 +108,7 @@ class ApplicationFormServices {
 
   async updateLead(payload, applicationCode) {
     const studentDetails = getLocalStorageData(StorageName.STUDENT_DETAIL);
-    const url = `${apiUrls?.applyBaseUrl}${apiEndPoint?.lead}/${studentDetails?.leadId}/${apiEndPoint?.application}/${applicationCode}?isDraft=false`;
+    const url = `${apiUrls?.baseApiURL}apply/${apiEndPoint?.lead}/${studentDetails?.leadId}/${apiEndPoint?.application}/${applicationCode}?isDraft=false`;
     const response = await apiServer.put(url, payload);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
@@ -118,7 +118,7 @@ class ApplicationFormServices {
 
     let route = apiEndPoint?.termAndCondFile.replace(":name", Name);
     route = route.replace(":email", email);
-    const url = `${apiUrls?.applyBaseUrl}${route}`;
+    const url = `${apiUrls?.baseApiURL}apply/${route}`;
     const response = await apiServer.get(url, { responseType: "blob" });
     const result = response?.data ? response?.data : null;
     return result;
@@ -128,7 +128,7 @@ class ApplicationFormServices {
     const route = apiEndPoint?.checkDuplicateEmail
       .replace(":email", email)
       .replace(":leadId", studentDetails?.leadId);
-    const url = `${apiUrls?.applyBaseUrl}${route}`;
+    const url = `${apiUrls?.baseApiURL}apply/${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
@@ -138,7 +138,7 @@ class ApplicationFormServices {
     const route = apiEndPoint?.checkDuplicateIdNumber
       .replace(":idNumber", idNumber)
       .replace(":leadId", studentDetails?.leadId);
-    const url = `${apiUrls?.applyBaseUrl}${route}`;
+    const url = `${apiUrls?.baseApiURL}apply/${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : null;
     return result;
@@ -150,7 +150,7 @@ class ApplicationFormServices {
       createCreditVettingFor: createCreditVettingForType;
     }
   ) {
-    const url = `${apiUrls?.financeBaseUrl}${apiEndPoint?.updateCredit}/${id}/new`;
+    const url = `${apiUrls?.baseApiURL}finance/${apiEndPoint?.updateCredit}/${id}/new`;
     const response = await apiServer.post(url, updateCreditPayload);
     const result = response?.data ? response?.data : null;
     return result;

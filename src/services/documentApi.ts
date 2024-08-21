@@ -6,9 +6,10 @@ import { StorageName } from "../components/common/constant";
 import axios from "axios";
 
 class DocumentApplicationServices {
-  commonBaseUrl: string | undefined = apiUrls?.commonBaseUrl;
-  applyBaseUrl: string | undefined = apiUrls?.applyBaseUrl;
-  documentBaseURl: string | undefined = apiUrls?.documentBaseURl;
+  commonBaseUrl: string | undefined = `${apiUrls?.baseApiURL}common/`;
+  applyBaseUrl: string | undefined = `${apiUrls?.baseApiURL}apply/`;
+  documentBaseURl: string | undefined = `${apiUrls?.baseApiURL}`;
+  financeBaseUrl:string | undefined = `${apiUrls?.baseApiURL}finance/`;
 
   async uploadDocuments(payload, applicationCode) {
     try {
@@ -84,7 +85,7 @@ class DocumentApplicationServices {
     const route = apiEndPoint?.applicationDetails
       .replace(":applicationCode", applicationCode)
       .replace(":leadId", studentDetails?.leadId);
-    const url = `${apiUrls?.applyBaseUrl}${route}`;
+    const url = `${this.applyBaseUrl}${route}`;
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
@@ -92,7 +93,7 @@ class DocumentApplicationServices {
 
   async updateBursary(payload) {
     const route = apiEndPoint?.bursary;
-    const url = `${apiUrls?.financeBaseUrl}${route}`;
+    const url = `${this.financeBaseUrl}${route}`;
     const response = await apiServer.post(url, { ...payload });
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
@@ -100,7 +101,7 @@ class DocumentApplicationServices {
 
   async updateStudentBursary(payload) {
     const route = `${apiEndPoint?.bursary}/${apiEndPoint.student}`;
-    const url = `${apiUrls?.financeBaseUrl}${route}`;
+    const url = `${this.financeBaseUrl}${route}`;
     const response = await apiServer.post(url, { ...payload });
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
@@ -116,7 +117,7 @@ class DocumentApplicationServices {
       ":documentCode",
       documentCode
     );
-    const url = `${apiUrls?.documentBaseURl}${route}`;
+    const url = `${this.documentBaseURl}${route}`;
     const response = await apiServer.patch(url);
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
