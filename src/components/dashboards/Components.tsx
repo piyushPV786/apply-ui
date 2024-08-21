@@ -201,7 +201,7 @@ export const ActionButtons = ({ applicationDetail }) => {
           />
         </Grid>
       )}
-      {isPayBTN && (
+      {isPayBTN && applicationDetail?.education !== null && applicationDetail?.education?.programCode !== null && (
         <Grid item>
           <StyledButton
             isPayBtn
@@ -213,7 +213,7 @@ export const ActionButtons = ({ applicationDetail }) => {
           />
         </Grid>
       )}
-      {isUploadBTN && (
+      {isUploadBTN &&  applicationDetail?.education !== null && applicationDetail?.education?.programCode !== null && (
         <Grid item>
           <StyledButton
             onClick={() => {
