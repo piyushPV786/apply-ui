@@ -19,6 +19,7 @@ const Employment = (props: any) => {
     watch,
     setValue,
     formState: { errors },
+    clearErrors,
   } = useFormContext();
   const { masterData, applicationData } = props?.masterData;
 
@@ -52,6 +53,7 @@ const Employment = (props: any) => {
         sponsorData.push({ ...item, required: true });
       } else {
         sponsorData.push({ ...item, required: false });
+        clearErrors("employment");
       }
     });
     setEmployedList(sponsorData);

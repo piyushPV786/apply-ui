@@ -29,7 +29,7 @@ const PersonalInformation = (props: any) => {
     setValue("lead.mobileNumber", `+${studentDetails?.mobileNumber}`);
     setValue("lead.leadId", `${studentDetails?.leadId}`);
     setValue("lead.mobileCountryCode", `27`);
-  }, []);
+  }, [studentDetails]);
 
   return (
     <StyledAccordion defaultExpanded={true} className="card-shadow mt-0">
