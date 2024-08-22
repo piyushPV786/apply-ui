@@ -180,6 +180,8 @@ export const isValidDate = (value) => {
   const currentYear = new Date().getFullYear();
   const year = new Date(value).getFullYear();
   const age = currentYear - +year;
+  const val: any = new Date(value);
+  if (val == "Invalid Date") return false;
   if (age < 16) return false;
   if (age > 100) return false;
   if (age > currentYear) return false;
@@ -755,14 +757,12 @@ export const downloadDocument = (url, fileName: string) => {
 const setEducationValue = (studentData: object, setValue: any, key: string) => {
   if (studentData[key]?.socialMediaCode) {
     setValue("education.referredById", refferedById.social);
-  }
-  if (studentData[key]?.agentCode) {
+  } else if (studentData[key]?.agentCode) {
     setValue("education.referredById", refferedById.agent);
   }
   if (studentData[key]?.isInternationDegree) {
     setValue("education.isInternationDegree", "yes");
-  }
-  if (!studentData[key]?.isInternationDegree) {
+  } else if (!studentData[key]?.isInternationDegree) {
     setValue("education.isInternationDegree", "no");
   }
 };
