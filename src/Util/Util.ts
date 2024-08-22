@@ -180,6 +180,8 @@ export const isValidDate = (value) => {
   const currentYear = new Date().getFullYear();
   const year = new Date(value).getFullYear();
   const age = currentYear - +year;
+  const val: any = new Date(value);
+  if (val == "Invalid Date") return false;
   if (age < 16) return false;
   if (age > 100) return false;
   if (age > currentYear) return false;
