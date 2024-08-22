@@ -80,7 +80,7 @@ export const useHelperHook = (masterData, watch, setError) => {
       response?.applicationData &&
       response?.applicationData?.applicationCode
     ) {
-      router.push(`/uploads/${response?.applicationData?.applicationCode}`);
+      window.location.replace(`/uploads/${response?.applicationData?.applicationCode}`);
     }
     setDisableForApplication(false);
 
