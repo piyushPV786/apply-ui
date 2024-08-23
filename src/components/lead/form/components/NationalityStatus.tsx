@@ -65,6 +65,12 @@ const NationalityStatus = (props: any) => {
     return true;
   };
 
+
+  const handleDocTypeChange = (value: any) => {
+    setValue("lead.identificationDocumentType", value);
+    setValue("lead.identificationNumber", "");
+  };  
+
   return (
     <GreyStyledAccordion
       expanded={!!nationalityStatusValue}
@@ -155,6 +161,7 @@ const NationalityStatus = (props: any) => {
                   label="Identification Document Type"
                   registerName={"lead.identificationDocumentType"}
                   required={true}
+                  onChange={handleDocTypeChange}
                 />
               )}
               {Errors?.identificationDocumentType && nationalityStatusWatch && (

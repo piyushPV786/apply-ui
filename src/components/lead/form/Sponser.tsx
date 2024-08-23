@@ -97,8 +97,6 @@ const Sponsor = (props: any) => {
     return true;
   };
 
-  console.log("Errors", Errors);
-
   return (
     <StyledAccordion
       defaultExpanded={false}
