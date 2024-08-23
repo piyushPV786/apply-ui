@@ -58,7 +58,7 @@ export const LoginCredentials = () => {
                   <h5>
                     {typeof window !== "undefined" &&
                       JSON.parse(
-                        sessionStorage.getItem("activeLeadDetail") as any
+                        sessionStorage.getItem("activeLeadDetail") as any,
                       ).username}
                   </h5>
                 </div>
@@ -68,7 +68,7 @@ export const LoginCredentials = () => {
                     {" "}
                     {typeof window !== "undefined" &&
                       JSON.parse(
-                        sessionStorage.getItem("activeLeadDetail") as any
+                        sessionStorage.getItem("activeLeadDetail") as any,
                       ).password}
                   </h5>
                 </div>

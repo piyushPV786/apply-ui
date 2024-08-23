@@ -139,7 +139,7 @@ const isSponsor = `${SponsorCandidateDetail}.isSponsor`;
 
 export const getSponsorNameLabel = (
   studentType: string,
-  sponsorType: string
+  sponsorType: string,
 ) => {
   if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Name";
@@ -153,7 +153,7 @@ export const getSponsorNameLabel = (
 };
 export const getSponsorEmailLabel = (
   studentType: string,
-  sponsorType: string
+  sponsorType: string,
 ) => {
   if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Email Address";
@@ -167,7 +167,7 @@ export const getSponsorEmailLabel = (
 };
 export const getSponsorMobileLabel = (
   studentType: string,
-  sponsorType: string
+  sponsorType: string,
 ) => {
   if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Phone Number";
@@ -181,7 +181,7 @@ export const getSponsorMobileLabel = (
 };
 export const getSponsorAddressLabel = (
   studentType: string,
-  sponsorType: string
+  sponsorType: string,
 ) => {
   if (studentType === "regular" && sponsorType === CommonEnums.GUARDIAN) {
     return "Guardian Address";
@@ -321,7 +321,7 @@ export const CertifiedDocument = [
   "HIGHESTQUALIFICATION",
 ];
 export function LinearProgressWithLabel(
-  props: LinearProgressProps & { value: number }
+  props: LinearProgressProps & { value: number },
 ) {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -330,7 +330,7 @@ export function LinearProgressWithLabel(
       </Box>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant="body2" color="text.primary">{`${Math.round(
-          props.value
+          props.value,
         )}%`}</Typography>
       </Box>
     </Box>

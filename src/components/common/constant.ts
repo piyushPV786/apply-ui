@@ -52,7 +52,7 @@ export enum CommonEnums {
   RESUB_BURSARY_DOC = "RESUB-BURSARY-DOC",
   MONTHLY_PAYMENT_REJECT = "MONTHLY_PAYMENT_REJECTED",
   RPL_FEE_PEND = "RPL-FEE-PEND",
-  GRADUATED='GRADUATED',
+  GRADUATED = "GRADUATED",
 }
 
 export enum GraduationType {
@@ -293,7 +293,7 @@ export enum RhfErrorTypes {
   MaxLength = "maxLength",
   MinLength = "minLength",
   Min = "min",
-  Valid = "validate"
+  Valid = "validate",
 }
 
 export const AddressTypeData = [
@@ -311,7 +311,7 @@ export const AddressTypeData = [
   },
 ];
 
-export enum userInformationStatus  {
+export enum userInformationStatus {
   IdentificationNumberSmart = "Identification number must be 13 digits and contain only numbers for smartID, e.g.- YYMMDD1234567",
   IdentificationNumberPassport = "Passport number must be valid, e.g:- P4366918",
 }

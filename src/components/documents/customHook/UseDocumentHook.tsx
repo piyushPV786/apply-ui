@@ -80,7 +80,7 @@ export const UseDocumentHook = (applicationCode) => {
         DocumentServices.DocumentType(),
       ]);
       const documentTypes = result[2].filter(
-        (item) => item.code !== "PAYMENTPROOF"
+        (item) => item.code !== "PAYMENTPROOF",
       );
       const payload = {
         ...masterData,
@@ -111,15 +111,17 @@ export const UseDocumentAction = () => {
   const uploadFiles = async (payload, masterData, type) => {
     const response = await DocumentServices.uploadDocuments(
       payload,
-      masterData?.userDetails?.applicationCode
+      masterData?.userDetails?.applicationCode,
     );
 
     if (response) {
       dashboardRedirectStatus.includes(masterData?.userDetails?.status)
         ? router.push(`/dashboard`)
         : type === actionType?.draft
-        ? router.push(`/dashboard`)
-        : router.push(`/payments/${masterData?.userDetails?.applicationCode}`);
+          ? router.push(`/dashboard`)
+          : router.push(
+              `/payments/${masterData?.userDetails?.applicationCode}`,
+            );
     } else {
       toast.success(`Your document is not uploaded`);
     }
@@ -169,7 +171,7 @@ export const UseDocumentAction = () => {
 export const UseDownloadDeclarationLatter = () => {
   const downloadDeclarationLatter = async (masterData) => {
     const response = await DocumentServices.downloadDeclarationLetter(
-      masterData?.userDetails?.applicationCode
+      masterData?.userDetails?.applicationCode,
     );
     const blob = new Blob([response?.data], {
       type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -194,7 +196,7 @@ export const UsePreviewFile = () => {
     } else {
       const response = await DocumentServices?.getFileUrl(
         file?.name,
-        masterData?.userDetails?.lead?.studentCode
+        masterData?.userDetails?.lead?.studentCode,
       );
       viewProofDetails(response);
     }

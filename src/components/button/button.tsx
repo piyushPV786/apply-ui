@@ -103,8 +103,8 @@ const MyButton = styled(Button)<any>`
     isGreenWhiteCombination || isError
       ? "white!important"
       : disabled
-      ? "#d2d2d2!important"
-      : "#008554 !important"};
+        ? "#d2d2d2!important"
+        : "#008554 !important"};
   border: 1px solid
     ${({ isError }) => (isError ? "#d32f2f" : "#008554")}!important;
   .MuiButton-label {
@@ -112,10 +112,10 @@ const MyButton = styled(Button)<any>`
       isGreenWhiteCombination
         ? Green
         : disabled
-        ? "#b6b6b6!important"
-        : isError
-        ? "#d32f2f"
-        : "white"};
+          ? "#b6b6b6!important"
+          : isError
+            ? "#d32f2f"
+            : "white"};
   }
   // opacity: ${({ disabled }) => (disabled ? 0.3 : 1)}!important;
   cursor: pointer;

@@ -13,11 +13,11 @@ const refreshTokenFunction = async () => {
     if (data?.access_token && data?.refresh_token) {
       await window.localStorage.setItem(
         StorageName?.ACCESS_TOKEN,
-        data.access_token
+        data.access_token,
       );
       await window.localStorage.setItem(
         StorageName?.REFRESH_TOKEN,
-        data.refresh_token
+        data.refresh_token,
       );
       return data;
     } else {
@@ -45,7 +45,7 @@ export const updateInterceptors = (callback) => {
 
       if (config.headers) {
         config.headers["Authorization"] = `Bearer ${window.localStorage.getItem(
-          StorageName?.REFRESH_TOKEN
+          StorageName?.REFRESH_TOKEN,
         )}`;
       }
 
@@ -55,7 +55,7 @@ export const updateInterceptors = (callback) => {
     (error) => {
       callback(false);
       return Promise.reject(error);
-    }
+    },
   );
   refreshApiServer.interceptors.response.use(
     (response) => {
@@ -67,7 +67,7 @@ export const updateInterceptors = (callback) => {
       myErrorInterceptor(error);
       callback(false);
       return Promise.reject(error);
-    }
+    },
   );
   // Add a request interceptor
   apiServer.interceptors.request.use(
@@ -81,7 +81,7 @@ export const updateInterceptors = (callback) => {
         window.localStorage.getItem(StorageName?.ACCESS_TOKEN)
       ) {
         config.headers["Authorization"] = `Bearer ${window.localStorage.getItem(
-          StorageName?.ACCESS_TOKEN
+          StorageName?.ACCESS_TOKEN,
         )}`;
       }
 
@@ -91,7 +91,7 @@ export const updateInterceptors = (callback) => {
     (error) => {
       callback(false);
       return Promise.reject(error);
-    }
+    },
   );
 
   // Add a response interceptor
@@ -105,7 +105,7 @@ export const updateInterceptors = (callback) => {
       myErrorInterceptor(error);
       callback(false);
       return Promise.reject(error);
-    }
+    },
   );
 };
 

@@ -70,7 +70,7 @@ const CommonAutocomplete = (props: IProps) => {
         renderInput={(params) => {
           const { inputProps, ...rest } = params;
           const optionValue = optionList?.find(
-            (item) => item?.code === watch(registerName)
+            (item) => item?.code === watch(registerName),
           );
 
           inputProps.value = optionValue?.name;

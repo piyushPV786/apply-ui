@@ -35,7 +35,7 @@ class ApplicationFormServices {
         ":applicationCode",
         applicationCode.includes("RAPP")
           ? applicationCode
-          : `${applicationCode}?isDraft=true`
+          : `${applicationCode}?isDraft=true`,
       )
       .replace(":leadId", studentDetails?.leadId);
     const url = `${apiUrls?.applyBaseUrl}${route}`;
@@ -47,7 +47,7 @@ class ApplicationFormServices {
   async getStudentProgram(programCode: string) {
     const route = apiEndPoint?.studentProgram.replace(
       ":programCode",
-      programCode
+      programCode,
     );
     const url = `${apiUrls?.financeBaseUrl}${route}`;
     const response = await apiServer.get(url);
@@ -58,7 +58,7 @@ class ApplicationFormServices {
   async getStateList(countryCode: string) {
     const route = apiEndPoint?.stateDetails.replace(
       ":countryCode",
-      countryCode
+      countryCode,
     );
     const url = `${apiUrls?.commonBaseUrl}${route}`;
     const response = await apiServer.get(url);
@@ -148,7 +148,7 @@ class ApplicationFormServices {
     id: string,
     updateCreditPayload: {
       createCreditVettingFor: createCreditVettingForType;
-    }
+    },
   ) {
     const url = `${apiUrls?.financeBaseUrl}${apiEndPoint?.updateCredit}/${id}/new`;
     const response = await apiServer.post(url, updateCreditPayload);

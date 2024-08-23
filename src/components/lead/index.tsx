@@ -21,7 +21,7 @@ import { Stack } from "@mui/material";
 import { Spinner } from "../Loader";
 import ErrorComponent from "./form/ErrorComponent";
 import ReferredBy from "./form/ReferredBy";
-import {APPLICATION_STATUS} from '../common/constant';
+import { APPLICATION_STATUS } from "../common/constant";
 
 interface IProps {
   applicationCode: string;
@@ -37,12 +37,13 @@ const LeadForm = (props: IProps) => {
   }: any = methods;
 
   const masterData = useFormHook(props?.applicationCode);
-  const { saveApplication, saveApplicationAsDraft, disable, disableForApplication } = useHelperHook(
-    masterData,
-    watch,
-    setError
-  );
-  
+  const {
+    saveApplication,
+    saveApplicationAsDraft,
+    disable,
+    disableForApplication,
+  } = useHelperHook(masterData, watch, setError);
+
   const lead = watch().lead || {};
 
   const areNamesFilled =
@@ -55,7 +56,7 @@ const LeadForm = (props: IProps) => {
     !lead.middleName || /^[a-zA-Z\s\-]+$/.test(lead.middleName);
 
   const showTermsAndCondition = areNamesFilled && isMiddleNameValid;
-  
+
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
 
@@ -101,13 +102,21 @@ const LeadForm = (props: IProps) => {
                     onClick={saveApplicationAsDraft}
                     className="form-button btn-space"
                     title="Save As Draft"
-                    disabled={disable || errors?.lead?.email || !showTermsAndCondition || applicationData?.status === APPLICATION_STATUS.APPLICATION_FEE_PENDING}
+                    disabled={
+                      disable ||
+                      errors?.lead?.email ||
+                      !showTermsAndCondition ||
+                      applicationData?.status ===
+                        APPLICATION_STATUS.APPLICATION_FEE_PENDING
+                    }
                   />
                   <StyledButton
                     disabled={
                       !watch("lead.isAgreedTermsAndConditions") ||
                       disable ||
-                      errors?.lead?.email  || !showTermsAndCondition || disableForApplication
+                      errors?.lead?.email ||
+                      !showTermsAndCondition ||
+                      disableForApplication
                     }
                     onClick={handleSubmit((d) => saveApplication(d))}
                     className="form-button btn-space"

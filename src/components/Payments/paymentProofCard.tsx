@@ -18,7 +18,7 @@ const PaymentProofCard = (props) => {
     masterData,
     paymentStatusCheck,
     handleFileExist,
-    removeDocument
+    removeDocument,
   } = props;
 
   const {
@@ -44,10 +44,9 @@ const PaymentProofCard = (props) => {
     updatePayment(payload);
   };
 
-  useEffect(()=>{
-    handleFileExist(watch('file'))
-  },[watch('file')])
-
+  useEffect(() => {
+    handleFileExist(watch("file"));
+  }, [watch("file")]);
 
   return (
     <Grid container mt={5} rowGap={5} component="form" justifyContent="center">

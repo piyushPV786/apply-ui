@@ -59,7 +59,7 @@ export const sponsorInfoData = [
       maxLength: 30,
     },
   },
-  
+
   {
     name: "lastName",
     key: "lastName",
