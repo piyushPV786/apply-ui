@@ -37,7 +37,12 @@ const LeadForm = (props: IProps) => {
   }: any = methods;
 
   const masterData = useFormHook(props?.applicationCode);
-
+  const { saveApplication, saveApplicationAsDraft, disable, disableForApplication } = useHelperHook(
+    masterData,
+    watch,
+    setError
+  );
+  
   const lead = watch().lead || {};
 
   const areNamesFilled =
@@ -50,13 +55,7 @@ const LeadForm = (props: IProps) => {
     !lead.middleName || /^[a-zA-Z\s\-]+$/.test(lead.middleName);
 
   const showTermsAndCondition = areNamesFilled && isMiddleNameValid;
-
-  const {
-    saveApplication,
-    saveApplicationAsDraft,
-    disable,
-    disableForApplication,
-  } = useHelperHook(masterData, watch, setError);
+  
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
 
@@ -96,8 +95,6 @@ const LeadForm = (props: IProps) => {
                 <Kin masterData={masterData} />
                 {showTermsAndCondition ? <TermsAndCondition /> : null}
                 <ErrorComponent errors={errors} />
-                <>
-                </>
                 <div className="mt-4 text-center">
                   <StyledButton
                     style={{ marginRight: "10px" }}
@@ -110,9 +107,7 @@ const LeadForm = (props: IProps) => {
                     disabled={
                       !watch("lead.isAgreedTermsAndConditions") ||
                       disable ||
-                      errors?.lead?.email ||
-                      !showTermsAndCondition ||
-                      disableForApplication
+                      errors?.lead?.email  || !showTermsAndCondition || disableForApplication
                     }
                     onClick={handleSubmit((d) => saveApplication(d))}
                     className="form-button btn-space"
