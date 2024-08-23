@@ -53,7 +53,9 @@ export const useSameResidentialAddress = () => {
       const _p = address?.[0];
       const _r = address?.[1];
       const { addressType, ...rest } = _r || _p;
-      const data = address?.[1]? Object.keys(address?.[1]): Object.keys(address?.[0]);
+      const data = address?.[1]
+        ? Object.keys(address?.[1])
+        : Object.keys(address?.[0]);
 
       const residentialAddress: any = { addressType };
       data.forEach((item) => {

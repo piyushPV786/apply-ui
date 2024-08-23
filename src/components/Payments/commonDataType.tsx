@@ -13,7 +13,7 @@ export interface IApplicationUpload {
       documentTypeCode: string;
       fileName: string;
       fileType: string;
-    }
+    },
   ];
   amount: string;
   paymentModeCode: string;

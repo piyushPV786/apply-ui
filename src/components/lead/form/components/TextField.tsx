@@ -21,7 +21,7 @@ const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
         onChange={(e) => {
           if (element.numric == false) {
             const alphabeticValue = capitalizeFirstLetter(
-              e.target.value.replace(/[^A-Za-z]/g, "")
+              e.target.value.replace(/[^A-Za-z]/g, ""),
             );
             e.target.value = alphabeticValue;
           } else if (element.numric == true) {
@@ -36,9 +36,13 @@ const TextField = ({ element, Errors, registerName, isAlphabetsOnly }: any) => {
             {Errors[element?.name].type === RhfErrorTypes.Valid
               ? Errors[element?.name]?.message
               : Errors[element?.name].type === RhfErrorTypes.MaxLength
-                ? (Errors[element?.name]?.message ? Errors[element?.name]?.message : rhfErrorMessage.maxLength)
+                ? Errors[element?.name]?.message
+                  ? Errors[element?.name]?.message
+                  : rhfErrorMessage.maxLength
                 : Errors[element?.name].type === RhfErrorTypes.MinLength
-                  ? (Errors[element?.name]?.message ? Errors[element?.name]?.message : rhfErrorMessage.minLength)
+                  ? Errors[element?.name]?.message
+                    ? Errors[element?.name]?.message
+                    : rhfErrorMessage.minLength
                   : Errors[element?.name].type === RhfErrorTypes.Min
                     ? rhfErrorMessage.min
                     : element?.errorMessage}

@@ -36,7 +36,7 @@ export const EditGroup = ({
   const acceptTermAndCondition = async () => {
     const response = await ApplicationFormServices?.getTermsAndConditionFile(
       name,
-      email
+      email,
     );
     const blobFile = new Blob([response], {
       type: "application/pdf",

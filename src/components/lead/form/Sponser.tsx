@@ -49,7 +49,7 @@ const Sponsor = (props: any) => {
   const Errors = errors["sponsor"] as any;
   const [SpData, setSpData] = useState<any>([]);
   const [activeSponsor, setActiveSponsor] = useState<string>(
-    watch("sponsor.isSponsor")
+    watch("sponsor.isSponsor"),
   );
   const docType = watch("sponsor.identificationDocumentType");
 
@@ -133,7 +133,7 @@ const Sponsor = (props: any) => {
                         options={
                           masterData[element?.key]
                             ? masterData[element?.key]?.filter((item) =>
-                                mandatorySponsorModeFeilds.includes(item?.code)
+                                mandatorySponsorModeFeilds.includes(item?.code),
                               )
                             : element.option
                         }
@@ -210,7 +210,7 @@ const Sponsor = (props: any) => {
                                   onChange={(e) => {
                                     const numericValue = e.target.value.replace(
                                       /[^0-9]/g,
-                                      ""
+                                      "",
                                     );
                                     e.target.value = numericValue;
                                   }}
@@ -404,7 +404,7 @@ const Sponsor = (props: any) => {
                                   onChange={(e) => {
                                     const numericValue = e.target.value.replace(
                                       /[^0-9]/g,
-                                      ""
+                                      "",
                                     );
                                     e.target.value = numericValue;
                                   }}

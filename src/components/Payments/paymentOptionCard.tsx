@@ -24,9 +24,9 @@ const PaymentOptionCard = (props) => {
     updatePayment,
     masterData,
     paymentStatusCheck,
-    removeDocument
+    removeDocument,
   } = props;
-  const [ check, setCheck] = useState<boolean>(false)
+  const [check, setCheck] = useState<boolean>(false);
   const methods = useForm();
   const { register, watch, setValue } = methods;
   const onlinePaymentWatch = watch(PaymentTypes[0].registerName);
@@ -40,14 +40,10 @@ const PaymentOptionCard = (props) => {
     }
   }, [onlinePaymentWatch]);
 
-
-    const handleFileExist = (file:any)=>{
-      if(file === undefined || file === null ) 
-        setCheck(false)
-      else setCheck(true)
-    }
-  
-  
+  const handleFileExist = (file: any) => {
+    if (file === undefined || file === null) setCheck(false);
+    else setCheck(true);
+  };
 
   return (
     <>
@@ -83,7 +79,7 @@ const PaymentOptionCard = (props) => {
                   className="form-check-input"
                   type="radio"
                   value={value}
-                  disabled={fees?.feeMode === "" || check }
+                  disabled={fees?.feeMode === "" || check}
                 />
                 <span style={{ marginLeft: "5px", marginTop: "3px" }}>
                   {label}

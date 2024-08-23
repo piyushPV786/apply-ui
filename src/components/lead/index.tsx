@@ -21,6 +21,7 @@ import { Stack } from "@mui/material";
 import { Spinner } from "../Loader";
 import ErrorComponent from "./form/ErrorComponent";
 import ReferredBy from "./form/ReferredBy";
+import { APPLICATION_STATUS } from "../common/constant";
 
 interface IProps {
   applicationCode: string;
@@ -33,7 +34,7 @@ const LeadForm = (props: IProps) => {
     handleSubmit,
     setError,
     formState: { errors },
-  }:any = methods;
+  }: any = methods;
 
   const masterData = useFormHook(props?.applicationCode);
   const {
@@ -42,15 +43,29 @@ const LeadForm = (props: IProps) => {
     disable,
     disableForApplication,
   } = useHelperHook(masterData, watch, setError);
+
+  const lead = watch().lead || {};
+
+  const areNamesFilled =
+    lead.firstName &&
+    lead.firstName.trim() !== "" &&
+    lead.lastName &&
+    lead.lastName.trim() !== "";
+
+  const isMiddleNameValid =
+    !lead.middleName || /^[a-zA-Z\s\-]+$/.test(lead.middleName);
+
+  const showTermsAndCondition = areNamesFilled && isMiddleNameValid;
+
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
-  //Setting values in form after data fetch
+
   useEffect(() => {
     if (masterData?.applicationData) {
       mapFormDefaultValue(masterData?.applicationData, methods.setValue);
     }
   }, [applicationData?.applicationCode]);
-  //form code  ends
+
   if (!masterData?.masterData) {
     return (
       <>
@@ -79,7 +94,7 @@ const LeadForm = (props: IProps) => {
                 <Sponsor masterData={masterData} />
                 <Employment masterData={masterData} />
                 <Kin masterData={masterData} />
-                <TermsAndCondition />
+                {showTermsAndCondition ? <TermsAndCondition /> : null}
                 <ErrorComponent errors={errors} />
                 <div className="mt-4 text-center">
                   <StyledButton
@@ -87,13 +102,21 @@ const LeadForm = (props: IProps) => {
                     onClick={saveApplicationAsDraft}
                     className="form-button btn-space"
                     title="Save As Draft"
-                    disabled={disable || errors?.lead?.email}
+                    disabled={
+                      disable ||
+                      errors?.lead?.email ||
+                      !showTermsAndCondition ||
+                      applicationData?.status ===
+                        APPLICATION_STATUS.APPLICATION_FEE_PENDING
+                    }
                   />
                   <StyledButton
                     disabled={
                       !watch("lead.isAgreedTermsAndConditions") ||
-                      disableForApplication ||
-                      errors?.lead?.email
+                      disable ||
+                      errors?.lead?.email ||
+                      !showTermsAndCondition ||
+                      disableForApplication
                     }
                     onClick={handleSubmit((d) => saveApplication(d))}
                     className="form-button btn-space"

@@ -11,7 +11,7 @@ const UseDashboardHook = () => {
 
   const getApplicationData = async () => {
     const userDetails = window?.localStorage?.getItem(
-      StorageName?.STUDENT_DETAIL
+      StorageName?.STUDENT_DETAIL,
     );
     if (userDetails) {
       const data = JSON?.parse(userDetails ? userDetails : "");

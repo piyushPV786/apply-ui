@@ -114,7 +114,7 @@ class DocumentApplicationServices {
   async updateDocumentStatus(documentCode: string) {
     const route = apiEndPoint?.updateDocumentStatus.replace(
       ":documentCode",
-      documentCode
+      documentCode,
     );
     const url = `${apiUrls?.documentBaseURl}${route}`;
     const response = await apiServer.patch(url);

@@ -98,7 +98,7 @@ const Employment = (props: any) => {
                         options={
                           masterData[element?.key]
                             ? masterData[element?.key]?.filter(
-                                (item) => item?.code !== "UNEMPLOYED"
+                                (item) => item?.code !== "UNEMPLOYED",
                               )
                             : element.option
                         }

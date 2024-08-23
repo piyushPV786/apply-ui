@@ -31,15 +31,20 @@ const DocumentUploadPage = (props) => {
   }, [masterData?.documents]);
 
   const verifyDoc = () => {
-    const requiredFields = ["IDPASSPORT", "RESUMECV", "HIGHESTQUALIFICATION", "DECLARATIONFORM"];
-  
+    const requiredFields = [
+      "IDPASSPORT",
+      "RESUMECV",
+      "HIGHESTQUALIFICATION",
+      "DECLARATIONFORM",
+    ];
+
     // Check if all required fields have a file uploaded
-    const allFieldsValid = requiredFields.every(field => {
+    const allFieldsValid = requiredFields.every((field) => {
       const fieldValue = watch(field)?.[0];
       const fileLength = watch(field)?.file?.length;
       return fieldValue || fileLength > 0;
     });
-  
+
     return allFieldsValid;
   };
 
@@ -107,7 +112,7 @@ const DocumentUploadPage = (props) => {
                         type="button"
                         title="Submit Documents"
                         onClick={handleSubmit((d) =>
-                          submitDocument(d, masterData)
+                          submitDocument(d, masterData),
                         )}
                       />
                     </Box>

@@ -17,7 +17,7 @@ const PaymentOptions = ({
   uploadProgress,
   masterData,
   paymentStatusCheck,
-  removeDocument
+  removeDocument,
 }) => {
   return (
     <FullWidthCard>

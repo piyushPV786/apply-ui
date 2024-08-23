@@ -3,7 +3,7 @@ import { CommonEnums, FeemodeCode, feeMode } from "../common/constant";
 export const getConvertedAmount = (currencyData: any, amount: string) => {
   if (currencyData && parseInt(currencyData?.forecastRate)) {
     return Number(
-      parseInt(amount) * parseFloat(currencyData?.forecastRate)
+      parseInt(amount) * parseFloat(currencyData?.forecastRate),
     ).toFixed();
   } else if (parseInt(currencyData?.rate)) {
     return Number(parseInt(amount) * parseFloat(currencyData?.rate)).toFixed();
@@ -16,7 +16,7 @@ export const getFeeDetails = (
   feeStructure,
   feeLabel,
   masterData,
-  discountDetails
+  discountDetails,
 ) => {
   const fee = Number(feeStructure?.fee);
   const rmatFee = masterData?.feeData?.rmatFee;
@@ -43,7 +43,7 @@ export const getFeeDetails = (
         : ""
     } ${getConvertedAmount(
       masterData?.currencyData,
-      fee - discountAmount + rmatFee
+      fee - discountAmount + rmatFee,
     )}`,
     totalFee: fee - discountAmount + rmatFee,
     discountAmount: `${
@@ -121,7 +121,7 @@ export const bursaryFeeCalculation = (bursaryDetails, payload) => {
     const feeDetails = payload?.feeData?.studyModes?.find(
       (item) =>
         item?.studyModeCode ===
-        payload?.applicationData?.education?.studyModeCode
+        payload?.applicationData?.education?.studyModeCode,
     );
     if (feeDetails?.fees) {
       const totalFeeAmount = getTotalFeeAmount(feeDetails?.fees);
@@ -129,7 +129,7 @@ export const bursaryFeeCalculation = (bursaryDetails, payload) => {
         const feeCalculationResult = feeCalculate(
           totalFeeAmount -
             bursaryDetails?.application?.education?.bursaryAmount,
-          payload?.programData?.noOfYear
+          payload?.programData?.noOfYear,
         );
 
         const feeChange = feeDetails?.fees?.map((item: any) => {
@@ -166,7 +166,7 @@ const checkGreaterThanZero = (NumberOfEMi: number) => {
 const getTotalFeeAmount = (feesList) => {
   let result = 0;
   const totalFee = feesList?.find(
-    (item) => item?.feeMode === CommonEnums?.TOTAL
+    (item) => item?.feeMode === CommonEnums?.TOTAL,
   );
   if (totalFee?.fee) {
     result = totalFee?.fee;
@@ -180,7 +180,7 @@ export const signedUrlPayload = (response, payload, studentCode) => {
     payload?.files?.forEach((element, index) => {
       const ext = element?.fileName?.split(".").pop();
       const document = response?.find(
-        (item) => item?.documenttypeCode === element?.documentTypeCode
+        (item) => item?.documenttypeCode === element?.documentTypeCode,
       );
       if (document) {
         signPayload?.push({
