@@ -36,21 +36,33 @@ const LeadForm = (props: IProps) => {
   }:any = methods;
 
   const masterData = useFormHook(props?.applicationCode);
-  const {
-    saveApplication,
-    saveApplicationAsDraft,
-    disable,
-    disableForApplication,
-  } = useHelperHook(masterData, watch, setError);
+  const { saveApplication, saveApplicationAsDraft, disable, disableForApplication } = useHelperHook(
+    masterData,
+    watch,
+    setError
+  );
+  
+  const lead = watch().lead || {};
+
+  
+  const areNamesFilled = lead.firstName && lead.firstName.trim() !== '' &&
+                         lead.lastName && lead.lastName.trim() !== '';
+
+  
+  const isMiddleNameValid = !lead.middleName || /^[a-zA-Z\s\-]+$/.test(lead.middleName);
+
+  
+  const showTermsAndCondition = areNamesFilled && isMiddleNameValid;
+  
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
-  //Setting values in form after data fetch
+  
   useEffect(() => {
     if (masterData?.applicationData) {
       mapFormDefaultValue(masterData?.applicationData, methods.setValue);
     }
   }, [applicationData?.applicationCode]);
-  //form code  ends
+  
   if (!masterData?.masterData) {
     return (
       <>
@@ -79,7 +91,7 @@ const LeadForm = (props: IProps) => {
                 <Sponsor masterData={masterData} />
                 <Employment masterData={masterData} />
                 <Kin masterData={masterData} />
-                <TermsAndCondition />
+                {showTermsAndCondition ? <TermsAndCondition /> : null}
                 <ErrorComponent errors={errors} />
                 <div className="mt-4 text-center">
                   <StyledButton
@@ -87,13 +99,13 @@ const LeadForm = (props: IProps) => {
                     onClick={saveApplicationAsDraft}
                     className="form-button btn-space"
                     title="Save As Draft"
-                    disabled={disable || errors?.lead?.email}
+                    disabled={disable || errors?.lead?.email || !showTermsAndCondition}
                   />
                   <StyledButton
                     disabled={
                       !watch("lead.isAgreedTermsAndConditions") ||
-                      disableForApplication ||
-                      errors?.lead?.email
+                      disable ||
+                      errors?.lead?.email  || !showTermsAndCondition || disableForApplication
                     }
                     onClick={handleSubmit((d) => saveApplication(d))}
                     className="form-button btn-space"
