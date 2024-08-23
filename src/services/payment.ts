@@ -39,7 +39,7 @@ class PaymentServices {
   async getApplicationDataForBursary(applicationCode: string) {
     const route = apiEndPoint?.enrolmentApplicationDetails.replace(
       ":applicationCode",
-      applicationCode
+      applicationCode,
     );
 
     const url = `${apiUrls?.enrolmentBaseUrl}${route}`;
@@ -50,7 +50,7 @@ class PaymentServices {
 
   async getCurrencyConversion(selectedNationality) {
     const response = await apiServer.get(
-      `${apiUrls.financeBaseUrl}${apiEndPoint.GETCURRENCYCONVERSION}${selectedNationality}`
+      `${apiUrls.financeBaseUrl}${apiEndPoint.GETCURRENCYCONVERSION}${selectedNationality}`,
     );
     const result = response?.data?.data ? response?.data?.data : {};
     return result;
@@ -73,7 +73,7 @@ class PaymentServices {
   async getProgramDetails(programCode: string) {
     const url = `${apiUrls?.academicBaseUrl}${apiEndPoint.program}`.replace(
       ":programCode",
-      programCode
+      programCode,
     );
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : {};
@@ -82,7 +82,7 @@ class PaymentServices {
   async getProgramRmatDetails(programCode: string) {
     const url = `${apiUrls?.academicBaseUrl}${apiEndPoint.programRmat}`.replace(
       ":programCode",
-      programCode
+      programCode,
     );
     const response = await apiServer.get(url);
     const result = response?.data?.data ? response?.data?.data : {};

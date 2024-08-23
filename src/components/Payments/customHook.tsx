@@ -51,27 +51,26 @@ export const usePaymentHook = (applicationCode: string) => {
       if (response?.lead?.nationality && response?.education?.programCode) {
         const data = await Promise.all([
           PaymentServices.getCurrencyConversion(
-            response?.lead?.address[0]?.country
+            response?.lead?.address[0]?.country,
           ),
           ApplicationFormService.getStudentProgram(
-            response?.education?.programCode
+            response?.education?.programCode,
           ),
           PaymentServices.getProgramDetails(response?.education?.programCode),
           PaymentServices.getProgramRmatDetails(
-            response?.education?.programCode
+            response?.education?.programCode,
           ),
         ]);
         payload.feeData = data[1].find(
-          (item) => item?.programCode === response?.education?.programCode
+          (item) => item?.programCode === response?.education?.programCode,
         );
         payload.currencyData = data[0];
         payload.programData = data[2];
         payload.rmatDetails = data[3];
 
         if (response?.education?.studentTypeCode === CommonEnums?.BURSARY) {
-          const response = await PaymentServices.getApplicationDataForBursary(
-            applicationCode
-          );
+          const response =
+            await PaymentServices.getApplicationDataForBursary(applicationCode);
           const bursaryAmountFee = bursaryFeeCalculation(response, payload);
           if (bursaryAmountFee) {
             payload.feeData = bursaryAmountFee;
@@ -103,17 +102,17 @@ export const usePaymentDetailsHook = (masterData: any) => {
   ) {
     const studyModeCode = masterData?.applicationData?.education?.studyModeCode;
     studyModes = masterData?.feeData?.studyModes?.find(
-      (item: any) => item?.studyModeCode === studyModeCode
+      (item: any) => item?.studyModeCode === studyModeCode,
     );
     const studyModeDetails = masterData?.studyModeData?.find(
-      (item: any) => item?.code === studyModeCode
+      (item: any) => item?.code === studyModeCode,
     );
     studyModes.helpText = studyModeDetails?.description;
   }
 
   let fees: any = {};
   const feesStructure = studyModes?.fees?.find(
-    (item: any) => item?.feeMode === feeModeCode
+    (item: any) => item?.feeMode === feeModeCode,
   );
   if (applicationFeesStatus.includes(masterData?.applicationData?.status)) {
     fees = {
@@ -126,7 +125,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
           : "R"
       } ${getConvertedAmount(
         masterData?.currencyData,
-        String(feesStructure?.fee)
+        String(feesStructure?.fee),
       )}`,
     };
   } else if (
@@ -145,7 +144,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
           : "R"
       } ${getConvertedAmount(
         masterData?.currencyData,
-        String(masterData?.feeData?.otherFee?.totalFee)
+        String(masterData?.feeData?.otherFee?.totalFee),
       )}`,
     };
   } else if (rplFeeStatus?.includes(masterData?.applicationData?.status)) {
@@ -160,7 +159,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
           : "R"
       } ${getConvertedAmount(
         masterData?.currencyData,
-        String(masterData?.feeData?.rplFee?.totalFee)
+        String(masterData?.feeData?.rplFee?.totalFee),
       )}`,
     };
   } else if (
@@ -184,7 +183,7 @@ export const usePaymentDetailsHook = (masterData: any) => {
             : "R"
         } ${getConvertedAmount(
           masterData?.currencyData,
-          String(feesStructure?.fee)
+          String(feesStructure?.fee),
         )}`,
       }),
     };
@@ -221,7 +220,7 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
     const res = await PaymentServices.applicationDiscount(
       masterData?.applicationData?.education?.studentTypeCode,
       masterData?.applicationData?.applicationCode,
-      data?.discountCode
+      data?.discountCode,
     );
 
     if (res?.managementCode) {
@@ -243,8 +242,8 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
               : ""
           } ${getConvertedAmount(
             masterData?.currencyData,
-            String(res?.maxAmount)
-          )} `
+            String(res?.maxAmount),
+          )} `,
         );
       } else {
         toast.error(ErrorMessage.discountErrorMessage);
@@ -268,8 +267,8 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
                 : ""
             } ${getConvertedAmount(
               masterData?.currencyData,
-              String(res?.maxAmount)
-            )} `
+              String(res?.maxAmount),
+            )} `,
           );
         }
       } else {
@@ -302,7 +301,7 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
   //Apply RMAT Fee
 
   const isOptionalConditopnchek = !masterData?.rmatDetails?.every(
-    (obj) => obj.isOptional === true
+    (obj) => obj.isOptional === true,
   );
 
   let rmatFees = "0";
@@ -324,17 +323,18 @@ export const useDiscountHook = (masterData: any, fees: any, studyModes) => {
 
   //Total Amount
   const totalAmount = applicationFeesStatus.includes(
-    masterData?.applicationData?.status
+    masterData?.applicationData?.status,
   )
     ? parseInt(fees?.fee) - parseInt(fees.discountFee) + parseInt(fees.rmatFees)
     : masterData?.applicationData?.status ==
-        CommonEnums.MONTHLY_PAYMENT_REJECT && parseInt(fees?.fee) > 0
-    ? parseInt(fees?.fee) -
-      parseInt(fees.discountFee) -
-      parseInt(
-        studyModes?.fees?.find((item) => item?.feeMode == feeMode?.MONTHLY).fee
-      )
-    : parseInt(fees?.fee) - parseInt(fees.discountFee);
+          CommonEnums.MONTHLY_PAYMENT_REJECT && parseInt(fees?.fee) > 0
+      ? parseInt(fees?.fee) -
+        parseInt(fees.discountFee) -
+        parseInt(
+          studyModes?.fees?.find((item) => item?.feeMode == feeMode?.MONTHLY)
+            .fee,
+        )
+      : parseInt(fees?.fee) - parseInt(fees.discountFee);
 
   fees.totalFee = totalAmount;
   fees.totalAmount = `${
@@ -374,7 +374,7 @@ export const usePayuHook = (masterData: any, fees: any) => {
     }
     const response = await PaymentServices?.getPayuDetais(
       masterData?.applicationData?.applicationCode,
-      apiPayload
+      apiPayload,
     );
     setPayuDetails(response);
   };
@@ -394,7 +394,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
 
   const setUploadPercent = (progressEvent) => {
     const uploadPercent = Math.ceil(
-      (progressEvent.loaded / progressEvent.total) * 100
+      (progressEvent.loaded / progressEvent.total) * 100,
     );
     setUploadProgress(uploadPercent);
   };
@@ -410,12 +410,12 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
     const signedUrl = await DocumentServices?.getFileSignUrl(
       name,
       `.${ext}`,
-      studentCode
+      studentCode,
     );
     const response = await DocumentServices.uploadDocumentToAws(
       signedUrl,
       file[0],
-      setUploadPercent
+      setUploadPercent,
     );
     if (response?.status === status?.successCode) {
       const documentUpdatePayload = {
@@ -427,11 +427,11 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
         code: documentCode,
       };
       const updateDocumentResponse = await DocumentServices?.documentUpdate(
-        documentUpdatePayload
+        documentUpdatePayload,
       );
       if (updateDocumentResponse?.status === status?.successCode) {
         toast.success(
-          `Your document is uploaded successfully. Please submit document`
+          `Your document is uploaded successfully. Please submit document`,
         );
       }
     }
@@ -442,7 +442,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
   const removeDocument = async () => {
     await DocumentServices?.documentRemove(documentCode);
   };
-  
+
   const updatePayment = async (payload) => {
     const apiPayload = {
       files: changeFileExactions(payload?.files, documentCode),
@@ -451,7 +451,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
       discountCode: fees?.discountCode,
       discountAmount: payload.discountFee,
       feeModeCode: applicationFeesStatus.includes(
-        masterData?.applicationData?.status
+        masterData?.applicationData?.status,
       )
         ? feeMode.APPLICATION
         : fees?.feeMode,
@@ -462,12 +462,12 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
 
     const response = await DocumentServices?.uploadDocuments(
       apiPayload,
-      masterData?.applicationData?.applicationCode
+      masterData?.applicationData?.applicationCode,
     );
     if (response) {
       router.push("/payment/success");
     } else {
-      removeDocument()
+      removeDocument();
       router.push("/payment/failure");
     }
   };
@@ -476,7 +476,7 @@ export const useOfflinePaymentHook = (masterData: any, fees: any) => {
     disabled,
     updatePayment,
     uploadProgress,
-    removeDocument
+    removeDocument,
   };
 };
 
@@ -488,7 +488,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
   const [openPopup, setOpenPopup] = useState(false);
   const paymentStatusCheck = async () => {
     const res = await PaymentServices?.getApplicationData(
-      masterData?.applicationData?.applicationCode
+      masterData?.applicationData?.applicationCode,
     );
     if (allowedPaymentStatus.includes(res?.status)) {
       return true;
@@ -518,7 +518,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
     const paymentResponse = await PaymentServices?.getPaymentDetails(
       tokenResponse?.tenantId,
       payload,
-      headers
+      headers,
     );
     if (paymentResponse) {
       const tabId = window.open(paymentResponse?.completionUrl, "_ blank");
@@ -527,7 +527,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
         const getPaymentResponse = await PaymentServices.getPaymentInfo(
           tokenResponse?.tenantId,
           paymentResponse?.paymentId,
-          headers
+          headers,
         );
 
         if (getPaymentResponse?.data?.status == "SUCCESSFUL") {
@@ -535,12 +535,11 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
           const payload = getUkheshePayload(
             getPaymentResponse,
             fees,
-            masterData
+            masterData,
           );
 
-          const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
-            payload
-          );
+          const sendPaymentInfo =
+            await PaymentServices?.updateUkheshePayment(payload);
           if (sendPaymentInfo?.statusCode === status?.successCodeOne) {
             setLoadingPayment(false);
             router?.push("/payment/onlinesuccess");
@@ -550,16 +549,15 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
           const payload = getUkheshePayload(
             getPaymentResponse,
             fees,
-            masterData
+            masterData,
           );
-          const sendPaymentInfo = await PaymentServices?.updateUkheshePayment(
-            payload
-          );
+          const sendPaymentInfo =
+            await PaymentServices?.updateUkheshePayment(payload);
           if (sendPaymentInfo?.statusCode == status?.successCodeOne) {
             clearInterval(intervalId);
             setLoadingPayment(false);
             router?.push(
-              `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+              `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`,
             );
           }
         }
@@ -574,7 +572,7 @@ export const useUkhesheHook = (masterData: any, fees: any) => {
     setLoadingPayment(false);
     setOpenPopup(false);
     router?.push(
-      `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`
+      `/payment/failure?appCode=${masterData?.applicationData?.applicationCode}`,
     );
   };
 

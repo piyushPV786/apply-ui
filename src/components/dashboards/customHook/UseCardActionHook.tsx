@@ -22,7 +22,7 @@ const UseCardActionHook = (applicationDetail) => {
 
   const getRmatDetails = async () => {
     const response = await DashboardApplicationServices.getRmatDetails(
-      applicationDetail?.applicationCode
+      applicationDetail?.applicationCode,
     );
 
     setRmatOpen({
@@ -56,8 +56,8 @@ const UseCardActionHook = (applicationDetail) => {
         ? "Pay DBM Access Program Fee"
         : "Pay Qualification Fee"
       : status === CommonEnums.RPL_FEE_PEND
-      ? "Pay Rpl Fee"
-      : "Pay Application Fee";
+        ? "Pay Rpl Fee"
+        : "Pay Application Fee";
 
   const isUploadBTN = UPLOAD_DOCUMENT_BUTTON_STATUS.includes(status);
 
@@ -78,17 +78,19 @@ const UseCardActionHook = (applicationDetail) => {
     CommonEnums.QUOTE,
   ];
   const document = documentData?.filter(
-    (item) => (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
+    (item) =>
+      (item?.documentTypeCode === CommonEnums.CONFIRMATION_LETTER &&
         status === CommonEnums?.PROG_ADMITTED) ||
       documentDataTypes.includes(item?.documentTypeCode) ||
-      (status === CommonEnums?.GRADUATED && item?.documentTypeCode === CommonEnums?.CONFIRMATION_LETTER)
+      (status === CommonEnums?.GRADUATED &&
+        item?.documentTypeCode === CommonEnums?.CONFIRMATION_LETTER),
   );
 
   const getDownloadDocument = async (documentDetail) => {
     const { name } = documentDetail;
     const documentResponse = await DashboardApplicationServices?.getDocumentURL(
       name,
-      lead?.studentCode
+      lead?.studentCode,
     );
     downloadDocument(documentResponse?.data, name);
   };

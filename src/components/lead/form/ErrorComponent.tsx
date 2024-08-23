@@ -25,14 +25,14 @@ const ErrorComponent = ({ errors }: any) => {
       return value?.type === ErrorType?.Custom
         ? value?.message
         : value?.type === ErrorType?.Valid
-        ? value?.message
-        : value?.type === ErrorType?.Required
-        ? `Please enter ${i?.label}`
-        : value?.type === ErrorType?.Validate
-        ? value?.message
-        : value?.type === ErrorType?.Manual
-        ? value?.message
-        : undefined;
+          ? value?.message
+          : value?.type === ErrorType?.Required
+            ? `Please enter ${i?.label}`
+            : value?.type === ErrorType?.Validate
+              ? value?.message
+              : value?.type === ErrorType?.Manual
+                ? value?.message
+                : undefined;
     })?.filter((error) => error !== undefined);
   };
   const personalInfoDataLead = GenerateArray(personalInfoData, "lead");
@@ -64,16 +64,16 @@ const ErrorComponent = ({ errors }: any) => {
             index === 0
               ? "Please enter postal"
               : index === 1
-              ? "Please enter residential"
-              : "";
+                ? "Please enter residential"
+                : "";
 
           if (err) {
             const errorMessage =
               err[addressField.name]?.type === ErrorType.Custom
                 ? `${prefix} ${err[addressField?.name]?.message}`
                 : err[addressField?.name]?.type === ErrorType.Required
-                ? `${prefix} ${addressField?.label}`
-                : undefined;
+                  ? `${prefix} ${addressField?.label}`
+                  : undefined;
 
             if (index === 0) {
               Addresses?.postal.push(errorMessage);

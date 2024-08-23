@@ -15,7 +15,7 @@ const Header = (props: any) => {
   useEffect(() => {
     if (window) {
       const studentDetail: any = getLocalStorageData(
-        StorageName?.STUDENT_DETAIL
+        StorageName?.STUDENT_DETAIL,
       );
       if (studentDetail?.mobileNumber) {
         setStudentMob(`+${studentDetail?.mobileNumber}`);

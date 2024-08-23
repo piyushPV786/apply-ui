@@ -9,8 +9,10 @@ const NameField = ({ element, Errors, registerName }: any) => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event?.target?.value;
-   const checkName= /^[a-zA-Z]+(?:[ _\-\.][a-zA-Z]+)*$/.test(value)
-   checkName?setValue(registerName, value?.trim()):setValue(registerName,'')
+    const checkName = /^[a-zA-Z]+(?:[ _\-\.][a-zA-Z]+)*$/.test(value);
+    checkName
+      ? setValue(registerName, value?.trim())
+      : setValue(registerName, "");
   };
 
   return (
@@ -21,9 +23,9 @@ const NameField = ({ element, Errors, registerName }: any) => {
           required: element?.required,
           ...(!!element?.rhfOptions ? element?.rhfOptions : {}),
           validate: (value) => {
-             const trimmedValue = value.trim();
+            const trimmedValue = value.trim();
 
-             return element?.validate(trimmedValue);
+            return element?.validate(trimmedValue);
           },
         })}
         onBlur={handleChange}
@@ -33,7 +35,13 @@ const NameField = ({ element, Errors, registerName }: any) => {
         placeholder={element?.placeholder}
         type="text"
         disabled={element?.disabled}
-        onInput={element?.onlyLetters ? (e:any) => { e.target.value = e.target.value.replace(/[^a-zA-Z]/g, ''); } : undefined}
+        onInput={
+          element?.onlyLetters
+            ? (e: any) => {
+                e.target.value = e.target.value.replace(/[^a-zA-Z]/g, "");
+              }
+            : undefined
+        }
       />
 
       {Errors && Errors[element?.name] && (
@@ -42,12 +50,12 @@ const NameField = ({ element, Errors, registerName }: any) => {
             {Errors[element?.name].type === RhfErrorTypes.MaxLength
               ? rhfErrorMessage.maxLength
               : Errors[element?.name].type === RhfErrorTypes.MinLength
-              ? rhfErrorMessage.minLength
-              : Errors[element?.name].type === RhfErrorTypes.Min
-              ? rhfErrorMessage.min
-              : Errors[element?.name].type == "validate"
-              ? element?.validateErrorMessage
-              : element?.errorMessage}
+                ? rhfErrorMessage.minLength
+                : Errors[element?.name].type === RhfErrorTypes.Min
+                  ? rhfErrorMessage.min
+                  : Errors[element?.name].type == "validate"
+                    ? element?.validateErrorMessage
+                    : element?.errorMessage}
           </div>
         </>
       )}

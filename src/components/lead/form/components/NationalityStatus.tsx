@@ -65,11 +65,10 @@ const NationalityStatus = (props: any) => {
     return true;
   };
 
-
   const handleDocTypeChange = (value: any) => {
     setValue("lead.identificationDocumentType", value);
     setValue("lead.identificationNumber", "");
-  };  
+  };
 
   return (
     <GreyStyledAccordion
@@ -237,7 +236,7 @@ const NationalityStatus = (props: any) => {
                       onBlur={async (e) => {
                         if (!Errors?.identificationNumber) {
                           const result = await idNumberValidation(
-                            e?.target?.value.trim()
+                            e?.target?.value.trim(),
                           );
                           if (result != true) {
                             setError("lead.identificationNumber", {

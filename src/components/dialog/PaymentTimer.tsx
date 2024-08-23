@@ -14,7 +14,7 @@ import StyledButton from "../button/button";
 import { useCustomizeHook } from "../Payments/customHook";
 
 const CircularProgressWithLabel = (
-  props: CircularProgressProps & { label: string }
+  props: CircularProgressProps & { label: string },
 ) => {
   return (
     <Box sx={{ position: "relative", display: "inline-flex" }}>

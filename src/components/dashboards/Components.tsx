@@ -6,10 +6,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import LoginCredentialDialog from "./loginCridentialDialog";
 import RmatCredentialDialog from "./rmatDetailsDialog";
 import { documentType } from "../common/constant";
-import {
-  convertCodeToName,
-  transformDate,
-} from "../../Util/Util";
+import { convertCodeToName, transformDate } from "../../Util/Util";
 import StyledButton from "../button/button";
 import UseCardActionHook from "./customHook/UseCardActionHook";
 import { useRouter } from "next/router";
@@ -122,7 +119,7 @@ export const DocumentInformation = ({ applicationDetail }) => {
           <Dropdown.Menu>
             {document?.map((item) => (
               <Dropdown.Item onClick={() => getDownloadDocument(item)}>
-                  {item?.documentTypeCode !== "QUOTE"
+                {item?.documentTypeCode !== "QUOTE"
                   ? documentType[item?.documentTypeCode]
                   : `${
                       item?.name && item?.name?.split(".")?.length > 0
@@ -182,7 +179,7 @@ export const ActionButtons = ({ applicationDetail }) => {
               title="Edit"
               onClick={() => {
                 router.push(
-                  `/application/${applicationDetail?.applicationCode}`
+                  `/application/${applicationDetail?.applicationCode}`,
                 );
               }}
               isEditBtn
@@ -201,30 +198,34 @@ export const ActionButtons = ({ applicationDetail }) => {
           />
         </Grid>
       )}
-      {isPayBTN && applicationDetail?.education !== null && applicationDetail?.education?.programCode !== null && (
-        <Grid item>
-          <StyledButton
-            isPayBtn
-            onClick={() => {
-              router.push(`/payments/${applicationDetail?.applicationCode}`);
-            }}
-            className="card-button"
-            title={payBtnTitle}
-          />
-        </Grid>
-      )}
-      {isUploadBTN &&  applicationDetail?.education !== null && applicationDetail?.education?.programCode !== null && (
-        <Grid item>
-          <StyledButton
-            onClick={() => {
-              router.push(`/uploads/${applicationDetail?.applicationCode}`);
-            }}
-            className="card-button"
-            title={isUploadBTNTitle}
-            isUploadBtn
-          />
-        </Grid>
-      )}
+      {isPayBTN &&
+        applicationDetail?.education !== null &&
+        applicationDetail?.education?.programCode !== null && (
+          <Grid item>
+            <StyledButton
+              isPayBtn
+              onClick={() => {
+                router.push(`/payments/${applicationDetail?.applicationCode}`);
+              }}
+              className="card-button"
+              title={payBtnTitle}
+            />
+          </Grid>
+        )}
+      {isUploadBTN &&
+        applicationDetail?.education !== null &&
+        applicationDetail?.education?.programCode !== null && (
+          <Grid item>
+            <StyledButton
+              onClick={() => {
+                router.push(`/uploads/${applicationDetail?.applicationCode}`);
+              }}
+              className="card-button"
+              title={isUploadBTNTitle}
+              isUploadBtn
+            />
+          </Grid>
+        )}
       {isBursaryBTN && (
         <Grid item>
           <StyledButton

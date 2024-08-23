@@ -92,7 +92,7 @@ const RmatCredentialDialog = ({ rmatOpen, setRmatOpen }) => {
                   <StyledButton
                     onClick={() =>
                       window.open(
-                        process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL
+                        process.env.NEXT_PUBLIC_PAYMENT_RMAT_REDIRECTION_URL,
                       )
                     }
                     title={"Take RMAT Test"}
