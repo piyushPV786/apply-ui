@@ -86,18 +86,24 @@ const ProgramFees = (props) => {
       </Grid>
       <Grid item md={7} xs={12}>
         {!applicationFeesStatus.includes(masterData?.applicationData?.status) &&
-        !rplFeeStatus.includes(masterData?.applicationData?.status) &&
+          !rplFeeStatus.includes(masterData?.applicationData?.status) &&
           !masterData?.applicationData?.eligibility[0]?.accessProgram && (
             <Grid>
               <label>Fee Mode</label>
               <Grid>
                 {studyModes?.fees
-                  ?.sort((a, b) => {
+                  ?.filter(
+                    (item: { feeMode: feeMode }) =>
+                      item?.feeMode !== feeMode.APPLICATION &&
+                      item?.feeMode !== feeMode.TOTAL,
+                  )
+                  .sort((a: { feeMode: string }, b: { feeMode: string }) => {
                     const aStartsWithA = a.feeMode.startsWith("A");
                     const bStartsWithA = b.feeMode.startsWith("A");
 
                     if (aStartsWithA && !bStartsWithA) return -1;
                     if (!aStartsWithA && bStartsWithA) return 1;
+
                     return 0;
                   })
                   .reverse()
@@ -223,8 +229,8 @@ const FinalFees = (props) => {
                       {getConvertedAmount(
                         masterData?.currencyData,
                         studyModes?.fees?.find(
-                          (item) => item?.feeMode == feeMode?.MONTHLY
-                        ).fee
+                          (item) => item?.feeMode == feeMode?.MONTHLY,
+                        ).fee,
                       )}
                     </strong>
                   </Typography>

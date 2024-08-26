@@ -31,8 +31,13 @@ const PaymentPage = ({ applicationCode }) => {
     paymentStatusCheck,
   } = useUkhesheHook(masterData, fees);
 
-  const { uploadPaymentProof, disabled, updatePayment, uploadProgress, removeDocument } =
-    useOfflinePaymentHook(masterData, fees);
+  const {
+    uploadPaymentProof,
+    disabled,
+    updatePayment,
+    uploadProgress,
+    removeDocument,
+  } = useOfflinePaymentHook(masterData, fees);
 
   if (!masterData && !studyModes && !fees) {
     return (

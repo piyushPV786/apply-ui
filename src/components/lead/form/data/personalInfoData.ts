@@ -23,7 +23,7 @@ export const personalInfoData = [
       minLength: 3,
       maxLength: 30,
     },
-    onlyLetters:true
+    onlyLetters: true,
   },
   {
     name: "middleName",
@@ -42,7 +42,7 @@ export const personalInfoData = [
       minLength: 3,
       maxLength: 30,
     },
-    onlyLetters:true
+    onlyLetters: true,
   },
   {
     name: "lastName",
@@ -61,7 +61,7 @@ export const personalInfoData = [
       minLength: 3,
       maxLength: 30,
     },
-    onlyLetters:true
+    onlyLetters: true,
   },
   {
     name: "gender",

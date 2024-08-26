@@ -58,8 +58,8 @@ const ReferredBy = (props: any) => {
                   !applicationData?.education?.socialMediaCode
                     ? null
                     : applicationData?.education?.socialMediaCode
-                    ? refferedById.social
-                    : refferedById.agent
+                      ? refferedById.social
+                      : refferedById.agent
                 }
                 options={[
                   { name: "Consultant", code: refferedById.agent, id: 1 },

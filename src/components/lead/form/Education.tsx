@@ -31,7 +31,7 @@ const Education = (props: any) => {
 
   const Errors = errors["education"] as any;
   const feesDetails = studentProgram?.studyModes?.find(
-    (item) => item?.studyModeCode === studyModeCodeWatch
+    (item) => item?.studyModeCode === studyModeCodeWatch,
   );
 
   // useEffect(() => {
@@ -123,7 +123,7 @@ const Education = (props: any) => {
                       ?.filter(
                         (item) =>
                           item?.feeMode !== feeMode?.TOTAL &&
-                          item?.feeMode !== feeMode?.APPLICATION
+                          item?.feeMode !== feeMode?.APPLICATION,
                       )
                       .sort((a, b) => {
                         const feeModeOrder = {

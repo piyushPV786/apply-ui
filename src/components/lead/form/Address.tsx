@@ -21,7 +21,7 @@ const Address = (props: any) => {
   useCompareAddressHook(
     applicationData?.lead?.address
       ? applicationData?.lead?.address
-      : applicationData?.address
+      : applicationData?.address,
   );
   useSameResidentialAddress();
   return (

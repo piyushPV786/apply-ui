@@ -35,10 +35,10 @@ const ZipCodeField = ({
           {Errors[element?.name]?.type === "maxLength"
             ? "Max length exceeded"
             : Errors[element?.name]?.type === "minLength"
-            ? "Minimum length should be 4"
-            : Errors[element?.name]?.type === "min"
-            ? "Please enter positive number"
-            : "Please enter Zip/Postal Code"}
+              ? "Minimum length should be 4"
+              : Errors[element?.name]?.type === "min"
+                ? "Please enter positive number"
+                : "Please enter Zip/Postal Code"}
         </div>
       )}
     </div>

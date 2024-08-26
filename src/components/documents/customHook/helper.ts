@@ -6,8 +6,13 @@ export const documentPayload = (data, isDraft, masterData, progress) => {
     let Files: any = [];
     masterData?.documentTypes.forEach((element) => {
       const fileObj = data[element?.code];
-      const docCode = masterData?.documents?.find((data) => data.documentTypeCode === element?.code);
-      if ((fileObj && fileObj?.length && fileObj?.[0]?.size > 0) || (fileObj && fileObj?.file?.length > 0)) {
+      const docCode = masterData?.documents?.find(
+        (data) => data.documentTypeCode === element?.code,
+      );
+      if (
+        (fileObj && fileObj?.length && fileObj?.[0]?.size > 0) ||
+        (fileObj && fileObj?.file?.length > 0)
+      ) {
         let Obj = {
           documentTypeCode: element?.code,
           fileName: fileObj?.[0]?.name || fileObj?.file?.[0]?.name,
@@ -49,7 +54,7 @@ export const signedUrlPayload = (response, payload) => {
     payload?.files?.forEach((element, index) => {
       const ext = element?.fileName?.split(".").pop();
       const document = response?.find(
-        (item) => item?.documenttypeCode === element?.documentTypeCode
+        (item) => item?.documenttypeCode === element?.documentTypeCode,
       );
       if (document) {
         signPayload?.push({
