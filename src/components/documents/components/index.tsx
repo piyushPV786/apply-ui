@@ -210,6 +210,10 @@ export const FileRegister = ({ element, uploadDocument }) => {
               className="d-none"
               accept="image/jpeg, application/pdf"
               type="file"
+              disabled={
+                element.code == "BURSARYLETTER" &&
+                watch(`${element.code}`)?.length
+              }
             />
           </StyleLabel>
           <Typography className="doc-upload-text">

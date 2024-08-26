@@ -15,14 +15,14 @@ export const useHelperHook = (masterData, watch, setError) => {
   const saveApplication = async (data: any) => {
     setDisableForApplication(true);
     const programName = programsData?.find(
-      (item) => item?.code === data?.education?.programCode
+      (item) => item?.code === data?.education?.programCode,
     );
     let response: any = null;
     if (applicationCode === "new") {
       const payload = {
         ...data,
         address: Object.values(data?.address).filter(
-          (value) => typeof value === "object"
+          (value) => typeof value === "object",
         ),
         education: {
           ...data?.education,
@@ -39,7 +39,7 @@ export const useHelperHook = (masterData, watch, setError) => {
       const payload = {
         ...data,
         address: Object.values(data?.address).filter(
-          (value) => typeof value === "object"
+          (value) => typeof value === "object",
         ),
         applicationCode: applicationData?.applicationCode,
         education: {
@@ -54,7 +54,7 @@ export const useHelperHook = (masterData, watch, setError) => {
       const payload = {
         ...data,
         address: Object.values(data?.address).filter(
-          (value) => typeof value === "object"
+          (value) => typeof value === "object",
         ),
         kin: data?.kin?.isKin ? data?.kin : { isKin: "no" },
         sponsor: data?.sponsor?.isSponsor ? data?.sponsor : { isSponsor: "no" },
@@ -71,7 +71,7 @@ export const useHelperHook = (masterData, watch, setError) => {
       };
       response = await ApplicationServices.updateLead(
         payload,
-        applicationData?.applicationCode
+        applicationData?.applicationCode,
       );
     }
 
@@ -107,7 +107,7 @@ export const useHelperHook = (masterData, watch, setError) => {
     if (createCreditVettingFor?.length) {
       await ApplicationServices.updateCreditReport(
         response?.applicationData?.applicationCode,
-        { createCreditVettingFor }
+        { createCreditVettingFor },
       );
     }
 
@@ -160,7 +160,7 @@ export const useHelperHook = (masterData, watch, setError) => {
     ) {
       const response = await ApplicationServices?.updateDraft(
         payload,
-        applicationData?.applicationCode
+        applicationData?.applicationCode,
       );
       if (response?.statusCode === 200) {
         window.location.replace("/dashboard");

@@ -34,7 +34,7 @@ const StudentLogin = () => {
   const router = useRouter();
   useEffect(() => {
     const isAuthenticate = JSON.parse(
-      window.localStorage?.getItem(StorageName?.STUDENT_DETAIL) as any
+      window.localStorage?.getItem(StorageName?.STUDENT_DETAIL) as any,
     );
     if (isAuthenticate) {
       router.push("/dashboard");
@@ -83,15 +83,15 @@ const StudentLogin = () => {
         const { tokenDetails, ...rest } = data;
         await window.localStorage.setItem(
           StorageName?.STUDENT_DETAIL,
-          JSON.stringify(rest)
+          JSON.stringify(rest),
         );
         await window.localStorage.setItem(
           StorageName?.ACCESS_TOKEN,
-          tokenDetails.access_token
+          tokenDetails.access_token,
         );
         await window.localStorage.setItem(
           StorageName?.REFRESH_TOKEN,
-          tokenDetails.refresh_token
+          tokenDetails.refresh_token,
         );
         router.push("/dashboard");
       }
@@ -141,7 +141,7 @@ const StudentLogin = () => {
                 }
                 value={mobileNumber}
                 autoFocus={true}
-                onChange={(value: string) => {
+                onChange={(value: any) => {
                   setMobileNumberValue(!value ? "" : value);
                 }}
               />

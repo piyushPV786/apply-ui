@@ -10,7 +10,7 @@ import { AxiosInstance } from "axios";
 
 export const getIntrestedQualificationPrograms = (
   AcadmicApi: AxiosInstance,
-  setMasterData: (value: SetStateAction<IMasterData | null>) => void
+  setMasterData: (value: SetStateAction<IMasterData | null>) => void,
 ) => {
   AcadmicApi.get(CommonApi.GETINTRESTEDQUALIFICATION)
     .then(({ data }: any) => {
@@ -33,12 +33,12 @@ export const getUserDetailHelper = (
   setPaymentDone: (value: SetStateAction<boolean>) => void,
   routeIfStepDone: (routeTo: string) => void,
   setValue: UseFormSetValue<ILeadFormValues>,
-  AuthApi: AxiosInstance
+  AuthApi: AxiosInstance,
 ) => {
   AuthApi.get(
     `apply/lead/${leadDetail?.leadId}/application/${
       leadDetail?.applicationCode
-    }?isDraft=${leadDetail?.isdraftSave || "false"}`
+    }?isDraft=${leadDetail?.isdraftSave || "false"}`,
   )
     .then(({ data: response }) => {
       const formData = { ...response?.data };

@@ -37,6 +37,12 @@ const LeadForm = (props: IProps) => {
   }: any = methods;
 
   const masterData = useFormHook(props?.applicationCode);
+  const {
+    saveApplication,
+    saveApplicationAsDraft,
+    disable,
+    disableForApplication,
+  } = useHelperHook(masterData, watch, setError);
 
   const lead = watch().lead || {};
 
@@ -51,12 +57,6 @@ const LeadForm = (props: IProps) => {
 
   const showTermsAndCondition = areNamesFilled && isMiddleNameValid;
 
-  const {
-    saveApplication,
-    saveApplicationAsDraft,
-    disable,
-    disableForApplication,
-  } = useHelperHook(masterData, watch, setError);
   const programCode = watch("education.programCode");
   const applicationData: any = masterData?.applicationData;
 
@@ -96,7 +96,6 @@ const LeadForm = (props: IProps) => {
                 <Kin masterData={masterData} />
                 {showTermsAndCondition ? <TermsAndCondition /> : null}
                 <ErrorComponent errors={errors} />
-                <></>
                 <div className="mt-4 text-center">
                   <StyledButton
                     style={{ marginRight: "10px" }}

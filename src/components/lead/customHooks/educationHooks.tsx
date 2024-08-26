@@ -7,7 +7,7 @@ export const useEducationHook = (programCode: string) => {
     const data = await ApplicationFormServices?.getStudentProgram(programCode);
     if (data) {
       const programData = data.find(
-        (item) => item?.programCode === programCode
+        (item) => item?.programCode === programCode,
       );
       if (programData) {
         const feeModesOrder = [
@@ -22,7 +22,7 @@ export const useEducationHook = (programCode: string) => {
           fees: obj.fees.sort(
             (a, b) =>
               feeModesOrder.indexOf(a.feeMode) -
-              feeModesOrder.indexOf(b.feeMode)
+              feeModesOrder.indexOf(b.feeMode),
           ),
         }));
         setStudentProgramData(programData);

@@ -33,11 +33,11 @@ const refreshTokenFunction = async () => {
     if (response?.status === 200 && data?.access_token && data?.refresh_token) {
       await window.sessionStorage.setItem(
         tokenName?.accessToken,
-        data?.access_token
+        data?.access_token,
       );
       await window.sessionStorage.setItem(
         tokenName.refreshToken,
-        data?.refresh_token
+        data?.refresh_token,
       );
     }
     return data;
@@ -56,7 +56,7 @@ refreshBaseAuth.interceptors.request.use(
   (config) => {
     if (config.headers) {
       config.headers["Authorization"] = `Bearer ${window.sessionStorage.getItem(
-        tokenName?.refreshToken
+        tokenName?.refreshToken,
       )}`;
     }
 
@@ -64,7 +64,7 @@ refreshBaseAuth.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 const useAxiosInterceptor = () => {
@@ -127,7 +127,7 @@ const useAxiosInterceptor = () => {
     axiosInstance.interceptors.request.use(myInterceptor);
     axiosInstance.interceptors.response.use(
       myResponseInterceptor,
-      myErrorInterceptor
+      myErrorInterceptor,
     );
   };
 

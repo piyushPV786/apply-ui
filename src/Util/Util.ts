@@ -213,7 +213,7 @@ export const isValidExpiryDate = (value) => {
 export const isValidEmail = async (email) => {
   if (email) {
     return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-      email
+      email,
     );
   } else {
     return true;
@@ -352,7 +352,7 @@ export const getApplicationCode = () => {
         ?.applicationCode;
 
   const activeLeadDetail = JSON.parse(
-    sessionStorage?.getItem("activeLeadDetail") as any
+    sessionStorage?.getItem("activeLeadDetail") as any,
   )?.applicationCode;
   const leadId = activeLeadDetail || applicationCode;
 
@@ -381,7 +381,7 @@ export const getUploadDocumentUrl = async (payload, code?) => {
   try {
     const response = await AuthApi.post(
       `${url}application/${appCode}/document`,
-      payload
+      payload,
     );
 
     if (response.status === 201) {
@@ -405,7 +405,7 @@ export const getAllDocumentsDetails = async (code?) => {
 
   try {
     const response = await AuthApi.get(
-      `${url}application/documents/${appCode}`
+      `${url}application/documents/${appCode}`,
     );
 
     if (response.status === 200) {
@@ -430,7 +430,7 @@ export const downloadDeclarationLetter = async (code?) => {
   try {
     const response = await AuthApi.get(
       `${url}application/${appCode}/download/declarationForm`,
-      { responseType: "blob" }
+      { responseType: "blob" },
     );
 
     if (response.status === 200) {
@@ -453,7 +453,7 @@ export const getCommonUploadDocumentUrl = async (fileName, studentCode) => {
 
   try {
     const response = await CommonAPI.get(
-      `${CommonApi.GETCOMMONDOCUMENTURL}?filename=${fileName}&filetype=${filetype}&studentCode=${studentCode}`
+      `${CommonApi.GETCOMMONDOCUMENTURL}?filename=${fileName}&filetype=${filetype}&studentCode=${studentCode}`,
     );
 
     if (response.status === 200) {
@@ -473,7 +473,7 @@ export const getCommonUploadDocumentUrl = async (fileName, studentCode) => {
  */
 export const getQualificationStudyModeData = async (programCode) => {
   const response = await FinanceApi.get(
-    `${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`
+    `${CommonApi.GETSTUDYMODEPROGRAMS}/${programCode}`,
   );
 
   try {
@@ -518,14 +518,14 @@ export const applyDiscountCode = async (
   appCode,
   disCode,
   studentType,
-  isManagement = false
+  isManagement = false,
 ) => {
   const url = process.env.base_Url;
 
   try {
     if (disCode) {
       const response = await baseAuth.get(
-        `${url}application/${appCode}/discount/${disCode}?studentType=${studentType}`
+        `${url}application/${appCode}/discount/${disCode}?studentType=${studentType}`,
       );
       return response.data;
     } else {
@@ -666,7 +666,7 @@ export function isObjectEmpty(object: any) {
   return Object?.values(newCloneObject).every((v) =>
     v && typeof v === "object"
       ? isObjectEmpty(v)
-      : v === 0 || v === null || v === undefined || !v
+      : v === 0 || v === null || v === undefined || !v,
   );
 }
 
@@ -699,7 +699,7 @@ export const transformFormData = (formData: any) => {
 
 export const onlyAlphabetsWithSpaceOnChange = (e) => {
   const alphabeticValue = capitalizeFirstLetter(
-    e.target.value.replace(/[^A-Za-z\s]/g, "")
+    e.target.value.replace(/[^A-Za-z\s]/g, ""),
   );
   return alphabeticValue;
 };
@@ -722,7 +722,7 @@ export const emailValidation = async (e) => {
     };
   }
   const response = await ApplicationFormServices?.checkDuplicateEmail(
-    e?.target?.value
+    e?.target?.value,
   );
   if (response?.message) {
     returnVal = {
@@ -736,9 +736,8 @@ export const emailValidation = async (e) => {
 export const idNumberValidation = async (value) => {
   let result: any = true;
   if (value.length > 0) {
-    const response = await ApplicationFormServices?.checkDuplicateIdNumber(
-      value
-    );
+    const response =
+      await ApplicationFormServices?.checkDuplicateIdNumber(value);
 
     if (response?.message) {
       result = "Provided Identification number already exists";
@@ -769,13 +768,13 @@ const setEducationValue = (studentData: object, setValue: any, key: string) => {
 
 export const mapFormDefaultValue = (
   studentData: object | any,
-  setValue: any
+  setValue: any,
 ) => {
   for (let [key, value] of Object.entries(studentData)) {
     if (acceptedKeysToMap.includes(key)) {
       setValue(key, value);
-      if(key=== 'sponsor'&& studentData[key] ){
-        setValue( key, value?.[0])
+      if (key === "sponsor" && studentData[key]) {
+        setValue(key, value?.[0]);
       }
       if (key === "education" && studentData[key]) {
         setEducationValue(studentData, setValue, key);
