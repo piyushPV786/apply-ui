@@ -91,16 +91,21 @@ const ProgramFees = (props) => {
             <Grid>
               <label>Fee Mode</label>
               <Grid>
-                {studyModes?.fees?.filter((item: { feeMode: feeMode }) => item?.feeMode !== feeMode.APPLICATION && item?.feeMode !== feeMode.TOTAL)
-                .sort((a: { feeMode: string }, b: { feeMode: string }) => {
-                        const aStartsWithA = a.feeMode.startsWith('A');
-                        const bStartsWithA = b.feeMode.startsWith('A');
-                                        
-                        if (aStartsWithA && !bStartsWithA) return -1;
-                        if (!aStartsWithA && bStartsWithA) return 1;
-                                        
-                        return 0;
-                    })
+                {studyModes?.fees
+                  ?.filter(
+                    (item: { feeMode: feeMode }) =>
+                      item?.feeMode !== feeMode.APPLICATION &&
+                      item?.feeMode !== feeMode.TOTAL,
+                  )
+                  .sort((a: { feeMode: string }, b: { feeMode: string }) => {
+                    const aStartsWithA = a.feeMode.startsWith("A");
+                    const bStartsWithA = b.feeMode.startsWith("A");
+
+                    if (aStartsWithA && !bStartsWithA) return -1;
+                    if (!aStartsWithA && bStartsWithA) return 1;
+
+                    return 0;
+                  })
                   .reverse()
                   .map((item, index) => {
                     if (
