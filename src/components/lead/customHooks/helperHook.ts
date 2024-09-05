@@ -81,20 +81,22 @@ export const useHelperHook = (masterData, watch, setError) => {
       response?.applicationData?.applicationCode
     ) {
       window.location.replace(
-        `/uploads/${response?.applicationData?.applicationCode}`,
+        `/uploads/${response?.applicationData?.applicationCode}`
       );
     }
     setDisableForApplication(false);
 
     if (
-      allowedDocsForCreditReport.includes(data?.lead.identificationDocumentType)
+      allowedDocsForCreditReport.includes(
+        data?.lead?.identificationDocumentType
+      )
     ) {
       createCreditVettingFor = ["lead"];
     }
 
     if (
       allowedDocsForCreditReport.includes(
-        data?.sponsor.identificationDocumentType,
+        data?.sponsor?.identificationDocumentType
       )
     ) {
       if (createCreditVettingFor?.length)

@@ -36,7 +36,7 @@ export const getUserDetailHelper = (
   AuthApi: AxiosInstance,
 ) => {
   AuthApi.get(
-    `lead/${leadDetail?.leadId}/application/${
+    `apply/lead/${leadDetail?.leadId}/application/${
       leadDetail?.applicationCode
     }?isDraft=${leadDetail?.isdraftSave || "false"}`,
   )

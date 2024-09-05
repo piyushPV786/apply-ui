@@ -141,7 +141,7 @@ const StudentLogin = () => {
                 }
                 value={mobileNumber}
                 autoFocus={true}
-                onChange={(value: string) => {
+                onChange={(value: any) => {
                   setMobileNumberValue(!value ? "" : value);
                 }}
               />

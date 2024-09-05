@@ -1,17 +1,11 @@
 export const apiUrls = {
-  applyBaseUrl: process.env.NEXT_PUBLIC_APPLY_BACKEND_API,
-  academicBaseUrl: process.env.NEXT_PUBLIC_ACADEMIC_BACKEND_API,
-  financeBaseUrl: process.env.NEXT_PUBLIC_FINANCE_BACKEND_API,
-  commonBaseUrl: process.env.NEXT_PUBLIC_COMMON_BACKEND_API,
-  userManagementBaseUrl: process.env.NEXT_PUBLIC_USER_MANAGEMENT_BACKEND_API,
-  enrolmentBaseUrl: process.env.NEXT_PUBLIC_ENROLMENT_BACKEND_API,
-  documentBaseURl: process.env.NEXT_PUBLIC_DOCUMENT_BACKEND_API,
+  baseApiURL: process.env.NEXT_PUBLIC_BASE_URL
 };
 
 export const apiEndPoint = {
   loadMasterData: "master/loadMasterData ",
-  register: "auth/register",
-  verifyOtp: "auth/verify-otp",
+  register: "auth/apply/register",
+  verifyOtp: "auth/apply/verify-otp",
   refreshToken: "auth/refresh-token",
   salesAgent: "user/role/Sales",
   application: "application",

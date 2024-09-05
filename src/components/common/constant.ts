@@ -181,7 +181,7 @@ export const AddressApi = {
 };
 export const CommonApi = {
   GETSTUDYMODEPROGRAMS: "programs-fee/byProgramCode",
-  GETMASTERDATA: "master/loadMasterData",
+  GETMASTERDATA: "apply/master/loadMasterData",
   GETAGENT: "global/agent",
   GETUSERDETAIL: "/user",
   SAVEUSER: "/lead",
@@ -198,7 +198,7 @@ export const CommonApi = {
   NATIONALITYSTATUS: "/nationality-status",
   AGENT_LIST: "/user/role/Sales",
   IDENTIFICATIONDOCUMENT: "/identification-Type",
-  EMAILCHECK: "/lead/check-duplicate-email",
+  EMAILCHECK: "/apply/lead/check-duplicate-email",
   STATE: "state",
 };
 
